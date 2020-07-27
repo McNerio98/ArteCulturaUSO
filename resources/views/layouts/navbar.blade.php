@@ -1,7 +1,10 @@
-
-<nav class="navbar  navbar-expand-lg navbar-dark" style="background-color: #31343E;">
-  <a class="navbar-brand" style="color:#20B7EB" href="#">Navbar</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+<div class="fixed-top">
+  <nav class="navbar   navbar-expand-lg navbar-dark" style="background-color: #31343E;">
+  <a href="/">
+    <img src="{{asset('images/logo.png')}}" width="130px" height="40px" alt="">
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
@@ -28,4 +31,5 @@
     </ul>
   </div>
 </nav>
-<div style="width: 100%; height:8px; background:#20B7EB; clear:both"></div>
+<div style="width: 100%; height:8px; background:#20B7EB; clear:both;"></div>
+</div>

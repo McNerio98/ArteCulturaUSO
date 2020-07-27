@@ -7,13 +7,19 @@
 
     <title>@yield('title') | Observatorio Cultural</title>
     <link href="{{asset('css/app.css')}}" rel="stylesheet">
+    <style>
+        .backGround{
+            background: #dddddd;
+        }
+    </style>
 </head>
 
-<body>
+<body class="backGround">
     @include('layouts.navbar')
-    <div id="app" class="container">
+    <div style="margin-top: 50px" id="app" class="container-fluid">
         @yield('content')
     </div>
+    @include('layouts.footer')
     <script src="{{asset('js/app.js')}}"></script>
 </body>
 
