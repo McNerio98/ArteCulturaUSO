@@ -1,3 +1,7 @@
+@Push('styles')
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+@endpush
+    
 <link href="{{ asset('css/welcome.css') }}" rel="stylesheet">
 @extends('layouts.app')
 @section('title', 'Inicio')

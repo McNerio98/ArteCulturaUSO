@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>@yield('title') | Observatorio Cultural</title>
-    <link href="{{asset('css/app.css')}}" rel="stylesheet">
+    @stack('styles')
     <style>
         .backGround{
             background: #dddddd;
