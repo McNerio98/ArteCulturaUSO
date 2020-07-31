@@ -14,9 +14,9 @@
     </style>
 </head>
 
-<body class="backGround">
+<body class="backGround" style="padding-top: 60px;">
     @include('layouts.navbar')
-    <div style="margin-top: 50px" id="app" class="container-fluid">
+    <div id="app" class="container-fluid">
         @yield('content')
     </div>
     @include('layouts.footer')
