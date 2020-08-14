@@ -11,7 +11,7 @@
   <div class="collapse navbar-collapse " id="navbarSupportedContent">
     <ul class="navbar-nav ml-auto">
                     <li class="nav-item active" style="margin-left:20px">
-                        <a class="nav-link" style="color:#20B7EB" href="#"> <i class="fab fa-buffer"></i> Inicio <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" style="color:#20B7EB" href="#"> <i class="fas fa-book"></i> Inicio <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item" style="margin-left:20px">
                         <a class="nav-link" style="color:#20B7EB" href="#"> <i class="fas fa-guitar"></i> Artistas</a>
@@ -29,7 +29,7 @@
                         <a class="nav-link" style="color:#20B7EB" href="#"> <i class="fas fa-exclamation"></i> Acerca de</a>
                     </li>
                     <li class="nav-item" style="margin-left:20px">
-                        <a class="nav-link" style="color:#20B7EB" href="#"> <i class="far fa-user-circle"></i> Ingresar</a>
+                        <a class="nav-link" style="color:#20B7EB" href="#"> <i class="fas fa-sign-in-alt"></i> Ingresar</a>
                     </li>
     </ul>
   </div>
