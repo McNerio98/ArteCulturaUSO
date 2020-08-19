@@ -10,24 +10,27 @@
 
   <div class="collapse navbar-collapse " id="navbarSupportedContent">
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item active" style="margin-left:20px">
-        <a class="nav-link" style="color:#20B7EB" href="#">Inicio <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item" style="margin-left:20px">
-        <a class="nav-link" style="color:#20B7EB" href="#">Artistas</a>
-      </li>
-      <li class="nav-item" style="margin-left:20px">
-        <a class="nav-link" style="color:#20B7EB" href="#">Promotores</a>
-      </li>
-      <li class="nav-item" style="margin-left:20px">
-        <a class="nav-link" style="color:#20B7EB" href="#">Escuelas</a>
-      </li>
-      <li class="nav-item" style="margin-left:20px">
-        <a class="nav-link" style="color:#20B7EB" href="#">Recursos</a>
-      </li>
-      <li class="nav-item" style="margin-left:20px">
-        <a class="nav-link" style="color:#20B7EB" href="#">Acerca de</a>
-      </li>
+                    <li class="nav-item active" style="margin-left:20px">
+                        <a class="nav-link" style="color:#20B7EB" href="#"> <i class="fas fa-book"></i> Inicio <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item" style="margin-left:20px">
+                        <a class="nav-link" style="color:#20B7EB" href="#"> <i class="fas fa-guitar"></i> Artistas</a>
+                    </li>
+                    <li class="nav-item" style="margin-left:20px">
+                        <a class="nav-link" style="color:#20B7EB" href="#"> <i class="fas fa-compress-arrows-alt"></i> Promotores</a>
+                    </li>
+                    <li class="nav-item" style="margin-left:20px">
+                        <a class="nav-link" style="color:#20B7EB" href="#"> <i class="fas fa-book-open"></i> Escuelas</a>
+                    </li>
+                    <li class="nav-item" style="margin-left:20px">
+                        <a class="nav-link" style="color:#20B7EB" href="#"> <i class="fas fa-box-open"></i> Recursos</a>
+                    </li>
+                    <li class="nav-item" style="margin-left:20px">
+                        <a class="nav-link" style="color:#20B7EB" href="#"> <i class="fas fa-exclamation"></i> Acerca de</a>
+                    </li>
+                    <li class="nav-item" style="margin-left:20px">
+                        <a class="nav-link" style="color:#20B7EB" href="#"> <i class="fas fa-sign-in-alt"></i> Ingresar</a>
+                    </li>
     </ul>
   </div>
 </nav>

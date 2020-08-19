@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>@yield('title') | Observatorio Cultural</title>
-    <link href="{{asset('css/app.css')}}" rel="stylesheet">
+    @stack('styles')
     <style>
         .backGround{
             background: #dddddd;
@@ -14,9 +14,9 @@
     </style>
 </head>
 
-<body class="backGround">
+<body class="backGround" style="padding-top: 60px;">
     @include('layouts.navbar')
-    <div style="margin-top: 50px" id="app" class="container-fluid">
+    <div id="app" class="container-fluid">
         @yield('content')
     </div>
     @include('layouts.footer')

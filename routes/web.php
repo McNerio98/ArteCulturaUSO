@@ -19,3 +19,7 @@ Route::get('/', function () {
 
 
 Route::get('/artista/{id?}', "ArtistaController@show");
+
+Route::get('/admin/users',function(){
+	return view('usuarios');
+});
