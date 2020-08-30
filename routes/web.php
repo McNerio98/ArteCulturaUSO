@@ -20,6 +20,17 @@ Route::get('/', function () {
 
 Route::get('/artista/{id?}', "ArtistaController@show");
 
-Route::get('/admin/users',function(){
-	return view('usuarios');
-});
+
+
+Route::get('/login','Auth\LoginController@showLoginForm')->middleware('guest');
+
+
+Route::post('/login','Auth\LoginController@login')->name('login');	
+Route::post('/logout','Auth\LoginController@logout')->name('logout');	
+
+Route::get('/admin/home','DashboardController@index')->name('dashboard');
+Route::get('/admin/users','DashboardController@users')->name('users');
+
+Route::get('/waiting','Auth\LoginController@waiting')->name('waiting');
+
+Route::get('/profile','ProfileController@index')->name('profile');

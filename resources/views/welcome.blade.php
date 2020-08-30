@@ -3,7 +3,7 @@
 @endpush
     
 <link href="{{ asset('css/welcome.css') }}" rel="stylesheet">
-@extends('layouts.app')
+@extends('layouts.public-template')
 @section('title', 'Inicio')
 @section('content')
 <div class="row">

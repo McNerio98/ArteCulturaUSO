@@ -15,11 +15,11 @@
 </head>
 
 <body class="backGround" style="padding-top: 60px;">
-    @include('layouts.navbar')
+    @include('layouts.components.navbar')
     <div id="app" class="container-fluid">
         @yield('content')
     </div>
-    @include('layouts.footer')
+    @include('layouts.components.footer')
     <script src="{{asset('js/app.js')}}"></script>
 </body>
 

@@ -24,18 +24,31 @@
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                @can('ver-usuarios')
                 <li class="nav-item">
-                    <a href="https://adminlte.io/docs/3.0" class="nav-link text-hpolis">
-                        <i class="nav-icon fas fa-guitar"></i>
+                    <a href="{{route('users')}}" class="nav-link text-hpolis">
+                        <i class="fas fa-users"></i>
                         <p>Usuarios</p>
                     </a>
-                </li>                
+                </li>
+                @endcan
+                @can('ver-categorias')                
                 <li class="nav-item">
                     <a href="https://adminlte.io/docs/3.0" class="nav-link text-hpolis">
-                        <i class="nav-icon fas fa-guitar"></i>
+                        <i class="fas fa-tags"></i>
                         <p>Categorias</p>
                     </a>
-                </li>                                
+                </li>
+                @endcan
+                <li class="nav-item">
+                    <a href="https://adminlte.io/docs/3.0" class="nav-link text-hpolis" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <p>Cerrar Session</p>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>                        
+                    </a>
+                </li>                                                
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

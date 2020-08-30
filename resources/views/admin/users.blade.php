@@ -3,8 +3,9 @@
 
 @section('content')
 	<div id="users">
+		<input type="hidden" value="{{url('/')}}" id="url_server" name="url">
 		<h1>Hola Mundo</h1>	
-		<contact></contact>
+		<pnl-pagination></pnl-pagination>
 	</div>
 @endsection
 

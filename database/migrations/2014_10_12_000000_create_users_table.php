@@ -18,7 +18,12 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
+            $table->string('username')->unique();
             $table->string('password');
+            $table->string('telephone');
+            $table->string('img-profile')->default('/default_img_profile.png');
+            $table->json('rubros')->nullable();
+            $table->enum('status',['enabled','disabled','request'])->default('request');
             $table->rememberToken();
             $table->timestamps();
         });
