@@ -30,6 +30,8 @@ Route::post('/logout','Auth\LoginController@logout')->name('logout');
 
 Route::get('/admin/home','DashboardController@index')->name('dashboard');
 Route::get('/admin/users','DashboardController@users')->name('users');
+Route::get('/admin/tags','DashboardController@tags')->name('tags');
+
 
 Route::get('/waiting','Auth\LoginController@waiting')->name('waiting');
 

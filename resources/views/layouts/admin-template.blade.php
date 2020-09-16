@@ -4,8 +4,31 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script>
+    window.Laravel = {!! json_encode([
+        'csrfToken' => csrf_token(),
+        'permissions' => Auth::user()->getPermissionsViaRoles()
+    ]) !!};
+
+    window.has_cap = function(cap){
+        let status_cap = false;
+        if(Laravel.permissions === undefined){
+            return false;
+        }
+        
+        for(let val of Laravel.permissions){
+            if(val.name === cap){
+                return !status_cap;
+            }
+        }
+        return status_cap;
+    }
+    </script>
+
     <title>AdminLTE 3 | Dashboard 2</title>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    @stack('customStyles')
     <style>
         .bg-hpolis{background-color: #2c3749 !important;}
         .text-hpolis{color: #49b591 !important;}

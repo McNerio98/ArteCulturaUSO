@@ -34,7 +34,7 @@
                 @endcan
                 @can('ver-categorias')                
                 <li class="nav-item">
-                    <a href="https://adminlte.io/docs/3.0" class="nav-link text-hpolis">
+                    <a href="{{route('tags')}}" class="nav-link text-hpolis">
                         <i class="fas fa-tags"></i>
                         <p>Categorias</p>
                     </a>
