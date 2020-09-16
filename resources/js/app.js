@@ -9,6 +9,11 @@ require('./admin');
 
 window.Vue = require('vue');
 
+/**Sweet Alert */
+
+const swal = require('sweetalert2');
+window.swal = swal;
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -21,6 +26,10 @@ window.Vue = require('vue');
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.component('post-component', require('./components/PostComponent.vue').default);
+Vue.component('postFormulario-component', require('./components/post/Formulario.vue').default);
+Vue.component('postDatepicker-component', require('./components/post/datePicker.vue').default);
+Vue.component('postMedia-component', require('./components/post/media.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
