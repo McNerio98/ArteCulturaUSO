@@ -25,8 +25,8 @@ Route::get('/artista/{id?}', "ArtistaController@show");
 Route::get('/login','Auth\LoginController@showLoginForm')->middleware('guest');
 
 
-Route::post('/login','Auth\LoginController@login')->name('login');	
-Route::post('/logout','Auth\LoginController@logout')->name('logout');	
+Route::post('/login','Auth\LoginController@login')->name('login');
+Route::post('/logout','Auth\LoginController@logout')->name('logout');
 
 Route::get('/admin/home','DashboardController@index')->name('dashboard');
 Route::get('/admin/users','DashboardController@users')->name('users');
@@ -36,3 +36,7 @@ Route::get('/admin/tags','DashboardController@tags')->name('tags');
 Route::get('/waiting','Auth\LoginController@waiting')->name('waiting');
 
 Route::get('/profile','ProfileController@index')->name('profile');
+
+Route::get('/postpage',function(){
+    return view('pagePost');
+});
