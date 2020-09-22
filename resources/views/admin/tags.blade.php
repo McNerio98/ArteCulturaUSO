@@ -30,7 +30,6 @@
 
 @section('content')
 <div id="tags">
-    +nuevo
     <pnl-tags></pnl-tags>    
 </div>
 @endsection

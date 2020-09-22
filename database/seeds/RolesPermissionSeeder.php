@@ -31,6 +31,9 @@ class RolesPermissionSeeder extends Seeder
 		$permission = Permission::create(['name' => 'crear-categorias']);
 		$permission = Permission::create(['name' => 'modificar-categorias']);
 		$permission = Permission::create(['name' => 'eliminar-categorias']);
+		$permission = Permission::create(['name' => 'crear-publicacion']);
+		$permission = Permission::create(['name' => 'destacar-publicacion']);
+		$permission = Permission::create(['name' => 'editar-publicacion']);
 
 		$list_permission = [
 			'ver-usuarios',

@@ -12,7 +12,8 @@ window.Vue = require('vue');
 /**Sweet Alert */
 
 const swal = require('sweetalert2');
-window.swal = swal;
+window.Swal = swal;
+
 
 /**
  * The following block of code may be used to automatically register your
