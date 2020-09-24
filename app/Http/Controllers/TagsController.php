@@ -39,6 +39,12 @@ class TagsController extends Controller
             $salida['msg'] = "Valores imcompletos, Recargue la pagina";
             return $salida;
         }
+        $tag = Tag::where("name",$request->nameTag)->get();
+
+        if($tag){
+            $salida['msg'] = "El nombre de la etiqueta ya existe";
+            return $salida;
+        }
 
         $tag = new Tag();
         $tag->name = $request->nameTag;

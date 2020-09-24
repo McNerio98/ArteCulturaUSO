@@ -35,8 +35,7 @@
                 });
             },
             deletetag(index){
-                console.log("este es el indice: " + index);
-                this.tags.splice(index,1);
+                this.tags.splice(((this.tags.length - 1 )-index),1);
             },
             onAddNew(){
                 this.isAdd = true;

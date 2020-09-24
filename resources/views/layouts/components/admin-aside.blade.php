@@ -40,8 +40,18 @@
                     </a>
                 </li>
                 @endcan
+
+                <!--Falta ponerle el can-->
                 <li class="nav-item">
-                    <a href="https://adminlte.io/docs/3.0" class="nav-link text-hpolis" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <a href="{{route('tags')}}" class="nav-link text-hpolis">
+                        <i class="fas fa-tags"></i>
+                        <p>Publicaciones</p>
+                    </a>
+                </li>
+
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link text-hpolis" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         <i class="fas fa-sign-out-alt"></i>
                         <p>Cerrar Session</p>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">

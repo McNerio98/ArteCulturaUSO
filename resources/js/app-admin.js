@@ -5,6 +5,8 @@ window.Vue = require('vue');
 
 
 
+
+
 Vue.component('contact', require('./components/Contacto.vue').default);
 Vue.component('pnl-pagination',require('./components/ContainerPagination.vue').default);
 Vue.component('etiqueta',require('./components/tags/Tag.vue').default);
