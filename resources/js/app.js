@@ -31,6 +31,7 @@ Vue.component('post-component', require('./components/PostComponent.vue').defaul
 Vue.component('postFormulario-component', require('./components/post/Formulario.vue').default);
 Vue.component('postDatepicker-component', require('./components/post/datePicker.vue').default);
 Vue.component('postMedia-component', require('./components/post/media.vue').default);
+Vue.component('request-component', require('./components/requestAccount.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

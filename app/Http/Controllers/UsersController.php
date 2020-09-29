@@ -17,7 +17,7 @@ class UsersController extends Controller
     {
 
         $per_page = ($request->per_page === null)?6:$request->per_page;
-        
+
         $valid_range = array(6,12,24);
         if(! in_array($per_page,$valid_range)){
             $per_page = 6;
@@ -31,13 +31,13 @@ class UsersController extends Controller
         ->paginate($per_page);
 
         return [
-            'paginate' =>[  
+            'paginate' =>[
                     'total' =>$result->total(),
                     'current_page'  => $result->currentPage(),
                     'per_page'      => $result->perPage(),
                     'last_page'     => $result->lastPage(),
                     'from'          => $result->firstItem(),
-                    'to'            => $result->lastPage(),                    
+                    'to'            => $result->lastPage(),
             ],
             'users' => $result
 
@@ -82,12 +82,12 @@ class UsersController extends Controller
             'operation'   => '',
             'objectData'  => null];
 
-        //this validations most be implements in all controllers function request 
+        //this validations most be implements in all controllers function request
         if(! isset($request->operation,$id)){
             $salida['msg'] = "Valores imcompletos, Recargue la pagina";
             return $salida;
         }
-        
+
         // Actions Allowed: Enabled, Disabled
         $operation = $request->operation;
         $valid_values = ['enabled','disabled'];
@@ -102,14 +102,14 @@ class UsersController extends Controller
             $salida['msg'] = "El usuario No existe";
             return $salida;
         }
-        
+
         $user->status = $operation;
 
         if(! $user->save()){
             $salida['msg'] = "ERROR al establecer el nuevo estado";
-            return $salida;    
+            return $salida;
         }
-        
+
         $salida['codeStatus'] = 1;
         $salida['msg'] = "Usuario Modificado";
         $salida['operation'] = $operation;
