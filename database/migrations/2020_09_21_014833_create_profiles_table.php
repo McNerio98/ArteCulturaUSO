@@ -16,6 +16,7 @@ class CreateProfilesTable extends Migration
         Schema::create('profiles', function (Blueprint $table) {
             $table->id();
             $table->string('artistic_name',45);
+            $table->longText('content_desc');
             $table->json('rubros')->nullable();
             $table->integer('count_posts');
             $table->integer('count_evebts');

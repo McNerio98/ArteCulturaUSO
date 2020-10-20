@@ -4,16 +4,17 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap');
-require('./admin');
-
 window.Vue = require('vue');
 
+require('./bootstrap');
 /**Sweet Alert */
-
 const swal = require('sweetalert2');
 window.Swal = swal;
 
+require('./admin');
+
+
+const { values } = require('lodash');
 
 /**
  * The following block of code may be used to automatically register your
@@ -33,12 +34,3 @@ Vue.component('postDatepicker-component', require('./components/post/datePicker.
 Vue.component('postMedia-component', require('./components/post/media.vue').default);
 Vue.component('request-component', require('./components/requestAccount.vue').default);
 
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-
-const app = new Vue({
-    el: '#app',
-});

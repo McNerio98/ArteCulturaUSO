@@ -18,8 +18,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+//Routes para el admin panel de administradores
 Route::apiResource('requestaccounts', 'RequestAcountController');
 Route::apiResource('users', 'UsersController');
 Route::apiResource('tags','TagsController');
+
+
+Route::apiResource('profile','ProfileController');
 
 

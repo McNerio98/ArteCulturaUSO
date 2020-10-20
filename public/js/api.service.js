@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -2147,14 +2147,14 @@ function util(type, msg) {
 
 /***/ }),
 
-/***/ 2:
+/***/ 4:
 /*!***********************************************!*\
   !*** multi ./resources/js/api/api.service.js ***!
   \***********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\ARTEYCULTURA\NEW\ARTEYCULTURA\resources\js\api\api.service.js */"./resources/js/api/api.service.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\ARTEYCULTURA\resources\js\api\api.service.js */"./resources/js/api/api.service.js");
 
 
 /***/ })

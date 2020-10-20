@@ -36,7 +36,7 @@
 
 
 @Push('customScript')
-    <script src="{{ asset('js/app-admin.js') }}"></script>
+    <script src="{{ asset('js/app-tags.js') }}"></script>
 @endpush
 
 

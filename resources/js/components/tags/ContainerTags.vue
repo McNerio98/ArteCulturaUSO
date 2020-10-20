@@ -23,6 +23,7 @@
             }
         },
         mounted() {
+            console.log("Me estoy montando y si funciono");
             this.loadData();
         },
         methods: {
