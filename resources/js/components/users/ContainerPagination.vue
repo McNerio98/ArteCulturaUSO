@@ -83,6 +83,7 @@
 			}			
 		},
 		mounted(){
+			//showLoadingAC();
 			this.loadData();
 		},
 		methods: {
@@ -90,9 +91,10 @@
 				axios(`/api/users?page=${page}&per_page=${per_page}`).then((result)=>{
 					this.user_list = result.data.users.data;
 					this.paginate = result.data.paginate;
-					console.log(result);
+					closeLoading();
 				}).catch((ex)=>{
-					console.log("ERROR en la peticion");
+					//closeLoading();
+					//showAlertMsg("Error al cargar la infomacion",operacion.DEFAULT,operacionStatus.FAIL)
 					console.log(ex);
 				});
 			},

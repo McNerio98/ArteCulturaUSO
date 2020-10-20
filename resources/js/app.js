@@ -13,8 +13,13 @@ window.Swal = swal;
 
 require('./admin');
 
+/*This file handle the alerts*/ 
+//require('./sw-handler');
 
 const { values } = require('lodash');
+
+
+
 
 /**
  * The following block of code may be used to automatically register your
