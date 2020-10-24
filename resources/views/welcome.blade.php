@@ -1,7 +1,11 @@
 @Push('styles')
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 @endpush
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> 98620b21c87f06fb70743405dcf008aa94f7a761
 <link href="{{ asset('css/welcome.css') }}" rel="stylesheet">
 @extends('layouts.public-template')
 @section('title', 'Inicio')
