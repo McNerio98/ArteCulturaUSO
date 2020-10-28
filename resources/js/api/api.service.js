@@ -2,7 +2,7 @@ import Axios from 'axios';
 
 export function requestAccount(data) {
     return new Promise((resolve, reject) => {
-        Axios.post("http://localhost:8000/api/requestaccounts", data).then(response => {
+        Axios.post("/api/requestaccounts", data).then(response => {
             resolve(response);
         }).catch(e => {
             reject(e);
@@ -12,7 +12,7 @@ export function requestAccount(data) {
 
 export function getTags() {
     return new Promise((resolve, reject) => {
-        Axios.get("http://localhost:8000/api/tags").then(response => {
+        Axios.get("/api/tags/tagswithseccions").then(response => {
             resolve(response);
         }).catch(e => {
             reject(e);

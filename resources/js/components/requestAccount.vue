@@ -62,14 +62,18 @@
               <div class="form-group col-6">
                 <label for="exampleInputEmail1">SELECCIONA EL RUBRO</label>
                 <select required v-model="rubro" class="custom-select">
-                  <option value="0" disabled selected>Elegir</option>
+                    <option value="0" disabled selected>Elegir</option>
+                  <optgroup  v-for="(main, key) in listTags" v-bind:key="key" :label="key">
+                    <option  v-for="(item, i) in main" v-bind:key="i" :value="item.id">{{item.tag}}</option>
+                  </optgroup>
+                  <!-- <option value="0" disabled selected>Elegir</option>
                   <option
                     v-for="(item, key) in listTags"
                     v-bind:key="key"
                     :value="item.id"
                   >
                     {{ item.name }}
-                  </option>
+                  </option> -->
                 </select>
               </div>
             </div>
@@ -112,11 +116,15 @@ export default {
   beforeMount() {
     getTags()
       .then((tags) => {
-        this.listTags = tags.data;
-        console.log(this.listTags);
+          if(tags.data.codeStatus != 0){
+                      this.listTags = tags.data;
+        console.log(tags);
+          }else{
+              util("error", tags.data.msg);
+          }
       })
       .catch((e) => {
-        alert("No se puede obtener los rubros: " + e);
+        util("error","No se puede obtener los rubros: " + e);
       });
   },
   methods: {
@@ -151,6 +159,10 @@ export default {
               this.tel = "";
               this.artistic = "";
               $$("#exampleModal").modal("hide");
+            }else if(result.data.msg.substring(0,19) == "Error: PDOException"){
+              util("error", "Problemas con la peticion de la consulta");
+            }else{
+                util("error", result.data.msg);
             }
           }
         })

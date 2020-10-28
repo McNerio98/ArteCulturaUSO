@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use App\User;
 use App\Profile;
+use App\Tags_OnProfiles;
 use Illuminate\Support\Facades\Hash;
 
 class RequestAcountController extends Controller
@@ -72,11 +73,18 @@ class RequestAcountController extends Controller
             $profile = new Profile;
 
             $profile->artistic_name = $request->artistic_name;
+            $profile->content_desc = "";
             $profile->rubros = $request->rubros;
             $profile->count_posts = 0;
             $profile->count_evebts = 0;
             $profile->user_id = $nuevoUsuario->id;
             $profile->save();
+
+            $tagsOnProfile = new Tags_OnProfiles;
+            $tagsOnProfile->user_id = $nuevoUsuario->id;
+            $tagsOnProfile->tag_id = $request->rubros;
+            $tagsOnProfile->save();
+
 
             DB::commit();
             $salida['codeStatus'] = 1;

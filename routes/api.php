@@ -21,8 +21,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 //Routes para el admin panel de administradores
 Route::apiResource('requestaccounts', 'RequestAcountController');
 Route::apiResource('users', 'UsersController');
-Route::apiResource('tags','TagsController');
 
+Route::get('tags/tagswithseccions', 'TagsController@getBySeccion');
+Route::resource('tags', 'TagsController');
 
 Route::apiResource('profile','ProfileController');
 
