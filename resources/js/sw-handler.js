@@ -1,23 +1,23 @@
 
-const operacion = {
+export const operacion = {
     INSERT: 1,
     DELETE: 2,
     UPDATE: 3,
     DEFAULT: 4
 }
 
-const operacionStatus = {
+
+
+export const operacionStatus = {
     FAIL: 0,
     SUCCESS: 1
 }
 
-function showLoadingAC() {
+export function showLoadingAC() {
     let node = "<div id='spinerLoad'><div class='spinner-border' role='status' style='width: 4rem !important; height: 4rem " +
         "!important;'><span class='sr-only'>Loading...</span></div><div class='icon'>" +
         "<span>Cargando ...</span></div></div>";
-
     Swal.fire({
-        title: 'Cargando Informacion! Espere..',
         html: node,
         showConfirmButton: false
     });
@@ -63,4 +63,6 @@ function showAlertMsgAC(mensaje, tipo, estado) {
         timer: 2500
     })
 }
+
+
 
