@@ -128,17 +128,16 @@
                         <!-- Post -->
                         <div class="post">
                             <h4 class="text-primary mb-4">Fotografias destacadas</h4>
-
                         </div>
                         <!-- /.post -->
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="timeline">
-                        <post-component></post-component>
+                        <post-component eventType="true"></post-component>
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="settings">
-                        <post-component></post-component>
+                        <post-component eventType="false"></post-component>
                     </div>
                     <!-- /.tab-content -->
                 </div><!-- /.card-body -->
@@ -154,5 +153,9 @@
 
 
 @Push('customScript')
-    <script src="{{asset('js/app-profile.js')}}"></script>
+
+    <script>
+        var globalTokenApi = '{{$current_user->api_token}}';
+    </script> 
+    <script src="{{asset('js/app-profile.js')}}"></script> 
 @endpush

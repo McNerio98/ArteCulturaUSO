@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class WebsiteController extends Controller
 {
@@ -30,8 +31,10 @@ class WebsiteController extends Controller
         return view("acercade");
     }
 
+    //este es el metodo primero 
     public function profile(){
-        return view("profile");
+        $current_user = Auth::user();
+        return view("profile",compact('current_user'));
     }
 
     public function events(){

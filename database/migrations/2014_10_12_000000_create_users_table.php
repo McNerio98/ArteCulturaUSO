@@ -4,6 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+
 class CreateUsersTable extends Migration
 {
     /**
@@ -24,6 +25,7 @@ class CreateUsersTable extends Migration
             $table->string('img_profile')->default('/default_img_profile.png');
             $table->json('rubros')->nullable();
             $table->enum('status',['enabled','disabled','request'])->default('request');
+            $table->string('api_token',60)->nullable()->unique();
             $table->rememberToken();
             $table->timestamps();
         });
