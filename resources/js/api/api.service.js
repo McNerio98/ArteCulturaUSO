@@ -21,6 +21,16 @@ export function getTags() {
 }
 
 
+export function createPostEvent(token, data){
+    return new Promise((resolve, reject) => {
+        Axios.post(`/api/post?api_token=${token}`, data).then(response => {
+            resolve(response);
+        }).catch(e => {
+            reject(e);
+        })
+    })
+}
+
 
 export function util(type, msg) {
     const Toast = Swal.mixin({

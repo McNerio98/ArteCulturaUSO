@@ -158,6 +158,7 @@
 
 <script>
     var globalTokenApi = '{{$current_user->api_token}}';
+    localStorage.setItem("token", globalTokenApi);
 </script>
 <script src="{{asset('js/app-profile.js')}}"></script>
 @endpush

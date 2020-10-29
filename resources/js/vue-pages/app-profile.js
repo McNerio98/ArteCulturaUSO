@@ -1,5 +1,5 @@
 
-//Aqui van los componentes que usara esta pagina 
+//Aqui van los componentes que usara esta pagina
 
 import {operacion,showLoadingAC,closeLoadingAC,operacionStatus,showAlertMsgAC} from '../sw-handler'
 
@@ -27,8 +27,8 @@ const appProfile = new Vue({
                 }
             }).catch((ex)=>{
                 closeLoadingAC();
-                showAlertMsgAC("Error al recuperar la infomacion",operacion.DEFAULT,operacionStatus.SUCCESS); 
-            });   
+                showAlertMsgAC("Error al recuperar la infomacion",operacion.DEFAULT,operacionStatus.SUCCESS);
+            });
         }
     }
 });

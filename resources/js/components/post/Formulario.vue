@@ -139,7 +139,7 @@
 </template>
 <script>
 import * as $$ from "jquery";
-const { util } = require("../../api/api.service");
+const { util, createPostEvent } = require("../../api/api.service");
 export default {
   props: ["username", "eventType"],
   data() {
@@ -224,6 +224,12 @@ export default {
           };
         }
         console.table(data);
+        let token = localStorage.getItem("token");
+        createPostEvent(token, data).then(response=>{
+            console.log(response);
+        }).catch(e=>{
+            console.log(e)
+        })
       }
     },
     openPriceModal(event) {
