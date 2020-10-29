@@ -4,45 +4,56 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use App\Profile;
 
 
 class ProfileController extends Controller
 {
 	public function __construct(){
-		$this->middleware('api');
+		$this->middleware('auth:api');
 	}
 
     public function index(Request $request){
-		$user = auth()->guard('api')->user();
+		//$user = auth()->guard('api')->user();
+
 
         $salida = [
             'codeStatus'  => 0,
             'msg'         => 'six',
             'operation'   => '',
-			'objectData'  => $user
+			'objectData'  => null
 		];
 					
-
+		$user = Auth::user();
 		
-		return $salida;
 		
 		/*if( ! $user->hasRole('Invitado')){
 			$salida['msg'] = "Perfil es solo para invitados";
-		}
+		}*/
 		
 		$id =$user->id;
 		
 		//verificar si tiene cuenta de tipo invitado 
-		$result = DB::table('profile')->select('count_post','count-evenbts')->where('id','=',$id)->get();
-		
-        $salida = [
-            'codeStatus'  => 0,
-            'msg'         => '',
-            'operation'   => '',
-			'objectData'  => $result
+
+		$infoProfile = [
+			'profile' => null,
+			'general' => null
 		];
 
-		return $salida;*/
+		$profile = Profile::find($id);
+
+		$infoProfile['profile'] = $profile;
+		//$result = DB::table('profiles')->select('count_posts','count_evebts','content_desc')->where('user_id','=',$id)->get();
+		
+        $salida = [
+            'codeStatus'  => 1,
+            'msg'         => 'Informacion recuperada',
+            'operation'   => 'READ',
+			'objectData'  => $infoProfile
+		];
+
+		return $salida;
 	}
 	
 

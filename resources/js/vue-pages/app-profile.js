@@ -11,18 +11,20 @@ Vue.component('postMedia-component', require('../components/post/media.vue').def
 const appProfile = new Vue({
     el: "#appProfile",
     created: function(){
-        console.log("Me estoy creando en perfiles");
         this.loadData();
     },
     methods: {
         loadData: function(){
             showLoadingAC();
-            console.log("Voy a mandar esto en la header: " + globalTokenApi);
-            let token = globalTokenApi;
 
+            let token = globalTokenApi;
             axios(`/api/profile?api_token=${token}`).then((result)=>{
                 closeLoadingAC();
-                console.log(result.data);
+                if(result.data.codeStatus === 1){
+                    console.log(result.data);
+                }else{
+                    showAlertMsgAC(result.data.msg,operacion.DEFAULT,operacionStatus.FAIL);
+                }
             }).catch((ex)=>{
                 closeLoadingAC();
                 showAlertMsgAC("Error al recuperar la infomacion",operacion.DEFAULT,operacionStatus.SUCCESS); 
