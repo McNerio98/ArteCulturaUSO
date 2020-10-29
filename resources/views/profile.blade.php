@@ -58,14 +58,14 @@
 
                 </div>
 
-                <h3 class="profile-username text-center">Sinfonia Sonsonateca</h3>
+                <h3 class="profile-username text-center"> @{{artistic_name}} </h3>
                 <p class="text-muted text-center">Musica,Grupos de música</p>
                 <ul class="list-group list-group-unbordered mb-3">
                     <li class="list-group-item">
-                        <b>Publicaciones</b> <a class="float-right">0</a>
+                        <b>Publicaciones</b> <a class="float-right">@{{count_posts}}</a>
                     </li>
                     <li class="list-group-item">
-                        <b>Proximos Eventos</b> <a class="float-right">0</a>
+                        <b>Proximos Eventos</b> <a class="float-right">@{{count_events}}</a>
                     </li>
                 </ul>
             </div>
@@ -122,8 +122,21 @@
             <div class="card-body">
                 <div class="tab-content">
                     <div class="active tab-pane" id="biografia">
+
+                        
                         <div class="post">
-                                <a href="">Here for edit</a>
+                            <div class='text-right'>
+                                <button v-if="!isEditStatus" type="button" class="btn btn-outline-secondary btn-flat"><i class="fas fa-pencil-alt"></i> Editar</button>                                
+                                <button v-else type="button" class="btn btn-outline-secondary btn-flat"><i class="far fa-save"></i> Guardar</button>                                
+                            </div>
+                            <div class='p-2 text-center' v-if="desc_empty">
+                                <i class="fas fa-book-open" style='font-size: 3rem;'></i>
+                                    <br>
+                                    <span>DESCRIPCION VACIA</span>
+                            </div>
+                            <div v-else>
+                                <p>@{{content_desc}}</p>
+                            </div>
                         </div>
                         <!-- Post -->
                         <div class="post">
