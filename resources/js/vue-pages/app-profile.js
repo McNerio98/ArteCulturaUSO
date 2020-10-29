@@ -26,9 +26,12 @@ const appProfile = new Vue({
             showLoadingAC();
 
             let token = globalTokenApi;
+            console.log("MI TOKEM", token)
             axios(`/api/profile?api_token=${token}`).then((result)=>{
                 closeLoadingAC();
+                console.log(result)
                 var resDat = result.data;
+                console.log("Error con la peticion,", resDat)
                 if(resDat.codeStatus === 1){
                     console.log(result.data);
 
@@ -44,7 +47,7 @@ const appProfile = new Vue({
                     showAlertMsgAC(result.data.msg,operacion.DEFAULT,operacionStatus.FAIL);
                 }
             }).catch((ex)=>{
-                console.log(ex);
+                console.error("UN ERROR",ex);
                 closeLoadingAC();
                 showAlertMsgAC("Error al recuperar la infomacion",operacion.DEFAULT,operacionStatus.SUCCESS);
             });

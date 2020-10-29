@@ -24,18 +24,18 @@ class ProfileController extends Controller
             'operation'   => '',
 			'objectData'  => null
 		];
-					
+
 		$user = Auth::user();
-		
-		
-		
+
+
+
 		/*if( ! $user->hasRole('Invitado')){
 			$salida['msg'] = "Perfil es solo para invitados";
 		}*/
-		
-		
-		
-		//verificar si tiene cuenta de tipo invitado 
+
+
+
+		//verificar si tiene cuenta de tipo invitado
 
 		$infoProfile = [
 			'profile' => null,
@@ -46,7 +46,7 @@ class ProfileController extends Controller
 
 		$infoProfile['profile'] = $profile;
 		//$result = DB::table('profiles')->select('count_posts','count_evebts','content_desc')->where('user_id','=',$id)->get();
-		
+
         $salida = [
             'codeStatus'  => 1,
             'msg'         => 'Informacion recuperada',
@@ -56,6 +56,6 @@ class ProfileController extends Controller
 
 		return $salida;
 	}
-	
+
 
 }
