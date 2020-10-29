@@ -134,19 +134,11 @@
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="timeline">
-
+                        <post-component></post-component>
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="settings">
-                        <div class="row">
-                            <div class="col-12 ">
-                                <a href="#"
-                                    style="display: flex;flex-direction: column; padding: 10px; align-items: center; background-color: #f6f6f6; margin-bottom: 10px;">
-                                    <i class="far fa-clone text-gray" style="font-size: 2rem;"></i>
-                                    <u>+ Nueva Publicacion</u>
-                                </a>
-                            </div>
-                        </div>
+                        <post-component></post-component>
                     </div>
                     <!-- /.tab-content -->
                 </div><!-- /.card-body -->
@@ -159,3 +151,8 @@
 </div>
 
 @endsection
+
+
+@Push('customScript')
+    <script src="{{asset('js/app-profile.js')}}"></script>
+@endpush
