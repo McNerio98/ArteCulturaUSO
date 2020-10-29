@@ -18,7 +18,7 @@ class TagsController extends Controller
         $result = DB::table('tags')
                     ->whereNotIn('name',['Artistas','Promotores','Expresiones','Escuelas','Recursos'])
                     ->get();
-        
+
         return $result;
     }
 
@@ -34,7 +34,7 @@ class TagsController extends Controller
             'codeStatus'  => 0,
             'msg'         => '',
             'objectData'  => null];
-            
+
         if(! isset($request->nameTag)){
             $salida['msg'] = "Valores imcompletos, Recargue la pagina";
             return $salida;
@@ -51,14 +51,14 @@ class TagsController extends Controller
 
         if(! $tag->save()){
             $salida['msg'] = "ERROR al guardar la Etiqueta";
-            return $salida;   
+            return $salida;
         }
 
         $salida['codeStatus'] = 1;
         $salida['msg'] = "Tag Creada";
         $salida['objectData'] = $tag;
 
-        return $salida;  
+        return $salida;
     }
 
     /**
@@ -85,33 +85,45 @@ class TagsController extends Controller
             'codeStatus'  => 0,
             'msg'         => '',
             'objectData'  => null];
-            
+
         if(! isset($request->new_name,$id)){
             $salida['msg'] = "Valores imcompletos, Recargue la pagina";
             return $salida;
         }
-        
+
         $new_name = $request->new_name;
-        
+
         $tag = Tag::find($id);
 
         if(!$tag){
             $salida['msg'] = "La etiqueta no existe";
             return $salida;
         }
-        
+
         $tag->name = $new_name;
-        
+
         if(! $tag->save()){
             $salida['msg'] = "ERROR al establecer el nuevo estado";
-            return $salida;   
+            return $salida;
         }
 
         $salida['codeStatus'] = 1;
         $salida['msg'] = "Usuario Modificado";
         $salida['objectData'] = $tag;
 
-        return $salida;        
+        return $salida;
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getBySeccion(){
+        $query = DB::select("select t.id, t.name as tag, c.name as category from tags t, categories c where t.category_id = c.id;");
+        $collection = collect($query);
+
+        return $collection->groupBy('category');
     }
 
     /**
@@ -126,19 +138,19 @@ class TagsController extends Controller
             'codeStatus'  => 0,
             'msg'         => '',
             'objectData'  => null];
-            
+
         if(! isset($id)){
             $salida['msg'] = "Valores imcompletos, Recargue la pagina";
             return $salida;
         }
-        
+
         $tag = Tag::find($id);
         $tag->delete();
 
         $salida['codeStatus'] = 1;
         $salida['msg'] = "Tag Eliminado";
         $salida['objectData'] = $tag;
-        
+
         return $salida;
     }
 }
