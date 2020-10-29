@@ -24,6 +24,7 @@
           </div>
         </div>
         <div class="col-12">
+            <br/>
           <div class="row">
             <div class="col-12 col-lg-4 col-md-4">
               <div class="form-group" v-if="eventType == 'true'">
@@ -129,7 +130,8 @@
           <postMedia-component @media="setListMedia"></postMedia-component>
         </div>
         <div class="col-12">
-          <button @click="publicarContent" class="btn-danger">Publicar</button>
+            <br/>
+          <button type="button" @click="publicarContent" class="btn btn-success">Publicar</button>
         </div>
       </div>
     </div>
@@ -215,7 +217,7 @@ export default {
         if (this.eventType == "true") {
           data = {
             ...data,
-            precio: this.eventprice,
+            precio: parseInt(this.eventprice),
             categoria: this.eventprice > 0 ? "pagado" : "gratis",
             tipoevento: this.tipoevento,
             fechaevento: this.dateevent,

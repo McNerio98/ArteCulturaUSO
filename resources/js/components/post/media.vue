@@ -86,7 +86,7 @@
       data-target="#staticBackdrop"
     >
       <img
-        src="https://www.pngitem.com/pimgs/m/27-271421_videp-icon-png-norbord-close-crop-transparent-background.png"
+        src="https://www.freeiconspng.com/thumbs/video-icon/video-icon-1.png"
         width="20px"
         height="20px"
         style="object-fit:cover"
@@ -95,7 +95,7 @@
     </span>
     <label for="contenidoInput" style="cursor:pointer" class="badge badge-light">
       <img
-        src="https://lh3.googleusercontent.com/proxy/rKnetf-eEZZdhWAy4xs2J8jkcLj5onidJGdWhz3Hi2CA7BtmuysNoPuGmcse-ecStvkrfWwmUh7W4njNp0dqILf4gOnxpj896h08ig_jgsX3U_cXfYNgjSGTVWgt2-Gl_v0x"
+        src="https://cdn.iconscout.com/icon/free/png-512/my-files-1-461722.png"
         width="20px"
         height="20px"
         style="object-fit:cover"
