@@ -23,11 +23,11 @@ export function showLoadingAC() {
     });
 }
 
-function closeLoadingAC() {
+export function closeLoadingAC() {
     Swal.close();
 }
 
-function showAlertMsgAC(mensaje, tipo, estado) {
+export function showAlertMsgAC(mensaje, tipo, estado) {
     let msgContent = "";
     let msgTitle = "";
     let msgIcon = "";
