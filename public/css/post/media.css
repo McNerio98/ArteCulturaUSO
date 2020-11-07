@@ -4,9 +4,9 @@
     width: 100%;
     display: flex;
     border: 5px solid rgb(235, 230, 230);
-    height: 115px;    
+    height: 115px;
   }
-  
+
   .remove-image {
     display: none;
     position: absolute;
@@ -25,7 +25,9 @@
     transition: background 0.5s;
   }
   .remove-image:hover {
-    background: #20B7EB;
+    background: #e54e4e;
+    border: 3px solid #fff;
+    color: #fff;
   }
   .remove-image:active {
     background: #e54e4e;

@@ -4,7 +4,7 @@
       <div class="col-12">
         <div class="card mb-3">
           <div class="card-header bg-secondary">
-            <span>{{title}}</span>
+            <span>{{ title }}</span>
           </div>
           <div class="card-body">
             <postFormulario-component
@@ -20,12 +20,12 @@
 <script>
 export default {
   props: ["type"],
-  data() {
+  data: function () {
     return {
       props: {
         type: this.type,
       },
-      title: this.type == "true" ? "Crear Evento" : "Publicar contenido"
+      title: this.type == "true" ? "Crear Evento" : "Publicar contenido",
     };
   },
 };

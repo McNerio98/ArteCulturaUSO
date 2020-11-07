@@ -23,6 +23,7 @@ mix.js('resources/js/app.js', 'public/js')
     .js('resources/js/vue-pages/app-profile.js','public/js')
     .js('resources/js/vue-pages/app-post.js','public/js')
     .js('resources/js/vue-pages/app-request.js','public/js')
+    .js('resources/js/vue-pages/specific-post.js','public/js')
 
     .js('resources/js/api/api.service.js','public/js')
     .sass('resources/sass/app.scss', 'public/css');

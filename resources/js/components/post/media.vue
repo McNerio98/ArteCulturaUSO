@@ -2,7 +2,7 @@
   <div>
     <div style="margin-bottom: 15px" class="row">
       <div v-for="(m, key) in media" v-bind:key="key" class="col-3">
-        <div v-if="m.type === 'image'" id="content">
+        <div v-if="m.type === 'image'">
           <div
             class="image-area"
             data-toggle="tooltip"
@@ -26,7 +26,7 @@
             >
           </div>
         </div>
-        <div v-if="m.type === 'video'" id="content">
+        <div v-if="m.type === 'video'">
           <div class="image-area">
             <iframe
               data-toggle="tooltip"
@@ -51,7 +51,7 @@
             >
           </div>
         </div>
-        <div v-if="m.type === 'docfile'" id="content">
+        <div v-if="m.type === 'docfile'">
           <div class="image-area">
             <iframe
               data-toggle="tooltip"
@@ -77,7 +77,7 @@
       </div>
 
       <div v-if="media.length > 0" class="col-3">
-        <label for="imageInput">
+        <label for="imageInput" @click="this.triggerInputForImages">
           <div id="content">
             <div class="image-area">
               <img
@@ -85,6 +85,7 @@
                 width="100%"
                 height="100px"
                 src="https://img.icons8.com/dotty/2x/add-image.png"
+                class="img-fluid"
                 alt="Preview"
               />
             </div>
@@ -92,172 +93,152 @@
         </label>
       </div>
     </div>
-    <label for="imageInput" style="cursor: pointer" class="badge badge-light">
-      <img
-        src="https://winaero.com/blog/wp-content/uploads/2019/11/Photos-new-icon.png"
-        width="20px"
-        height="20px"
-        style="object-fit: cover"
-      />
-      Fotos
-    </label>
-    <input
-      accept="image/*"
-      hidden="true"
-      id="imageInput"
-      type="file"
-      @change="previewFiles"
-    />
-    <span
-      style="cursor: pointer"
-      id="btn-video-media"
-      class="badge badge-light"
-      data-toggle="modal"
-      data-target="#staticBackdrop"
-    >
-      <img
-        src="https://www.freeiconspng.com/thumbs/video-icon/video-icon-1.png"
-        width="20px"
-        height="20px"
-        style="object-fit: cover"
-      />
-      Videos
-    </span>
-    <label
-      for="contenidoInput"
-      style="cursor: pointer"
-      class="badge badge-light"
-    >
-      <img
-        src="https://cdn.iconscout.com/icon/free/png-512/my-files-1-461722.png"
-        width="20px"
-        height="20px"
-        style="object-fit: cover"
-      />
-      Contenido(Pdf)
-    </label>
-    <input
-      hidden="true"
-      id="contenidoInput"
-      accept="application/pdf"
-      type="file"
-      @change="previewFiles"
-      multiple
-    />
-    <!-- Modal -->
-    <div
-      class="modal fade"
-      id="staticBackdrop"
-      tabindex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-      ref="modalforVideo"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header bg-blue">
-            <h5 class="modal-title" id="exampleModalLabel">Agregar video</h5>
-            <button
-              type="button"
-              class="close text-white"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <h5 class="text-muted">
-              Enlaza tu video de youtube copiando el link del video.
-            </h5>
-            <form id="formData">
-              <div class="form-group">
-                <input
-                  v-model="linkYoutube"
-                  placeholder="Ex. https://www.youtube.com/watch?v=Pu8LH6r-wOU"
-                  type="text"
-                  class="form-control is-invalid"
-                  aria-describedby="emailHelp"
-                  required
-                />
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-dismiss="modal"
-            >
-              Cancelar
-            </button>
-            <button
-              @click="addVideo()"
-              v-if="linkYoutube"
-              type="button"
-              class="btn btn-primary"
-            >
-              Aceptar
-            </button>
-          </div>
-        </div>
+    <div class="row">
+      <div class="col-4">
+        <label
+          for="imageInput"
+          style="cursor: pointer"
+          class="btn btn-light  btn-block"
+          @click="this.triggerInputForImages"
+        >
+          <img
+            src="https://winaero.com/blog/wp-content/uploads/2019/11/Photos-new-icon.png"
+            class="img-fluid"
+            width="20px"
+            height="20px"
+            style="object-fit: cover"
+          />
+          Fotos
+        </label>
+        <input
+          accept="image/*"
+          hidden="true"
+          type="file"
+          ref="inputforimgs"
+          @change="this.previewFiles"
+        />
+      </div>
+      <div class="col-4">
+        <label
+          style="cursor: pointer"
+          id="btn-video-media"
+          class="btn btn-light  btn-block"
+          @click="showModal = true"
+        >
+          <img
+            src="https://www.freeiconspng.com/thumbs/video-icon/video-icon-1.png"
+            class="img-fluid"
+            width="20px"
+            height="20px"
+            style="object-fit: cover"
+          />
+          Videos
+        </label>
+      </div>
+      <div class="col-4">
+        <label
+          for="contenidoInput"
+          @click="this.triggerInputForDocs"
+          style="cursor: pointer"
+          class="btn btn-light  btn-block text-break"
+        >
+          <img
+            src="https://cdn.iconscout.com/icon/free/png-512/my-files-1-461722.png"
+            width="20px"
+            height="20px"
+            style="object-fit: cover"
+          />
+          Archivos
+        </label>
+        <input
+          hidden="true"
+          accept="application/pdf"
+          ref="inputfordocs"
+          type="file"
+          @change="previewFiles"
+          multiple
+        />
       </div>
     </div>
+
+    <postModal-component
+      @add="addVideo"
+      v-if="showModal"
+      @close="showModal = false"
+    ></postModal-component>
   </div>
 </template>
 <script>
 import * as $$ from "jquery";
+import bootstrap from "bootstrap";
 import { util } from "../../api/api.service";
 export default {
-  data() {
+  data: function () {
     return {
       media: [],
       props: {},
       linkYoutube: "",
+      showModal: false,
     };
   },
   methods: {
-    previewFiles(e) {
-      let instance = this;
-      var reader = new FileReader();
-      let filename = e.target.files[0].name;
-      reader.onload = function (event) {
+    triggerInputForImages: function () {
+      this.$refs.inputforimgs.click();
+    },
+    triggerInputForDocs: function () {
+      this.$refs.inputfordocs.click();
+    },
+    previewFiles: function (e) {
+      console.log(this.media);
+      console.log(e);
+      const instance = this;
+      const reader = new FileReader();
+      const filename = e.target.files[0].name;
+      this.addFileToMultimedia(e.target.files[0]);
+    },
+    openModal: function () {
+      console.log(this.$refs.modalforVideo);
+      this.$refs.modalforVideo.document.modal("show");
+    },
+    addFileToMultimedia: function (file) {
+      let reader = new FileReader();
+      //   let vm = this;
+      //   console.log("INSTANCE", vm)
+      reader.readAsDataURL(file);
+      reader.onload = (e) => {
+        //   e.result
         if (
-          reader.result.substring(0, 10) != "data:image" &&
-          reader.result.substring(0, 20) != "data:application/pdf"
+          e.target.result.substring(0, 10) != "data:image" &&
+          e.target.result.substring(0, 20) != "data:application/pdf"
         ) {
           util("error", "No se permiten archivos diferentes");
           return 0;
         }
-
+        // vm.image = e.target.result;
+        console.log(e.target.result.substring(0, 10));
         var data = {
           type:
-            reader.result.substring(0, 10) == "data:image"
+            e.target.result.substring(0, 10) == "data:image"
               ? "image"
               : "docfile",
-          filename: filename,
-          data: reader.result,
+          filename: file.name,
+          data: e.target.result,
         };
-        console.log(data);
-        instance.media.push(data);
-        instance.$emit("media", instance.media); //<-- Si me preguntas, esto hace comunicacion con el cp padre
+        this.media.push(data);
+        this.$emit("media", this.media); //<-- Si me preguntas, esto hace comunicacion con el cp padre
       };
-
-      reader.readAsDataURL(e.target.files[0]);
     },
-    remove(key) {
+    remove: function (key) {
       this.media.splice(key, 1);
       console.log("hey");
     },
-    addVideo() {
+    addVideo: function (video) {
       const data = {
         type: "video",
-        data: this.linkYoutube,
+        data: video,
       };
       this.media.push(data);
       this.$emit("media", this.media);
-      document.getElementById("btn-video-media").click();
-      this.linkYoutube = "";
     },
   },
 };

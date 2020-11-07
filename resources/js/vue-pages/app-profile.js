@@ -6,17 +6,22 @@ import {operacion,showLoadingAC,closeLoadingAC,operacionStatus,showAlertMsgAC} f
 Vue.component('post-component', require('../components/PostComponent.vue').default);
 Vue.component('postFormulario-component', require('../components/post/Formulario.vue').default);
 Vue.component('postMedia-component', require('../components/post/media.vue').default);
+Vue.component('postModal-component', require('../components/post/modal.vue').default);
+
+
 
 
 const appProfile = new Vue({
     el: "#appProfile",
-    data: {
-        artistic_name: null,
-        count_posts: null,
-        count_events: null,
-        content_desc: null,
-        desc_empty: false,
-        isEditStatus: false
+    data: function(){
+        return{
+            artistic_name: null,
+            count_posts: null,
+            count_events: null,
+            content_desc: null,
+            desc_empty: false,
+            isEditStatus: false
+        }
     },
     created: function(){
         this.loadData();

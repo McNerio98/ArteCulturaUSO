@@ -137,11 +137,15 @@
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="timeline">
-                        <post-component type="true"></post-component>
+                        <div id="event-cp">
+                            <post-component type="true"></post-component>
+                        </div>
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="settings">
-                        <post-component type="false"></post-component>
+                        <div id="post-cp">
+                            <post-component type="false"></post-component>
+                        </div>
                     </div>
                     <!-- /.tab-content -->
                 </div><!-- /.card-body -->

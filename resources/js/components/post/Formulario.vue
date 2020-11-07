@@ -24,7 +24,7 @@
           </div>
         </div>
         <div class="col-12">
-            <br/>
+          <br />
           <div class="row">
             <div class="col-12 col-lg-4 col-md-4">
               <div class="form-group" v-if="eventType == 'true'">
@@ -32,7 +32,7 @@
                   >Fecha/hora</label
                 >
                 <input
-                ref="date"
+                  ref="date"
                   class="form-control"
                   type="datetime-local"
                   id="start"
@@ -68,7 +68,7 @@
                 </select>
               </div>
             </div>
-            <div v-if="showElement" class="col-12 col-lg-4 col-md-4">
+            <div v-if="showElement" class="col-12 col-lg-12 col-md-12">
               <div class="form-group">
                 <label
                   for="exampleFormControlTextarea1"
@@ -128,10 +128,18 @@
         </div>
         <div class="col-12">
           <postMedia-component @media="setListMedia"></postMedia-component>
+          <!--ESTE ES EL COMPONENTE DE MEDIA-->
         </div>
         <div class="col-12">
-            <br/>
-          <button type="button" @click="publicarContent" class="btn btn-success">Publicar</button>
+          <br />
+          <label
+            style="width: 100%; cursor: pointer"
+            type="button"
+            @click="publicarContent"
+            class="btn btn-success btn-block btn-lg"
+          >
+            Publicar
+          </label>
         </div>
       </div>
     </div>
@@ -142,7 +150,7 @@ import * as $$ from "jquery";
 const { util, createPostEvent } = require("../../api/api.service");
 export default {
   props: ["username", "eventType"],
-  data() {
+  data: function () {
     return {
       props: {
         username: this.username,
@@ -163,6 +171,7 @@ export default {
       showElement: false,
       dateevent: "",
       tipoevento: "1",
+      /*data from Media Component*/
     };
   },
   mounted() {
@@ -176,23 +185,20 @@ export default {
     var month = dtToday.getMonth() + 1;
     var day = dtToday.getDate();
     var year = dtToday.getFullYear();
-    if(month < 10)
-        month = '0' + month.toString();
-    if(day < 10)
-        day = '0' + day.toString();
+    if (month < 10) month = "0" + month.toString();
+    if (day < 10) day = "0" + day.toString();
 
-    var maxDate =  year + '-' + month + '-' + day + "T00:00";
+    var maxDate = year + "-" + month + "-" + day + "T00:00";
     this.$refs.date.min = maxDate;
     var x = this.$refs.date;
-    console.log(x)
-
-
+    console.log(x);
   },
   methods: {
-    setListMedia(media) {
+    setListMedia: function (media) {
+        console.log("Se ha escuchado el hijo enviando info")
       this.multimedia = media;
     },
-    publicarContent() {
+    publicarContent: function () {
       console.log("hey ,");
       if (this.titulo === "" || this.descripcion === "") {
         console.log("1");
@@ -225,19 +231,22 @@ export default {
         }
         console.table(data);
         let token = localStorage.getItem("token");
-        createPostEvent(token, data).then(response=>{
+        createPostEvent(token, data)
+          .then((response) => {
             console.log(response);
-        }).catch(e=>{
-            console.log(e)
-        })
+          })
+          .catch((e) => {
+            console.log(e);
+          });
       }
     },
-    openPriceModal(event) {
+    openPriceModal: function (event) {
       this.eventprice = 0;
       if (event.target.value == "2") this.showElement = true;
       if (event.target.value == "1") this.showElement = false;
     },
-    addPrice() {},
+    addPrice: function () {},
+    /** Methods for Media Component */
   },
 };
 </script>

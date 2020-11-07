@@ -6,5 +6,6 @@
     "/js/app-profile.js": "/js/app-profile.js",
     "/js/app-request.js": "/js/app-request.js",
     "/js/app-tags.js": "/js/app-tags.js",
-    "/js/app-users.js": "/js/app-users.js"
+    "/js/app-users.js": "/js/app-users.js",
+    "/js/specific-post.js": "/js/specific-post.js"
 }
