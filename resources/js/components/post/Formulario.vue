@@ -158,7 +158,7 @@ export default {
         messagePlaceholderArea:
           this.eventType === "true"
             ? "Explica de qué trata tu evento..."
-            : "¿Qué estás pensado, " + this.username + "?",
+            : "¿Qué estás pensado?",
         messagePlaceholderTitulo:
           this.eventType === "true"
             ? "Nombre del evento"
@@ -195,7 +195,7 @@ export default {
   },
   methods: {
     setListMedia: function (media) {
-        console.log("Se ha escuchado el hijo enviando info")
+      console.log("Se ha escuchado el hijo enviando info");
       this.multimedia = media;
     },
     publicarContent: function () {
@@ -233,7 +233,15 @@ export default {
         let token = localStorage.getItem("token");
         createPostEvent(token, data)
           .then((response) => {
-            console.log(response);
+            if (response.data.codeStatus == 1) {
+              this.multimedia = [];
+              this.titulo = "";
+              this.descripcion = "";
+              this.eventprice = 0;
+              this.dateevent = "";
+              this.tipoevento = "1";
+              this.$emit('update');
+            }
           })
           .catch((e) => {
             console.log(e);

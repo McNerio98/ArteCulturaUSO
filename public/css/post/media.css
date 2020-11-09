@@ -7,6 +7,18 @@
     height: 115px;
   }
 
+  .image-area2 {
+    position: relative;
+    background: rgb(197, 195, 195);
+    width: 115px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 5px solid rgb(235, 230, 230);
+    height: 115px;
+    border-radius: 50%;
+  }
+
   .remove-image {
     display: none;
     position: absolute;

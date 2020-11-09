@@ -8,7 +8,6 @@
           </div>
           <div class="card-body">
             <postFormulario-component
-              username="Ana Vel"
               v-bind:eventType="props.type"
             ></postFormulario-component>
           </div>

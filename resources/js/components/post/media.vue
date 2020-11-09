@@ -1,7 +1,14 @@
 <template>
   <div>
-    <div style="margin-bottom: 15px" class="row">
-      <div v-for="(m, key) in media" v-bind:key="key" class="col-3">
+    <div
+      style="margin-bottom: 15px; max-height: 200px"
+      class="row overflow-auto"
+    >
+      <div
+        v-for="(m, key) in media"
+        v-bind:key="key"
+        class="col-6 col-lg-3 col-md-3"
+      >
         <div v-if="m.type === 'image'">
           <div
             class="image-area"
@@ -27,11 +34,13 @@
           </div>
         </div>
         <div v-if="m.type === 'video'">
-          <div class="image-area">
+          <div
+            class="image-area"
+            data-toggle="tooltip"
+            data-placement="top"
+            :title="m.filename"
+          >
             <iframe
-              data-toggle="tooltip"
-              data-placement="top"
-              :title="m.filename"
               :ref="'image' + key"
               width="100%"
               style="object-fit: contain; padding-top: 3px"
@@ -52,11 +61,13 @@
           </div>
         </div>
         <div v-if="m.type === 'docfile'">
-          <div class="image-area">
+          <div
+            class="image-area"
+            data-toggle="tooltip"
+            data-placement="top"
+            :title="m.filename"
+          >
             <iframe
-              data-toggle="tooltip"
-              data-placement="top"
-              :title="m.filename"
               :ref="'image' + key"
               width="100%"
               style="object-fit: cover; padding-top: 3px"
@@ -76,16 +87,15 @@
         </div>
       </div>
 
-      <div v-if="media.length > 0" class="col-3">
+      <div v-if="media.length > 0" class="col-6 col-lg-3 col-md-3">
         <label for="imageInput" @click="this.triggerInputForImages">
           <div id="content">
-            <div class="image-area">
+            <div class="image-area2">
               <img
-                style="object-fit: contain; padding-top: 3px; cursor: pointer"
-                width="100%"
-                height="100px"
-                src="https://img.icons8.com/dotty/2x/add-image.png"
-                class="img-fluid"
+                style="object-fit: contain; cursor: pointer"
+                width="80px"
+                height="80px"
+                src="https://icon-library.com/images/add-camera-icon/add-camera-icon-25.jpg"
                 alt="Preview"
               />
             </div>
@@ -98,7 +108,7 @@
         <label
           for="imageInput"
           style="cursor: pointer"
-          class="btn btn-light  btn-block"
+          class="btn btn-light btn-block"
           @click="this.triggerInputForImages"
         >
           <img
@@ -122,7 +132,7 @@
         <label
           style="cursor: pointer"
           id="btn-video-media"
-          class="btn btn-light  btn-block"
+          class="btn btn-light btn-block"
           @click="showModal = true"
         >
           <img
@@ -140,7 +150,7 @@
           for="contenidoInput"
           @click="this.triggerInputForDocs"
           style="cursor: pointer"
-          class="btn btn-light  btn-block text-break"
+          class="btn btn-light btn-block text-break"
         >
           <img
             src="https://cdn.iconscout.com/icon/free/png-512/my-files-1-461722.png"
@@ -180,6 +190,9 @@ export default {
       linkYoutube: "",
       showModal: false,
     };
+  },
+  created: function () {
+    this.$parent.$on("update", this.setMediaNull);
   },
   methods: {
     triggerInputForImages: function () {
@@ -231,6 +244,9 @@ export default {
     remove: function (key) {
       this.media.splice(key, 1);
       console.log("hey");
+    },
+    setMediaNull: function () {
+      this.media = [];
     },
     addVideo: function (video) {
       const data = {
