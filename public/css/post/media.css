@@ -4,9 +4,21 @@
     width: 100%;
     display: flex;
     border: 5px solid rgb(235, 230, 230);
-    height: 115px;    
+    height: 115px;
   }
-  
+
+  .image-area2 {
+    position: relative;
+    background: rgb(197, 195, 195);
+    width: 115px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 5px solid rgb(235, 230, 230);
+    height: 115px;
+    border-radius: 50%;
+  }
+
   .remove-image {
     display: none;
     position: absolute;
@@ -25,7 +37,9 @@
     transition: background 0.5s;
   }
   .remove-image:hover {
-    background: #20B7EB;
+    background: #e54e4e;
+    border: 3px solid #fff;
+    color: #fff;
   }
   .remove-image:active {
     background: #e54e4e;

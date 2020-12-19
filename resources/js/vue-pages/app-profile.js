@@ -6,17 +6,23 @@ import {operacion,showLoadingAC,closeLoadingAC,operacionStatus,showAlertMsgAC} f
 Vue.component('post-component', require('../components/PostComponent.vue').default);
 Vue.component('postFormulario-component', require('../components/post/Formulario.vue').default);
 Vue.component('postMedia-component', require('../components/post/media.vue').default);
+Vue.component('postModal-component', require('../components/post/modal.vue').default);
+
+
 
 
 const appProfile = new Vue({
     el: "#appProfile",
-    data: {
-        artistic_name: null,
-        count_posts: null,
-        count_events: null,
-        content_desc: null,
-        desc_empty: false,
-        edit_mode_desc: false
+    data: function(){
+        return{
+            artistic_name: null,
+            count_posts: null,
+            count_events: null,
+            content_desc: null,
+            desc_empty: false,
+            isEditStatus: false,
+            edit_mode_desc: false
+        }
     },
     created: function(){
         this.loadData();
@@ -26,9 +32,12 @@ const appProfile = new Vue({
             showLoadingAC();
 
             let token = globalTokenApi;
+            console.log("MI TOKEM", token)
             axios(`/api/profile?api_token=${token}`).then((result)=>{
                 closeLoadingAC();
+                console.log(result)
                 var resDat = result.data;
+                console.log("Error con la peticion,", resDat)
                 if(resDat.codeStatus === 1){
                     console.log(result.data);
 
@@ -44,7 +53,7 @@ const appProfile = new Vue({
                     showAlertMsgAC(result.data.msg,operacion.DEFAULT,operacionStatus.FAIL);
                 }
             }).catch((ex)=>{
-                console.log(ex);
+                console.error("UN ERROR",ex);
                 closeLoadingAC();
                 showAlertMsgAC("Error al recuperar la infomacion",operacion.DEFAULT,operacionStatus.SUCCESS);
             });

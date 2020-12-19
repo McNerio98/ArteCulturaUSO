@@ -4,11 +4,10 @@
       <div class="col-12">
         <div class="card mb-3">
           <div class="card-header bg-secondary">
-            <span>{{title}}</span>
+            <span>{{ title }}</span>
           </div>
           <div class="card-body">
             <postFormulario-component
-              username="Ana Vel"
               v-bind:eventType="props.type"
             ></postFormulario-component>
           </div>
@@ -20,12 +19,12 @@
 <script>
 export default {
   props: ["type"],
-  data() {
+  data: function () {
     return {
       props: {
         type: this.type,
       },
-      title: this.type == "true" ? "Crear Evento" : "Publicar contenido"
+      title: this.type == "true" ? "Crear Evento" : "Publicar contenido",
     };
   },
 };

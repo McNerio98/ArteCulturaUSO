@@ -32,9 +32,9 @@ const { values } = require('lodash');
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-Vue.component('post-component', require('./components/PostComponent.vue').default);
-Vue.component('postFormulario-component', require('./components/post/Formulario.vue').default);
-Vue.component('postMedia-component', require('./components/post/media.vue').default);
-Vue.component('request-component', require('./components/requestAccount.vue').default);
+// Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+// Vue.component('post-component', require('./components/PostComponent.vue').default);
+// Vue.component('postFormulario-component', require('./components/post/Formulario.vue').default);
+// Vue.component('postMedia-component', require('./components/post/media.vue').default);
+// Vue.component('request-component', require('./components/requestAccount.vue').default);
 

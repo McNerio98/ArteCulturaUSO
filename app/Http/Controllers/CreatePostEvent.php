@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use App\PostEvent;
+use App\FilesOnPostEvents;
+use App\postsEventsMeta;
+use Storage;
 
 class CreatePostEvent extends Controller
 {
@@ -70,17 +73,66 @@ class CreatePostEvent extends Controller
         try{
             $postEvent->title = $request->titulo;
             $postEvent->content = $request->descripcion;
-            $postEvent->type_post = isset($request->price) ? "event" : "post";
+            $postEvent->type_post = isset($request->precio) ? "event" : "post";
             $postEvent->creator_id = $user->id;
+            $postEvent->save();
 
-            echo $request->media;
+            //Se llenan los datos para un evento
+            if(isset($request->precio)){
+                $keys = ["fechaevento", "precio", "tipoevento", "categoria"];
+                foreach ($keys as $key => $value) {
+                    $option = new postsEventsMeta;
+                    $option->post_event_id = $postEvent->id;
+                    $option->key = $value;
+                    $option->value= $request->{$value};
+                    $option->save();
+                }
+            }
+
+            //Si el usuario sube contenido
+            if(isset($request->media)){
+                $files = $request->media;
+                $numberfiles = 0;
+                while($numberfiles < count($files)){
+                    $filesOnPostEvents = new FilesOnPostEvents;
+                    if (preg_match('/^data:image\/(\w+);base64,/', $files[$numberfiles]['data'])
+                        ||
+                        preg_match('/^data:application\/(\w+);base64,/', $files[$numberfiles]['data'])
+                    ) {
+                        $data = substr($files[$numberfiles]['data'], strpos($files[$numberfiles]['data'], ',') + 1);
+
+                        $data = base64_decode($data);
+                        $filename = uniqid() . $files[$numberfiles]['filename'];
+                        $pathname = $files[$numberfiles]['type'] == "image" ? ("files/images/" . $filename) : ("files/pdfs/" . $filename);
+
+                        $filesOnPostEvents->id_post_event = $postEvent->id;
+                        $filesOnPostEvents->name = $filename;
+                        $filesOnPostEvents->path_file = $pathname;
+                        $filesOnPostEvents->type_file = $files[$numberfiles]['type'];
+                        $filesOnPostEvents->save();
+
+                        Storage::disk('local')->put($pathname, $data);
+                    }else{
+                        $filesOnPostEvents->id_post_event = $postEvent->id;
+                        $filesOnPostEvents->name = "Youtube Video";
+                        $filesOnPostEvents->path_file = $files[$numberfiles]['data'];
+                        $filesOnPostEvents->type_file = $files[$numberfiles]['type'];
+                        $filesOnPostEvents->save();
+                    }
+                    $numberfiles++;
+                }
+            }
+            DB::commit();
+            $salida['objectData'] = ["postevent" => $postEvent];
+            $salida['msg'] = "Se han subido los archivos";
+            $salida['codeStatus'] = 1;
 
         }catch(\Exception $e){
-
+            DB::rollback();
+            $salida['msg'] = "Error: " . $e;
         }
 
-        // return $salida;
-
+        return $salida;
     }
 
 
