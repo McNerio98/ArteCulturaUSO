@@ -19,10 +19,12 @@ class UsersController extends Controller
         $per_page = ($request->per_page === null)?6:$request->per_page;
 
         $valid_range = array(6,12,24);
-        if(! in_array($per_page,$valid_range)){
+        /*if(! in_array($per_page,$valid_range)){
             $per_page = 6;
-        }
+        }*/
 
+		$per_page = 2;
+		
         $result = DB::table('users')
         ->join("model_has_roles","model_has_roles.model_id","=","users.id")
         ->join("roles","roles.id","=","model_has_roles.role_id")

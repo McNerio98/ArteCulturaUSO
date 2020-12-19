@@ -133,7 +133,6 @@ class CreatePostEvent extends Controller
         }
 
         return $salida;
-
     }
 
 

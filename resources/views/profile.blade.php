@@ -124,10 +124,22 @@
             <div class="card-body">
                 <div class="tab-content">
                     <div class="active tab-pane" id="biografia">
-
-
                         <div class="post">
-                            <a href="">Here for edit</a>
+                            <div class='text-right mb-1'>
+                                <button v-if="!edit_mode_desc" v-on:click="onClickEdit" type="button" class="btn btn-outline-secondary btn-flat"><i class="fas fa-pencil-alt"></i> Editar</button>                                
+                                <button v-else type="button" class="btn btn-outline-secondary btn-flat"><i class="fas fa-save"></i> Guardar</button>                                
+                            </div>
+                            <div class='p-2 text-center' v-if="desc_empty && !edit_mode_desc">
+                                <i class="fas fa-book-open" style='font-size: 3rem;'></i>
+                                    <br>
+                                    <span>DESCRIPCION VACIA</span>
+                            </div>
+                            <div v-if="!desc_empty && !edit_mode_desc">
+                                <p>@{{content_desc}}</p>
+                            </div>
+                            <div v-if="edit_mode_desc">
+                                <textarea placeholder="Introduce una descripcion..."  rows="3" class="form-control" style="resize: none;">@{{content_desc}}</textarea>                            
+                            </div>
                         </div>
                         <!-- Post -->
                         <div class="post">
