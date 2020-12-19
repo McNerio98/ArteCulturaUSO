@@ -4,5 +4,5 @@ Vue.component('postFormulario-component', require('../components/post/Formulario
 Vue.component('postMedia-component', require('../components/post/media.vue').default);
 
 const appPost = new Vue({
-    el: '#post'
+    el: '#post',
 });

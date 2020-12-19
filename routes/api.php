@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 //Routes para el admin panel de administradores
 Route::apiResource('requestaccounts', 'RequestAcountController');
+Route::apiResource('post', 'CreatePostEvent');
 Route::apiResource('users', 'UsersController');
 
 Route::get('tags/tagswithseccions', 'TagsController@getBySeccion');

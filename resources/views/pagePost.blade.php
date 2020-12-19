@@ -8,7 +8,7 @@
 @section('content')
 <br/>
 <div id="post">
-    <post-component></post-component>
+    <post-component type="true"></post-component>
 </div>
 <script src="{{asset('js/app-post.js')}}"></script>
 @endsection

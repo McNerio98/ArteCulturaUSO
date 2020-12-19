@@ -1,43 +1,44 @@
 @extends('layouts.users-template')
 @section('title', 'Inicio')
 @Push('styles')
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <style>
-        .profile-userimg-hover{
-            cursor: pointer;
-            border-radius: 50%;
-            width: 100px;
-            max-width: 100%;
-            height: 100px;
-            color: transparent;
-            background-color: red;
-            margin: 0 auto;
-        }
+<link href="{{ asset('css/app.css') }}" rel="stylesheet">
+<link href="{{ asset('css/post/post.css') }}" rel="stylesheet">
+<link href="{{ asset('css/post/media.css') }}" rel="stylesheet">
+<style>
+    .profile-userimg-hover {
+        cursor: pointer;
+        border-radius: 50%;
+        width: 100px;
+        max-width: 100%;
+        height: 100px;
+        color: transparent;
+        background-color: red;
+        margin: 0 auto;
+    }
 
-        .profile-pic {
-            height: 100px !important;
-            width: 100px !important;
-            background-size: cover;
-            background-position: center;
-            background-blend-mode: multiply;
-            color: transparent;
-            transition: all .3s ease;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-         }
+    .profile-pic {
+        height: 100px !important;
+        width: 100px !important;
+        background-size: cover;
+        background-position: center;
+        background-blend-mode: multiply;
+        color: transparent;
+        transition: all .3s ease;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-         .profile-pic:hover{
-             cursor: pointer;
-            background-color: rgba(0,0,0,.5);
-            z-index: 10000;
-            color: rgba(250,250,250,1);
-            transition: all .3s ease;
-         }
-
-    </style>
+    .profile-pic:hover {
+        cursor: pointer;
+        background-color: rgba(0, 0, 0, .5);
+        z-index: 10000;
+        color: rgba(250, 250, 250, 1);
+        transition: all .3s ease;
+    }
+</style>
 @endpush
-    
+
 <link href="{{ asset('css/welcome.css') }}" rel="stylesheet">
 
 
@@ -50,7 +51,8 @@
 
                 <div class="text-center">
 
-                    <div style="background-image: url('{{asset('content/profiles_images/default_img_profile.png')}}')" class="profile-pic profile-user-img img-fluid img-circle">
+                    <div style="background-image: url('{{asset('content/profiles_images/default_img_profile.png')}}')"
+                        class="profile-pic profile-user-img img-fluid img-circle">
                         <i class="fas fa-camera"></i>
                     </div>
 
@@ -122,20 +124,21 @@
             <div class="card-body">
                 <div class="tab-content">
                     <div class="active tab-pane" id="biografia">
-
-                        
                         <div class="post">
-                            <div class='text-right'>
-                                <button v-if="!isEditStatus" type="button" class="btn btn-outline-secondary btn-flat"><i class="fas fa-pencil-alt"></i> Editar</button>                                
-                                <button v-else type="button" class="btn btn-outline-secondary btn-flat"><i class="far fa-save"></i> Guardar</button>                                
+                            <div class='text-right mb-1'>
+                                <button v-if="!edit_mode_desc" v-on:click="onClickEdit" type="button" class="btn btn-outline-secondary btn-flat"><i class="fas fa-pencil-alt"></i> Editar</button>                                
+                                <button v-else type="button" class="btn btn-outline-secondary btn-flat"><i class="fas fa-save"></i> Guardar</button>                                
                             </div>
-                            <div class='p-2 text-center' v-if="desc_empty">
+                            <div class='p-2 text-center' v-if="desc_empty && !edit_mode_desc">
                                 <i class="fas fa-book-open" style='font-size: 3rem;'></i>
                                     <br>
                                     <span>DESCRIPCION VACIA</span>
                             </div>
-                            <div v-else>
+                            <div v-if="!desc_empty && !edit_mode_desc">
                                 <p>@{{content_desc}}</p>
+                            </div>
+                            <div v-if="edit_mode_desc">
+                                <textarea placeholder="Introduce una descripcion..."  rows="3" class="form-control" style="resize: none;">@{{content_desc}}</textarea>                            
                             </div>
                         </div>
                         <!-- Post -->
@@ -146,11 +149,11 @@
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="timeline">
-                        <post-component eventType="true"></post-component>
+                        <post-component type="true"></post-component>
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="settings">
-                        <post-component eventType="false"></post-component>
+                        <post-component type="false"></post-component>
                     </div>
                     <!-- /.tab-content -->
                 </div><!-- /.card-body -->
@@ -167,8 +170,9 @@
 
 @Push('customScript')
 
-    <script>
-        var globalTokenApi = '{{$current_user->api_token}}';
-    </script> 
-    <script src="{{asset('js/app-profile.js')}}"></script> 
+<script>
+    var globalTokenApi = '{{$current_user->api_token}}';
+    localStorage.setItem("token", globalTokenApi);
+</script>
+<script src="{{asset('js/app-profile.js')}}"></script>
 @endpush
