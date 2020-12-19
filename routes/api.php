@@ -17,3 +17,15 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+//Routes para el admin panel de administradores
+Route::apiResource('requestaccounts', 'RequestAcountController');
+Route::apiResource('post', 'CreatePostEvent');
+Route::apiResource('users', 'UsersController');
+
+Route::get('tags/tagswithseccions', 'TagsController@getBySeccion');
+Route::resource('tags', 'TagsController');
+
+Route::apiResource('profile','ProfileController');
+
+

@@ -28,9 +28,34 @@
                     <li class="nav-item" style="margin-left:20px">
                         <a class="nav-link" style="color:#20B7EB" href="#"> <i class="fas fa-exclamation"></i> Acerca de</a>
                     </li>
+                    @auth
                     <li class="nav-item" style="margin-left:20px">
-                        <a class="nav-link" style="color:#20B7EB" href="#"> <i class="fas fa-sign-in-alt"></i> Ingresar</a>
+
+
+
+                    <div class="dropdown">
+                      <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                      style="color: #20B7EB !important; background-color: transparent !important; border: 0px !important;" 
+                      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <i class="fas fa-user"></i> 
+                      MC
+                      </a>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" href="#">Mario Nerio</a>
+                        <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Cerrar Session</a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>                         
+                      </div>
+                    </div>
                     </li>
+                    @endauth
+
+                    @guest
+                    <li class="nav-item" style="margin-left:20px">
+                        <a class="nav-link" style="color:#20B7EB" href="{{route('login')}}"> <i class="fas fa-sign-in-alt"></i> Ingresar</a>
+                    </li>                    
+                    @endguest
     </ul>
   </div>
 </nav>

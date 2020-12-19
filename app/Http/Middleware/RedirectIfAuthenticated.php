@@ -19,7 +19,20 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next, $guard = null)
     {
         if (Auth::guard($guard)->check()) {
-            return redirect(RouteServiceProvider::HOME);
+            
+            $current_user = Auth::user();
+
+            if($current_user->status == 'request'){
+                return redirect()->route('waiting');    
+            }
+
+            if($current_user->hasRole('Invitado')){
+                return redirect()->route('profile');
+            }else{
+                //aqui tendria que extraerlos de la db, porq puede hallan registrado nuevos
+                //$user->hasRole(['editor', 'moderator'])
+                return redirect()->route('dashboard');    
+            }
         }
 
         return $next($request);

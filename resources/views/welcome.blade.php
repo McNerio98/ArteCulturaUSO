@@ -1,9 +1,8 @@
 @Push('styles')
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 @endpush
-    
 <link href="{{ asset('css/welcome.css') }}" rel="stylesheet">
-@extends('layouts.app')
+@extends('layouts.public-template')
 @section('title', 'Inicio')
 @section('content')
 <div class="row">
@@ -103,4 +102,5 @@
         </div>
     </div>
 </div>
+<script src="{{asset('js/app-request.js')}}"></script>
 @endsection

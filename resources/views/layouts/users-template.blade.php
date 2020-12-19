@@ -14,13 +14,16 @@
     </style>
 </head>
 
-<body class="backGround" style="padding-top: 60px;">
-    @include('layouts.navbar')
-    <div id="app" class="container-fluid">
-        @yield('content')
+<body style="padding-top: 4.5rem; background-color: #f4f6f9 !important;">
+    @include('layouts.components.navbar')
+    <div class="content-wrapper" style="margin-left: 0px !important;">
+        <section class="content">
+            <div class="container">
+                @yield('content')
+            </div>
+        </section> 
     </div>
-    @include('layouts.footer')
     <script src="{{asset('js/app.js')}}"></script>
+    @stack('customScript')
 </body>
-
 </html>
