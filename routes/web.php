@@ -60,3 +60,7 @@ Route::get('/perfil','WebsiteController@profile')->name('profile');
 Route::get('/admin/home','DashboardController@index')->name('dashboard');
 Route::get('/admin/users','DashboardController@users')->name('users');
 Route::get('/admin/tags','DashboardController@tags')->name('tags');
+
+
+
+

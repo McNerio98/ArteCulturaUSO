@@ -2,11 +2,10 @@
 @extends('layouts.admin-template')
 
 @section('content')
-	<div id="users">
-		<input type="hidden" value="{{url('/')}}" id="url_server" name="url">
-		<h1>Hola Mundo</h1>	
+<div class="container-fluid" id="users">
 		<pnl-pagination></pnl-pagination>
-	</div>
+</div>
+<!--/. container-fluid -->  
 @endsection
 
 

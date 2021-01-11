@@ -28,4 +28,9 @@ Route::resource('tags', 'TagsController');
 
 Route::apiResource('profile','ProfileController');
 
+Route::post('post/findPostsPopular','PostEventController@findPostsPopular');
+Route::get('post/find/{id}','PostEventController@show');
+Route::get('post/setPopular/{id}/{stcurrent}','PostEventController@setPostPopular');
+
+
 

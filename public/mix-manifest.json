@@ -2,6 +2,7 @@
     "/js/api.service.js": "/js/api.service.js",
     "/js/app.js": "/js/app.js",
     "/css/app.css": "/css/app.css",
+    "/js/app-admin.js": "/js/app-admin.js",
     "/js/app-post.js": "/js/app-post.js",
     "/js/app-profile.js": "/js/app-profile.js",
     "/js/app-request.js": "/js/app-request.js",

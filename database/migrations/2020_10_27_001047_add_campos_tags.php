@@ -28,6 +28,9 @@ class AddCamposTags extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('tags', function (Blueprint $table) {
+            $table->dropForeign('tags_category_id_foreign');
+            $table->dropColumn('category_id');
+        });
     }
 }

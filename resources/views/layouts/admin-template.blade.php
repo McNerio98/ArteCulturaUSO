@@ -28,14 +28,10 @@
 
     <title>AdminLTE 3 | Dashboard 2</title>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/dashboardAdminCustom.css') }}" rel="stylesheet">
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     @stack('customStyles')
-    <style>
-        .bg-hpolis{background-color: #2c3749 !important;}
-        .text-hpolis{color: #49b591 !important;}
-        .text-hpolis:hover{
-            color: white !important;
-        }
-    </style>  
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
@@ -63,10 +59,8 @@
             <!-- /.content-header -->
             <!-- Main content -->
             <section class="content">
-                <div class="container-fluid">
+            <input type="hidden" value="{{url('/')}}" id="url_server" name="url">
                   @yield('content')
-                </div>
-                <!--/. container-fluid -->
             </section>
             <!-- /.content -->
         </div>

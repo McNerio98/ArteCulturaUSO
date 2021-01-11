@@ -29,9 +29,10 @@
 @endpush
 
 @section('content')
-<div id="tags">
-    <pnl-tags></pnl-tags>    
+<div class="container-fluid" id="tags">
+        <pnl-tags></pnl-tags>    
 </div>
+<!--/. container-fluid --> 
 @endsection
 
 

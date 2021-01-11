@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Auth;
+use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
@@ -35,6 +36,13 @@ class LoginController extends Controller
                 return redirect()->route('waiting');    
             }
 
+            //generando token de acceso 
+            $api_token_access = (string) Str::uuid();
+            $current_user->api_token = $api_token_access;
+
+            session(['cur_user_token_access' => $api_token_access]);
+            
+            $current_user->save();
             if($current_user->hasRole('Invitado')){
                 return redirect()->route('profile');
             }else{
@@ -59,7 +67,8 @@ class LoginController extends Controller
             $path = '/login';    
         }
 
-    	Auth::logout();
+        Auth::logout();
+        session()->forget('cur_user_token_access'); //eliminando la variabledel token
     	return redirect($path);
     }
 

@@ -24,10 +24,20 @@
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+
+                <li class="nav-item">
+                    <a href="{{route('dashboard')}}" class="nav-link text-hpolis">
+                        <i class="nav-icon fas fa-columns"></i>
+                        <p>
+                            Panel Principal
+                        </p>
+                    </a>
+                </li>
+
                 @can('ver-usuarios')
                 <li class="nav-item">
                     <a href="{{route('users')}}" class="nav-link text-hpolis">
-                        <i class="fas fa-users"></i>
+                        <i class="nav-icon  fas fa-users"></i>
                         <p>Usuarios</p>
                     </a>
                 </li>
@@ -35,7 +45,7 @@
                 @can('ver-categorias')                
                 <li class="nav-item">
                     <a href="{{route('tags')}}" class="nav-link text-hpolis">
-                        <i class="fas fa-tags"></i>
+                        <i class="nav-icon fas fa-tags"></i>
                         <p>Categorias</p>
                     </a>
                 </li>
@@ -44,15 +54,15 @@
                 <!--Falta ponerle el can-->
                 <li class="nav-item">
                     <a href="{{route('tags')}}" class="nav-link text-hpolis">
-                        <i class="fas fa-tags"></i>
-                        <p>Publicaciones</p>
+                        <i class=" nav-icon fas fa-tags"></i>
+                        <p>Mi Contenido</p>
                     </a>
                 </li>
 
 
                 <li class="nav-item">
                     <a href="#" class="nav-link text-hpolis" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        <i class="fas fa-sign-out-alt"></i>
+                        <i class="nav-icon fas fa-sign-out-alt"></i>
                         <p>Cerrar Session</p>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
