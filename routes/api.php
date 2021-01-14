@@ -20,7 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 //Routes para el admin panel de administradores
 Route::apiResource('requestaccounts', 'RequestAcountController');
-Route::apiResource('post', 'CreatePostEvent');
+//Route::apiResource('post', 'CreatePostEvent');
 Route::apiResource('users', 'UsersController');
 
 Route::get('tags/tagswithseccions', 'TagsController@getBySeccion');
@@ -29,8 +29,10 @@ Route::resource('tags', 'TagsController');
 Route::apiResource('profile','ProfileController');
 
 Route::post('post/findPostsPopular','PostEventController@findPostsPopular');
-Route::get('post/find/{id}','PostEventController@show');
+Route::get('post/find/{id}','PostEventController@show')->name('post.show');
+Route::post('post','PostEventController@store')->name('post.store');
 Route::get('post/setPopular/{id}/{stcurrent}','PostEventController@setPostPopular');
+
 
 
 

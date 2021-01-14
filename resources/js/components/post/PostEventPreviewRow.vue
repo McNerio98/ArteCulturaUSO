@@ -36,7 +36,8 @@ export default {
     mounted(){
         if(this.infoObj != undefined){
             this.id = this.infoObj.id;
-            this.path_file = this.infoObj.path_file != null ? "../files/images/" + this.infoObj.path_file: "../images/no_image_found.png"; 
+            this.path_file = this.infoObj.path_file != null ? "../files/images/" + this.infoObj.path_file: "../images/no_image_found.png";
+            //this.path_file = this.infoObj.path_file != null ?  
             this.is_popular = this.infoObj.is_popular;
             this.title = this.infoObj.title;
             this.description = this.infoObj.content;

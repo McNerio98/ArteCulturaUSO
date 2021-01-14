@@ -26,7 +26,7 @@
     }
     </script>
 
-    <title>AdminLTE 3 | Dashboard 2</title>
+    <title>AdminLTE 3 | Dashboard 2.0</title>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/dashboardAdminCustom.css') }}" rel="stylesheet">
     <!-- Google Font: Source Sans Pro -->

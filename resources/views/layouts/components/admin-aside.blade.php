@@ -34,6 +34,22 @@
                     </a>
                 </li>
 
+                <!--Falta ponerle el can-->
+                <li class="nav-item">
+                    <a href="{{route('tags')}}" class="nav-link text-hpolis">
+                        <i class="nav-icon fas fa-boxes"></i>
+                        <p>Homenajes</p>
+                    </a>
+                </li>
+
+                <!--Falta ponerle el can-->
+                <li class="nav-item">
+                    <a href="{{route('tags')}}" class="nav-link text-hpolis">
+                        <i class="nav-icon fas fa-boxes"></i>
+                        <p>Mi Contenido</p>
+                    </a>
+                </li>
+
                 @can('ver-usuarios')
                 <li class="nav-item">
                     <a href="{{route('users')}}" class="nav-link text-hpolis">
@@ -54,11 +70,10 @@
                 <!--Falta ponerle el can-->
                 <li class="nav-item">
                     <a href="{{route('tags')}}" class="nav-link text-hpolis">
-                        <i class=" nav-icon fas fa-tags"></i>
-                        <p>Mi Contenido</p>
+                        <i class="nav-icon fas fa-user-cog"></i>
+                        <p>Roles y Permisos</p>
                     </a>
                 </li>
-
 
                 <li class="nav-item">
                     <a href="#" class="nav-link text-hpolis" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

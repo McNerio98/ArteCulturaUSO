@@ -150,13 +150,13 @@
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="timeline">
                         <div id="event-cp">
-                        <post-component username=`@{{artistic_name}}` type="true"></post-component>
+                        <post-event username=`@{{artistic_name}}` type="post"></post-event>
                         </div>
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="settings">
                         <div id="post-cp">
-                            <post-component username="{{ $artistic_name ?? '' }}" type="false"></post-component>
+                        <post-event username=`@{{artistic_name}}` type="event"></post-event>
                         </div>
                     </div>
                     <!-- /.tab-content -->

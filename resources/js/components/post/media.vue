@@ -133,7 +133,7 @@
           style="cursor: pointer"
           id="btn-video-media"
           class="btn btn-light btn-block"
-          @click="showModal = true"
+          @click="show_modal = true"
         >
           <img
             src="https://www.freeiconspng.com/thumbs/video-icon/video-icon-1.png"
@@ -171,24 +171,22 @@
       </div>
     </div>
 
-    <postModal-component
+
+    <post-modal-component 
       @add="addVideo"
-      v-if="showModal"
-      @close="showModal = false"
-    ></postModal-component>
+      v-if="show_modal"
+      @close="show_modal = false"
+    ></post-modal-component>
+
   </div>
 </template>
 <script>
-import * as $$ from "jquery";
-import bootstrap from "bootstrap";
-import { util } from "../../api/api.service";
 export default {
-  data: function () {
+  data: function(){
     return {
       media: [],
-      props: {},
-      linkYoutube: "",
-      showModal: false,
+      link_youtube: "",
+      show_modal: false
     };
   },
   created: function () {
@@ -202,44 +200,28 @@ export default {
       this.$refs.inputfordocs.click();
     },
     previewFiles: function (e) {
-      console.log(this.media);
-      console.log(e);
-      const instance = this;
-      const reader = new FileReader();
-      const filename = e.target.files[0].name;
       this.addFileToMultimedia(e.target.files[0]);
     },
-    openModal: function () {
-      console.log(this.$refs.modalforVideo);
-      this.$refs.modalforVideo.document.modal("show");
-    },
-    addFileToMultimedia: function (file) {
+    addFileToMultimedia: function(file){
       let reader = new FileReader();
-      //   let vm = this;
-      //   console.log("INSTANCE", vm)
       reader.readAsDataURL(file);
       reader.onload = (e) => {
-        //   e.result
-        if (
-          e.target.result.substring(0, 10) != "data:image" &&
-          e.target.result.substring(0, 20) != "data:application/pdf"
-        ) {
-          util("error", "No se permiten archivos diferentes");
+        if (e.target.result.substring(0, 10) != "data:image" && e.target.result.substring(0, 20) != "data:application/pdf") {
+          StatusHandler.ValidationMsg("No se permiten archivos diferentes");
           return 0;
         }
-        // vm.image = e.target.result;
+
         console.log(e.target.result.substring(0, 10));
+        console.log(e.target.result.substring(0, 20));
+
         var data = {
-          type:
-            e.target.result.substring(0, 10) == "data:image"
-              ? "image"
-              : "docfile",
+          type:  e.target.result.substring(0, 10) == "data:image"? "image" : "docfile",
           filename: file.name,
           data: e.target.result,
         };
         this.media.push(data);
-        this.$emit("media", this.media); //<-- Si me preguntas, esto hace comunicacion con el cp padre
-      };
+        this.$emit("media", this.media);
+      };      
     },
     remove: function (key) {
       this.media.splice(key, 1);
@@ -255,7 +237,7 @@ export default {
       };
       this.media.push(data);
       this.$emit("media", this.media);
-    },
-  },
-};
+    }            
+  }  
+}
 </script>

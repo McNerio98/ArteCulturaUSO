@@ -1,5 +1,7 @@
 <template>
   <div class="row">
+    <link href="/css/post/media.css" rel="stylesheet">
+  <link href="/css/post/post.css" rel="stylesheet">
     <div class="col-12">
       <div class="row">
         <div class="col-12 titleContainer">
@@ -8,13 +10,13 @@
             height="60px"
             style="object-fit: cover"
             class="img-circle img-bordered-sm"
-            src="images/pintora.jpg"
+            :src="userData.profile_path"
             alt="user image"
           />
           <div style="width: 100%; margin-left: 10px" class="form-group">
             <input
-              v-model="titulo"
-              v-bind:placeholder="props.messagePlaceholderTitulo"
+              v-model="post_title"
+              v-bind:placeholder="place_holder_title"
               width="100%"
               type="email"
               class="form-control"
@@ -27,37 +29,30 @@
           <br />
           <div class="row">
             <div class="col-12 col-lg-4 col-md-4">
-              <div class="form-group" v-if="eventType == 'true'">
-                <label for="exampleFormControlTextarea1" class="text-muted"
-                  >Fecha/hora</label
-                >
-                <input
-                  ref="date"
-                  class="form-control"
-                  type="datetime-local"
-                  id="start"
-                  name="trip-start"
-                  max="2030-12-31T00:00"
-                  v-model="dateevent"
-                />
+              <div class="form-group" v-if="postType == 'event'">
+                <label for="exampleFormControlTextarea1" class="text-muted">Fecha/hora</label>
+
+                 <date-picker v-model="time1" 
+                 type="datetime" 
+                 confirm  
+                 format="DD/MM/YYYY hh:mm" 
+                 v-on:change="verfecha"
+                 :clearable="false"
+                 :editable="false"></date-picker>
               </div>
             </div>
             <div class="col-12 col-lg-4 col-md-4">
-              <div class="form-group" v-if="eventType == 'true'">
-                <label for="exampleFormControlTextarea1" class="text-muted"
-                  >Tipo de evento</label
-                >
-                <select v-model="tipoevento" class="custom-select">
+              <div class="form-group" v-if="postType == 'event'">
+                <label for="exampleFormControlTextarea1" class="text-muted">Tipo de evento</label >
+                <select v-model="event_type" class="custom-select">
                   <option selected value="1">Eventual</option>
                   <option value="2">Permanente</option>
                 </select>
               </div>
             </div>
             <div class="col-12 col-lg-4 col-md-4">
-              <div class="form-group" v-if="eventType == 'true'">
-                <label for="exampleFormControlTextarea1" class="text-muted"
-                  >Categoria</label
-                >
+              <div class="form-group" v-if="postType == 'event'">
+                <label for="exampleFormControlTextarea1" class="text-muted">Categoria</label>
                 <select
                   id="selectPrice"
                   @change="openPriceModal"
@@ -68,7 +63,7 @@
                 </select>
               </div>
             </div>
-            <div v-if="showElement" class="col-12 col-lg-12 col-md-12">
+            <div v-if="show_panel_price" class="col-12 col-lg-12 col-md-12">
               <div class="form-group">
                 <label
                   for="exampleFormControlTextarea1"
@@ -99,7 +94,7 @@
                     <span class="input-group-text" id="basic-addon1">$</span>
                   </div>
                   <input
-                    v-model="eventprice"
+                    v-model="event_price"
                     type="number"
                     min="0"
                     class="form-control"
@@ -117,18 +112,19 @@
           <div class="form-group">
             <label for="exampleFormControlTextarea1"></label>
             <textarea
-              v-model="descripcion"
+              v-model="description"
               style="resize: none"
               class="form-control"
-              v-bind:placeholder="props.messagePlaceholderArea"
+              v-bind:placeholder="place_holder_msg"
               id="exampleFormControlTextarea1"
               rows="3"
             ></textarea>
           </div>
         </div>
         <div class="col-12">
-          <postMedia-component @media="setListMedia"></postMedia-component>
-          <!--ESTE ES EL COMPONENTE DE MEDIA-->
+
+          <post-media-component @media="setListMedia"></post-media-component>
+
         </div>
         <div class="col-12">
           <br />
@@ -136,7 +132,7 @@
             style="width: 100%; cursor: pointer"
             type="button"
             @click="publicarContent"
-            class="btn btn-success btn-block btn-lg"
+            class="btn btn-success btn-block"
           >
             Publicar
           </label>
@@ -146,115 +142,92 @@
   </div>
 </template>
 <script>
-import * as $$ from "jquery";
-const { util, createPostEvent } = require("../../api/api.service");
+  import DatePicker from 'vue2-datepicker';
+  import 'vue2-datepicker/index.css';
+  import 'vue2-datepicker/locale/es';
+  const {createPostEvent } = require("../../api/api.service");
+
 export default {
-  props: ["username", "eventType"],
-  data: function () {
-    return {
-      props: {
-        username: this.username,
-        eventType: this.eventType,
-        messagePlaceholderArea:
-          this.eventType === "true"
-            ? "Explica de qué trata tu evento..."
-            : "¿Qué estás pensado?",
-        messagePlaceholderTitulo:
-          this.eventType === "true"
-            ? "Nombre del evento"
-            : "Título de la publicación",
-      },
-      multimedia: [],
-      titulo: "",
-      descripcion: "",
-      eventprice: 0,
-      showElement: false,
-      dateevent: "",
-      tipoevento: "1",
-      /*data from Media Component*/
-    };
+  components: { DatePicker },
+  props: { //Las props deben ir en formato camell case 
+      userData: {type: Object,required:true}, //name,img-profile
+      postType: {type: String,default: "post"} 
   },
-  mounted() {
-    $$(function () {
-      $$('[data-toggle="tooltip"]').tooltip();
-    });
-
-    //Restringiendo la fecha a que no sea una anterior al dia de hoy
-    var dtToday = new Date();
-
-    var month = dtToday.getMonth() + 1;
-    var day = dtToday.getDate();
-    var year = dtToday.getFullYear();
-    if (month < 10) month = "0" + month.toString();
-    if (day < 10) day = "0" + day.toString();
-
-    var maxDate = year + "-" + month + "-" + day + "T00:00";
-    this.$refs.date.min = maxDate;
-    var x = this.$refs.date;
-    console.log(x);
+  data: function(){
+    return {
+      place_holder_msg: this.postType === "event"?"Explica de qué trata tu evento...":"¿Qué estás pensado "+this.userData.username+"?",
+      place_holder_title: this.postType === "event"?"Nombre del evento":"Título de la publicación",
+      post_title: "",
+      event_date: "",
+      event_type: "1",
+      show_panel_price: false,
+      event_price: 0.0,
+      description: "",
+      time1: new Date(),
+      multimedia: []
+    }
+  },
+  mounted(){
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });    
   },
   methods: {
     setListMedia: function (media) {
-      console.log("Se ha escuchado el hijo enviando info");
       this.multimedia = media;
+    },    
+    openPriceModal: function(event){
+      this.event_price = 0.00;
+      this.show_panel_price =  event.target.value == "2"?true:false;
     },
-    publicarContent: function () {
-      console.log("hey ,");
-      if (this.titulo === "" || this.descripcion === "") {
-        console.log("1");
-        util("error", "La publicacion debe tener titulo y descripcion");
-      } else if (this.eventprice < 1 && this.showElement == true) {
-        console.log("3");
-        util("error", "El precio del evento debe ser mayor a 0");
-        return 0;
-
-        console.log(this.dateevent);
-      } else if (this.dateevent === "" && this.eventType === "true") {
-        console.log("4");
-        util("error", "Debe especificar la fecha del evento");
-        return 0;
-      } else {
-        console.log("Hey");
-        var data = {
-          titulo: this.titulo,
-          descripcion: this.descripcion,
-          media: [...this.multimedia],
-        };
-        if (this.eventType == "true") {
-          data = {
-            ...data,
-            precio: parseInt(this.eventprice),
-            categoria: this.eventprice > 0 ? "pagado" : "gratis",
-            tipoevento: this.tipoevento,
-            fechaevento: this.dateevent,
-          };
-        }
-        console.table(data);
-        let token = localStorage.getItem("token");
-        createPostEvent(token, data)
-          .then((response) => {
-            if (response.data.codeStatus == 1) {
-              this.multimedia = [];
-              this.titulo = "";
-              this.descripcion = "";
-              this.eventprice = 0;
-              this.dateevent = "";
-              this.tipoevento = "1";
-              this.$emit('update');
-            }
-          })
-          .catch((e) => {
-            console.log(e);
-          });
+    publicarContent: function(){
+      if(this.post_title.trim().length < 2 || this.description.trim().length < 2){
+        StatusHandler.ValidationMsg("El título y descripción son requeridos");
+        return;
       }
+
+      if(this.show_panel_price == true && this.event_price < 1){
+          StatusHandler.ValidationMsg("El costo de asistencia del evento debe ser mayor que 0");
+          return;
+      }
+
+      if(this.postType == "event" && this.time1 == null){
+          StatusHandler.ValidationMsg("Debe especificar una fecha para el evento");
+          return;        
+      }
+      
+      let data_send = {
+          post_type: this.postType,
+          title: this.post_title,
+          description: this.description,
+          media: [...this.multimedia]        
+      };
+
+      if(this.postType == "event"){
+        data_send = {
+          ...data_send,
+          event_price: parseFloat(this.event_price).toFixed(2),
+          event_category: this.event_price > 0?"pagado":"gratis",
+          event_type: this.event_type == "1"?"eventual":"permanente",
+          event_date: this.time1.toISOString()
+        }
+      }
+
+      console.table(data_send);
+
+      axios.post(`/api/post`,data_send).then((response) => {
+            console.log(response)
+      }).catch((ex) => {
+            console.log(ex);
+      })
+
     },
-    openPriceModal: function (event) {
-      this.eventprice = 0;
-      if (event.target.value == "2") this.showElement = true;
-      if (event.target.value == "1") this.showElement = false;
-    },
-    addPrice: function () {},
-    /** Methods for Media Component */
-  },
-};
+    verfecha: function(mx){
+      console.log("Estoy entrando desde la fecha con estos valores");
+      console.log(mx);
+      console.log(this.time1);
+    }
+  }
+}
 </script>
+

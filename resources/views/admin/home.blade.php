@@ -110,29 +110,23 @@
                 <div v-if="panel1_index == 1" class="d-flex flex-column justify-content-center align-items-center " style="height: 100%;">
                   <p class="text-center h5"><b>Selecciona un elemento para pre visualizar su contenido.</b></p>
                   <p class="text-center text-muted"> <i>Los elementos destacados son publicaciones o eventos marcados como relevantes. <span style="color: #e83e8c !important;">Puede crear o buscar eventos o publicaciones en las siguientes opciones.</span></i> </p>
-                  <div>
-                    <button v-on:click="changePanel1(4)"  type="button" class="btn  d-inline btn-outline-secondary btn-flat"><i class="fas fa-plus"></i> Crear</button>                    
+                  <div>                             
+                    <div class="dropdown d-inline">
+                      <button class="btn  btn-outline-secondary btn-flat" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <i class="fas fa-plus"></i> Crear
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                          <a class="dropdown-item"  v-on:click.prevent="createNewPostEvent('post',4)" href="#">Publicación</a>
+                          <a class="dropdown-item"  v-on:click.prevent="createNewPostEvent('event',4)" href="#">Evento</a>
+                      </div>
+                    </div>
                     <button v-on:click="changePanel1(2)" type="button" class="btn  d-inline btn-outline-secondary btn-flat"><i class="fas fa-search"></i> Buscar</button>
-                  
-                  
-                  
-                    <div class="dropdown">
-  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Dropdown button
-  </button>
-  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-    <a class="dropdown-item" href="#">Action</a>
-    <a class="dropdown-item" href="#">Another action</a>
-    <a class="dropdown-item" href="#">Something else here</a>
-  </div>
-</div>
-                  
                   </div>                 
                 </div>
 
                 <!--Create new post-->
                 <div v-if="panel1_index == 4">
-                <post-component username=`mcnerio` type="true"></post-component>
+                  <post-event :post-type="post_to_create"></post-event>
                 </div>
                 <!--End Create new post-->
 
@@ -179,6 +173,16 @@
           </div>
 
 
+<div>
+
+
+
+<lingallery :iid.sync="currentId" :width="width" :height="height" :items="items"/>
+
+
+</div>
+
+
           <!--///////////////////////////////////////////////////////////////////////////////-->
            <!--END HERE ALL CONTENT-->
         </div>
@@ -188,6 +192,7 @@
 
 
 @Push('customScript')
+    <script src="https://unpkg.com/vue-gallery-slideshow"></script>
     <script src="{{ asset('js/app-admin.js') }}"></script>
 @endpush
 

@@ -3,10 +3,10 @@
 
 import {operacion,showLoadingAC,closeLoadingAC,operacionStatus,showAlertMsgAC} from '../sw-handler'
 
-Vue.component('post-component', require('../components/PostComponent.vue').default);
-Vue.component('postFormulario-component', require('../components/post/Formulario.vue').default);
-Vue.component('postMedia-component', require('../components/post/media.vue').default);
-Vue.component('postModal-component', require('../components/post/modal.vue').default);
+Vue.component('post-event', require('../components/post/PostComponent.vue').default);
+Vue.component('post-form-component', require('../components/post/Formulario.vue').default);
+Vue.component('post-media-component', require('../components/post/Media.vue').default);
+Vue.component('post-modal-component', require('../components/post/ModalVideo.vue').default);
 
 
 

@@ -15,6 +15,7 @@ class AddCamposPostEvents extends Migration
     {
         Schema::table('post_events', function (Blueprint $table) {
             $table->boolean('is_popular')->default(false);
+            $table->enum('status',['review','approved','deleted'])->default('review');
         });
     }
 
@@ -27,6 +28,7 @@ class AddCamposPostEvents extends Migration
     {
         Schema::table('post_events', function (Blueprint $table) {
             $table->dropColumn('is_popular');
+            $table->dropColumn('status');
         });
     }
 }

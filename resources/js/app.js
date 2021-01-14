@@ -7,13 +7,15 @@
 window.Vue = require('vue');
 
 require('./bootstrap');
+require('admin-lte');
+
 /**Sweet Alert */
 const swal = require('sweetalert2');
 window.Swal = swal;
-
-require('./admin');
-
 /*This file handle the alerts*/
+window.StatusHandler = require('./sw-status').default;
+
+
 
 
 const { values } = require('lodash');

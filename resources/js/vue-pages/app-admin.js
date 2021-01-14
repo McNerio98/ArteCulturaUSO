@@ -1,10 +1,14 @@
 
 import StatusHandler from "../sw-status"
+import Lingallery from 'lingallery';
 
-Vue.component('post-component', require('../components/PostComponent.vue').default);
-Vue.component('postFormulario-component', require('../components/post/Formulario.vue').default);
-Vue.component('postMedia-component', require('../components/post/media.vue').default);
-Vue.component('postModal-component', require('../components/post/modal.vue').default);
+
+Vue.component('post-event', require('../components/post/PostComponent.vue').default);
+Vue.component('post-form-component', require('../components/post/Formulario.vue').default);
+Vue.component('post-media-component', require('../components/post/Media.vue').default);
+Vue.component('post-modal-component', require('../components/post/ModalVideo.vue').default);
+
+Vue.component('post-preview-mini-desing',require('../components/post/PostEventPreviewRow.vue').default);
 
 const STATE_SEARCH= {
     DEFAULT: 1,
@@ -13,11 +17,32 @@ const STATE_SEARCH= {
 };
 
 
-Vue.component('post-preview-mini-desing',require('../components/post/PostEventPreviewRow.vue').default);
+
 
 const appHome = new Vue({
     el: '#appHome',
+    components: {
+        Lingallery
+    },
     data: {
+
+
+
+        width: 600,
+        height: 400,
+        items: [{
+          src: 'https://picsum.photos/600/400/?image=0',
+          thumbnail: 'https://picsum.photos/64/64/?image=0',
+          caption: 'Some Caption',
+          id: 'someid1'
+        },
+        {
+          src: 'https://picsum.photos/600/400/?image=10',
+          thumbnail: 'https://picsum.photos/64/64/?image=10'
+        },
+      ],
+      currentId: null,
+          
         token_acces: null,
         panel1_index: 1,  // 1-options |  2- search | 3-mini-view | 4-create nuew post
         shearch_panel1_state: 1,
@@ -32,20 +57,18 @@ const appHome = new Vue({
             events: 0,
             post_revision: 0,
             users: 0
-        }
+        },
+        post_to_create: "post"
     },
     created: function(){
         this.saveTokenStorage();
-        this.load_token_value();
         this.loadPopularPost();
     },
     methods: {
         saveTokenStorage: function(){
-            window.localStorage.setItem("cursave_token_gnt",$("#current_save_token_generate").val());
-            //window.axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`; //todas las solicitudes lo llevaran  
-        },
-        load_token_value: function(){
-            this.token_acces = window.localStorage.getItem("cursave_token_gnt");
+            this.token_acces = $("#current_save_token_generate").val();
+            window.localStorage.setItem("cursave_token_gnt",this.token_acces);
+            window.axios.defaults.headers.common['Authorization'] = `Bearer ${this.token_acces}`; //todas las solicitudes lo llevaran  
         },
         loadPopularPost: function(){
             //Leyendo elementos destacados/populares
@@ -68,7 +91,15 @@ const appHome = new Vue({
             });
         },
         changePanel1: function(new_index){
+            if(this.panel1_index === 4){
+                this.panel1_index = 1;
+                return;
+            }
             this.panel1_index = new_index;
+        },
+        createNewPostEvent: function(type_element,new_index){
+            this.post_to_create = type_element === "event"?"event":"post";
+            this.changePanel1(new_index);
         },
         runFindPostEvent: function(){
             //Validaciones 

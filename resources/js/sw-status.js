@@ -32,6 +32,15 @@ export default class StatusHandler{
         Swal.close();
     }
 
+    static ValidationMsg(mensaje){
+        Swal.fire({
+            icon: 'info',
+            title: 'Informe de validación',
+            text: mensaje,
+            showCloseButton: true
+        })        
+    }
+
     static ShowStatus(mensaje, tipo, estado){
         let msgContent = "";
         let msgTitle = "";
