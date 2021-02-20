@@ -225,7 +225,6 @@ export default {
     },
     remove: function (key) {
       this.media.splice(key, 1);
-      console.log("hey");
     },
     setMediaNull: function () {
       this.media = [];

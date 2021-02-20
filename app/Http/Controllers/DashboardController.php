@@ -13,7 +13,11 @@ class DashboardController extends Controller
 
     public function index(){
     	return view('admin.home');
-    }
+	}
+	
+	public function rubros(){
+		return view("admin.rubros");
+	}
 
     public function users(){
     	return view('admin.users');

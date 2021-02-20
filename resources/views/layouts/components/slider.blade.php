@@ -1,38 +1,35 @@
 <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
+
     <ol class="carousel-indicators">
-      <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
-      <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
-      <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
+      @if(count($posts_popular) > 0)
+        @foreach($posts_popular as $e)
+          <li data-target="#carouselExampleCaptions" data-slide-to="0" class="{{$loop->first?'active':''}}"></li>
+        @endforeach
+      @else
+        <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
+      @endif
     </ol>
+    
     <div class="carousel-inner">
-      <div class="carousel-item active">
-        <img src="{{asset('images/info.jpg')}}" class="d-block w-100 sliderImage" style="object-fit: cover" height="450px" alt="...">
-        <div class="carousel-caption d-none d-md-block ">
-          <h5>Informacion Sobre El Covid-19</h5>
-          <p>Informate sobre las medidas para evitar el contagio.</p>
-        </div>
-      </div>
-      <div class="carousel-item">
-        <img src="{{asset('images/info2.jpg')}}" class="d-block w-100 sliderImage"  style="object-fit: cover" height="450px" alt="...">
-        <div class="carousel-caption d-none d-md-block">
-          <h5>Second slide label</h5>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        </div>
-      </div>
-      <div class="carousel-item">
-        <img src="{{asset('images/info3.jpg')}}" class="d-block w-100 sliderImage"  style="object-fit: cover" height="450px" alt="...">
-        <div class="carousel-caption d-none d-md-block">
-          <h5>Third slide label</h5>
-          <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
-        </div>
-      </div>
-      <div class="carousel-item">
-        <img src="{{asset('images/info4.jpg')}}" class="d-block w-100 sliderImage"  style="object-fit: cover" height="450px" alt="...">
-        <div class="carousel-caption d-none d-md-block">
-          <h5>Third slide label</h5>
-          <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
-        </div>
-      </div>
+      @if(count($posts_popular) > 0)
+        @foreach($posts_popular as $e)
+          <div class="carousel-item {{$loop->first ? 'active':''}}">
+              <img src="{{asset($e->path_file . $e->name)}}" class="d-block w-100 sliderImage" style="object-fit: cover" height="450px" alt="...">
+              <div class="carousel-caption d-none d-md-block ">
+                <h5>{{$e->title}}</h5>
+                <p>{{$e->content}}<a href="#">Ver mas</a></p>
+              </div>
+            </div>    
+        @endforeach
+      @else
+          <div class="carousel-item active">
+              <img src="{{asset('images/popular_empty.jpg')}}" class="d-block w-100 sliderImage" style="object-fit: cover" height="450px" alt="...">
+              <div class="carousel-caption d-none d-md-block ">
+                <h5></h5>
+                <p>No hay elementos destacados por ahora</p>
+              </div>
+            </div>       
+      @endif
     </div>
     <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
       <span class="carousel-control-prev-icon" aria-hidden="true"></span>

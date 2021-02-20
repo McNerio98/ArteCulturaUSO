@@ -1,7 +1,5 @@
 
-import StatusHandler from "../sw-status"
-import Lingallery from 'lingallery';
-
+//import StatusHandler from "../sw-status"
 
 Vue.component('post-event', require('../components/post/PostComponent.vue').default);
 Vue.component('post-form-component', require('../components/post/Formulario.vue').default);
@@ -10,61 +8,75 @@ Vue.component('post-modal-component', require('../components/post/ModalVideo.vue
 
 Vue.component('post-preview-mini-desing',require('../components/post/PostEventPreviewRow.vue').default);
 
+Vue.component('post-general',require('../components/post/PostGeneralComponent.vue').default);
+
 const STATE_SEARCH= {
     DEFAULT: 1,
     OK: 2,
     VOID: 3
 };
 
-
-
-
 const appHome = new Vue({
     el: '#appHome',
-    components: {
-        Lingallery
-    },
-    data: {
-
-
-
-        width: 600,
-        height: 400,
-        items: [{
-          src: 'https://picsum.photos/600/400/?image=0',
-          thumbnail: 'https://picsum.photos/64/64/?image=0',
-          caption: 'Some Caption',
-          id: 'someid1'
-        },
-        {
-          src: 'https://picsum.photos/600/400/?image=10',
-          thumbnail: 'https://picsum.photos/64/64/?image=10'
-        },
-      ],
-      currentId: null,
-          
+    data: {          
         token_acces: null,
         panel1_index: 1,  // 1-options |  2- search | 3-mini-view | 4-create nuew post
         shearch_panel1_state: 1,
         desc_to_search: "",
         result_post_search: [],
-        id_node_selectd: 0,
-        node_selected: null,
+        id_node_selectd: 0,        
         popular_post: [],
         node_child_selected : null,
+        preview_mini_selected: null,
         notificadores: {
             posts: 0,
             events: 0,
             post_revision: 0,
             users: 0
         },
-        post_to_create: "post"
+        post_to_create: "post",
+
+        post_selected: {
+            post: {
+                id: 0,
+                title: "",
+                description: "",
+                type: "post",
+                creator_id: 0,
+                is_popular: false,
+                status: "approved",
+                created_at: "",
+                name: "",
+                artistic_name: ""                    
+            },
+            media: [],
+            meta: []
+        }
+
     },
     created: function(){
         this.saveTokenStorage();
         this.loadPopularPost();
     },
+    mounted: function(){
+        //
+    },
     methods: {
+        loadPostById: function(id_post){
+            console.log("Voy a cargar info del nuevo post creado con este id " + id_post);
+            axios(`/api/post/find/${id_post}`).then((result)=>{
+                let response = result.data;
+                if(response.code == 0){
+                    StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                    return;
+                }
+                this.post_selected = response.data;
+                console.log(this.post_selected);
+                this.panel1_index = 3;
+            }).catch((ex)=>{
+                StatusHandler.Exception("Recuperar Post",ex);
+            });
+        },
         saveTokenStorage: function(){
             this.token_acces = $("#current_save_token_generate").val();
             window.localStorage.setItem("cursave_token_gnt",this.token_acces);
@@ -127,17 +139,16 @@ const appHome = new Vue({
                 console.error(error);
             });
         },
-        onShowPanelPostData: function(unit){
-            let id_post = unit.id;
-            this.node_child_selected = unit;
-            axios(`/api/post/find/${id_post}`).then((result)=>{
+        ShowPanelPostData: function(unit){
+            this.preview_mini_selected = unit;
+            axios(`/api/post/find/${unit.id}`).then((result)=>{
                 let response = result.data;
-
                 if(response.code == 0){
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
                     return;
                 }
-                this.node_selected = response.data;
+                this.post_selected = response.data;
+                console.log(this.post_selected);
                 this.panel1_index = 3;
             }).catch((error)=>{
                 let target_process = "Recuperar Post"; 
@@ -146,36 +157,14 @@ const appHome = new Vue({
                 console.error(error);
             });
         },
-        setPostPopular: function(id_post){
-            //validacion parametros 
-            let current_state = this.node_selected.info.is_popular;
-            if(!(current_state === 0 || current_state === 1)){  //usar esta validacion
-                StatusHandler.ShowStatus("Valores no validos",StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
-                return;
+        setPostPopular: function(state){
+            //state = {id,state}
+            this.preview_mini_selected.is_popular = state.is_popular;
+            if(state.is_popular){
+                this.popular_post.push(this.preview_mini_selected);
+            }else{
+                this.removeViewPopular(this.preview_mini_selected.id);
             }
-
-            let new_state = current_state == 0? 1:0; //switch 
-
-            axios(`/api/post/setPopular/${id_post}/${new_state}`).then((result)=>{
-                let response = result.data;
-                if(response.code == 0){
-                    StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
-                    return;
-                }
-                this.node_selected.info.is_popular = parseInt(response.data.new_state);
-                this.node_child_selected.is_popular = parseInt(response.data.new_state);
-                
-                if(response.data.new_state == true){//se agrega en la lista 
-                    this.popular_post.push(this.node_child_selected);
-                }else{
-                    this.removeViewPopular(this.node_child_selected.id);
-                }
-            }).catch((error)=>{
-                let target_process = "Recuperar Post"; 
-                let msg = "El proceso ("+target_process+")no se ha podido completar, póngase con soporte técnico."
-                StatusHandler.ShowStatus(msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
-                console.error(error);
-            });
         },
         removeViewPopular: function(id_elemento){
             let index = -1;

@@ -32,6 +32,12 @@ export default class StatusHandler{
         Swal.close();
     }
 
+    static Exception(target_msg,exception_data){
+        let msg = "El proceso ("+target_msg+")no se ha podido completar, póngase con soporte técnico."
+        this.ShowStatus(msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+        console.error(exception_data);        
+    }
+
     static ValidationMsg(mensaje){
         Swal.fire({
             icon: 'info',

@@ -49,6 +49,8 @@
                 const params = {
                     nameTag : this.nameTag
                 };
+                return;
+                //Fuera de uso 
                 axios.post(`/api/tags`,params).then((result)=>{
                     let res = result.data;
                     if(res.codeStatus === 0){

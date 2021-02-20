@@ -11,28 +11,32 @@
   <div class="collapse navbar-collapse " id="navbarSupportedContent">
     <ul class="navbar-nav ml-auto">
                     <li class="nav-item active" style="margin-left:20px">
-                        <a class="nav-link" style="color:#20B7EB" href="#"> <i class="fas fa-book"></i> Inicio <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" style="color:#20B7EB" href="{{route('inicio')}}"> <i class="fas fa-book"></i> Inicio <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item" style="margin-left:20px">
-                        <a class="nav-link" style="color:#20B7EB" href="#"> <i class="fas fa-guitar"></i> Artistas</a>
+                        <a class="nav-link" style="color:#20B7EB" href="{{route('artistas')}}"> <i class="fas fa-guitar"></i> Artistas</a>
                     </li>
                     <li class="nav-item" style="margin-left:20px">
-                        <a class="nav-link" style="color:#20B7EB" href="#"> <i class="fas fa-compress-arrows-alt"></i> Promotores</a>
+                        <a class="nav-link" style="color:#20B7EB" href="{{route('promotores')}}"> <i class="fas fa-compress-arrows-alt"></i> Promotores</a>
                     </li>
                     <li class="nav-item" style="margin-left:20px">
-                        <a class="nav-link" style="color:#20B7EB" href="#"> <i class="fas fa-book-open"></i> Escuelas</a>
+                        <a class="nav-link" style="color:#20B7EB" href="{{route('escuelas')}}"> <i class="fas fa-book-open"></i> Escuelas</a>
                     </li>
                     <li class="nav-item" style="margin-left:20px">
-                        <a class="nav-link" style="color:#20B7EB" href="#"> <i class="fas fa-box-open"></i> Recursos</a>
+                        <a class="nav-link" style="color:#20B7EB" href="{{route('recursos')}}"> <i class="fas fa-box-open"></i> Recursos</a>
                     </li>
                     <li class="nav-item" style="margin-left:20px">
-                        <a class="nav-link" style="color:#20B7EB" href="#"> <i class="fas fa-exclamation"></i> Acerca de</a>
+                        <a class="nav-link" style="color:#20B7EB" href="{{route('biografias')}}"> <i class="fas fa-book-reader"></i> Biografías</a>
                     </li>
+                    <li class="nav-item" style="margin-left:20px">
+                        <a class="nav-link" style="color:#20B7EB" href="{{route('homenajes')}}"> <i class="fas fa-hand-holding-heart"></i> Homenajes </a>
+                    </li>
+                    <li class="nav-item" style="margin-left:20px">
+                        <a class="nav-link" style="color:#20B7EB" href="{{route('acercade')}}"> <i class="fas fa-exclamation"></i> Acerca de</a>
+                    </li>
+
                     @auth
                     <li class="nav-item" style="margin-left:20px">
-
-
-
                     <div class="dropdown">
                       <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                       style="color: #20B7EB !important; background-color: transparent !important; border: 0px !important;" 

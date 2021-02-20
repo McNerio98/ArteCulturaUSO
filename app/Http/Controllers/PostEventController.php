@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 class PostEventController extends Controller
 {
     public function __construct(){
-		$this->middleware('auth:api');
+		$this->middleware('auth:api',['only'=>['store','findPostsPopular','switchStatePost','setPostPopular']]);
     }
 
     public function store(Request $request){
@@ -24,7 +24,8 @@ class PostEventController extends Controller
             "msg" => null
         ];
 
-        //permisos 
+        //permisos
+        //Se esta usando el middleware api entonces buscara el valor del api_token  
         $user = Auth::user();
 
         //validaciones de campos
@@ -123,8 +124,8 @@ class PostEventController extends Controller
             DB::commit();
             $salida = [
                 "code" => 1,
-                "data" => null,
-                "msg" => "Elemento creado"
+                "data" => $postEvent,
+                "msg" => "Ok"
             ];
         }catch(\Exception $e){
             DB::rollback();
@@ -134,6 +135,28 @@ class PostEventController extends Controller
         return $salida;        
         //$header = $request->header('Authorization');
     }
+
+    public function popularPost(){
+        $salida = [
+            "code" => 0,
+            "msg" =>"",
+            "data" => []
+        ];
+
+        $query = "select pe.id,pe.title,concat(substring(pe.content,1,100),'...') as content,pe.type_post,pe.is_popular,fop.name,fop.path_file,fop.type_file from post_events pe
+        left join (select * from files_on_post_events fope where fope.type_file = 'image' group by fope.id_post_event) as fop on fop.id_post_event = pe.id
+        where pe.is_popular = true"; 
+
+        $result = DB::select(DB::raw($query));
+        $salida = [
+            "code" => 1,
+            "msg" =>"result ok",
+            "data" => $result
+        ];
+
+        return $salida;        
+    }
+
 
     public function findPostsPopular(Request $request)
     {
@@ -192,12 +215,23 @@ class PostEventController extends Controller
             return $salida;
         }
 
-        $post = PostEvent::find($id);
+        $post = DB::table("post_events AS pe")
+        ->join("users AS u", "u.id","=","pe.creator_id")
+        ->select("pe.id","pe.title","pe.content AS description","pe.type_post AS type","pe.creator_id","pe.is_popular",
+            "pe.status","pe.created_at","u.name","u.artistic_name")->where("pe.id",$id)->first();
+
+        if($post == null){
+            $salida["msg"] = "El elemento no existe";
+            return $salida;
+        };
+
         $media = FilesPost::where('id_post_event',$id)->get();
+        $meta = postsEventsMeta::where('post_event_id',$id)->get();
 
         $info = [
-            "info" => $post,
-            "media" => $media
+            "post" => $post,
+            "media" => $media,
+            "meta" => $meta
         ];
 
         $salida = [
@@ -209,32 +243,70 @@ class PostEventController extends Controller
         return $salida;
     }
 
-    /**
-    * Set a post as popular post, before the popular post limit is verified, by default it is 6  maximun 
-    * @param int $id
-    * @return \Illuminate\Http\Response
-    */
-    public function setPostPopular($id,$new_state)
-    {
-        if(! isset($id, $new_state)){
-            $salida['msg'] = "Valores imcompletos, Recargue la pagina";
-            return $salida;
-        }
 
-        if(!($new_state == 0 || $new_state == 1)){
-            $salida['msg'] = "Valores no validos";
-            return $salida;
-        }
-
+    public function switchStatePost(Request $request){
         $salida = [
             "code" => 0,
             "data" => null,
             "msg" => null
         ];
         
-        $count = PostEvent::where('is_popular','=',intval(true))->count();
+        if(! isset($request->id, $request->new_state)){
+            $salida['msg'] = "Valores imcompletos, Recargue la pagina";
+            return $salida;
+        }
 
-        if($count > 6 || $current_state = 0){
+        $id = $request->id;
+        $new_state = $request->new_state;
+        
+        $valid_range = array('review','approved','delete');
+        if(! in_array($new_state,$valid_range)){
+            $salida['msg'] = "Valores imcompletos, Recargue la pagina";
+            return $salida;        
+        }
+
+        //updating 
+        $rows_affected = PostEvent::where('id',$id)->update(['status'=>$new_state]);
+        
+        if($rows_affected < 1){
+            $salida["msg"] = "Se produjo un error al cambiar el estado";
+            return $salida;
+        }
+
+        $salida = [
+            "code" => 1,
+            "data" => ["new_state" => $new_state],
+            "msg" => "result Ok"
+        ];
+
+        return $salida;
+    } 
+
+
+    /**
+    * Set a post as popular post, before the popular post limit is verified, by default it is 6  maximun 
+    * @param int $id
+    * @return \Illuminate\Http\Response
+    */
+    public function setPostPopular(Request $request)
+    {
+        $salida = [
+            "code" => 0,
+            "data" => null,
+            "msg" => null
+        ];
+
+        if(! isset($request->id, $request->new_state)){
+            $salida['msg'] = "Valores imcompletos, Recargue la pagina";
+            return $salida;
+        }
+
+        $id = $request->id;
+        $new_state = $request->new_state;
+        
+        $count = PostEvent::where('is_popular','=',true)->count();
+
+        if($count >= 6 && $new_state == true){
             $salida["msg"] = "No se pudo agregar: solo 6 Elementos destacados como maximo";
             return $salida;
         }
@@ -255,36 +327,4 @@ class PostEventController extends Controller
 
         return $salida;
     }
-
-
-        /**
-    * Set a post as popular post, before the popular post limit is verified, by default it is 6  maximun 
-    * @param int $id
-    * @return \Illuminate\Http\Response
-    */
-
-    public function postsPopular()
-    {
-        $salida = [
-            "code" => 0,
-            "data" => null,
-            "msg" => ""
-        ];
-
-        $query = "select pe.id,pe.title,pe.content,pe.type_post,pe.is_popular,fop.path_file,fop.type_file from post_events pe
-        left join (select * from files_on_post_events fope where fope.type_file = 'image' group by fope.id_post_event) as fop on fop.id_post_event = pe.id
-        where pe.is_popular = true";
-        
-        $result = DB::select(DB::raw($query));
-
-
-        $salida = [
-            "code" => 1,
-            "data" => $result,
-            "msg" => "result Ok"
-        ]; 
-        
-        return $salida;
-    }
-
 }

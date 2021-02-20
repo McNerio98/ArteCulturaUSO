@@ -12,7 +12,7 @@ export function requestAccount(data) {
 
 export function getTags() {
     return new Promise((resolve, reject) => {
-        Axios.get("/api/tags/tagswithseccions").then(response => {
+        Axios.get("/api/tags/withCategories").then(response => {
             resolve(response);
         }).catch(e => {
             reject(e);

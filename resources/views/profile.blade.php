@@ -1,45 +1,9 @@
 @extends('layouts.users-template')
 @section('title', 'Inicio')
 @Push('styles')
-<link href="{{ asset('css/app.css') }}" rel="stylesheet">
 <link href="{{ asset('css/post/post.css') }}" rel="stylesheet">
 <link href="{{ asset('css/post/media.css') }}" rel="stylesheet">
-<style>
-    .profile-userimg-hover {
-        cursor: pointer;
-        border-radius: 50%;
-        width: 100px;
-        max-width: 100%;
-        height: 100px;
-        color: transparent;
-        background-color: red;
-        margin: 0 auto;
-    }
-
-    .profile-pic {
-        height: 100px !important;
-        width: 100px !important;
-        background-size: cover;
-        background-position: center;
-        background-blend-mode: multiply;
-        color: transparent;
-        transition: all .3s ease;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .profile-pic:hover {
-        cursor: pointer;
-        background-color: rgba(0, 0, 0, .5);
-        z-index: 10000;
-        color: rgba(250, 250, 250, 1);
-        transition: all .3s ease;
-    }
-</style>
 @endpush
-
-<link href="{{ asset('css/welcome.css') }}" rel="stylesheet">
 
 
 @section('content')
@@ -60,7 +24,7 @@
 
                 </div>
 
-                <h3 class="profile-username text-center"> @{{artistic_name}} </h3>
+                <h3 class="profile-username text-center"> {{$current_user->artistic_name}} </h3>
                 <p class="text-muted text-center">Musica,Grupos de música</p>
                 <ul class="list-group list-group-unbordered mb-3">
                     <li class="list-group-item">
@@ -126,8 +90,9 @@
                     <div class="active tab-pane" id="biografia">
                         <div class="post">
                             <div class='text-right mb-1'>
-                                <button v-if="!edit_mode_desc" v-on:click="onClickEdit" type="button" class="btn btn-outline-secondary btn-flat"><i class="fas fa-pencil-alt"></i> Editar</button>                                
-                                <button v-else type="button" class="btn btn-outline-secondary btn-flat"><i class="fas fa-save"></i> Guardar</button>                                
+                                <button v-if="!edit_mode_desc" v-on:click="onClickEdit" type="button" class="btn btn-outline-primary btn-flat"><i class="fas fa-pencil-alt"></i> Editar</button>                                
+                                <button v-else class="btn btn-outline-success btn-flat" @click="storeUserDescription"><i class="fas fa-save"></i> Guardar</button>                                
+                                <button  v-if="edit_mode_desc" @click="edit_mode_desc = false" class="btn btn-outline-secondary btn-flat"><i class="fas fa-ban"></i> Cancelar</button>    
                             </div>
                             <div class='p-2 text-center' v-if="desc_empty && !edit_mode_desc">
                                 <i class="fas fa-book-open" style='font-size: 3rem;'></i>
@@ -135,10 +100,10 @@
                                     <span>DESCRIPCION VACIA</span>
                             </div>
                             <div v-if="!desc_empty && !edit_mode_desc">
-                                <p>@{{content_desc}}</p>
+                                <p>{{$user_description->value}}</p>
                             </div>
                             <div v-if="edit_mode_desc">
-                                <textarea placeholder="Introduce una descripcion..."  rows="3" class="form-control" style="resize: none;">@{{content_desc}}</textarea>                            
+                                <textarea placeholder="Introduce una descripcion..." v-model="description_insert" rows="3" class="form-control" style="resize: none;"></textarea>                            
                             </div>
                         </div>
                         <!-- Post -->
@@ -150,13 +115,13 @@
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="timeline">
                         <div id="event-cp">
-                        <post-event username=`@{{artistic_name}}` type="post"></post-event>
+                        <post-event post-type="event"></post-event>
                         </div>
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="settings">
                         <div id="post-cp">
-                        <post-event username=`@{{artistic_name}}` type="event"></post-event>
+                        <post-event post-type="post"></post-event>
                         </div>
                     </div>
                     <!-- /.tab-content -->
@@ -173,10 +138,5 @@
 
 
 @Push('customScript')
-
-<script>
-    var globalTokenApi = '{{$current_user->api_token}}';
-    localStorage.setItem("token", globalTokenApi);
-</script>
 <script src="{{asset('js/app-profile.js')}}"></script>
 @endpush

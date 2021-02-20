@@ -58,6 +58,7 @@
                     </a>
                 </li>
                 @endcan
+
                 @can('ver-categorias')                
                 <li class="nav-item">
                     <a href="{{route('tags')}}" class="nav-link text-hpolis">
@@ -66,6 +67,13 @@
                     </a>
                 </li>
                 @endcan
+
+                <li class="nav-item">
+                    <a href="{{route('rubros')}}" class="nav-link text-hpolis">
+                        <i class="nav-icon fas fa-tags"></i>
+                        <p>Rubros</p>
+                    </a>
+                </li>
 
                 <!--Falta ponerle el can-->
                 <li class="nav-item">
