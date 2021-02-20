@@ -17,57 +17,55 @@
         data(){
             return {
                 editMode : false,
-                backupVal: this.tag.name
+                prev_value: this.tag.name
             }
-        },
-        mounted() {
-            console.log('Ciclo de vida del componente.')
         },
         methods: {
             onClickEdit(e){
                 this.editMode = true;
-                console.log(this.backupVal);
+                this.prev_value = this.tag_name;
             },
             onCancelEdit(){
                 this.editMode = false;
+                this.tag.name = this.prev_value;
             },
             onClickUpdate(){
-                //validation 
-                let lon = this.tag.name.length;
-                if(lon < 3 || lon > 20){
-                    console.log("Error no longitud no valida");
+                let size_campo1 = this.tag.name.length;
+                if(size_campo1 < 1  || size_campo1 > 50){
+                    StatusHandler.ValidationMsg("Nombre de etiqueta no valido");
                     return;
                 }
                 const params = {
-                    new_name : this.tag.name, 
+                    tag_name : this.tag.name, 
                 }; 
-                this.editMode = false;
-                console.log("Nuevo valor: " + params.new_name);
-
+                this.editMode = false; //se bloquea otro click 
                 axios.put(`/api/tags/${this.tag.id}`,params).then((result)=>{
-                    let res = result.data;
-                    if(res.codeStatus === 0){
-                        console.log(res.msg);
-                    }
+                    let response = result.data;
+                    if(response.code == 0){
+                        StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                        this.tag.name = prev_value;
+                        return;
+                    };
+                    this.tag = response.data;
                 }).catch((ex)=>{
-                    this.tag.name = this.backupVal;
-                    console.log("Se produjo un error! intente mas tarde");
+                    this.tag.name = prev_value;
+                     StatusHandler.Exception("Actualizar Etiqueta/Rubro",ex);
                 });
                 
             },
             onClickDestoy(){
                 this.editMode = false;
                 axios.delete(`/api/tags/${this.tag.id}`).then((result)=>{
-                    let res = result.data;
-                    console.log(res);
-                    if(res.codeStatus === 0){
-                        console.log(res.msg);
-                    }else{
-                        this.$emit('delete');
-                    }
+                    let response = result.data;
+                    if(response.code == 0){
+                        StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                        this.tag.name = prev_value;
+                        return;
+                    };
+                    this.$emit('delete');
+                    console.log("Etiqueta eliminada");
                 }).catch((ex)=>{
-                    this.tag.name = this.backupVal;
-                    console.log("Se produjo un error! intente mas tarde");
+                     StatusHandler.Exception("Eliminar Etiqueta/Rubro",ex);
                 });
             }
         },

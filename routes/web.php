@@ -13,30 +13,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-
-Route::get('/artista/{id?}', "ArtistaController@show");
-
-
-
-
-
-
-
-
+//Router Pagina principal 
+Route::get('/','WebsiteController@welcome')->name("inicio");
+Route::get('/page1','WebsiteController@artitas')->name("artistas");
+Route::get('/page2','WebsiteController@promotores')->name("promotores");
+Route::get('/page3','WebsiteController@escuelas')->name("escuelas");
+Route::get('/page4','WebsiteController@recursos')->name("recursos");
+Route::get('/page5','WebsiteController@biografias')->name("biografias");
+Route::get('/page6','WebsiteController@homenajes')->name("homenajes");
+Route::get('/page7','WebsiteController@acercade')->name("acercade");
 
 
 
 Route::get('/waiting','Auth\LoginController@waiting')->name('waiting');
 
-
-
-Route::get('/postpage',function(){
-    return view('pagePost');
-});
 
 
 //McNerio Routes 
@@ -60,6 +50,7 @@ Route::get('/perfil','WebsiteController@profile')->name('profile');
 Route::get('/admin/home','DashboardController@index')->name('dashboard');
 Route::get('/admin/users','DashboardController@users')->name('users');
 Route::get('/admin/tags','DashboardController@tags')->name('tags');
+Route::get('/admin/page3','DashboardController@rubros')->name('rubros');
 
 
 

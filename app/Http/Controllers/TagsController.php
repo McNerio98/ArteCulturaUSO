@@ -5,14 +5,38 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Tag;
+use Illuminate\Support\Facades\Validator;
 
 class TagsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function tagsByCategory($id_cat){
+        $salida = [
+            "code" => 0,
+            "data" => null,
+            "msg" => null
+        ];
+        
+        if(! isset($id_cat)){
+            $salida["msg"] = "Id de categoria requerido";
+            return $salida;
+        }
+
+        if(intval($id_cat) <= 0){
+            $salida["msg"] = "El id no es valido";
+            return $salida;
+        };
+
+        $tags = Tag::where('category_id',$id_cat)->get();
+
+        $salida = [
+            "code" => 1,
+            "data" => $tags,
+            "msg" => "OK"
+        ];
+        
+        return $salida; 
+    }
+
     public function index()
     {
         $result = DB::table('tags')
@@ -22,44 +46,42 @@ class TagsController extends Controller
         return $result;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
+
+    public function store(Request $request){
         $salida = [
-            'codeStatus'  => 0,
-            'msg'         => '',
-            'objectData'  => null];
+            "code" => 0,
+            "data" => null,
+            "msg" => null
+        ];
 
-        if(! isset($request->nameTag)){
-            $salida['msg'] = "Valores imcompletos, Recargue la pagina";
-            return $salida;
-        }
-        $tag = Tag::where("name",$request->nameTag)->get();
+        $validator = Validator::make($request->all(),[
+            "tag_name" => "required",
+            "category_id" =>"required"
+        ]);
 
-        if($tag){
-            $salida['msg'] = "El nombre de la etiqueta ya existe";
+        if($validator->fails()){
+            $salida["msg"] = "Valores imcompletos";
             return $salida;
         }
 
         $tag = new Tag();
-        $tag->name = $request->nameTag;
+        $tag->name = $request->tag_name;
+        $tag->category_id  = $request->category_id;
 
         if(! $tag->save()){
-            $salida['msg'] = "ERROR al guardar la Etiqueta";
+            $salida['msg'] = "Error al guardar la Etiqueta";
             return $salida;
         }
 
-        $salida['codeStatus'] = 1;
-        $salida['msg'] = "Tag Creada";
-        $salida['objectData'] = $tag;
+        $salida = [
+            "code" => 1,
+            "data" => Tag::find($tag->id),
+            "msg" => "Ok"
+        ];        
 
-        return $salida;
+        return $salida;        
     }
+
 
     /**
      * Display the specified resource.
@@ -82,34 +104,41 @@ class TagsController extends Controller
     public function update(Request $request, $id)
     {
         $salida = [
-            'codeStatus'  => 0,
-            'msg'         => '',
-            'objectData'  => null];
+            "code" => 0,
+            "data" => null,
+            "msg" => null
+        ];
 
-        if(! isset($request->new_name,$id)){
-            $salida['msg'] = "Valores imcompletos, Recargue la pagina";
+        if(! isset($id)){
+            $salida["msg"] = "Parametros imcompletos";
             return $salida;
         }
 
-        $new_name = $request->new_name;
+        $validator = Validator::make($request->all(),[
+            "tag_name" => "required",
+        ]);
+        if($validator->fails()){
+            $salida["msg"] = "Valores imcompletos";
+            return $salida;
+        };
 
         $tag = Tag::find($id);
-
         if(!$tag){
             $salida['msg'] = "La etiqueta no existe";
             return $salida;
         }
 
-        $tag->name = $new_name;
-
+        $tag->name = $request->tag_name;
         if(! $tag->save()){
-            $salida['msg'] = "ERROR al establecer el nuevo estado";
+            $salida['msg'] = "Error al actualizar etiqueta";
             return $salida;
         }
 
-        $salida['codeStatus'] = 1;
-        $salida['msg'] = "Usuario Modificado";
-        $salida['objectData'] = $tag;
+        $salida = [
+            "code" => 1,
+            "data" => $tag,
+            "msg" => "Ok"
+        ];
 
         return $salida;
     }
@@ -135,22 +164,26 @@ class TagsController extends Controller
     public function destroy($id)
     {
         $salida = [
-            'codeStatus'  => 0,
-            'msg'         => '',
-            'objectData'  => null];
-
+            "code" => 0,
+            "data" => null,
+            "msg" => null
+        ];
         if(! isset($id)){
-            $salida['msg'] = "Valores imcompletos, Recargue la pagina";
+            $salida['msg'] = "Valores imcompletos";
             return $salida;
         }
 
         $tag = Tag::find($id);
-        $tag->delete();
+        if(! $tag->delete()){
+            $salida["msg"] = "Error al eliminar la etiqueta";
+            return $salida;
+        }
 
-        $salida['codeStatus'] = 1;
-        $salida['msg'] = "Tag Eliminado";
-        $salida['objectData'] = $tag;
-
+        $salida = [
+            "code" => 1,
+            "data" => $tag,
+            "msg" => "Ok"
+        ];
         return $salida;
     }
 }

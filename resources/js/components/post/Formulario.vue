@@ -173,6 +173,12 @@ export default {
     });    
   },
   methods: {
+    cleanForm: function(){
+      this.post_title = "";
+      this.description = "";
+      this.multimedia = [];
+      this.event_price = 0.0;
+    },
     setListMedia: function (media) {
       this.multimedia = media;
     },    
@@ -215,8 +221,15 @@ export default {
 
       console.table(data_send);
 
-      axios.post(`/api/post`,data_send).then((response) => {
-            console.log(response)
+      axios.post(`/api/post`,data_send).then((result) => {
+          let response = result.data;
+          if(response.code == 0){
+            StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+            return;
+          }        
+            console.log(response);
+            this.cleanForm(); 
+            this.$emit('post-id-created',response.data.id);
       }).catch((ex) => {
             console.log(ex);
       })

@@ -1,5 +1,5 @@
 <template>
-  <li class="item ad-popular-pe" v-on:click="$emit('show-panel-info',infoObj)">
+  <li class="item ad-popular-pe">
     <div class="product-img">
       <img
         :src="path_file"
@@ -36,8 +36,7 @@ export default {
     mounted(){
         if(this.infoObj != undefined){
             this.id = this.infoObj.id;
-            this.path_file = this.infoObj.path_file != null ? "../files/images/" + this.infoObj.path_file: "../images/no_image_found.png";
-            //this.path_file = this.infoObj.path_file != null ?  
+            this.path_file = this.infoObj.path_file != null ? "/" + this.infoObj.path_file + this.infoObj.name: "../images/no_image_found.png";
             this.is_popular = this.infoObj.is_popular;
             this.title = this.infoObj.title;
             this.description = this.infoObj.content;

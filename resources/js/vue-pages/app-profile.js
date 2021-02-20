@@ -15,19 +15,76 @@ const appProfile = new Vue({
     el: "#appProfile",
     data: function(){
         return{
+            edit_mode_desc: false,
+            description_insert: "",
+            current_user_id: 0,
+            items_post: [],
+            items_events: [],
+
             artistic_name: null,
             count_posts: null,
             count_events: null,
             content_desc: null,
             desc_empty: false,
-            isEditStatus: false,
-            edit_mode_desc: false
+            isEditStatus: false
+            
         }
     },
+    mounted: function(){
+        //De esta forma se debe de hacer en todas, el token se pone en la template 
+        let token_access =  $("#current_save_token_generate").val();
+        window.axios.defaults.headers.common['Authorization'] = `Bearer ${token_access}`; //todas las solicitudes lo llevaran 
+        console.log("TODAS LAS PETICIONES SE ENVIARAN CON ESTE TOKEN");
+        console.log(window.axios.defaults.headers.common['Authorization']);
+        console.log(token_access);
+
+        this.current_user_id = $("#current_id_user_log").val();
+        console.log("El id del usuario logeado es " + this.current_user_id);
+    },
     created: function(){
-        this.loadData();
+        //this.loadData();
     },
     methods: {
+        loadPosts: function(){
+            const data = {
+                type_post: "post",
+                user_id: this.current_user_id
+            }
+            //el componente de la mini general preview aun falta          
+        },
+        loadEvents: function(){
+            const data = {
+                type_post: "post",
+                user_id: this.current_user_id
+            }
+            //el componente de la mini general preview aun falta                       
+        },
+        storeUserDescription: function(){
+            let size_campo1 = this.description_insert.length;
+            if(size_campo1 < 1  || size_campo1 > 500){
+                StatusHandler.ValidationMsg("El tamaño de la descripción no es valida");
+                return;
+            };
+
+            const meta = {
+                user_id: this.current_user_id,//id de usuario logeado 
+                meta_key: "user_profile_description",
+                meta_value: this.description_insert,
+            }; 
+
+            axios.post(`/api/usermeta`,meta).then((result)=>{
+                let response = result.data;
+                if(response.code == 0){
+                    StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                    return;
+                }; 
+                console.log("Este es el resultado")               ;
+                console.log(response);
+            }).catch((ex)=>{
+                StatusHandler.Exception("Registrar el metadato del usuario",ex);
+            });
+            
+        },
         loadData: function(){
             showLoadingAC();
 

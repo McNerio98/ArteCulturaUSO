@@ -2,10 +2,12 @@
     "/js/api.service.js": "/js/api.service.js",
     "/js/app.js": "/js/app.js",
     "/css/app.css": "/css/app.css",
+    "/css/observatorio_styles.css": "/css/observatorio_styles.css",
     "/js/app-admin.js": "/js/app-admin.js",
+    "/js/app-inicio.js": "/js/app-inicio.js",
     "/js/app-post.js": "/js/app-post.js",
     "/js/app-profile.js": "/js/app-profile.js",
-    "/js/app-request.js": "/js/app-request.js",
+    "/js/app-rubros.js": "/js/app-rubros.js",
     "/js/app-tags.js": "/js/app-tags.js",
     "/js/app-users.js": "/js/app-users.js",
     "/js/specific-post.js": "/js/specific-post.js"

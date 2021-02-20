@@ -8,7 +8,7 @@
           </div>
           <div class="card-body">
 
-            <post-form-component :post-type="postType" :user-data="{username:'McNerio', profile_path: 'https://i.insider.com/51c1d74aecad048224000021?width=762&format=jpeg'}"></post-form-component>
+            <post-form-component :post-type="postType" @post-id-created="emitCreatedId" :user-data="{username:'McNerio', profile_path: 'https://i.insider.com/51c1d74aecad048224000021?width=762&format=jpeg'}"></post-form-component>
 
           </div>
         </div>
@@ -26,6 +26,12 @@ export default {
     return {
         title: this.postType == "event" ? "Crear Evento" : "Publicar contenido"
     };
+  },
+  methods: {
+    emitCreatedId: function(id_created ){
+      console.log("Se creo un post con este id " + id_created);
+      this.$emit("post-created",id_created);
+    }
   }
 };
 </script>

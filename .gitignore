@@ -13,3 +13,6 @@ yarn-error.log
 /public/css/app.css
 /public/js/app.js
 /public/js/*
+/public/files/*
+/public/files/images/*
+/public/files/pdfs/*

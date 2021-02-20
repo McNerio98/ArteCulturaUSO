@@ -6,14 +6,25 @@ use Illuminate\Http\Request;
 
 class ArtistaController extends Controller
 {
-    function show($id = null){
-        $artista = array(
-            'name' => "Juan Carlos",
-            'lastname' => "Servantes",
-            'nombreartistico' => "El pirolito",
-            'descripcion' => "Soy un payasito de Sonsonate, con la 
-                                sonrisa bien alegre, dando carcajadas a todos"
-        );
-        return view('artista.index')->with($artista);
+    public function requestget($id){
+        $salida = [
+            'code'  => 650,
+            'data'  => null,
+            'msg'   => 'llegando a la peticion get'
+        ];
+
+        $salida["data"] = "este es el id ".$id;
+        return $salida;
     }
+
+    public function requestpost($id){
+        $salida = [
+            'code'  =>650,
+            'data'  =>  null,
+            'msg'   => 'llegando a la peticion post'
+        ];
+        $salida["data"] = "este es el id ".$id;
+        return $salida;
+    }
+
 }

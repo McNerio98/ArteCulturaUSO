@@ -1,8 +1,8 @@
-<li class="nav-item">
-    <a href="pages/kanban.html" class="nav-link">
-        <i class="nav-icon fas fa-columns"></i>
-        <p>
-            Panel Principal
-        </p>
-    </a>
-</li>
+<span v-if="!isAdd" class="ac-tag">
+    <a href="#" v-on:click="onAddNew()">+ Nuevo</a>
+</span>
+<span class="ac-tag" v-else>
+    <input type="text" maxlength="25" minlength="4" v-model="nameTag">
+    <i v-on:click="onClickSave()" class="fas fa-save icon"></i>
+    <i v-on:click="onClickCancel()" class="fas fa-times icon"></i>
+</span>
