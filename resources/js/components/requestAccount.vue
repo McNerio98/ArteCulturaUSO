@@ -3,78 +3,129 @@
     <div class="col-12">
       <div class="row">
         <div class="col-12 titleContainer">
-          <form v-on:submit.prevent="onSubmit">
+          <form novalidate ref="frmRequestAccount">
             <div class="form-row">
+
               <div class="form-group col-12">
-                <label for="exampleInputEmail1">NOMBRE COMPLETO</label>
-                <input
-                  v-model="fullname"
-                  type="text"
-                  required
-                  maxlength="70"
-                  class="form-control"
-                  id="exampleInputEmail1"
-                  aria-describedby="emailHelp"
-                />
+                  <label for="raCompleteName">Nombre completo</label>
+                  <label class="sr-only" for="raCompleteName">Nombre completo</label>
+                    <div class="input-group mb-2">
+                      <div class="input-group-prepend">
+                        <div class="input-group-text"><i class="fas fa-address-book"></i></div>
+                      </div>
+                        <input
+                          v-model="fullname"
+                          type="text"
+                          required
+                          maxlength="200"
+                          minlength="2"
+                          class="form-control"
+                          id="raCompleteName"
+                          aria-describedby="emailHelp"
+                        />
+                      <div class="invalid-feedback">
+                        Ingrese su nombre completo
+                      </div>                                              
+                    </div>
               </div>
+
               <div class="form-group col-6">
-                <label for="exampleInputEmail1">CORREO ELECTRONICO</label>
-                <input
-                  v-model="correo"
-                  type="email"
-                  required
-                  maxlength="50"
-                  class="form-control"
-                  id="exampleInputEmail1"
-                  placeholder="Ej. example@email.com"
-                  aria-describedby="emailHelp"
-                />
+                <label for="raEmail">Correo electrónico</label>
+                 <label class="sr-only" for="raEmail">Correo electrónico</label>
+                    <div class="input-group mb-2">
+                      <div class="input-group-prepend">
+                        <div class="input-group-text"><i class="fas fa-at"></i></div>
+                      </div>
+                        <input
+                          v-model="correo"
+                          type="email"
+                          required
+                          maxlength="255"
+                          minlength="2"
+                          class="form-control"
+                          id="raEmail"
+                          placeholder="Ej. example@email.com"
+                          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                          aria-describedby="emailHelp"
+                        />
+                      <div class="invalid-feedback">
+                        Ingrese su correo electrónico
+                      </div>
+                      <div v-if="email_exists" style="width: 100%;margin-top: 0.25rem;font-size: 80%;color: #dc3545;font-weight: bold;">
+                        Ingrese otro correo electrónico
+                        </div>                                            
+                    </div>
               </div>
+
               <div class="form-group col-6">
-                <label for="exampleInputEmail1">NUMERO DE TELEFONO</label>
-                <input
-                  v-model="tel"
-                  type="tel"
-                  required
-                  maxlength="10"
-                  class="form-control"
-                  placeholder="Ej. 7777-7777"
-                  id="exampleInputEmail1"
-                  aria-describedby="emailHelp"
-                />
+                <label for="raTelephone">Número telefónico</label>
+                <label class="sr-only" for="raTelephone">Número telefónico </label>
+                    <div class="input-group mb-2">
+                      <div class="input-group-prepend">
+                        <div class="input-group-text"><i class="fas fa-phone-square-alt"></i></div>
+                      </div>
+                      <input
+                        v-model="tel"
+                        v-on:input="validPatternTel"
+                        type="tel"
+                        required
+                        maxlength="9"
+                        minlength="2"
+                        class="form-control"
+                        placeholder="Ej. 7777-7777"
+                        id="raTelephone"
+                        aria-describedby="emailHelp"
+                      />
+                      <div class="invalid-feedback">
+                       Ingrese su número de contacto
+                      </div>                                      
+                    </div>
               </div>
+
               <div class="form-group col-6">
-                <label for="exampleInputEmail1">NOMBRE ARTISTICO</label>
-                <input
-                  required
-                  v-model="artistic"
-                  type="tel"
-                  maxlength="50"
-                  class="form-control"
-                  id="exampleInputEmail1"
-                  aria-describedby="emailHelp"
-                />
+                <label for="raNameArt">Nombre artístico</label>
+                <label class="sr-only" for="raNameArt">Nombre artístico </label>
+                    <div class="input-group mb-2">
+                      <div class="input-group-prepend">
+                        <div class="input-group-text"><i class="fas fa-paint-brush"></i></div>
+                      </div>
+                      <input
+                        required
+                        v-model="artistic"
+                        type="tel"
+                        maxlength="100"
+                        minlength="2"
+                        class="form-control"
+                        id="raNameArt"
+                        aria-describedby="emailHelp"
+                      />  
+                      <div class="invalid-feedback">
+                      Ingrese su nombre artístico 
+                      </div>                                
+                    </div>
                 <small id="emailHelp" class="form-text text-muted"
                   >*Escribe el nombre que te representa como
                   artista/banda/entidad.</small
                 >
               </div>
+
               <div class="form-group col-6">
-                <label for="exampleInputEmail1">SELECCIONA EL RUBRO</label>
-                <select required v-model="rubro" class="custom-select">
-                    <option value="0" disabled selected>Elegir</option>
-                  <optgroup  v-for="(main, key) in listTags" v-bind:key="key" :label="key">
-                    <option  v-for="(item, i) in main" v-bind:key="i" :value="item.id">{{item.tag}}</option>
-                  </optgroup>
-                  <!-- <option value="0" disabled selected>Elegir</option>
-                  <option
-                    v-for="(item, key) in listTags"
-                    v-bind:key="key"
-                    :value="item.id"
-                  >
-                    {{ item.name }}
-                  </option> -->
-                </select>
+                <label for="raRubro">Seleccionar rubro</label>
+                <label class="sr-only" for="raRubro">Seleccionar rubro</label>
+                    <div class="input-group mb-2">
+                      <div class="input-group-prepend">
+                        <div class="input-group-text"><i class="fas fa-fingerprint"></i></div>
+                      </div>
+                      <select required v-model="rubro" class="custom-select" id="raRubro">
+                          <option value="0" disabled selected>Elegir</option>
+                        <optgroup  v-for="(main, key) in listTags" v-bind:key="key" :label="key">
+                          <option  v-for="(item, i) in main" v-bind:key="i" :value="item.id">{{item.tag}}</option>
+                        </optgroup>
+                      </select>
+                      <div class="invalid-feedback">
+                        Especifique su especialidad 
+                      </div>                       
+                    </div>
               </div>
             </div>
             <div class="modal-footer">
@@ -85,11 +136,11 @@
               >
                 Cancelar
               </button>
-              <input
-                type="submit"
-                class="btn btn-primary"
-                value="Enviar Solicitud"
-              />
+            <button @click="onSubmit" class="btn btn-primary" type="button" :disabled="sending_data">
+              <span v-if="sending_data" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              <template v-if="!sending_data">Enviar Solicitud</template>
+              <template v-else>Enviando …</template>
+            </button>              
             </div>
           </form>
         </div>
@@ -98,13 +149,12 @@
   </div>
 </template>
 <script>
-import * as $$ from "jquery";
-import * as bootstrap from "bootstrap";
 const { util, getTags, requestAccount } = require("../api/api.service");
-
 export default {
   data() {
     return {
+      sending_data: false,
+      email_exists: false, 
       listTags: [],
       rubro: 0,
       fullname: "",
@@ -116,60 +166,81 @@ export default {
   beforeMount() {
     getTags()
       .then((tags) => {
-          if(tags.data.codeStatus != 0){
-                      this.listTags = tags.data;
-        console.log(tags);
-          }else{
-              util("error", tags.data.msg);
-          }
+          this.listTags = tags.data;
       })
       .catch((e) => {
-        util("error","No se puede obtener los rubros: " + e);
+        StatusHandler.Exception("Recuperar rubros",ex);
       });
   },
   methods: {
+    validPatternTel: function(){
+      if(this.tel.length == 5 && this.tel[4] !== '-'){
+         if(!isNaN(parseInt(this.tel[4]))){
+           this.tel = this.tel.substring(0,4) + '-' + this.tel[4];
+         }else{
+            this.tel = this.tel.substring(0,4) + '-';
+         }
+      }
+      if(this.tel.length < 5){
+         if(isNaN(parseInt(this.tel))){
+           this.tel = '';
+         }else{
+           this.tel = parseInt(this.tel);
+         }    
+      }
+
+      if(this.tel.length > 5){
+         if(isNaN(parseInt(this.tel.substr(5)))){
+           this.tel = this.tel.substring(0,5);
+         }else{
+           this.tel = this.tel.substring(0,5) + parseInt(this.tel.substr(5));
+         }         
+      }
+    },
     onSubmit() {
-      console.log("No se cargue");
-      if (this.rubro === 0) {
-        util("error", "Debe especificar el rubro que pertenece");
-      } else {
+      if(this.$refs.frmRequestAccount.checkValidity() !== false){
         this.SolicitarCuenta();
+      }else{
+        this.$refs.frmRequestAccount.classList.add('was-validated');
       }
     },
     SolicitarCuenta() {
       const data = {
-        name: this.fullname,
-        email: this.correo,
-        telephone: this.tel,
+        name: this.fullname.trim(),
+        email: this.correo.trim(),
+        telephone: this.tel.trim(),
         rubros: this.rubro,
-        artistic_name: this.artistic,
+        artistic_name: this.artistic.trim(),
       };
-
-      console.log("DATA TO SEND", data);
-
-      requestAccount(data)
-        .then((result) => {
-          console.log(result);
-          if (result) {
-            if (result.data.codeStatus == 1) {
-              util("success", result.data.msg);
-              this.rubro = 0;
-              this.fullname = "";
-              this.correo = "";
-              this.tel = "";
-              this.artistic = "";
-              $$("#exampleModal").modal("hide");
-            }else if(result.data.msg.substring(0,19) == "Error: PDOException"){
-              util("error", "Problemas con la peticion de la consulta");
-            }else{
-                util("error", result.data.msg);
-            }
+      this.sending_data = true;
+      axios.post(`/api/requestaccounts`,data).then(result=>{
+        let response = result.data;
+        console.log(response);
+        if(response.code ==0){
+          console.log("iene error");
+          if(response.errors.email != undefined){
+            console.log("El email esta definido");
+            this.email_exists = true;
+            StatusHandler.StatusToast(StatusHandler.TOAST_STATUS.FAIL,response.errors.email[0]);
+            return;
           }
-        })
-        .catch((e) => {
-          console.log(e);
-          util("error", e);
-        });
+          StatusHandler.StatusToast(StatusHandler.TOAST_STATUS.FAIL,response.msg);
+          return;
+        }
+        let name_new_user = this.artistic;
+        this.rubro = 0;
+        this.fullname = "";
+        this.correo = "";
+        this.tel = "";
+        this.artistic = "";        
+        this.email_exists = false;
+        window.location.href = obj_ac_app.base_url + `/request/status/${name_new_user.trim()}`;        
+      }).catch(ex =>{
+         $("#requestAccountModal").modal("hide");
+        StatusHandler.Exception("Solicitar cuenta de usuario",ex);
+      }).finally(()=>{      
+        this.sending_data = false;
+      });
     },
   },
 };

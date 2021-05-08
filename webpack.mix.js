@@ -25,8 +25,10 @@ mix.js('resources/js/app.js', 'public/js')
     .js('resources/js/vue-pages/app-post.js','public/js')
     .js('resources/js/vue-pages/app-admin.js','public/js')
     .js('resources/js/vue-pages/app-rubros.js','public/js')
+    .js('resources/js/vue-pages/app-config-user.js','public/js')
     //public pages 
     .js('resources/js/vue-pages/front/app-inicio.js','public/js')
+    .js('resources/js/vue-pages/front/app-search.js','public/js')
     //other 
     .js('resources/js/vue-pages/specific-post.js','public/js')
     .js('resources/js/api/api.service.js','public/js')

@@ -4,10 +4,12 @@
     "/css/app.css": "/css/app.css",
     "/css/observatorio_styles.css": "/css/observatorio_styles.css",
     "/js/app-admin.js": "/js/app-admin.js",
+    "/js/app-config-user.js": "/js/app-config-user.js",
     "/js/app-inicio.js": "/js/app-inicio.js",
     "/js/app-post.js": "/js/app-post.js",
     "/js/app-profile.js": "/js/app-profile.js",
     "/js/app-rubros.js": "/js/app-rubros.js",
+    "/js/app-search.js": "/js/app-search.js",
     "/js/app-tags.js": "/js/app-tags.js",
     "/js/app-users.js": "/js/app-users.js",
     "/js/specific-post.js": "/js/specific-post.js"

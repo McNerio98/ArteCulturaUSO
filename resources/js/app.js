@@ -3,8 +3,14 @@
  * includes Vue and other libraries. It is a great starting point when
  * building robust, powerful web applications using Vue and Laravel.
  */
-
+ import moment from 'moment'
 window.Vue = require('vue');
+window.Vue.filter('DateFormatES1',function(value){
+    if (value) {
+        return moment(String(value)).format('DD/MM/YYYY hh:mm a');
+    }    
+});
+
 
 require('./bootstrap');
 require('admin-lte');

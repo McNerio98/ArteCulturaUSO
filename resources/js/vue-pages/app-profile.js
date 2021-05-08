@@ -1,8 +1,5 @@
 
-//Aqui van los componentes que usara esta pagina
-
-import {operacion,showLoadingAC,closeLoadingAC,operacionStatus,showAlertMsgAC} from '../sw-handler'
-
+const {getTags} = require("../api/api.service");
 Vue.component('post-event', require('../components/post/PostComponent.vue').default);
 Vue.component('post-form-component', require('../components/post/Formulario.vue').default);
 Vue.component('post-media-component', require('../components/post/Media.vue').default);
@@ -26,25 +23,70 @@ const appProfile = new Vue({
             count_events: null,
             content_desc: null,
             desc_empty: false,
-            isEditStatus: false
-            
+            isEditStatus: false,
+
+            user: {},
+            list_tags: undefined,
+            is_edit_tags: false,
+            rubro_to_insert: 0,
+            rubros: []
         }
     },
     mounted: function(){
-        //De esta forma se debe de hacer en todas, el token se pone en la template 
-        let token_access =  $("#current_save_token_generate").val();
-        window.axios.defaults.headers.common['Authorization'] = `Bearer ${token_access}`; //todas las solicitudes lo llevaran 
-        console.log("TODAS LAS PETICIONES SE ENVIARAN CON ESTE TOKEN");
-        console.log(window.axios.defaults.headers.common['Authorization']);
-        console.log(token_access);
-
-        this.current_user_id = $("#current_id_user_log").val();
-        console.log("El id del usuario logeado es " + this.current_user_id);
+        this.loadData();
     },
     created: function(){
-        //this.loadData();
+        this.current_user_id = $("#current_user_id_request").val();        
     },
     methods: {
+        showListTags: function(){
+            if(this.list_tags !== undefined){
+                this.is_edit_tags = true;
+            }else{
+                getTags().then((tags)=>{
+                    this.list_tags = tags.data;
+                    this.is_edit_tags = true;
+                }).catch((ex)=>{
+                    console.error(ex);
+                })
+            }
+        },
+        deleteTagUser: function(id_tag,index){
+            console.log("Eliminar con este id " + id_tag);
+            axios.delete(`/api/profile/deltag/${this.current_user_id}/${id_tag}`).then(result=>{
+                let response = result.data;
+                if(response.code == 0){
+                    StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                    return;
+                };
+                this.rubros.splice(index,1);
+            }).catch(ex =>{
+                StatusHandler.Exception("Eliminar rubro del usuario",ex);
+            });
+        },
+        addTagUser: function(){
+            let params = {
+                tag_id: this.rubro_to_insert
+            };
+            axios.put(`/api/profile/tags/${this.current_user_id}`,params).then((result)=>{
+                let response = result.data;
+                if(response.code == 0){
+                    StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                    return;
+                }; 
+                if(response.code == 409){
+                    return; //ya existe 
+                }
+
+                this.rubros.push({id: this.rubro_to_insert,name:response.data});            
+            }).catch(ex=>{
+                StatusHandler.Exception("Guardar el nuevo rubro",ex);
+            }).finally(e =>{
+                this.is_edit_tags = false;
+                this.rubro_to_insert = 0;
+            });
+
+        },
         loadPosts: function(){
             const data = {
                 type_post: "post",
@@ -86,29 +128,17 @@ const appProfile = new Vue({
             
         },
         loadData: function(){
-            showLoadingAC();
+            axios(`/api/profile/${this.current_user_id}`).then((result)=>{
+                let response = result.data;                
+                if(response.code == 0){
+                    StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                    return;
+                };
 
-            let token = globalTokenApi;
-            console.log("MI TOKEM", token)
-            axios(`/api/profile?api_token=${token}`).then((result)=>{
-                closeLoadingAC();
-                console.log(result)
-                var resDat = result.data;
-                console.log("Error con la peticion,", resDat)
-                if(resDat.codeStatus === 1){
-                    console.log(result.data);
+                this.user = response.data.user;
+                this.content_desc   = response.data.metas.find(e => e.key === 'user_profile_rawpass')?.value;
+                this.rubros = response.data.tags;
 
-                    this.artistic_name  = resDat.objectData.profile.artistic_name;
-                    this.count_posts    = resDat.objectData.profile.count_posts;
-                    this.count_events   = resDat.objectData.profile.count_evebts;
-                    this.content_desc   = resDat.objectData.profile.content_desc;
-                    if(this.content_desc === null || this.content_desc.trim().length == 0){
-                        this.content_desc = "";
-                        this.desc_empty = true;
-                    }
-                }else{
-                    showAlertMsgAC(result.data.msg,operacion.DEFAULT,operacionStatus.FAIL);
-                }
             }).catch((ex)=>{
                 console.error("UN ERROR",ex);
                 closeLoadingAC();

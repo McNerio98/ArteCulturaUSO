@@ -82,4 +82,30 @@ export default class StatusHandler{
             showCloseButton: true
         })
     }
+
+    static get  TOAST_STATUS(){
+        return {
+        OK: 'success',
+        FAIL: 'error',
+        INFO: 'info',}
+    };
+
+    static StatusToast(type,msg){
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: false,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer)
+              toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+          })
+          
+          Toast.fire({
+            icon: type,
+            title: msg
+          })        
+    }
 }

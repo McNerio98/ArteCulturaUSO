@@ -22,9 +22,9 @@ class RolesPermissionSeeder extends Seeder
     	$role_autor			= Role::create(['name' => 'Invitado']);
 
 		$permission = Permission::create(['name' => 'ver-usuarios']);
-		$permission = Permission::create(['name' => 'aceptar-usuario']);
-		$permission = Permission::create(['name' => 'desactivar-usuario']);
-		$permission = Permission::create(['name' => 'activar-usuario']);
+		$permission = Permission::create(['name' => 'aceptar-usuario']);//quitar este 
+		$permission = Permission::create(['name' => 'desactivar-usuario']); //quitar este 
+		$permission = Permission::create(['name' => 'activar-usuario']); //quitar este 
 		$permission = Permission::create(['name' => 'crear-evento']);
 		$permission = Permission::create(['name' => 'crear-expresion']);
 		$permission = Permission::create(['name' => 'ver-categorias']);
@@ -34,6 +34,8 @@ class RolesPermissionSeeder extends Seeder
 		$permission = Permission::create(['name' => 'crear-publicacion']);
 		$permission = Permission::create(['name' => 'destacar-publicacion']);
 		$permission = Permission::create(['name' => 'editar-publicacion']);
+
+		//$permission = Permission::create(['name' => 'configurar-usuario']);
 
 		$list_permission = [
 			'ver-usuarios',
