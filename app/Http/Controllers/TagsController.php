@@ -152,7 +152,8 @@ class TagsController extends Controller
         $query = DB::select("select t.id, t.name as tag, c.name as category from tags t, categories c where t.category_id = c.id;");
         $collection = collect($query);
 
-        return $collection->groupBy('category');
+        $grouped = $collection->groupBy('category');
+        return $grouped->toArray();
     }
 
     /**

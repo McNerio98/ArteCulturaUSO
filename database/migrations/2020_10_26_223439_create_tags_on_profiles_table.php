@@ -13,14 +13,13 @@ class CreateTagsOnProfilesTable extends Migration
      */
     public function up()
     {
-        Schema::create('tags__on_profiles', function (Blueprint $table) {
+        Schema::create('tags_on_profiles', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('tag_id')->constrained();
         });
     }
-
     /**
      * Reverse the migrations.
      *
@@ -28,6 +27,6 @@ class CreateTagsOnProfilesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tags__on_profiles');
+        Schema::dropIfExists('tags_on_profiles');
     }
 }

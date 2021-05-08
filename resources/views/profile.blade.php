@@ -7,6 +7,7 @@
 
 
 @section('content')
+<input type="hidden" value="{{$id_user_cur}}" id="current_user_id_request" />
 <div class="row" id="appProfile">
     <div class="col-md-3">
         <!-- Profile Image -->
@@ -24,8 +25,43 @@
 
                 </div>
 
-                <h3 class="profile-username text-center"> {{$current_user->artistic_name}} </h3>
-                <p class="text-muted text-center">Musica,Grupos de música</p>
+                <h3 class="profile-username text-center">@{{user.artistic_name}}</h3>
+                <p class="text-muted text-center">
+                    <span v-for="(e,index) of rubros" >
+                        <span class="usTagProfile">
+                        @{{e.name}}
+                        @auth
+                            @if(Auth::user()->id == $id_user_cur)
+                            <span class="iconDel" @click="deleteTagUser(e.id,index)"><i class="fas fa-times"></i></span>
+                            @endif
+                        @endauth
+                        </span>
+                    <template v-if="index != (rubros.length - 1)">,</template>
+                    </span>
+                </p>
+                @auth
+                    @if(Auth::user()->id == $id_user_cur)
+                    <button type="button" @click="showListTags" class="btn btn-block btn-default btn-xs mb-3" v-if="!is_edit_tags">+ Agregar rubro</button>
+                    <select required v-model="rubro_to_insert" class="custom-select" v-if="is_edit_tags">
+                          <option value="0" disabled selected>Elegir</option>
+                        <optgroup  v-for="(main, key) in list_tags" v-bind:key="key" :label="key">
+                          <option  v-for="(item, i) in main" v-bind:key="i" :value="item.id">@{{item.tag}}</option>
+                        </optgroup>
+                      </select>                    
+                    <div class="btn-group w-100" v-if="is_edit_tags">
+                      <button class="btn btn-success col btn-xs" @click="addTagUser">
+                        <i class="fas fa-plus"></i>
+                        <span>Guardar</span>
+                      </button>
+                      <button class="btn btn-warning col btn-xs" @click="is_edit_tags = false;">
+                        <i class="fas fa-upload"></i>
+                        <span>Cancelar</span>
+                      </button>
+                    </div>                                        
+                    @endif
+                @endauth
+                
+
                 <ul class="list-group list-group-unbordered mb-3">
                     <li class="list-group-item">
                         <b>Publicaciones</b> <a class="float-right">@{{count_posts}}</a>
@@ -100,7 +136,7 @@
                                     <span>DESCRIPCION VACIA</span>
                             </div>
                             <div v-if="!desc_empty && !edit_mode_desc">
-                                <p>{{$user_description->value}}</p>
+                                <p>........</p>
                             </div>
                             <div v-if="edit_mode_desc">
                                 <textarea placeholder="Introduce una descripcion..." v-model="description_insert" rows="3" class="form-control" style="resize: none;"></textarea>                            

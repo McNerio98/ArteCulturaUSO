@@ -26,19 +26,20 @@
             </div>
             <div class="card-footer">
                 <div class="text-right">                   
-                    <a v-if="has_cap('activar-usuario') && !contact.isActive && !contact.isRequest" 
-                    v-on:click.prevent="changeStatus($event,'enabled')" class="btn btn-sm bg-success" href="#">
+                    <a v-if="has_cap('configurar-usuario') && !contact.isActive" 
+                    v-on:click.prevent="changeStatus($event,'enable-user')" class="btn btn-sm bg-success" href="#">
                         <i class="fas fa-unlock"></i> Habilitar
                     </a>                    
-                    <a v-if="contact.isActive && has_cap('desactivar-usuario')" href="#" 
-                    v-on:click.prevent="changeStatus($event,'disabled')" class="btn btn-sm bg-danger">
+                    <a v-if="contact.isActive && has_cap('configurar-usuario')" href="#" 
+                    v-on:click.prevent="changeStatus($event,'disable-user')" class="btn btn-sm bg-danger">
                         <i class="fas fa-lock"></i> Desactivar
                     </a>
-                    <a v-if="contact.isRequest && has_cap('aceptar-usuario')" class="btn btn-sm bg-success" 
-                    v-on:click.prevent="changeStatus($event,'enabled')" href="#">
+                    <a v-if="contact.isRequest && has_cap('configurar-usuario')" class="btn btn-sm bg-success" 
+                     :href="'/admin/users/config/'+this.user.id">
                         <i class="fas fa-lock"></i> Aceptar
                     </a>
-                    <a href="#" class="btn btn-sm btn-primary">
+                    <!--en este se omite la validacion de permisos, porque si esta en esta pantalla es porque si tiene el permiso de ver usuarios-->
+                    <a :href="'/admin/users/config/' + this.user.id" class="btn btn-sm btn-primary">
                         <i class="fas fa-user"></i> Ver Perfil
                     </a>
                 </div>
@@ -53,6 +54,7 @@ export default {
         return {
             pathImg : $('#url_server').val() + "/content/profiles_images",
             contact: {
+                id_user: this.user.id,
                 role: this.user.role,
                 nombre_artistico: this.user.name,
                 rubros: JSON.parse(this.user.rubros),
@@ -69,20 +71,31 @@ export default {
         console.log('Ciclo de vida del componente me renderize soy el contacto.')
     },
     methods: {
-        changeStatus(e,new_status){
-            const params = {operation: new_status};
+        changeStatus(e,new_status){ //mandar todo esto al controlador de configuraciones 
+            let params = {
+                operation: new_status.trim()
+            };
+
             $(e.target).addClass("disabled");
-            axios.put(`/api/users/${this.user.id}`,params).then((result)=>{
-                let res = result.data;
-                if(res.codeStatus !== 0){
-                    this.contact.isActive = (res.operation === 'enabled')?true:false;
-                    this.contact.isRequest = (res.operation === 'request')?true:false;
-                }else{
-                    console.log(res.msg)
+            axios.put(`/api/user/updateConfig/${this.user.id}`,params).then((result)=>{
+                let response = result.data;
+                console.log("Esta es la response");
+                console.log(response);
+                if(response.code == 0){
+                    StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                    return;
+                };
+
+                if(params.operation == 'enable-user'){
+                    this.contact.isActive = true;    
                 }
+
+                if(params.operation == 'disable-user'){
+                    this.contact.isActive = false;    
+                }
+
             }).catch((ex)=>{
-                console.log("Ocurrio un error");
-                //sweet aler(ERROR)
+                StatusHandler.Exception("Establecer la descripción del usuario",ex);
             }).finally(()=>{
                 $(e.target).removeClass("disabled");
             });

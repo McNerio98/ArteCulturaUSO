@@ -51,15 +51,11 @@ class WebsiteController extends Controller
         return view("acercade");
     }
 
-    //este es el metodo primero 
-    public function profile(){
-        $current_user = Auth::user();
-        $description = UserMeta::select("value")->where('key','user_profile_description')->where('user_id',Auth::user()->id)->first();
-        
-        return view("profile",['current_user'=>$current_user,'user_description'=>$description]);
-    }
-
     public function events(){
         return view("events");
+    }
+
+    public function accountRequest($user_name){
+        return view('request-status',['user_name'=>$user_name]);
     }
 }

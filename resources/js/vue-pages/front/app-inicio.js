@@ -1,4 +1,4 @@
-Vue.component('request-component', require('../../components/requestAccount.vue').default);
+Vue.component('request-component', require('../../components/RequestAccount.vue').default);
 
 const app_inicio = new Vue({
     el: '#app_inicio',

@@ -9,15 +9,11 @@
     <link href="{{ asset('css/observatorio_styles.css') }}" rel="stylesheet">    
     @stack('styles')
 </head>
-
 <body style="padding-top: 60px;background: #dddddd;">
     @include('layouts.components.navbar')
-    <div class="container-fluid">
-        @yield('content')
-    </div>
+    @yield('content')    
     @include('layouts.components.footer')
     <script src="{{asset('js/app.js')}}"></script>
     @stack('customScript')
 </body>
-
 </html>

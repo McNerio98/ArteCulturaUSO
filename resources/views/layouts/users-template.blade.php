@@ -12,10 +12,7 @@
 
 <body style="padding-top: 4.5rem; background-color: #f4f6f9 !important;">
     @include('layouts.components.navbar')
-    <!--Tag hidden Token-->
-    <input type="hidden" value="{{Auth::user()->api_token}}" id="current_save_token_generate" />
-    <input type="hidden" value="{{Auth::user()->id}}" id="current_id_user_log"/>
-    <!--End Tag Hidden Token-->    
+    <input type="hidden" value="{{Auth::user() == null?'':Auth::user()->api_token}}" id="current_save_token_generate" /> 
     <div class="content-wrapper" style="margin-left: 0px !important;">
         <section class="content">
             <div class="container">
