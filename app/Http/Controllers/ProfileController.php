@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use App\User;
 use App\UserMeta;
 use App\TagsOnProfile;
+use App\MediaProfile;
+use App\PostEvent;
 
 
 class ProfileController extends Controller
@@ -43,10 +45,18 @@ class ProfileController extends Controller
 		$metas 				= UserMeta::whereIn('key',$metas_get)->where('user_id',$id)->get();
 		$tags 				= 	User::select('tg.id','tg.name')->join('tags_on_profiles AS top','top.user_id','users.id')
 									->join('tags AS tg','tg.id','top.tag_id')->where('users.id',$id)->get();
+		$profile_media = MediaProfile::where('user_id',$user->id)->get(); //todas las imagenes de perfil 
+		
+		$events_user	= PostEvent::where('creator_id',$user->id)->where('type_post','event')->with('media')->get();
+		$post_user	= PostEvent::where('creator_id',$user->id)->where('type_post','post')->with('media')->get();
+
         $info = [
             'metas' => $metas,
             'user' => $user,
-			'tags' => $tags
+			'tags' => $tags,
+			'media_profile' => $profile_media,
+			'items_events' => $events_user,
+			'items_post' => $post_user
         ];
 
         $salida = [

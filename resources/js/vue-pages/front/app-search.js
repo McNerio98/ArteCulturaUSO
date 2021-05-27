@@ -8,7 +8,12 @@ const appTags = new Vue({
     data: {
         loading_page: true,
         pattern: null,
-        profiles: []
+        profiles: [],
+        paths: {
+            media_profiles: "../files/profiles/",
+            files_docs: "../files/pdfs/",
+            files_images: "../files/images/",                    
+        }        
     },
     created: function(){
         this.pattern = window.params_search;

@@ -136,8 +136,8 @@
 }
 
 .profile-pic {
-  height: 100px !important;
-  width: 100px !important;
+  height: 150px !important;
+  width: 150px !important;
   background-size: cover;
   background-position: center;
   background-blend-mode: multiply;
@@ -308,5 +308,9 @@
 
 .usTagProfile:hover .iconDel {
   display: inline;
+}
+
+.btnOptionsPreMedia {
+  background-color: #00cd6a;
 }
 

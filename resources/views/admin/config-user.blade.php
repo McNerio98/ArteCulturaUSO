@@ -90,10 +90,10 @@
                                         <div class="row">
                                             <div class="col-md-7">
                                                 <div class="user-block" style="margin-bottom: 15px; ">
-                                                    <img class="img-circle img-bordered-sm" src="../img/índice.jpg"
+                                                    <img class="img-circle img-bordered-sm" :src="paths.media_profiles + user.img_profile"
                                                         alt="user image">
                                                     <span class="username">
-                                                        <a href="#">Jonathan Burke Jr.</a>
+                                                        <a href="#">@{{user.artistic_name}}</a>
                                                     </span>
                                                     <span class="description">Rubros: </span>
                                                 </div>

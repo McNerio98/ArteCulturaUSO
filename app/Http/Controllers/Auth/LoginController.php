@@ -40,11 +40,27 @@ class LoginController extends Controller
             $api_token_access = (string) Str::uuid();
             $current_user->api_token = $api_token_access;
 
-            session(['cur_user_token_access' => $api_token_access]);
-            
+            $mtx_name = explode(" ",trim($current_user->name));
+            $name_user_short = "";
+            $name_user = "";
+            if(count($mtx_name) >= 2){
+                $name_user_short = $mtx_name[0][0].$mtx_name[1][0];
+                $name_user =$mtx_name[0]." ".$mtx_name[1]; 
+            }else{
+                $name_user_short = $mtx_name[0][0].$mtx_name[0][1];
+                $name_user =$mtx_name[0];
+            }
+
+            session([
+                'name_cur_user' => $name_user,
+                'name_cur_user_short' => $name_user_short,
+                'cur_user_token_access' => $api_token_access
+                ]);
+             
+
             $current_user->save();
             if($current_user->hasRole('Invitado')){
-                return redirect()->route('profile',['id'=>$current_user->id]); 
+                return redirect()->route('profile.show',['id'=>$current_user->id]); 
             }else{
                 //aqui tendria que extraerlos de la db, porq puede hallan registrado nuevos
                 //$user->hasRole(['editor', 'moderator'])

@@ -5,31 +5,46 @@ Vue.component('post-form-component', require('../components/post/Formulario.vue'
 Vue.component('post-media-component', require('../components/post/Media.vue').default);
 Vue.component('post-modal-component', require('../components/post/ModalVideo.vue').default);
 
-
+Vue.component('media-viewer', require('../components/media/ViewMediaComponent.vue').default);
+Vue.component('modal-trim-img', require('../components/trim/TrimComponent.vue').default);
+Vue.component('post-general',require('../components/post/PostGeneralComponent.vue').default);
 
 
 const appProfile = new Vue({
     el: "#appProfile",
     data: function(){
         return{
+            is_creating_event : false,
+            is_creating_post : false,
             edit_mode_desc: false,
             description_insert: "",
             current_user_id: 0,
             items_post: [],
             items_events: [],
-
-            artistic_name: null,
-            count_posts: null,
-            count_events: null,
-            content_desc: null,
+            items_events_server: [],
+            items_post_server: [],
+            paths: {
+                media_profiles: "../files/profiles/",
+                files_docs: "../files/pdfs/",
+                files_images: "../files/images/",                    
+            },
+            modal_cropper: "DEFAULT",
+            content_desc: "",
             desc_empty: false,
             isEditStatus: false,
-
             user: {},
+            current_profile_media: {},
+            media_profile: [],
             list_tags: undefined,
             is_edit_tags: false,
             rubro_to_insert: 0,
-            rubros: []
+            rubros: [],
+            is_mdprofiles: false, // is media profiles 
+            media_view: {
+                owner: 0,
+                target: 0,
+                items: []
+            }
         }
     },
     mounted: function(){
@@ -103,7 +118,7 @@ const appProfile = new Vue({
         },
         storeUserDescription: function(){
             let size_campo1 = this.description_insert.length;
-            if(size_campo1 < 1  || size_campo1 > 500){
+            if(size_campo1 < 1  || size_campo1 > 1000){
                 StatusHandler.ValidationMsg("El tamaño de la descripción no es valida");
                 return;
             };
@@ -120,12 +135,36 @@ const appProfile = new Vue({
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
                     return;
                 }; 
-                console.log("Este es el resultado")               ;
-                console.log(response);
+                this.content_desc = response.data.value;
+                this.description_insert = this.content_desc;
             }).catch((ex)=>{
                 StatusHandler.Exception("Registrar el metadato del usuario",ex);
+            }).finally(()=>{
+                this.edit_mode_desc = false;
             });
             
+        },
+        PostEventCreated: function(e){
+            console.log("Se emitio el evento");
+            var post = {
+                post: {
+                    id: e.id,
+                    title: e.title,
+                    description: e.content,
+                    type: e.type_post,
+                    creator_id: e.creator_id,
+                    is_popular: e.is_popular,
+                    status: e.status,
+                    created_at: e.created_at,
+                    name: this.user.name,
+                    artistic_name: this.user.artistic_name == undefined ? '(No Especificado)' : this.user.artistic_name,
+                    img_owner: this.current_profile_media.path_file
+                },
+                media: e.media,
+                meta: []                        
+            }
+            this.items_events.unshift(post);
+            this.is_creating_event = false;
         },
         loadData: function(){
             axios(`/api/profile/${this.current_user_id}`).then((result)=>{
@@ -136,8 +175,39 @@ const appProfile = new Vue({
                 };
 
                 this.user = response.data.user;
-                this.content_desc   = response.data.metas.find(e => e.key === 'user_profile_rawpass')?.value;
+                var aux_desc = response.data.metas.find(e => e.key === 'user_profile_description')?.value;
+                this.content_desc   = aux_desc == undefined ? "" : aux_desc;
+                this.media_profile = response.data.media_profile;
                 this.rubros = response.data.tags;
+                this.items_events_server = response.data.items_events;
+                this.items_post_server = response.data.items_post;
+
+                //extra data processing
+                this.description_insert = this.content_desc;
+                this.media_view.owner = this.user.id;
+                let aux_media  = this.media_profile.filter(e => e.id === this.user.img_profile_id);
+                this.current_profile_media = aux_media.length > 0 ? aux_media[0]: {};
+
+                //procesando eventos 
+                this.items_events = this.items_events_server.map(e =>{
+                    return {
+                        post: {
+                            id: e.id,
+                            title: e.title,
+                            description: e.content,
+                            type: e.type_post,
+                            creator_id: e.creator_id,
+                            is_popular: e.is_popular,
+                            status: e.status,
+                            created_at: e.created_at,
+                            name: this.user.name,
+                            artistic_name: this.user.artistic_name == undefined ? '(No Especificado)' : this.user.artistic_name,
+                            img_owner: this.current_profile_media.path_file
+                        },
+                        media: e.media,
+                        meta: []                        
+                    }
+                });
 
             }).catch((ex)=>{
                 console.error("UN ERROR",ex);
@@ -147,6 +217,55 @@ const appProfile = new Vue({
         },
         onClickEdit: function(){
             this.edit_mode_desc = true;
-        }
+        },
+        showProfilesMedia: function(target_media){
+            //estableciendo como carga el panel 
+            //asignando archivos 
+            //mostrando 
+            this.is_mdprofiles = true;
+            this.media_view.items = this.media_profile;
+            this.media_view.target = target_media;
+            $('#modaPreviewMedia').modal('show');
+        },
+        openTrim: function(){
+            this.modal_cropper = "IMG_MEDIA_PROFILE";
+            $('#modaPreviewMedia').modal('hide');
+            $("#hiddenImgFileTrim").trigger("click");            
+        },
+        filterModalCropper: function(base64){
+            if(this.modal_cropper === "DEFAULT"){console.error("Llamada inconsiste de modal cropper");return;};
+            switch(this.modal_cropper){
+                case "IMG_MEDIA_PROFILE": {
+                    this.SendImgProfile(base64);
+                }
+            }
+        },
+        SendImgProfile: function(base64){
+
+            let prev_path_img = this.current_profile_media.path_file;
+
+            let data = {
+                user_id: this.current_user_id,
+                img_profile_upload: base64
+            };
+
+            axios.post(`/api/user/uploadImgProfile`,data).then((result)=>{
+                let response = result.data;
+                if(response.code == 0){
+                    StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                    this.current_profile_media.path_file = prev_path_img;
+                    return;
+                }
+                this.current_profile_media = response.data; //nueva imagen 
+                this.media_profile.push(response.data);
+
+
+            }).catch((ex)=>{
+                StatusHandler.Exception("Establecer la nueva imagen",ex);
+                this.current_profile_media.path_file = prev_path_img;
+            }).finally(()=>{
+                
+            });
+        }               
     }
 });

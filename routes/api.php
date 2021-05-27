@@ -35,6 +35,7 @@ Route::get('users/dataConfig/{id}','UsersController@configUserData');
 Route::put('user/updateConfig/{id}','UsersController@updateConfigUser');
 Route::get('user/existEmail/{id}/{mail}','UsersController@validateEmail');
 Route::get('user/existUsername/{id}/{username}','UsersController@validateUsername');
+Route::post('user/uploadImgProfile','UsersController@uploadProfileImg');
 
 
 Route::get('tags/withCategories', 'TagsController@getBySeccion');

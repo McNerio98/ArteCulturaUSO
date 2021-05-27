@@ -13,7 +13,7 @@
         </div>
         <div class="card-body pb-0">
             <div class="row d-flex align-items-stretch">
-                <contact v-for="e in user_list" :key="e.id" :user="e"></contact>
+                <contact :paths="paths" v-for="e in user_list" :key="e.id" :user="e"></contact>
             </div>
         </div>
         <div class="card-footer">
@@ -36,8 +36,8 @@
 
 <script>
 	export default{
-		props:{
-			pathaction: ""
+		props: {
+			paths: {type: Object,required:true}
 		},
 		data(){
 			return {

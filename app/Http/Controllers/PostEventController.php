@@ -124,8 +124,8 @@ class PostEventController extends Controller
             DB::commit();
             $salida = [
                 "code" => 1,
-                "data" => $postEvent,
-                "msg" => "Ok"
+                "data" =>  $postEvent->load("media"),
+                "msg" => "Ok MC ".$postEvent->id
             ];
         }catch(\Exception $e){
             DB::rollback();
