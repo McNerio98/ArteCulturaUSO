@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\User;
+use App\MediaProfile;
 
 class RolesPermissionSeeder extends Seeder
 {
@@ -22,9 +23,6 @@ class RolesPermissionSeeder extends Seeder
     	$role_autor			= Role::create(['name' => 'Invitado']);
 
 		$permission = Permission::create(['name' => 'ver-usuarios']);
-		$permission = Permission::create(['name' => 'aceptar-usuario']);//quitar este 
-		$permission = Permission::create(['name' => 'desactivar-usuario']); //quitar este 
-		$permission = Permission::create(['name' => 'activar-usuario']); //quitar este 
 		$permission = Permission::create(['name' => 'crear-evento']);
 		$permission = Permission::create(['name' => 'crear-expresion']);
 		$permission = Permission::create(['name' => 'ver-categorias']);
@@ -35,22 +33,21 @@ class RolesPermissionSeeder extends Seeder
 		$permission = Permission::create(['name' => 'destacar-publicacion']);
 		$permission = Permission::create(['name' => 'editar-publicacion']);
 
-		//$permission = Permission::create(['name' => 'configurar-usuario']);
+		$permission = Permission::create(['name' => 'configurar-usuario']);
+
+
 
 		$list_permission = [
+			'configurar-usuario',
 			'ver-usuarios',
-			'aceptar-usuario',
-			'desactivar-usuario',
 			'ver-categorias',
 			'crear-categorias',
 			'modificar-categorias',
-			'eliminar-categorias',
-			'activar-usuario'];
+			'eliminar-categorias'];
 
 		$role_superadmin->syncPermissions($list_permission);
 
 
-		//this is the default users with SuperAdmin role
 
 		$admin = User::create([
 			'name' => 'Rene Lara',
@@ -61,11 +58,19 @@ class RolesPermissionSeeder extends Seeder
 			'status' => 'enabled',
 		]);
 
+		//hacer esto para todos los demas 
+		$profile0 = MediaProfile::create([
+			'user_id' => $admin->id,
+			'path_file' => 'default_img_profile.png'
+		]);		
+		$admin->img_profile_id = $profile0->id;
+		$admin->save();
+		//this is the default users with SuperAdmin role
 		$admin->assignRole('SuperAdmin');
 
 		
 		// for testing 
-		// IMPORTANT: This section most be deleted before deploy
+		// IMPORTANT: This section most be deleted before deploy	
 		$invitado1 = User::create([
 			'name' => 'Mario Nerio',
 			'email' => 'ax.minck@gmail.com',
@@ -74,10 +79,15 @@ class RolesPermissionSeeder extends Seeder
 			'telephone' => '2222-2222',
 			'status' => 'enabled',
 		]);
-
+		$profile1 = MediaProfile::create([
+			'user_id' => $invitado1->id,
+			'path_file' => 'default_img_profile.png'
+		]);			
+		$invitado1->img_profile_id = $profile1->id;
+		$invitado1->save();
 		$invitado1->assignRole('Invitado');
 
-
+		
 		$invitado2 = User::create([
 			'name' => 'Alex Chinque',
 			'email' => 'alexcnk97@gmail.com',
@@ -86,7 +96,12 @@ class RolesPermissionSeeder extends Seeder
 			'telephone' => '2222-2222',
 			'status' => 'request',
 		]);
-
+		$profile2 = MediaProfile::create([
+			'user_id' => $invitado2->id,
+			'path_file' => 'default_img_profile.png'
+		]);			
+		$invitado2->img_profile_id = $profile2->id;
+		$invitado2->save();
 		$invitado2->assignRole('Invitado');			        
     }
 }

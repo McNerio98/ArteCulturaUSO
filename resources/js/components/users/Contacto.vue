@@ -20,13 +20,13 @@
                         </ul>
                     </div>
                     <div class="col-5 text-center">
-                        <img :src="pathImg + contact.img_profile" alt="" class="img-circle img-fluid">
+                        <img :src="paths.media_profiles + contact.img_profile" alt="" class="img-circle img-fluid">
                     </div>
                 </div>
             </div>
             <div class="card-footer">
                 <div class="text-right">                   
-                    <a v-if="has_cap('configurar-usuario') && !contact.isActive" 
+                    <a v-if="has_cap('configurar-usuario') && !contact.isActive && !contact.isRequest" 
                     v-on:click.prevent="changeStatus($event,'enable-user')" class="btn btn-sm bg-success" href="#">
                         <i class="fas fa-unlock"></i> Habilitar
                     </a>                    
@@ -39,7 +39,7 @@
                         <i class="fas fa-lock"></i> Aceptar
                     </a>
                     <!--en este se omite la validacion de permisos, porque si esta en esta pantalla es porque si tiene el permiso de ver usuarios-->
-                    <a :href="'/admin/users/config/' + this.user.id" class="btn btn-sm btn-primary">
+                    <a v-if="has_cap('ver-usuarios')" :href="'/admin/users/config/' + this.user.id" class="btn btn-sm btn-primary">
                         <i class="fas fa-user"></i> Ver Perfil
                     </a>
                 </div>
@@ -49,10 +49,12 @@
 </template>
 <script>
 export default {
-    props: ['user'],    
+    props: {
+        user: {type: Object,required:true},
+        paths: {type: Object,required:true}
+    },    
     data(){
         return {
-            pathImg : $('#url_server').val() + "/content/profiles_images",
             contact: {
                 id_user: this.user.id,
                 role: this.user.role,

@@ -12,15 +12,80 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
+use Storage;
+use App\MediaProfile;
+
 
 class UsersController extends Controller
 {
+    public $path_store_profiles =  "/files/profiles/";
+
     public function __construct(){
         $this->middleware('auth',['only'=>['configUser']]);
         $this->middleware('auth:api',['only'=>[
             'configUserData',
-            'updateConfigUser'
+            'updateConfigUser',
+            'uploadProfileImg'
             ]]);
+    }
+
+
+    public function uploadProfileImg(Request $request){
+        $salida = [
+            'code' => 0,
+            'data' => null,
+            'msg' => null
+        ];
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => "required",
+            'img_profile_upload' => 'required'
+        ]);
+
+        if($validator->fails()){
+            $salida["msg"] = "Valores incompletos";
+            return $salida;
+        }
+
+        $valid_extens = ["jpeg", "jpg", "png","JPEG", "JPG", "PNG"];
+        $file_extension = explode('/', mime_content_type($request->img_profile_upload))[1];
+        if(! in_array($file_extension, $valid_extens)){
+            $salida["msg"] = "Formato de imagen no admitido";
+            return $salida;
+        }
+
+        if( Auth::user()->id != $request->user_id){
+            $salida['msg'] = "Accion no permitida";
+            return $salida;
+        }
+        
+        try{
+            date_default_timezone_set('America/El_Salvador');
+            DB::beginTransaction();
+            $img = $request->img_profile_upload;
+            $data = substr($img, strpos($img, ',') + 1);
+            $img_name = time().uniqid().".".$file_extension;
+            $path_store = $this->path_store_profiles.$img_name;
+            Storage::disk('local')->put($path_store,base64_decode($data));
+            $media = MediaProfile::create([
+                'user_id' => Auth::user()->id,
+                'path_file' => $img_name
+            ]);
+            
+            Auth::user()->img_profile_id = $media->id;
+            Auth::user()->save();
+            $salida["code"] = 1;
+            $salida["data"] = $media;
+            DB::commit();
+        }catch(\Exception $e){
+            DB::rollback();
+            //Si funciona, el getMessage recuperar la SQL
+            //$e->getMessage()
+            $salida['msg'] = "Error de transacción Póngase en contacto con soporte técnico.";
+            return $salida;            
+        }
+        
+        return $salida;
     }
 
     public function configUser($id){
@@ -235,9 +300,10 @@ class UsersController extends Controller
 
         $metas = UserMeta::whereIn('key',$metas_get)->where('user_id',$id)->get();
 
+        $user = User::leftJoin("media_profiles","media_profiles.id","=","users.img_profile_id")->where("users.id","=",$id)->select("users.*","media_profiles.path_file AS img_profile")->first();
         $info = [
             'metas' => $metas,
-            'user' => User::find($id),
+            'user' => $user,
             'rol' => User::find($id)->roles->first()
         ];
 
@@ -268,8 +334,9 @@ class UsersController extends Controller
         $result = DB::table('users')
         ->join("model_has_roles","model_has_roles.model_id","=","users.id")
         ->join("roles","roles.id","=","model_has_roles.role_id")
-        ->select("users.id","roles.name as role","users.name","users.img_profile","users.email",
-            "users.username","users.telephone","users.rubros","users.status")
+        ->leftJoin('media_profiles','media_profiles.id','=','users.img_profile_id')
+        ->select("users.id","roles.name as role","users.name","users.img_profile_id","users.email",
+            "users.username","users.telephone","users.rubros","users.status","media_profiles.path_file AS img_profile")
         ->paginate($per_page);
 
         return [
@@ -388,7 +455,8 @@ class UsersController extends Controller
         $validator = Validator::make($request->all(),[
             'name' => 'required|max:200|min:2',
             'email' => 'required|email|unique:users',
-            'telephone' => 'required|numeric|digits_between:8,9',  //8 sin guion, 9 con guion 
+            //'telephone' => 'required|numeric|digits_between:8,9',  //8 sin guion, 9 con guion 
+            'telephone' => 'required: max: 9',
             'rubros' => 'required|numeric|min:1',
             'artistic_name' => 'required|max:100|min:2'            
         ],$validation_messages);
@@ -399,9 +467,8 @@ class UsersController extends Controller
             return $salida;
         }
 
-        DB::beginTransaction();
-
         try{
+            DB::beginTransaction();
             $new_user->name = $request->name;
             $new_user->email = $request->email;
             //$new_user->username = strstr($request->email, '@', true);
@@ -412,11 +479,17 @@ class UsersController extends Controller
             $new_user->save();
             $new_user->assignRole('Invitado');
 
+            //agregando imagen por defecto 
+            $profile_img = MediaProfile::create([
+                'user_id' => $new_user->id,
+                'path_file' => 'default_img_profile.png'
+            ]);	            
+            $new_user->img_profile_id = $profile_img->id;
+            $new_user->save();
             $tag_profile = new TagsOnProfile;
             $tag_profile->user_id = $new_user->id;
             $tag_profile->tag_id = $request->rubros;
             $tag_profile->save();
-
 
             DB::commit();
             $salida = [
@@ -425,11 +498,10 @@ class UsersController extends Controller
                 'msg' => 'Usuario registrado',
                 'errors' => null
             ];
-            return $salida;
         }catch(\Exception $e){
             DB::rollback();
-            $salida['msg'] = "Error de transacción, Póngase en contacto con soporte técnico.";
-            return $salida;
+            $salida['msg'] = "Error de transacción Póngase en contacto con soporte técnico."  . $e->getMessage();
         }
+        return $salida;
     }
 }

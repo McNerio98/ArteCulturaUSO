@@ -50,10 +50,10 @@
                             style="color: #20B7EB !important; background-color: transparent !important; border: 0px !important;"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-user"></i>
-                            MCNerio
+                            {{ session()->get('name_cur_user_short') }}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <a class="dropdown-item" href="#">Mario Nerio</a>
+                            <a class="dropdown-item" href="{{route('profile.show',Auth::user()->id)}}">{{ session()->get('name_cur_user') }}</a>
                             <a class="dropdown-item" href="#"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Cerrar
                                 Session</a>

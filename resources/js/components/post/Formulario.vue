@@ -4,7 +4,7 @@
   <link href="/css/post/post.css" rel="stylesheet">
     <div class="col-12">
       <div class="row">
-        <div class="col-12 titleContainer">
+        <div class="col-12 titleContainer mb-2">
           <img
             width="60px"
             height="60px"
@@ -13,12 +13,13 @@
             :src="userData.profile_path"
             alt="user image"
           />
-          <div style="width: 100%; margin-left: 10px" class="form-group">
+          <div style="width: 100%; margin-left: 10px" class="form-group mb-0">
             <input
               v-model="post_title"
               v-bind:placeholder="place_holder_title"
               width="100%"
               type="email"
+              style="margin-bottom: 0px;"
               class="form-control"
               id="exampleInputEmail1"
               aria-describedby="emailHelp"
@@ -26,10 +27,9 @@
           </div>
         </div>
         <div class="col-12">
-          <br />
           <div class="row">
             <div class="col-12 col-lg-4 col-md-4">
-              <div class="form-group" v-if="postType == 'event'">
+              <div class="form-group mb-0" v-if="postType == 'event'">
                 <label for="exampleFormControlTextarea1" class="text-muted">Fecha/hora</label>
 
                  <date-picker v-model="time1" 
@@ -42,7 +42,7 @@
               </div>
             </div>
             <div class="col-12 col-lg-4 col-md-4">
-              <div class="form-group" v-if="postType == 'event'">
+              <div class="form-group mb-0" v-if="postType == 'event'">
                 <label for="exampleFormControlTextarea1" class="text-muted">Tipo de evento</label >
                 <select v-model="event_type" class="custom-select">
                   <option selected value="1">Eventual</option>
@@ -51,7 +51,7 @@
               </div>
             </div>
             <div class="col-12 col-lg-4 col-md-4">
-              <div class="form-group" v-if="postType == 'event'">
+              <div class="form-group mb-0" v-if="postType == 'event'">
                 <label for="exampleFormControlTextarea1" class="text-muted">Categoria</label>
                 <select
                   id="selectPrice"
@@ -64,7 +64,7 @@
               </div>
             </div>
             <div v-if="show_panel_price" class="col-12 col-lg-12 col-md-12">
-              <div class="form-group">
+              <div class="form-group mb-0">
                 <label
                   for="exampleFormControlTextarea1"
                   class="text-muted"
@@ -109,7 +109,7 @@
           </div>
         </div>
         <div class="col-12">
-          <div class="form-group">
+          <div class="form-group mb-0">
             <label for="exampleFormControlTextarea1"></label>
             <textarea
               v-model="description"
@@ -229,7 +229,9 @@ export default {
           }        
             console.log(response);
             this.cleanForm(); 
-            this.$emit('post-id-created',response.data.id);
+            console.log("Antes de emitir ......");
+            this.$emit('post-id-created',response.data);
+            
       }).catch((ex) => {
             console.log(ex);
       })

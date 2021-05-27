@@ -30,7 +30,12 @@ const appConfigUser = new Vue({
             user_description: "",
             username_exist: false,
             email_exist: false,
-            send_credentials: false
+            send_credentials: false,
+            paths: {
+                media_profiles: "../../../files/profiles/",
+                files_docs: "../files/pdfs/",
+                files_images: "../files/images/",                    
+            }            
         }
     },
     created: function(){
@@ -48,6 +53,8 @@ const appConfigUser = new Vue({
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
                     return;
                 }; 
+                console.log("Esta es la response");
+                console.log(response.data);
                 this.credentials.username = response.data.user.username;
                 this.credentials.email = response.data.user.email;
                 this.credentials.pass = response.data.metas.find(e => e.key === 'user_profile_rawpass')?.value;
@@ -58,6 +65,7 @@ const appConfigUser = new Vue({
                 this.role_selected = this.user_role?.id;
                 this.credentials.role = this.user_role?.id;
                 this.is_accepted_request = response.data.user.status == 'request'?false:true;
+                this.current_profile_media = "";
             }).catch(ex =>{
                 StatusHandler.Exception("Recuperar información del usuario",ex);
             }).finally(()=>{

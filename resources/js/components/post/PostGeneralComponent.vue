@@ -2,7 +2,7 @@
     <div class="card card-widget">
         <div class="card-header">
             <div class="user-block">
-                <img class="img-circle" src="https://ca-times.brightspotcdn.com/dims4/default/5435fb6/2147483647/strip/true/crop/971x697+0+0/resize/840x603!/quality/90/?url=https%3A%2F%2Fcalifornia-times-brightspot.s3.amazonaws.com%2F12%2F40%2F0da1dd4f481494cdac1f4a7ae884%2Fla-novia-de-brad-pitt-esta-1180112.JPG" alt="User Image">
+                <img class="img-circle" :src="paths.media_profiles + model.post.img_owner" alt="User Image">
                 <span class="username"><a href="#">{{model.post.artistic_name == null?model.post.name:model.post.artistic_name}}</a></span>
                 <span class="description">{{model.post.title}}</span>
             </div>
@@ -108,7 +108,8 @@
                             status: "review",
                             created_at: "",
                             name: "",
-                            artistic_name: ""                    
+                            artistic_name: "",
+                            img_owner: ""                    
                         },
                         media: [],
                         meta: []
@@ -118,6 +119,11 @@
         },      
         data: function(){
             return {
+                paths: {
+                    media_profiles: "/files/profiles/",
+                    files_docs: "/files/pdfs/",
+                    files_images: "/files/images/",                    
+                },                
                 post_approved: this.model.post.status == "review"?false:true,
                 post_delete: false,
                 media_img: [],

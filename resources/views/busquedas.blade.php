@@ -50,7 +50,7 @@
                 <div class="card-body p-0">
                     <ul class="products-list product-list-in-card pl-2 pr-2">
 
-                    <profile v-for="e of profiles" :user="e" :path-redirect=" '../perfil/'+e.id"></profile>
+                    <profile v-for="e of profiles" :paths="paths" :user="e" :path-redirect=" '../perfil/'+e.id"></profile>
                     </ul>
                 </div>
                 <!-- /.card-body -->

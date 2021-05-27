@@ -16,16 +16,14 @@
 
                 <div class="text-center">
 
-                    <div style="background-image: url('{{asset('content/profiles_images/default_img_profile.png')}}')"
-                        class="profile-pic profile-user-img img-fluid img-circle">
+                    <div v-if="current_profile_media.path_file != undefined" v-bind:style="{ 'background-image': 'url(' + paths.media_profiles + current_profile_media.path_file + ')' }"
+                        class="profile-pic profile-user-img img-fluid img-circle" @click="showProfilesMedia(current_profile_media.id)">
                         <i class="fas fa-camera"></i>
                     </div>
 
-
-
                 </div>
 
-                <h3 class="profile-username text-center">@{{user.artistic_name}}</h3>
+                <h3 class="profile-username text-center">@{{user.artistic_name == null ? '(No especificado)' : user.artistic_name}}</h3>
                 <p class="text-muted text-center">
                     <span v-for="(e,index) of rubros" >
                         <span class="usTagProfile">
@@ -64,10 +62,10 @@
 
                 <ul class="list-group list-group-unbordered mb-3">
                     <li class="list-group-item">
-                        <b>Publicaciones</b> <a class="float-right">@{{count_posts}}</a>
+                        <b>Publicaciones</b> <a class="float-right">@{{user.count_posts}}</a>
                     </li>
                     <li class="list-group-item">
-                        <b>Proximos Eventos</b> <a class="float-right">@{{count_events}}</a>
+                        <b>Proximos Eventos</b> <a class="float-right">@{{user.count_events}}</a>
                     </li>
                 </ul>
             </div>
@@ -121,7 +119,7 @@
                     </li>
                 </ul>
             </div><!-- /.card-header -->
-            <div class="card-body">
+            <div class="card-body" style="background-color: #ebeff3 !important;">
                 <div class="tab-content">
                     <div class="active tab-pane" id="biografia">
                         <div class="post">
@@ -130,16 +128,19 @@
                                 <button v-else class="btn btn-outline-success btn-flat" @click="storeUserDescription"><i class="fas fa-save"></i> Guardar</button>                                
                                 <button  v-if="edit_mode_desc" @click="edit_mode_desc = false" class="btn btn-outline-secondary btn-flat"><i class="fas fa-ban"></i> Cancelar</button>    
                             </div>
-                            <div class='p-2 text-center' v-if="desc_empty && !edit_mode_desc">
+
+                            <div class='p-2 text-center' v-if="content_desc.length < 2 && !edit_mode_desc">
                                 <i class="fas fa-book-open" style='font-size: 3rem;'></i>
                                     <br>
                                     <span>DESCRIPCION VACIA</span>
                             </div>
+
                             <div v-if="!desc_empty && !edit_mode_desc">
-                                <p>........</p>
+                                <p>@{{content_desc}}</p>
                             </div>
+
                             <div v-if="edit_mode_desc">
-                                <textarea placeholder="Introduce una descripcion..." v-model="description_insert" rows="3" class="form-control" style="resize: none;"></textarea>                            
+                                <textarea placeholder="Introduce una descripcion..." v-model="description_insert" rows="7" class="form-control" style="resize: none;"></textarea>                            
                             </div>
                         </div>
                         <!-- Post -->
@@ -150,14 +151,34 @@
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="timeline">
-                        <div id="event-cp">
-                        <post-event post-type="event"></post-event>
+                        <div id="event-cp" style="width: 100%;max-width: 600px;margin: auto;">
+                            <!--SOLO SI EL USUARIO ESTA LOGEADO-->
+                            @auth
+                                @if(Auth::user()->id == $id_user_cur)
+                                    <a class="mb-2" v-if="!is_creating_event" href="javascript:void(0);" @click.prevent="is_creating_event = true" style="display: flex;flex-direction: column; padding: 10px; align-items: center; background-color: #f6f6f6; margin-bottom: 10px;">
+                                        <i class="fas fa-plus"></i>
+                                        <u>+ Nuevo Evento</u>
+                                    </a>                                    
+                                    <post-event @post-created="PostEventCreated" v-if="is_creating_event" :user-info="{username: user.name, profile_path: paths.media_profiles + current_profile_media.path_file}" post-type="event"></post-event>
+                                @endif
+                            @endauth
+                            <post-general v-for="e of items_events"  :model="e" @change-popular=""></post-general>                        
                         </div>
+
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="settings">
                         <div id="post-cp">
-                        <post-event post-type="post"></post-event>
+                            <!--SOLO SI EL USUARIO ESTA LOGEADO-->
+                            @auth
+                                @if(Auth::user()->id == $id_user_cur)
+                                    <a class="mb-2" v-if=" ! is_creating_post" href="javascript:void(0);" @click.prevent="is_creating_post = true" style="display: flex;flex-direction: column; padding: 10px; align-items: center; background-color: #f6f6f6; margin-bottom: 10px;">
+                                        <i class="fas fa-plus"></i>
+                                        <u>+ Nuevo Publicacion</u>
+                                    </a>                                                                    
+                                @endif
+                            @endauth
+                            <post-event f-if="is_creating_post" post-type="post"></post-event>
                         </div>
                     </div>
                     <!-- /.tab-content -->
@@ -168,11 +189,26 @@
         <!-- /.col -->
     </div>
     <!-- /.row -->
+    
+    <media-viewer 
+    :media-profile="is_mdprofiles"  
+    :paths="paths" 
+    :target-id="media_view.target"
+    :logged.number='{{Auth::user() == null ? 0 : Auth::user()->id}}'
+    :owner="media_view.owner"
+    @new-profile-media="openTrim"
+     :items="media_view.items">
+    </media-viewer>    
+
+    <modal-trim-img @base64-generated="filterModalCropper"></modal-trim-img>
 </div>
+
 
 @endsection
 
 
 @Push('customScript')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.9/cropper.min.js" integrity="sha512-9pGiHYK23sqK5Zm0oF45sNBAX/JqbZEP7bSDHyt+nT3GddF+VFIcYNqREt0GDpmFVZI3LZ17Zu9nMMc9iktkCw==" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.9/cropper.min.css" integrity="sha512-w+u2vZqMNUVngx+0GVZYM21Qm093kAexjueWOv9e9nIeYJb1iEfiHC7Y+VvmP/tviQyA5IR32mwN/5hTEJx6Ng==" crossorigin="anonymous" />
 <script src="{{asset('js/app-profile.js')}}"></script>
 @endpush

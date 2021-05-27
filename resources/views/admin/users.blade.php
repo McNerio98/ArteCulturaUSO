@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="container-fluid" id="users">
-		<pnl-pagination></pnl-pagination>
+		<pnl-pagination :paths="paths"></pnl-pagination>
 </div>
 <!--/. container-fluid -->  
 @endsection
