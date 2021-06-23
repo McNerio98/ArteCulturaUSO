@@ -39,6 +39,7 @@ class TagsController extends Controller
 
     public function index()
     {
+        //operacion obsoleta
         $result = DB::table('tags')
                     ->whereNotIn('name',['Artistas','Promotores','Expresiones','Escuelas','Recursos'])
                     ->get();

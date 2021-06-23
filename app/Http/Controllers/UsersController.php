@@ -21,7 +21,7 @@ class UsersController extends Controller
     public $path_store_profiles =  "/files/profiles/";
 
     public function __construct(){
-        $this->middleware('auth',['only'=>['configUser']]);
+        //$this->middleware('auth',['only'=>['configUser']]);
         $this->middleware('auth:api',['only'=>[
             'configUserData',
             'updateConfigUser',
@@ -88,16 +88,6 @@ class UsersController extends Controller
         return $salida;
     }
 
-    public function configUser($id){
-        if( ! Auth::user()->can('ver-usuarios')){
-            return redirect()->route('dashboard');
-        };
-        
-        $roles = Role::all();
-        return view("admin.config-user",['id_user_cur' => $id,'all_roles' =>$roles]);
-        //return view("admin.config-user")->with('id_user_cur',$id);
-    }
-
     public function validateEmail($id,$email){
         $salida = [
             "code" => 0,
@@ -141,8 +131,6 @@ class UsersController extends Controller
 
         return $salida;
     }
-
-
 
     public function updateConfigUser(Request $request,$id){
         $salida = [
@@ -294,7 +282,7 @@ class UsersController extends Controller
         };
 
         $metas_get = ['user_profile_description'];
-        if(Auth::user()->can('configurar-usuario')){
+        if(Auth::user()->can('configurar-usuarios')){
             array_push($metas_get,'user_profile_rawpass');
         }
 

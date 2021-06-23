@@ -255,3 +255,26 @@
 .btnOptionsPreMedia{
   background-color: $acEmerald;
 }
+
+._acHoverA:hover{
+  background-color: #6c757d !important;
+  color: #ffffff !important;
+  cursor: pointer;  
+}
+
+
+
+.ad-popular-pe:hover{
+	cursor: pointer;
+	background-color: #f2f4f6 !important;
+}
+
+
+.bg-hpolis{background-color: #2c3749 !important;}
+.text-hpolis{color: #d4cece !important;}
+.text-hpolis:hover{
+    color: white !important;
+}
+.nav-pills .nav-link.active{
+  color: white !important;
+}

@@ -19,7 +19,7 @@ const appProfile = new Vue({
             edit_mode_desc: false,
             description_insert: "",
             current_user_id: 0,
-            items_post: [],
+            items_posts: [],
             items_events: [],
             items_events_server: [],
             items_post_server: [],
@@ -146,6 +146,7 @@ const appProfile = new Vue({
         },
         PostEventCreated: function(e){
             console.log("Se emitio el evento");
+
             var post = {
                 post: {
                     id: e.id,
@@ -153,8 +154,8 @@ const appProfile = new Vue({
                     description: e.content,
                     type: e.type_post,
                     creator_id: e.creator_id,
-                    is_popular: e.is_popular,
-                    status: e.status,
+                    is_popular: false,
+                    status: 'review',
                     created_at: e.created_at,
                     name: this.user.name,
                     artistic_name: this.user.artistic_name == undefined ? '(No Especificado)' : this.user.artistic_name,
@@ -163,8 +164,16 @@ const appProfile = new Vue({
                 media: e.media,
                 meta: []                        
             }
-            this.items_events.unshift(post);
-            this.is_creating_event = false;
+            if(e.type_post == "post"){
+                this.items_posts.unshift(post);
+                this.is_creating_post = false;
+            }
+
+            if(e.type_post == "event"){
+                this.items_events.unshift(post);
+                this.is_creating_event = false;                
+            }            
+
         },
         loadData: function(){
             axios(`/api/profile/${this.current_user_id}`).then((result)=>{
@@ -208,6 +217,28 @@ const appProfile = new Vue({
                         meta: []                        
                     }
                 });
+
+
+                //procesando post 
+                this.items_posts = this.items_post_server.map(e =>{
+                    return {
+                        post: {
+                            id: e.id,
+                            title: e.title,
+                            description: e.content,
+                            type: e.type_post,
+                            creator_id: e.creator_id,
+                            is_popular: e.is_popular,
+                            status: e.status,
+                            created_at: e.created_at,
+                            name: this.user.name,
+                            artistic_name: this.user.artistic_name == undefined ? '(No Especificado)' : this.user.artistic_name,
+                            img_owner: this.current_profile_media.path_file
+                        },
+                        media: e.media,
+                        meta: []                        
+                    }
+                });                
 
             }).catch((ex)=>{
                 console.error("UN ERROR",ex);
@@ -266,6 +297,6 @@ const appProfile = new Vue({
             }).finally(()=>{
                 
             });
-        }               
+        }                       
     }
 });

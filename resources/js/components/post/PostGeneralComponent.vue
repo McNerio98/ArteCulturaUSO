@@ -21,21 +21,23 @@
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-            <div class="form-group  m-0">
-                <div class="custom-control custom-switch custom-switch-on-success">
+            <div v-if="has_cap('aprobar-publicaciones')" class="form-group  m-0">
+                <div  class="custom-control custom-switch custom-switch-on-success">
                     <input type="checkbox"  class="custom-control-input" id="switchApprovedPost" :checked="validate_approved(model.post.status)" @change="switchStatePost"/>
                     <label v-if="model.post.status == 'review' " class="custom-control-label" for="switchApprovedPost">Aprueba este elemento para que sea visible
                         para todos</label>
                     <label v-if="model.post.status == 'approved' " class="custom-control-label" for="switchApprovedPost">El elemento ha sido aprobado</label>                        
                 </div>
             </div>            
-            <div class="form-group">
+
+            <div v-if="has_cap('destacar-publicaciones')" class="form-group">
                 <div class="custom-control custom-switch custom-switch-on-success">
                     <input type="checkbox" v-model="model.post.is_popular" class="custom-control-input" id="switchPopularPost" @change="setPostPopular" />
                     <label v-if="! model.post.is_popular" class="custom-control-label" for="switchPopularPost">Marcar elemento como destacado </label>
                     <label v-else class="custom-control-label" for="switchPopularPost">Marcado como elemento destacado</label>
                 </div>
             </div>
+
             <blockquote v-if="model.post.status == 'review' " class="quote-secondary">
                 <p>El elemento actual se encuentra en <b>revisión.</b> Deberá ser aprobado por los administradores para ser
                     visible para todos los usuarios.</p>
@@ -46,7 +48,7 @@
                     <div class="description-block border-right">
                         <span class="text-success h4"><i class="fas fa-dollar-sign"></i></span>
                         <h5 class="description-header">Costo de Entrada</h5>
-                        <span class="description-text">Costo de Entrada</span>
+                        <span class="description-text">Gratis</span>
                     </div>
                     <!-- /.description-block -->
                 </div>
@@ -55,7 +57,7 @@
                     <div class="description-block border-right">
                         <span class="text-warning h4"><i class="fas fa-calendar-alt"></i></span>
                         <h5 class="description-header">Fecha a realizarse</h5>
-                        <span class="description-text">Fecha a realizarse</span>
+                        <span class="description-text">26/05/2024</span>
                     </div>
                     <!-- /.description-block -->
                 </div>
@@ -64,7 +66,7 @@
                     <div class="description-block border-right">
                         <span class="text-success h4"><i class="fas fa-redo-alt"></i></span>
                         <h5 class="description-header">Se repite</h5>
-                        <span class="description-text">TOTAL PROFIT</span>
+                        <span class="description-text">Cada año</span>
                     </div>
                     <!-- /.description-block -->
                 </div>
@@ -254,7 +256,10 @@
                     //rollback state
                     this.model.post.status = last_state; 
                 });
-            }
+            },
+            has_cap(e){
+                return window.has_cap(e);
+            }            
         }
     }
 </script>

@@ -7,6 +7,29 @@
     <title>@yield('title') | Observatorio Cultural</title>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">    
     <link href="{{ asset('css/observatorio_styles.css') }}" rel="stylesheet">       
+    <script>
+        window.obj_ac_app = {!! json_encode([
+            'csrfToken' => csrf_token(), // token 
+            'permissions' => Auth::user() == null?null:Auth::user()->getPermissionsViaRoles(), //Los permisos del usuario actual 
+            'base_url' => url('/'), //URL BASE 
+            'full_url' => url()->full(),
+            'current_url' => url()->current()
+        ]) !!};
+
+        window.has_cap = function(cap){
+            let status_cap = false;
+            if(window.obj_ac_app.permissions == undefined){
+                return false;
+            }
+            
+            for(let val of window.obj_ac_app.permissions){
+                if(val.name === cap){
+                    return !status_cap;
+                }
+            }
+            return status_cap;
+        }
+    </script>     
     @stack('styles')
 </head>
 

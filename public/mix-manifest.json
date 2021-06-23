@@ -8,6 +8,7 @@
     "/js/app-inicio.js": "/js/app-inicio.js",
     "/js/app-post.js": "/js/app-post.js",
     "/js/app-profile.js": "/js/app-profile.js",
+    "/js/app-roles.js": "/js/app-roles.js",
     "/js/app-rubros.js": "/js/app-rubros.js",
     "/js/app-search.js": "/js/app-search.js",
     "/js/app-tags.js": "/js/app-tags.js",

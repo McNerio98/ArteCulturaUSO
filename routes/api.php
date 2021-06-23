@@ -67,6 +67,11 @@ Route::post('categories','CategoriesController@store')->name('tags.store');
 //por categoria 
 Route::get('search/byCategory/{id}','SearchController@byCategory');
 
+Route::get('roles','RolesController@index')->name("roles.index");
+Route::get('roles/{id}','RolesController@show')->name("roles.show");
+Route::put('roles/{id}','RolesController@update')->name("roles.update");
+
+
 //experiementando si las request post o get necesitan toke 
 Route::get('routeget/{id}','ArtistaController@requestget');
 Route::post('routepost/{id}','ArtistaController@requestpost');

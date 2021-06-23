@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Auth;
 use Illuminate\Support\Str;
+use App\MediaProfile;
 
 class LoginController extends Controller
 {
@@ -51,10 +52,13 @@ class LoginController extends Controller
                 $name_user =$mtx_name[0];
             }
 
+            $media = MediaProfile::find($current_user->img_profile_id);
+
             session([
                 'name_cur_user' => $name_user,
                 'name_cur_user_short' => $name_user_short,
-                'cur_user_token_access' => $api_token_access
+                'cur_user_token_access' => $api_token_access,
+                'media_profile_user' => $media->path_file,
                 ]);
              
 
@@ -80,7 +84,7 @@ class LoginController extends Controller
             return redirect($path);
 
         if($current_user->hasRole('Invitado')){
-            $path = '/login';    
+            $path = '/';    
         }
 
         Auth::logout();

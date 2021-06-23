@@ -1,5 +1,6 @@
 Vue.component('request-component', require('../../components/RequestAccount.vue').default);
 
+
 const app_inicio = new Vue({
     el: '#app_inicio',
     data: {
@@ -7,7 +8,7 @@ const app_inicio = new Vue({
     },
     mounted: function(){
         //Cargar post destacados 
-        this.cargarPostDestacados();
+        //this.cargarPostDestacados();
     },
     methods: {
         cargarPostDestacados: function(){

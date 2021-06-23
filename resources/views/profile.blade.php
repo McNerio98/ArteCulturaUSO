@@ -164,21 +164,21 @@
                             @endauth
                             <post-general v-for="e of items_events"  :model="e" @change-popular=""></post-general>                        
                         </div>
-
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="settings">
-                        <div id="post-cp">
+                        <div id="post-cp" style="width: 100%;max-width: 600px;margin: auto;">
                             <!--SOLO SI EL USUARIO ESTA LOGEADO-->
                             @auth
                                 @if(Auth::user()->id == $id_user_cur)
                                     <a class="mb-2" v-if=" ! is_creating_post" href="javascript:void(0);" @click.prevent="is_creating_post = true" style="display: flex;flex-direction: column; padding: 10px; align-items: center; background-color: #f6f6f6; margin-bottom: 10px;">
                                         <i class="fas fa-plus"></i>
                                         <u>+ Nuevo Publicacion</u>
-                                    </a>                                                                    
+                                    </a>
+                                    <post-event @post-created="PostEventCreated" v-if="is_creating_post" :user-info="{username: user.name, profile_path: paths.media_profiles + current_profile_media.path_file}" post-type="post"></post-event>                                              
                                 @endif
                             @endauth
-                            <post-event f-if="is_creating_post" post-type="post"></post-event>
+                            <post-general v-for="e of items_posts"  :model="e" @change-popular=""></post-general>                        
                         </div>
                     </div>
                     <!-- /.tab-content -->
