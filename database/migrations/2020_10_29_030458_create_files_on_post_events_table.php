@@ -18,7 +18,6 @@ class CreateFilesOnPostEventsTable extends Migration
             $table->timestamps();
             $table->unsignedBigInteger('id_post_event');
             $table->string("name",500);
-            $table->string("path_file",500);
             $table->enum('type_file',['image','video','docfile'])->default('image');
             $table->foreign('id_post_event')->references('id')->on('post_events');
 

@@ -22,29 +22,101 @@ class RolesPermissionSeeder extends Seeder
 		$role_inspector 	= Role::create(['name' => 'Inspector']);
     	$role_invitado			= Role::create(['name' => 'Invitado']);
 
-		$permission = Permission::create(['name' => 'ver-usuarios']);
-		$permission = Permission::create(['name' => 'configurar-usuarios']);
+		$permission = Permission::create([
+			'name' => 'ver-usuarios',
+			'description' => 'Description for this permission'
+		]);
 		
-		$permission = Permission::create(['name' => 'crear-homenajes']); 			//C
-		$permission = Permission::create(['name' => 'ver-homenajes']); 				//R
-		$permission = Permission::create(['name' => 'editar-homenajes']); 		//U
-		$permission = Permission::create(['name' => 'eliminar-homenajes']);	//D
+		$permission = Permission::create([
+			'name' => 'configurar-usuarios',
+			'description' => 'Description for this permission'
+		]);
+		
+		$permission = Permission::create([
+			'name' => 'crear-homenajes',
+			'description' => 'Description for this permission'
+		]);
 
-		$permission = Permission::create(['name' => 'crear-rubros']); 			//C
-		$permission = Permission::create(['name' => 'ver-rubros']); 			//R
-		$permission = Permission::create(['name' => 'editar-rubros']); 		//U
-		$permission = Permission::create(['name' => 'eliminar-rubros']); //D
+		$permission = Permission::create([
+			'name' => 'ver-homenajes',
+			'description' => 'Description for this permission'
+		]);
+
+		$permission = Permission::create([
+			'name' => 'editar-homenajes',
+			'description' => 'Description for this permission'
+		]);
+
+		$permission = Permission::create([
+			'name' => 'eliminar-homenajes',
+			'description' => 'Description for this permission'
+		]);
+
+		$permission = Permission::create([
+			'name' => 'crear-rubros',
+			'description' => 'Description for this permission'
+		]);
+
+		$permission = Permission::create([
+			'name' => 'ver-rubros',
+			'description' => 'Description for this permission'
+		]);
+
+		$permission = Permission::create([
+			'name' => 'editar-rubros',
+			'description' => 'Description for this permission'
+		]);
+
+		$permission = Permission::create([
+			'name' => 'eliminar-rubros',
+			'description' => 'Description for this permission'
+		]);
 		
-		$permission = Permission::create(['name' => 'ver-destacados']);
-		$permission = Permission::create(['name' => 'destacar-publicaciones']);
-		$permission = Permission::create(['name' => 'aprobar-publicaciones']);
-		$permission = Permission::create(['name' => 'eliminar-publicaciones']);
+		$permission = Permission::create([
+			'name' => 'ver-destacados',
+			'description' => 'Description for this permission'
+		]);
+
+		$permission = Permission::create([
+			'name' => 'destacar-publicaciones',
+			'description' => 'Description for this permission'
+		]);
+
+		$permission = Permission::create([
+			'name' => 'aprobar-publicaciones',
+			'description' => 'Description for this permission'
+		]);
+
+		$permission = Permission::create([
+			'name' => 'eliminar-publicaciones',
+			'description' => 'Description for this permission'
+		]);
 		
-		$permission = Permission::create(['name' => 'crear-roles']);				//C
-		$permission = Permission::create(['name' => 'ver-roles']);					//R
-		$permission = Permission::create(['name' => 'editar-roles']);			//U
-		$permission = Permission::create(['name' => 'eliminar-roles']);		//D
-		$permission = Permission::create(['name' => 'asignar-permisos']);
+		$permission = Permission::create([
+			'name' => 'crear-roles',
+			'description' => 'Description for this permission'
+		]);
+
+		$permission = Permission::create([
+			'name' => 'ver-roles',
+			'description' => 'Description for this permission'
+		]);
+
+		$permission = Permission::create([
+			'name' => 'editar-roles',
+			'description' => 'Description for this permission'
+		]);
+
+		$permission = Permission::create([
+			'name' => 'eliminar-roles',
+			'description' => 'Description for this permission'
+		]);
+
+		$permission = Permission::create([
+			'name' => 'asignar-permisos',
+			'description' => 'Description for this permission'
+		]);
+		
 
 
 

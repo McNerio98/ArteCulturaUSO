@@ -278,3 +278,15 @@
 .nav-pills .nav-link.active{
   color: white !important;
 }
+
+
+.ac-edit-about{
+  color: #c1bdbd;
+  font-size: 120%;
+  cursor: pointer;  
+}
+
+.val-about:hover .ac-edit-about, .ac-edit-about:hover{
+  color: #34c558;
+  font-size: 120%;  
+}

@@ -19,7 +19,6 @@ const mix = require('laravel-mix');
 
 mix.js('resources/js/app.js', 'public/js')
     //dashboard admin pages 
-    .js('resources/js/vue-pages/app-tags.js','public/js') //quitar esta 
     .js('resources/js/vue-pages/app-users.js','public/js')
     .js('resources/js/vue-pages/app-profile.js','public/js')
     .js('resources/js/vue-pages/app-post.js','public/js')

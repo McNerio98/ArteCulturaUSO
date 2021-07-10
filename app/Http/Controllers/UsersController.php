@@ -25,7 +25,8 @@ class UsersController extends Controller
         $this->middleware('auth:api',['only'=>[
             'configUserData',
             'updateConfigUser',
-            'uploadProfileImg'
+            'uploadProfileImg',
+            'store'
             ]]);
     }
 
@@ -350,7 +351,60 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $salida = [
+            "code" => 0,
+            "data" => null,
+            "msg" => null
+        ];
+
+        $validator = Validator::make($request->all(),[
+            "user_id" => "required|numeric", 
+            "info_key" => "required",
+            "info_value" => "required"
+        ]);
+
+        if($validator->fails()){
+            $salida["msg"] = "Valores imcompletos";
+            return $salida;
+        }   
+        
+        if(Auth::user()->id != $request->user_id && ! Auth::user()->can('configurar-usuarios')){
+            $salida["msg"] = "Operacion denegada";
+            return $salida;
+        }
+        
+        $keys = ['user_email','user_phone','user_other_name','user_nickname'];
+        if(! in_array($request->info_key,$keys)){
+            $salida["msg"] = "Operacion no valida";
+            return $salida;
+        }
+
+        $user = User::find($request->user_id);
+
+        switch($request->info_key){
+            case "user_nickname": { //nombre artistico 
+                $user->artistic_name = trim($request->info_value);
+                break;
+            }            
+            case "user_email": {
+                $user->email = trim($request->info_value);
+                break;
+            }
+            case "user_phone": {
+                $user->telephone = trim($request->info_value);
+                break;
+            }
+            case "user_other_name": { //nombre del titular de la cuenta 
+                $user->name = trim($request->info_value);
+                break;
+            }                                                        
+        }
+
+        $user->save();
+
+        $salida["code"] = 1;
+        $salida["msg"] = "Request complete";
+        return $salida;
     }
 
     /**

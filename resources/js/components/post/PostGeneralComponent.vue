@@ -2,7 +2,7 @@
     <div class="card card-widget">
         <div class="card-header">
             <div class="user-block">
-                <img class="img-circle" :src="paths.media_profiles + model.post.img_owner" alt="User Image">
+                <img class="img-circle" :src=" '/' + paths.media_profiles + model.post.img_owner" alt="User Image">
                 <span class="username"><a href="#">{{model.post.artistic_name == null?model.post.name:model.post.artistic_name}}</a></span>
                 <span class="description">{{model.post.title}}</span>
             </div>
@@ -72,6 +72,10 @@
                 </div>
             </div>
             <p>{{model.post.description}}</p>
+            <!--COMPONENTE GALLERY COMPONENTE (PREVIEW MEDIA)-->
+            <preview-media :media="media_img" :paths="paths"></preview-media>
+            <!--END COMPONENTE GALLERY COMPONENTE (PREVIEW MEDIA)-->
+
             <!--Aqui van las imagenes-->
             <div>
                 <div class="text-center">
@@ -122,9 +126,9 @@
         data: function(){
             return {
                 paths: {
-                    media_profiles: "/files/profiles/",
-                    files_docs: "/files/pdfs/",
-                    files_images: "/files/images/",                    
+                    media_profiles: "files/profiles/",
+                    files_docs: "files/pdfs/",
+                    files_images: "files/images/",                    
                 },                
                 post_approved: this.model.post.status == "review"?false:true,
                 post_delete: false,

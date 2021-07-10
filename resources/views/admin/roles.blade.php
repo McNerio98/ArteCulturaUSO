@@ -49,7 +49,7 @@
                                             </div>
                                         </td>
                                         <td class="p-1">
-                                            Lorem ipsum dolor sit amet consectetur adipisicing.
+                                            @{{cap.description}}
                                         </td>                                    
                                     </tr>    
                                 </tbody>
