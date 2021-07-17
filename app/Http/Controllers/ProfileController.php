@@ -41,7 +41,7 @@ class ProfileController extends Controller
 			return $salida;
 		}
 
-		$metas_get 		= ['user_profile_description']; //add another meta 
+		$metas_get 		= ['user_profile_description','user_profile_address','user_profile_notes']; //add another meta 
 		$metas 				= UserMeta::whereIn('key',$metas_get)->where('user_id',$id)->get();
 		$tags 				= 	User::select('tg.id','tg.name')->join('tags_on_profiles AS top','top.user_id','users.id')
 									->join('tags AS tg','tg.id','top.tag_id')->where('users.id',$id)->get();

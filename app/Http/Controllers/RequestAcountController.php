@@ -6,10 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use App\User;
-use App\Profile;
 use App\Tags_OnProfiles;
+use App\Roles;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Facades\Auth;
 
 class RequestAcountController extends Controller
 {
@@ -185,5 +186,20 @@ class RequestAcountController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function indexRoles(Request $request, $id){
+
+        $user = Auth::user();
+
+        $salida = [
+            "code" => 1,
+            "msg" => "Actualizando el usuario con ".$id . " poniendo el nombre de ".$request->name,
+            "data" => Role::all(),
+            "extra" => "Soy el usuario ".$user->name." con el identificador ".$user->id 
+        ];
+
+
+        return $salida;
     }
 }

@@ -21,11 +21,10 @@ class UsersController extends Controller
     public $path_store_profiles =  "/files/profiles/";
 
     public function __construct(){
-        $this->middleware('auth',['only'=>['configUser']]);
+        //$this->middleware('auth',['only'=>['configUser']]);
         $this->middleware('auth:api',['only'=>[
-            'configUserData',
-            'updateConfigUser',
-            'uploadProfileImg'
+            'uploadProfileImg',
+            'store'
             ]]);
     }
 
@@ -88,16 +87,6 @@ class UsersController extends Controller
         return $salida;
     }
 
-    public function configUser($id){
-        if( ! Auth::user()->can('ver-usuarios')){
-            return redirect()->route('dashboard');
-        };
-        
-        $roles = Role::all();
-        return view("admin.config-user",['id_user_cur' => $id,'all_roles' =>$roles]);
-        //return view("admin.config-user")->with('id_user_cur',$id);
-    }
-
     public function validateEmail($id,$email){
         $salida = [
             "code" => 0,
@@ -142,8 +131,6 @@ class UsersController extends Controller
         return $salida;
     }
 
-
-
     public function updateConfigUser(Request $request,$id){
         $salida = [
             'code' => 0,
@@ -156,8 +143,7 @@ class UsersController extends Controller
             return $salida;
         }
 
-        //Si no tiene los permisos o no es el usuario propietario de la cuenta 
-        if(! Auth::user()->can('configurar-usuario') && Auth::user()->id != $id){
+        if(! Auth::user()->can('configurar-usuario')){
             $salida["msg"] = "No posee permisos para esta acción";
         }
 
@@ -258,7 +244,17 @@ class UsersController extends Controller
                     if(isset($request->status)){
                         $user->status = trim($request->status);
                     }
-                    $user->assignRole(trim(Role::find($request->role)->name));
+
+                    // All current roles will be removed from the user and replaced by the array given
+                    $fresh_rol = Role::find($request->role);
+                    if(! $fresh_rol){
+                        $salida["msg"] = "El rol no es valido";
+                        return $salida;
+                    }
+                    
+                    //podra tener un unico rol
+                    $fresh_roles = [$fresh_rol->name];
+                    $user->syncRoles($fresh_roles);
 
                     if(!$user->save()){
                         $salida["msg"] = "Error en actualizar credenciales";
@@ -294,7 +290,7 @@ class UsersController extends Controller
         };
 
         $metas_get = ['user_profile_description'];
-        if(Auth::user()->can('configurar-usuario')){
+        if(Auth::user()->can('configurar-usuarios')){
             array_push($metas_get,'user_profile_rawpass');
         }
 
@@ -362,7 +358,60 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $salida = [
+            "code" => 0,
+            "data" => null,
+            "msg" => null
+        ];
+
+        $validator = Validator::make($request->all(),[
+            "user_id" => "required|numeric", 
+            "info_key" => "required",
+            "info_value" => "required"
+        ]);
+
+        if($validator->fails()){
+            $salida["msg"] = "Valores imcompletos";
+            return $salida;
+        }   
+        
+        if(Auth::user()->id != $request->user_id && ! Auth::user()->can('configurar-usuarios')){
+            $salida["msg"] = "Operacion denegada";
+            return $salida;
+        }
+        
+        $keys = ['user_email','user_phone','user_other_name','user_nickname'];
+        if(! in_array($request->info_key,$keys)){
+            $salida["msg"] = "Operacion no valida";
+            return $salida;
+        }
+
+        $user = User::find($request->user_id);
+
+        switch($request->info_key){
+            case "user_nickname": { //nombre artistico 
+                $user->artistic_name = trim($request->info_value);
+                break;
+            }            
+            case "user_email": {
+                $user->email = trim($request->info_value);
+                break;
+            }
+            case "user_phone": {
+                $user->telephone = trim($request->info_value);
+                break;
+            }
+            case "user_other_name": { //nombre del titular de la cuenta 
+                $user->name = trim($request->info_value);
+                break;
+            }                                                        
+        }
+
+        $user->save();
+
+        $salida["code"] = 1;
+        $salida["msg"] = "Request complete";
+        return $salida;
     }
 
     /**

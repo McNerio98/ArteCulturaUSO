@@ -1,5 +1,6 @@
 Vue.component('request-component', require('../../components/RequestAccount.vue').default);
 
+
 const app_inicio = new Vue({
     el: '#app_inicio',
     data: {
@@ -7,9 +8,27 @@ const app_inicio = new Vue({
     },
     mounted: function(){
         //Cargar post destacados 
-        this.cargarPostDestacados();
+        //this.cargarPostDestacados();
+        this.loadAdminData();
     },
     methods: {
+        loadAdminData: function(){
+            console.log("Cargando la data admin TX");
+            //peticion get 
+            axios(`/rolesdata`).then(result=>{
+                //let response = result.data;
+                console.log("TX Este es el resultado");
+                console.log(result);
+            }).catch(ex=>{
+                console.log("TX Este es el error");
+                console.log(ex);
+                // if(ex.reponse.status == 401){
+                //     window.reload();
+                // }
+            });
+            //peticion post 
+
+        },        
         cargarPostDestacados: function(){
             axios(`/api/post/populars`).then((result)=>{
                 let response = result.data;

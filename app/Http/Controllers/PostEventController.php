@@ -10,12 +10,42 @@ use Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class PostEventController extends Controller
 {
     public function __construct(){
-		$this->middleware('auth:api',['only'=>['store','findPostsPopular','switchStatePost','setPostPopular']]);
+		//$this->middleware('auth:api',['only'=>['store','findPostsPopular','switchStatePost','setPostPopular']]);
     }
+
+    public function approval(Request $request){
+        $salida = [
+            "code" => 0,
+            "msg" => "",
+            "data" => null,
+            'paginate' => null
+        ];
+
+        if(Auth::user()->hasRole("Invitado")){
+            $salida["msg"] = "Acción no permitida";
+            return $salida;
+        }
+        $per_page = ($request->per_page === null)?15:$request->per_page;
+        $result = PostEvent::where("status","review")->paginate($per_page);
+
+        $salida["paginate"] = [
+            'total' =>$result->total(),
+            'current_page'  => $result->currentPage(),
+            'per_page'      => $result->perPage(),
+            'last_page'     => $result->lastPage(),
+            'from'          => $result->firstItem(),
+            'to'            => $result->lastPage(),
+        ];
+        $salida["data"] = $result->items();
+        $salida["code"] = 1;
+        return $salida;
+    }
+
 
     public function store(Request $request){
         $salida = [
@@ -36,7 +66,7 @@ class PostEventController extends Controller
         ]);
 
         if($validator->fails()){
-            $salida["msg"] = "Valores imcompletos linea 36";
+            $salida["msg"] = "Valores imcompletos";
             return $salida;
         };
 
@@ -77,10 +107,18 @@ class PostEventController extends Controller
 
             }
 
+            //Realizar validacion de, tipo de archivos permitidos (por extension), numero maximo de archivos multimedia 60 en total 
+            
             //Si el usuario sube contenido
             if(isset($request->media)){
+
+                $limite_carga = 70; //dejar a 70, agregar esto en la vista
                 $files = $request->media;
-                $numberfiles = 0;
+                if(count($files) >= $limite_carga){
+                    throw new \Exception("Límite de carga superado, máximo ".$limite_carga." archivos");
+                }
+
+                $numberfiles = 0;                
                 while($numberfiles < count($files)){
                     $filesOnPostEvents = new FilesPost();
                     if (preg_match('/^data:image\/(\w+);base64,/', $files[$numberfiles]['data'])
@@ -97,24 +135,40 @@ class PostEventController extends Controller
                         $extension = explode(".",$files[$numberfiles]['filename']);
                         $extension = $extension[count($extension)-1];
 
-                        $e = microtime();
-                        $string_date = explode(" ",$e);
-                        $filename = uniqid() . $string_date[1].".".$extension;
+                        //al parecer no es necesario 
+                        date_default_timezone_set('America/Bogota');
+
+                        $filename = uniqid()."_".time().".".$extension;
                         $pathname =  $files[$numberfiles]['type'] == "image" ? "files/images/" : "files/pdfs/" ;
 
-                        $filesOnPostEvents->id_post_event = $postEvent->id;
-                        $filesOnPostEvents->name = $filename;
-                        $filesOnPostEvents->path_file = $pathname;
-                        $filesOnPostEvents->type_file = $files[$numberfiles]['type'];
+                        $filesOnPostEvents->id_post_event      = $postEvent->id;
+                        $filesOnPostEvents->name                   = $filename;
+                        $filesOnPostEvents->type_file               = $files[$numberfiles]['type'];
                         $filesOnPostEvents->save();
 
                         $path_store = $pathname.$filename;
                         Storage::disk('local')->put($path_store, $data);
 
+                        //compresor de imagenes 
+                        // resize the image to a width of 1000 and constrain aspect ratio (auto height)
+                        $compress = Image::make(storage_path('app/' . $path_store));
+                        $width      = $compress->width();
+                        $height    = $compress->height();
+
+                        if($width > 1500 || $height > 1500){
+                            $compress->resize(1000, null,function($constraint) {
+                                $constraint->aspectRatio();
+                                // prevent possible upsizing
+                                $constraint->upsize();
+                                //en las pruebas upsize no evitaba por completo el incremento de peso para archivos pequeños
+                            });
+                            $compress->save(null,100);
+                        }
+                        $compress->destroy();
+
                     }else{
                         $filesOnPostEvents->id_post_event = $postEvent->id;
-                        $filesOnPostEvents->name = "Youtube Video";
-                        $filesOnPostEvents->path_file = $files[$numberfiles]['data'];
+                        $filesOnPostEvents->name = $files[$numberfiles]['data'];
                         $filesOnPostEvents->type_file = $files[$numberfiles]['type'];
                         $filesOnPostEvents->save();
                     }
@@ -129,7 +183,7 @@ class PostEventController extends Controller
             ];
         }catch(\Exception $e){
             DB::rollback();
-            $salida['msg'] = "Error: " . $e;
+            $salida['msg'] = "Error: " . $e->getMessage();
         }
 
         return $salida;        
@@ -175,13 +229,13 @@ class PostEventController extends Controller
         $popular = $request->popular;
 
         //Todos los post establecidos como popular
-        $query = "select pe.id,pe.title,pe.content,pe.type_post,pe.is_popular,fop.name,fop.path_file,fop.type_file from post_events pe
+        $query = "select pe.id,pe.title,pe.content,pe.type_post,pe.is_popular,fop.name,fop.type_file from post_events pe
         left join (select * from files_on_post_events fope where fope.type_file = 'image' group by fope.id_post_event) as fop on fop.id_post_event = pe.id
         where pe.is_popular = true";
 
         //Se busca por nombre y con campo popular = false  
         if(strlen($desc) > 0 && $popular == false){
-            $query = "select pe.id,pe.title,pe.content,pe.type_post,pe.is_popular,fop.name,fop.path_file,fop.type_file from post_events pe
+            $query = "select pe.id,pe.title,pe.content,pe.type_post,pe.is_popular,fop.name,fop.type_file from post_events pe
             left join (select * from files_on_post_events fope where fope.type_file = 'image' group by fope.id_post_event) as fop on fop.id_post_event = pe.id
             where pe.is_popular = false and pe.title like '%$desc%' limit 6";
         }
@@ -217,8 +271,9 @@ class PostEventController extends Controller
 
         $post = DB::table("post_events AS pe")
         ->join("users AS u", "u.id","=","pe.creator_id")
+        ->leftJoin("media_profiles AS mp","u.img_profile_id","=","mp.id")
         ->select("pe.id","pe.title","pe.content AS description","pe.type_post AS type","pe.creator_id","pe.is_popular",
-            "pe.status","pe.created_at","u.name","u.artistic_name")->where("pe.id",$id)->first();
+            "pe.status","pe.created_at","u.name","u.artistic_name","mp.path_file AS img_owner")->where("pe.id",$id)->first();
 
         if($post == null){
             $salida["msg"] = "El elemento no existe";

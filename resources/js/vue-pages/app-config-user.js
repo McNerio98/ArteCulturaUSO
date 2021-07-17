@@ -46,15 +46,13 @@ const appConfigUser = new Vue({
     },
     methods: {
         load_data: function(){
-            //console.log("Enviando peticion con este token " + window.axios.defaults.headers.common['Authorization']);
-            axios(`/api/users/dataConfig/${this.id_current_user}`).then(result=>{
+
+            axios(`/users/dataConfig/${this.id_current_user}`).then(result=>{
                 let response = result.data;
                 if(response.code == 0){
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
                     return;
                 }; 
-                console.log("Esta es la response");
-                console.log(response.data);
                 this.credentials.username = response.data.user.username;
                 this.credentials.email = response.data.user.email;
                 this.credentials.pass = response.data.metas.find(e => e.key === 'user_profile_rawpass')?.value;
@@ -67,7 +65,8 @@ const appConfigUser = new Vue({
                 this.is_accepted_request = response.data.user.status == 'request'?false:true;
                 this.current_profile_media = "";
             }).catch(ex =>{
-                StatusHandler.Exception("Recuperar información del usuario",ex);
+                let target_process = "Recuperar información del usuario";
+                StatusHandler.Exception(target_process,ex);
             }).finally(()=>{
                 this.loading_page = false;
             });
@@ -144,53 +143,54 @@ const appConfigUser = new Vue({
             });            
         },
         updateCredentials: async function(){
-            if(this.$refs.frmUpdateCredentials.checkValidity() !== false){
-                let response = await this.validateEmailUsername();
-                if(response.exists || response.exists == null){
-                    return;
-                }
-                if(this.email_exist || this.username_exist){
-                    return;
-                }
-                
-                let params = {
-                    operation: 'update-credentials',
-                    email: this.credentials.email,
-                    username: this.credentials.username,
-                    raw_pass: this.credentials.pass,
-                    role: this.credentials.role,
-                    send_email: false
-                }
-                
-                if(this.is_accept_account){
-                    params.status = 'enabled';
-                }
-                
-                this.send_credentials = true;
-                axios.put(`/api/user/updateConfig/${this.id_current_user}`,params).then(result=>{
-                    let response = result.data;
-                    if(response.code == 0){
-                        StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
-                        this.editCredentials(false);
-                        return;
-                    };
-                    if(this.is_accept_account && params.status.length > 0){
-                        this.is_accepted_request = true;
-                        this.user.status = 'enabled';
-                    }                    
-                    this.is_accept_account = false;
-                }).catch(ex=>{
-                    this.editCredentials(false);
-                    StatusHandler.Exception("Establecer las nuevas credenciales",ex);
-                }).finally(e =>{
-                    this.is_edit_credential = false;
-                    this.send_credentials = false;
-                    this.is_accept_account = false;
-                });
-
-            }else{
+            if(this.$refs.frmUpdateCredentials.checkValidity() === false){
                 this.$refs.frmUpdateCredentials.classList.add('was-validated');
-            }            
+                return;
+            }
+
+            let response = await this.validateEmailUsername();
+            if(response.exists || response.exists == null){
+                return;
+            }
+            if(this.email_exist || this.username_exist){
+                return;
+            }
+            
+            let params = {
+                operation: 'update-credentials',
+                email: this.credentials.email,
+                username: this.credentials.username,
+                raw_pass: this.credentials.pass,
+                role: this.role_selected,
+                send_email: false
+            }
+            
+            if(this.is_accept_account){
+                params.status = 'enabled';
+            }
+            
+            this.send_credentials = true;
+            axios.put(`/user/updateConfig/${this.id_current_user}`,params).then(result=>{
+                let response = result.data;
+                if(response.code == 0){
+                    StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                    this.editCredentials(false);
+                    return;
+                };
+                if(this.is_accept_account && params.status.length > 0){
+                    this.is_accepted_request = true;
+                    this.user.status = 'enabled';
+                }                    
+                this.is_accept_account = false;
+            }).catch(ex=>{
+                this.editCredentials(false);
+                StatusHandler.Exception("Establecer las nuevas credenciales",ex);
+            }).finally(e =>{
+                this.is_edit_credential = false;
+                this.send_credentials = false;
+                this.is_accept_account = false;
+            });
+       
         },
         validateEmailUsername: function(){
             return new Promise((resolve,reject)=>{

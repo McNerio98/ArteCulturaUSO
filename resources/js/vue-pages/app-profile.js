@@ -8,25 +8,26 @@ Vue.component('post-modal-component', require('../components/post/ModalVideo.vue
 Vue.component('media-viewer', require('../components/media/ViewMediaComponent.vue').default);
 Vue.component('modal-trim-img', require('../components/trim/TrimComponent.vue').default);
 Vue.component('post-general',require('../components/post/PostGeneralComponent.vue').default);
-
+Vue.component('preview-media',require('../components/media/PreviewMediaComponent.vue').default);
 
 const appProfile = new Vue({
     el: "#appProfile",
     data: function(){
         return{
+            obj_ac_app: {},
             is_creating_event : false,
             is_creating_post : false,
             edit_mode_desc: false,
             description_insert: "",
             current_user_id: 0,
-            items_post: [],
+            items_posts: [],
             items_events: [],
             items_events_server: [],
             items_post_server: [],
             paths: {
-                media_profiles: "../files/profiles/",
-                files_docs: "../files/pdfs/",
-                files_images: "../files/images/",                    
+                media_profiles: "files/profiles/",
+                files_docs: "files/pdfs/",
+                files_images: "files/images/",                    //asi se deberian manejar todas 
             },
             modal_cropper: "DEFAULT",
             content_desc: "",
@@ -42,8 +43,17 @@ const appProfile = new Vue({
             is_mdprofiles: false, // is media profiles 
             media_view: {
                 owner: 0,
-                target: 0,
+                target: {},
                 items: []
+            },
+            data_config: {
+                email: {value: undefined, edit_mode: false},
+                phone: {value: undefined, edit_mode: false},
+                other_name: {value: undefined, edit_mode: false},
+                address: {value: undefined, edit_mode: false},
+                notes: {value: undefined, edit_mode: false},
+                description:  {value: undefined, edit_mode: false},
+                nickname:  {value: undefined, edit_mode: false},
             }
         }
     },
@@ -52,6 +62,7 @@ const appProfile = new Vue({
     },
     created: function(){
         this.current_user_id = $("#current_user_id_request").val();        
+        this.obj_ac_app = window.obj_ac_app;
     },
     methods: {
         showListTags: function(){
@@ -117,7 +128,7 @@ const appProfile = new Vue({
             //el componente de la mini general preview aun falta                       
         },
         storeUserDescription: function(){
-            let size_campo1 = this.description_insert.length;
+            let size_campo1 = this.data_config.description.value;
             if(size_campo1 < 1  || size_campo1 > 1000){
                 StatusHandler.ValidationMsg("El tamaño de la descripción no es valida");
                 return;
@@ -125,8 +136,8 @@ const appProfile = new Vue({
 
             const meta = {
                 user_id: this.current_user_id,//id de usuario logeado 
-                meta_key: "user_profile_description",
-                meta_value: this.description_insert,
+                info_key: "user_profile_description",
+                info_value: this.description_insert,
             }; 
 
             axios.post(`/api/usermeta`,meta).then((result)=>{
@@ -135,17 +146,29 @@ const appProfile = new Vue({
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
                     return;
                 }; 
-                this.content_desc = response.data.value;
-                this.description_insert = this.content_desc;
+                this.edit_mode_desc = false;
             }).catch((ex)=>{
                 StatusHandler.Exception("Registrar el metadato del usuario",ex);
-            }).finally(()=>{
-                this.edit_mode_desc = false;
             });
-            
+        },
+        onSources: function(sources){
+            //Formateando segun el formato esperado por el preview 
+            var aux = sources.map((e)=>{
+                return {
+                    id: e.id,
+                    type: e.type_file,
+                    url: e.name,
+                    owner_id: 0,
+                }
+            });
+
+            this.media_view.items = aux;
+            this.media_view.target = aux[0];
+            $('#modaPreviewMedia').modal('show');            
         },
         PostEventCreated: function(e){
             console.log("Se emitio el evento");
+
             var post = {
                 post: {
                     id: e.id,
@@ -153,8 +176,8 @@ const appProfile = new Vue({
                     description: e.content,
                     type: e.type_post,
                     creator_id: e.creator_id,
-                    is_popular: e.is_popular,
-                    status: e.status,
+                    is_popular: false,
+                    status: 'review',
                     created_at: e.created_at,
                     name: this.user.name,
                     artistic_name: this.user.artistic_name == undefined ? '(No Especificado)' : this.user.artistic_name,
@@ -163,8 +186,61 @@ const appProfile = new Vue({
                 media: e.media,
                 meta: []                        
             }
-            this.items_events.unshift(post);
-            this.is_creating_event = false;
+            if(e.type_post == "post"){
+                this.items_posts.unshift(post);
+                this.is_creating_post = false;
+            }
+
+            if(e.type_post == "event"){
+                this.items_events.unshift(post);
+                this.is_creating_event = false;                
+            }            
+
+        },
+        toObject: function(metas){
+            let mtx = [];
+            for(let e of metas){
+                mtx.push([e.key,{...e,edit_mode:false}]);
+            }
+            return Object.fromEntries(mtx);
+        },
+        // Funcion para guardar informacion acerca del perfil y metadatos 
+        persist_data_config: function(key){
+
+            const data_info = {
+                user_id: this.current_user_id,//id de usuario logeado 
+                info_key: key,
+                info_value: this.data_config[key].value,
+            };             
+
+            var path_uri = "";
+            if(key.trim() == 'address' || key.trim() == 'notes' || key.trim() == 'description'){
+                path_uri = "/api/usermeta";
+                data_info.info_key = "user_profile_" + key; 
+            }else{
+                path_uri = "/api/users"
+                data_info.info_key = "user_" + key; 
+            }
+            console.log("send ....");
+            console.table(data_info);
+
+            axios.post(path_uri,data_info).then(result=>{
+                let response = result.data;
+                if(response.code == 0){
+                    StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                    return;
+                }; 
+                this.data_config[key].edit_mode = false;
+            }).catch(ex =>{
+                //cuando hay problemas se deja en modo edicion para indicar que no se pudo completar 
+            });
+
+
+
+        },
+        //Establece un nuevo valor para ciertos datos del usuario asi como sus metadatos 
+        changeData: function(key){
+
         },
         loadData: function(){
             axios(`/api/profile/${this.current_user_id}`).then((result)=>{
@@ -175,8 +251,16 @@ const appProfile = new Vue({
                 };
 
                 this.user = response.data.user;
-                var aux_desc = response.data.metas.find(e => e.key === 'user_profile_description')?.value;
-                this.content_desc   = aux_desc == undefined ? "" : aux_desc;
+                //var aux_desc = response.data.metas.find(e => e.key === 'user_profile_description')?.value;
+                this.data_config.description.value = response.data.metas.find(e => e.key === 'user_profile_description')?.value;
+                this.data_config.nickname.value = this.user.artistic_name;
+                this.data_config.email.value = this.user.email;
+                this.data_config.phone.value = this.user.telephone;
+                this.data_config.other_name.value = this.user.name;
+                this.data_config.address.value = response.data.metas.find(e => e.key === 'user_profile_address')?.value;
+                this.data_config.notes.value = response.data.metas.find(e => e.key === 'user_profile_notes')?.value;
+
+                //this.content_desc   = aux_desc == undefined ? "" : aux_desc;
                 this.media_profile = response.data.media_profile;
                 this.rubros = response.data.tags;
                 this.items_events_server = response.data.items_events;
@@ -204,10 +288,46 @@ const appProfile = new Vue({
                             artistic_name: this.user.artistic_name == undefined ? '(No Especificado)' : this.user.artistic_name,
                             img_owner: this.current_profile_media.path_file
                         },
-                        media: e.media,
+                        media: e.media.map(ng => {
+                            switch(ng.type_file){
+                                case "image": {ng.name = window.obj_ac_app.base_url +"/files/images/"  + ng.name;break;}
+                                case "docfile": {ng.name = window.obj_ac_app.base_url + "/files/pdfs/" + ng.name;break;}
+                                case "video": {ng.name_temp = window.obj_ac_app.base_url + "/images/youtube_item.jpg";break;}
+                            }
+                            return ng;
+                        }),
                         meta: []                        
                     }
                 });
+
+
+                //procesando post 
+                this.items_posts = this.items_post_server.map(e =>{
+                    return {
+                        post: {
+                            id: e.id,
+                            title: e.title,
+                            description: e.content,
+                            type: e.type_post,
+                            creator_id: e.creator_id,
+                            is_popular: e.is_popular,
+                            status: e.status,
+                            created_at: e.created_at,
+                            name: this.user.name,
+                            artistic_name: this.user.artistic_name == undefined ? '(No Especificado)' : this.user.artistic_name,
+                            img_owner: this.current_profile_media.path_file
+                        },
+                        media: e.media.map(ng => {
+                            switch(ng.type_file){
+                                case "image": {ng.name = window.obj_ac_app.base_url +"/files/images/"  + ng.name;break;}
+                                case "docfile": {ng.name = window.obj_ac_app.base_url + "/files/pdfs/" + ng.name;break;}
+                                case "video": {ng.name_temp = window.obj_ac_app.base_url + "/images/youtube_item.jpg";break;}
+                            }
+                            return ng;
+                        }),
+                        meta: []                        
+                    }
+                });                
 
             }).catch((ex)=>{
                 console.error("UN ERROR",ex);
@@ -222,8 +342,17 @@ const appProfile = new Vue({
             //estableciendo como carga el panel 
             //asignando archivos 
             //mostrando 
+            var aux = this.media_profile.map((e)=>{
+                return {
+                    id: e.id,
+                    type: e.type_file,
+                    url: e.type_file == 'video' ? e.name : this.obj_ac_app.base_url +"/"+ this.paths.files_images + e.name,
+                    owner_id: 0,
+                }
+            });
+
             this.is_mdprofiles = true;
-            this.media_view.items = this.media_profile;
+            this.media_view.items = aux;
             this.media_view.target = target_media;
             $('#modaPreviewMedia').modal('show');
         },
@@ -266,6 +395,6 @@ const appProfile = new Vue({
             }).finally(()=>{
                 
             });
-        }               
+        }                       
     }
 });

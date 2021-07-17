@@ -26,15 +26,15 @@
             </div>
             <div class="card-footer">
                 <div class="text-right">                   
-                    <a v-if="has_cap('configurar-usuario') && !contact.isActive && !contact.isRequest" 
+                    <a v-if="has_cap('configurar-usuarios') && !contact.isActive && !contact.isRequest" 
                     v-on:click.prevent="changeStatus($event,'enable-user')" class="btn btn-sm bg-success" href="#">
                         <i class="fas fa-unlock"></i> Habilitar
                     </a>                    
-                    <a v-if="contact.isActive && has_cap('configurar-usuario')" href="#" 
+                    <a v-if="contact.isActive && has_cap('configurar-usuarios')" href="#" 
                     v-on:click.prevent="changeStatus($event,'disable-user')" class="btn btn-sm bg-danger">
                         <i class="fas fa-lock"></i> Desactivar
                     </a>
-                    <a v-if="contact.isRequest && has_cap('configurar-usuario')" class="btn btn-sm bg-success" 
+                    <a v-if="contact.isRequest && has_cap('configurar-usuarios')" class="btn btn-sm bg-success" 
                      :href="'/admin/users/config/'+this.user.id">
                         <i class="fas fa-lock"></i> Aceptar
                     </a>

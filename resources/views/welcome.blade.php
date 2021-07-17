@@ -35,7 +35,7 @@
             <div class="col-md-8 offset-md-2">
                 <form action="simple-results.html">
                     <div class="input-group">
-                        <input type="search" class="form-control form-control-lg"
+                        <input type="search" id="qsearch" name="qsearch" class="form-control form-control-lg"
                             placeholder="Ejem. Grupo de música, payasos, casa de la cultura, etc.">
                         <div class="input-group-append">
                             <button type="submit" class="btn btn-lg btn-default">
@@ -103,4 +103,5 @@
 
 @Push('customScript')
     <script src="{{ asset('js/app-inicio.js') }}"></script>
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js" integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E=" crossorigin="anonymous"></script>
 @endpush

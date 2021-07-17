@@ -16,16 +16,16 @@ const mix = require('laravel-mix');
     .sass('resources/sass/app.scss', 'public/css')
     .sass('resources/sass/admin.scss', 'public/css');*/
 
+mix.version();
 
 mix.js('resources/js/app.js', 'public/js')
     //dashboard admin pages 
-    .js('resources/js/vue-pages/app-tags.js','public/js')
     .js('resources/js/vue-pages/app-users.js','public/js')
-    .js('resources/js/vue-pages/app-profile.js','public/js')
     .js('resources/js/vue-pages/app-post.js','public/js')
     .js('resources/js/vue-pages/app-admin.js','public/js')
     .js('resources/js/vue-pages/app-rubros.js','public/js')
     .js('resources/js/vue-pages/app-config-user.js','public/js')
+    .js('resources/js/vue-pages/app-roles.js','public/js')
     //public pages 
     .js('resources/js/vue-pages/front/app-inicio.js','public/js')
     .js('resources/js/vue-pages/front/app-search.js','public/js')
@@ -35,3 +35,9 @@ mix.js('resources/js/app.js', 'public/js')
     .sass('resources/sass/app.scss', 'public/css')
     .sass('resources/sass/observatorio_styles.scss','public/css')
     .sourceMaps();
+
+    mix.js('resources/js/vue-pages/app-profile.js','public/js');
+
+    if (mix.inProduction()) {
+        mix.version();
+    }

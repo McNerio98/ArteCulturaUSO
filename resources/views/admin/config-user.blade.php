@@ -42,11 +42,14 @@
                                             El correo electronico ya existe
                                         </div>                                             
                                     </div>
-                                    @can('configurar-usuario')                                    
+                                    @can('configurar-usuarios')                                    
                                     <div class="form-group">
                                         <label for="exampleInputPassword1">Contraseña</label>
                                         <input type="text" class="form-control" id="raPass" v-model="credentials.pass"
-                                            placeholder="Ingrese contraseña" :disabled="!is_edit_credential">
+                                            placeholder="Ingrese contraseña" :disabled="!is_edit_credential" minlength="3" required >
+                                        <div class="invalid-feedback">
+                                        Contraseña requerida
+                                        </div>                                            
                                     </div>
                                     @endcan
 
@@ -66,7 +69,7 @@
                                     </div>
 
                                     <div class="text-center">
-                                        @can('configurar-usuario')
+                                        @can('configurar-usuarios')
                                         <button type="submit" class="btn btn-warning" v-if="!is_accepted_request && !is_edit_credential" @click.prevent="is_accept_account = true ; editCredentials(true);">Aceptar solicitud</button>
                                         <button type="submit" class="btn btn-warning" v-if="is_accepted_request && !is_edit_credential" @click.prevent="editCredentials(true);">Editar credenciales</button>                                        
                                         @endcan
@@ -99,7 +102,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-5">
-                                                @can('configurar-usuario')
+                                                @can('configurar-usuarios')
                                                 <div class="text-center">
                                                     <button v-if="user.status == 'disabled' " @click.prevent="changeStatus($event,'enable-user')"  class="btn btn-sm btn-primary">Activar cuenta</button>
                                                     <button v-if="user.status == 'enabled' "  @click.prevent="changeStatus($event,'disable-user')" class="btn btn-sm btn-warning">Desactivar cuenta</button>

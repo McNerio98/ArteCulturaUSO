@@ -11,7 +11,10 @@
                 <div class="modal-body">
                     <div class="_acSelectedPreBox">
                         <div class="_acBtnNavigation" @click="preItem"><i class="fas fa-chevron-left"></i></div>
-                        <div class="_acCurrentImgPreBox" v-bind:style="{ 'background-image': 'url(' + Selected + ')' }">
+                        <div class="_acCurrentImgPreBox">
+                            <div class="_acCurrentImgPnl">
+                                <img :style="{width: dimg.width, height: dimg.height}" alt="" :src="Selected">
+                            </div>
                         </div>
                         <div class="_acBtnNavigation" @click="nextItem"><i class="fas fa-chevron-right"></i></div>
                     </div>
@@ -28,24 +31,24 @@
 <script>
     export default {
         props: {
-            logged: {type: Number,default: 0},
-            paths: {type: Object, required: true},
+            logged: {type: Number,default: 0}, //id del usuario logeado 
             mediaProfile: {type: Boolean, default: false},
-            targetId: {type: Number,required:true},
+            target: {type: Object,required:true}, //elemento actual objecto completo()
             loadedMedia: {type: Boolean,default: true},
-            items: {type: Array, default: []},
-            owner: {type:Number,default:0}
+            items: {type: Array, default: []}, //los items se deben pasar formateados 
+            owner: {type:Number,default:0} //el id del usuario al que le pertenece el fichero actual 
         },
         data: function(){
             return {
                 current_media: "",
                 index_current: -1,
                 aux_mutated: false,
+                dimg: {width: "0%", height: "0%"}
             }
         },
         methods: {
            preItem: function(){
-               console.log("Anterior...");
+               //console.log("Anterior...");
                if( (this.index_current - 1) >= 0){
                     this.index_current--;
                }else{
@@ -53,7 +56,7 @@
                }
            },
            nextItem: function(){
-               console.log("Next ...");
+               //console.log("Next ...");
                if( (this.index_current + 1) >=this.items.length){
                    this.index_current = 0;
                }else{
@@ -62,9 +65,9 @@
            }
         },
         watch: {
-            targetId: function(a,b){
+            target: function(a,b){
                 for(let i = 0; i < this.items.length ; i++){
-                    if(this.items[i].id == this.targetId){
+                    if(this.items[i].id == this.target.id){
                        this.index_current = i;
                        break;
                     }
@@ -75,10 +78,30 @@
         computed: {
             Selected: function(){
                 if(this.items[this.index_current] == undefined){
-                    return null;
+                    return null; //retornar de no encontrado 
                 }
 
-                return this.paths.media_profiles + this.items[this.index_current].path_file; 
+                if(this.items[this.index_current].type == 'image'){
+                    const img = new Image();
+                    const vu = this;
+                    img.onload = function(){
+                        if((this.width - 150) > this.height){
+                            vu.dimg.width = "100%";
+                            vu.dimg.height = "auto";
+                        }else if(this.height > this.width){
+                            vu.dimg.width = "auto";
+                            vu.dimg.height = "100%";
+                        }else{ // cuadrada, dado el radio de aspecto se ajusta al alto 
+                            vu.dimg.width = "auto";
+                            vu.dimg.height = "100%";                            
+                        }
+                        
+                    }
+                    img.src = this.items[this.index_current].url;
+                }
+
+                //pasar mejor el fullpath 
+                return this.items[this.index_current].url; 
             }
         }
     }
@@ -121,5 +144,18 @@
                 background-repeat: no-repeat;
                 background-size: cover;                
             } 
+
+            ._acSelectedPreBox ._acCurrentImgPreBox ._acCurrentImgPnl{
+                position: absolute;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                right: 0;                
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;                
+                justify-content: center;
+            }
 
 </style>

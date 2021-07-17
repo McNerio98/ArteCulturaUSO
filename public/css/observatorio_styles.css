@@ -314,3 +314,42 @@
   background-color: #00cd6a;
 }
 
+._acHoverA:hover {
+  background-color: #6c757d !important;
+  color: #ffffff !important;
+  cursor: pointer;
+}
+
+.ad-popular-pe:hover {
+  cursor: pointer;
+  background-color: #f2f4f6 !important;
+}
+
+.bg-hpolis {
+  background-color: #2c3749 !important;
+}
+
+.text-hpolis {
+  color: #d4cece !important;
+}
+
+.text-hpolis:hover {
+  color: white !important;
+}
+
+.nav-pills .nav-link.active {
+  color: white !important;
+}
+
+.ac-edit-about {
+  color: #c1bdbd;
+  font-size: 120%;
+  cursor: pointer;
+}
+
+.val-about:hover .ac-edit-about,
+.ac-edit-about:hover {
+  color: #34c558;
+  font-size: 120%;
+}
+

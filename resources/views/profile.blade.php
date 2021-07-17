@@ -1,8 +1,7 @@
 @extends('layouts.users-template')
 @section('title', 'Inicio')
 @Push('styles')
-<link href="{{ asset('css/post/post.css') }}" rel="stylesheet">
-<link href="{{ asset('css/post/media.css') }}" rel="stylesheet">
+
 @endpush
 
 
@@ -16,14 +15,31 @@
 
                 <div class="text-center">
 
-                    <div v-if="current_profile_media.path_file != undefined" v-bind:style="{ 'background-image': 'url(' + paths.media_profiles + current_profile_media.path_file + ')' }"
-                        class="profile-pic profile-user-img img-fluid img-circle" @click="showProfilesMedia(current_profile_media.id)">
+                    <div v-if="current_profile_media.path_file != undefined" v-bind:style="{ 'background-image': 'url(' + obj_ac_app.base_url + '/' + paths.media_profiles + current_profile_media.path_file + ')' }"
+                        class="profile-pic profile-user-img img-fluid img-circle" @click="showProfilesMedia(current_profile_media)">
                         <i class="fas fa-camera"></i>
                     </div>
 
                 </div>
 
-                <h3 class="profile-username text-center">@{{user.artistic_name == null ? '(No especificado)' : user.artistic_name}}</h3>
+                <h3 v-if="data_config.nickname.edit_mode == false" class="profile-username text-center">@{{data_config.nickname.value == undefined || data_config.nickname.value.trim().length ==0 ? '(No especificado)' : data_config.nickname.value}}
+                    @auth 
+                        @if(Auth::user()->id == $id_user_cur)
+                        <i @click="data_config.nickname.edit_mode = true" class="fas fa-pen ac-edit-about"></i>
+                        @endif
+                    @endauth                      
+                </h3>
+
+                <input class="form-control" type="text" v-model="data_config.nickname.value" placeholder="#" v-if="data_config.nickname.edit_mode == true">
+                <div class="btn-group w-100" v-if="data_config.nickname.edit_mode == true">
+                    <button class="btn btn-success col btn-xs" @click="persist_data_config('nickname')">
+                        <i class="fas fa-plus"></i> <span>Guardar</span>
+                    </button>
+                    <button class="btn btn-warning col btn-xs" @click="data_config.nickname.edit_mode = false">
+                        <i class="fas fa-times"></i> <span>Cancelar</span>
+                    </button>
+                </div>  
+
                 <p class="text-muted text-center">
                     <span v-for="(e,index) of rubros" >
                         <span class="usTagProfile">
@@ -48,12 +64,10 @@
                       </select>                    
                     <div class="btn-group w-100" v-if="is_edit_tags">
                       <button class="btn btn-success col btn-xs" @click="addTagUser">
-                        <i class="fas fa-plus"></i>
-                        <span>Guardar</span>
+                        <i class="fas fa-plus"></i><span>Guardar</span>
                       </button>
                       <button class="btn btn-warning col btn-xs" @click="is_edit_tags = false;">
-                        <i class="fas fa-upload"></i>
-                        <span>Cancelar</span>
+                        <i class="fas fa-times"></i><span>Cancelar</span>
                       </button>
                     </div>                                        
                     @endif
@@ -79,27 +93,102 @@
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-                <strong><i class="fas fa-book mr-1"></i> Otros Nombres</strong> <i class="fas fa-pen ac-edit-about"
-                    data-toggle="tooltip" data-placement="top" title="Editar"></i>
-                <p class="text-muted">
-                    Sinsoteca Band
+                <strong><i class="far fa-envelope"></i> Correo Contacto</strong>
+                <p v-if="data_config.email.edit_mode == false" class="text-muted val-about">@{{data_config.email.value}} 
+                    @auth 
+                        @if(Auth::user()->id == $id_user_cur)
+                        <i @click="data_config.email.edit_mode = true" class="fas fa-pen ac-edit-about"></i>
+                        @endif
+                    @endauth
                 </p>
+
+                <input class="form-control form-control-sm" v-model="data_config.email.value" type="text" placeholder="example@example.com" v-if="data_config.email.edit_mode == true">
+                <div class="btn-group w-100" v-if="data_config.email.edit_mode == true">
+                    <button class="btn btn-success col btn-xs" @click="persist_data_config('email')">
+                        <i class="fas fa-plus"></i> <span>Guardar</span>
+                    </button>
+                    <button class="btn btn-warning col btn-xs" @click="data_config.email.edit_mode = false">
+                        <i class="fas fa-times"></i> <span>Cancelar</span>
+                    </button>
+                </div>                          
+
+                <hr>            
+                <strong><i class="fas fa-phone-alt"></i> Numero Contacto</strong>
+                <p v-if="data_config.phone.edit_mode == false" class="text-muted val-about">@{{data_config.phone.value}} 
+                    @auth 
+                        @if(Auth::user()->id == $id_user_cur)
+                        <i @click="data_config.phone.edit_mode = true" class="fas fa-pen ac-edit-about"></i>
+                        @endif
+                    @endauth                    
+                </p>
+                <input class="form-control form-control-sm" type="text" v-model="data_config.phone.value" placeholder="#" v-if="data_config.phone.edit_mode == true">
+                <div class="btn-group w-100" v-if="data_config.phone.edit_mode == true">
+                    <button class="btn btn-success col btn-xs" @click="persist_data_config('phone')">
+                        <i class="fas fa-plus"></i> <span>Guardar</span>
+                    </button>
+                    <button class="btn btn-warning col btn-xs" @click="data_config.phone.edit_mode = false">
+                        <i class="fas fa-times"></i> <span>Cancelar</span>
+                    </button>
+                </div>   
+
+                <hr>                
+                <strong><i class="far fa-address-book"></i> Otros nombres</strong>
+                <p v-if="data_config.other_name.edit_mode == false" class="text-muted val-about">@{{data_config.other_name.value}} 
+                    @auth 
+                        @if(Auth::user()->id == $id_user_cur)
+                        <i @click="data_config.other_name.edit_mode = true" class="fas fa-pen ac-edit-about"></i>
+                        @endif
+                    @endauth                        
+                </p>
+                <input class="form-control form-control-sm" type="text" v-model="data_config.other_name.value" placeholder="#" v-if="data_config.other_name.edit_mode == true">
+                <div class="btn-group w-100" v-if="data_config.other_name.edit_mode == true">
+                    <button class="btn btn-success col btn-xs" @click="persist_data_config('other_name')">
+                        <i class="fas fa-plus"></i> <span>Guardar</span>
+                    </button>
+                    <button class="btn btn-warning col btn-xs" @click="data_config.other_name.edit_mode = false">
+                        <i class="fas fa-times"></i> <span>Cancelar</span>
+                    </button>
+                </div>  
+
                 <hr>
-                <strong><i class="fas fa-map-marker-alt mr-1"></i> Location</strong> <i
-                    class="fas fa-pen ac-edit-about"></i>
-                <p class="text-muted">Col 14, Sonsonate.</p>
+                <!--METADATOS-->
+                <!--Se podrian agregar mas-->
+                <strong><i class="fas fa-map-marker-alt"></i> Dirección</strong>
+                <p v-if="data_config.address.edit_mode == false" class="text-muted val-about">@{{data_config.address.value == undefined || data_config.address.value.length == 0 ? 'No especificado' : data_config.address.value}} 
+                    @auth 
+                        @if(Auth::user()->id == $id_user_cur)
+                        <i @click="data_config.address.edit_mode = true" class="fas fa-pen ac-edit-about"></i>                        
+                        @endif
+                    @endauth                      
+                </p>
+                <input class="form-control form-control-sm" type="text" v-model="data_config.address.value" placeholder="" v-if="data_config.address.edit_mode == true">
+                <div class="btn-group w-100" v-if="data_config.address.edit_mode == true">
+                    <button class="btn btn-success col btn-xs" @click="persist_data_config('address')">
+                        <i class="fas fa-plus"></i> <span>Guardar</span>
+                    </button>
+                    <button class="btn btn-warning col btn-xs" @click="data_config.address.edit_mode = false">
+                        <i class="fas fa-times"></i> <span>Cancelar</span>
+                    </button>
+                </div>  
+
                 <hr>
-                <strong><i class="fas fa-pencil-alt mr-1"></i> Correo Contacto</strong> <i
-                    class="fas fa-pen ac-edit-about"></i>
-                <p class="text-muted">sinsoteca.band50@music.sv</p>
-                <hr>
-                <strong><i class="fas fa-pencil-alt mr-1"></i> Numero Contacto</strong> <i
-                    class="fas fa-pen ac-edit-about"></i>
-                <p class="text-muted">+ 503 7058-7814 / +503 2450-4789</p>
-                <hr>
-                <strong><i class="far fa-file-alt mr-1"></i> Notas</strong> <i class="fas fa-pen ac-edit-about"></i>
-                <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam
-                    fermentum enim neque.</p>
+                <strong><i class="far fa-file-alt mr-1"></i> Notas</strong>
+                <p v-if="data_config.notes.edit_mode == false" class="text-muted val-about">@{{data_config.notes.value == undefined || data_config.notes.value.length == 0 ? 'No especificado' : data_config.notes.value}} 
+                    @auth 
+                        @if(Auth::user()->id == $id_user_cur)
+                        <i @click="data_config.notes.edit_mode = true" class="fas fa-pen ac-edit-about"></i>                        
+                        @endif
+                    @endauth                       
+                </p>
+                <input class="form-control form-control-sm" type="text" v-model="data_config.notes.value" placeholder="" v-if="data_config.notes.edit_mode == true">
+                <div class="btn-group w-100" v-if="data_config.notes.edit_mode == true">
+                    <button class="btn btn-success col btn-xs" @click="persist_data_config('notes')">
+                        <i class="fas fa-plus"></i> <span>Guardar</span>
+                    </button>
+                    <button class="btn btn-warning col btn-xs" @click="data_config.notes.edit_mode = false">
+                        <i class="fas fa-times"></i> <span>Cancelar</span>
+                    </button>
+                </div>                  
             </div>
             <!-- /.card-body -->
         </div>
@@ -129,18 +218,19 @@
                                 <button  v-if="edit_mode_desc" @click="edit_mode_desc = false" class="btn btn-outline-secondary btn-flat"><i class="fas fa-ban"></i> Cancelar</button>    
                             </div>
 
-                            <div class='p-2 text-center' v-if="content_desc.length < 2 && !edit_mode_desc">
+
+                            <div class='p-2 text-center' v-if="(data_config.description.value == undefined || data_config.description.value.trim().length == 0) && ! data_config.description.edit_mode">
                                 <i class="fas fa-book-open" style='font-size: 3rem;'></i>
                                     <br>
                                     <span>DESCRIPCION VACIA</span>
                             </div>
 
                             <div v-if="!desc_empty && !edit_mode_desc">
-                                <p>@{{content_desc}}</p>
+                                <p>@{{data_config.description.value}}</p>
                             </div>
 
                             <div v-if="edit_mode_desc">
-                                <textarea placeholder="Introduce una descripcion..." v-model="description_insert" rows="7" class="form-control" style="resize: none;"></textarea>                            
+                                <textarea placeholder="Introduce una descripcion..." v-model="data_config.description.value" rows="7" class="form-control" style="resize: none;"></textarea>                            
                             </div>
                         </div>
                         <!-- Post -->
@@ -159,26 +249,26 @@
                                         <i class="fas fa-plus"></i>
                                         <u>+ Nuevo Evento</u>
                                     </a>                                    
-                                    <post-event @post-created="PostEventCreated" v-if="is_creating_event" :user-info="{username: user.name, profile_path: paths.media_profiles + current_profile_media.path_file}" post-type="event"></post-event>
+                                    <post-event @post-created="PostEventCreated" v-if="is_creating_event" :user-info="{username: user.name, profile_path: obj_ac_app.base_url + '/' + paths.media_profiles + current_profile_media.path_file}" post-type="event"></post-event>
                                 @endif
                             @endauth
-                            <post-general v-for="e of items_events"  :model="e" @change-popular=""></post-general>                        
+                            <post-general @source-files="onSources" v-for="e of items_events"  :model="e" @change-popular=""></post-general>                        
                         </div>
-
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="settings">
-                        <div id="post-cp">
+                        <div id="post-cp" style="width: 100%;max-width: 600px;margin: auto;">
                             <!--SOLO SI EL USUARIO ESTA LOGEADO-->
                             @auth
                                 @if(Auth::user()->id == $id_user_cur)
                                     <a class="mb-2" v-if=" ! is_creating_post" href="javascript:void(0);" @click.prevent="is_creating_post = true" style="display: flex;flex-direction: column; padding: 10px; align-items: center; background-color: #f6f6f6; margin-bottom: 10px;">
                                         <i class="fas fa-plus"></i>
                                         <u>+ Nuevo Publicacion</u>
-                                    </a>                                                                    
+                                    </a>
+                                    <post-event @post-created="PostEventCreated" v-if="is_creating_post" :user-info="{username: user.name, profile_path: obj_ac_app.base_url + '/' + paths.media_profiles + current_profile_media.path_file}" post-type="post"></post-event>                                              
                                 @endif
                             @endauth
-                            <post-event f-if="is_creating_post" post-type="post"></post-event>
+                            <post-general @source-files="onSources" v-for="e of items_posts"  :model="e" @change-popular=""></post-general>                        
                         </div>
                     </div>
                     <!-- /.tab-content -->
@@ -193,7 +283,7 @@
     <media-viewer 
     :media-profile="is_mdprofiles"  
     :paths="paths" 
-    :target-id="media_view.target"
+    :target="media_view.target"
     :logged.number='{{Auth::user() == null ? 0 : Auth::user()->id}}'
     :owner="media_view.owner"
     @new-profile-media="openTrim"
@@ -210,5 +300,6 @@
 @Push('customScript')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.9/cropper.min.js" integrity="sha512-9pGiHYK23sqK5Zm0oF45sNBAX/JqbZEP7bSDHyt+nT3GddF+VFIcYNqREt0GDpmFVZI3LZ17Zu9nMMc9iktkCw==" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.9/cropper.min.css" integrity="sha512-w+u2vZqMNUVngx+0GVZYM21Qm093kAexjueWOv9e9nIeYJb1iEfiHC7Y+VvmP/tviQyA5IR32mwN/5hTEJx6Ng==" crossorigin="anonymous" />
-<script src="{{asset('js/app-profile.js')}}"></script>
+
+<script src="{{ mix('js/app-profile.js') }}"></script>
 @endpush
