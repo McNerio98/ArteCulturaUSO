@@ -39,6 +39,7 @@ class LoginController extends Controller
 
             //generando token de acceso 
             $api_token_access = (string) Str::uuid();
+            //quitar esto cuando este completo toda la migracion
             $current_user->api_token = $api_token_access;
 
             $mtx_name = explode(" ",trim($current_user->name));

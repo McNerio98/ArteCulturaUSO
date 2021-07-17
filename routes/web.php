@@ -54,5 +54,13 @@ Route::get('/admin/users/config/{id}','DashboardController@infoUser')->name('use
 Route::get('/search/{builderSearch}','SearchController@index')->name('search');
 
 
+//Route::post('rolesdata/{id}','RequestAcountController@indexRoles')->middleware('auth');
 
 
+
+
+//Routes para petticiones ajax
+Route::get('/approval','PostEventController@approval')->name('items.approval')->middleware('auth','adroles');
+Route::get('/users/dataConfig/{id}','UsersController@configUserData')->name("user.dataconf")->middleware('auth','adroles');
+Route::put('/user/updateConfig/{id}','UsersController@updateConfigUser')->name("user.updateconf")->middleware('auth','adroles');
+Route::get('/notifiers','DashboardController@notifiers')->name("notifiers"); //ya tiene los middleware el controller 

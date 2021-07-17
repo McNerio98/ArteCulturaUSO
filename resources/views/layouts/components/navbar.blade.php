@@ -53,7 +53,11 @@
                             {{ session()->get('name_cur_user_short') }}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <a class="dropdown-item" href="{{route('profile.show',Auth::user()->id)}}">{{ session()->get('name_cur_user') }}</a>
+                            @hasrole('Invitado')
+                                <a class="dropdown-item" href="{{route('profile.show',Auth::user()->id)}}">{{ session()->get('name_cur_user') }}</a>
+                            @else
+                                <a class="dropdown-item" href="{{route('dashboard')}}">{{ session()->get('name_cur_user') }}</a>
+                            @endhasrole
                             <a class="dropdown-item" href="#"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Cerrar
                                 Session</a>

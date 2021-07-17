@@ -1,8 +1,8 @@
 <template>
-    <div class="card card-widget">
-        <div class="card-header">
+    <div class="card card-widget" style="width: 100%;max-width: 600px;margin: auto;">
+        <div class="card-header p-2">
             <div class="user-block">
-                <img class="img-circle" :src=" '/' + paths.media_profiles + model.post.img_owner" alt="User Image">
+                <img class="img-circle" :src="model.post.img_owner" alt="User Image">
                 <span class="username"><a href="#">{{model.post.artistic_name == null?model.post.name:model.post.artistic_name}}</a></span>
                 <span class="description">{{model.post.title}}</span>
             </div>
@@ -20,7 +20,7 @@
             <!-- /.card-tools -->
         </div>
         <!-- /.card-header -->
-        <div class="card-body">
+        <div class="card-body p-2">
             <div v-if="has_cap('aprobar-publicaciones')" class="form-group  m-0">
                 <div  class="custom-control custom-switch custom-switch-on-success">
                     <input type="checkbox"  class="custom-control-input" id="switchApprovedPost" :checked="validate_approved(model.post.status)" @change="switchStatePost"/>
@@ -73,24 +73,8 @@
             </div>
             <p>{{model.post.description}}</p>
             <!--COMPONENTE GALLERY COMPONENTE (PREVIEW MEDIA)-->
-            <preview-media :media="media_img" :paths="paths"></preview-media>
+            <preview-media @source-files="onSourceFiles" :media="media_visuals"></preview-media>
             <!--END COMPONENTE GALLERY COMPONENTE (PREVIEW MEDIA)-->
-
-            <!--Aqui van las imagenes-->
-            <div>
-                <div class="text-center">
-                    <img style="width: 100%" :src="path_img_selected" alt="">
-                </div>
-                <div class="container-img-hscroll">
-                    <div v-for="e of media_img" 
-                    :key="e.id" 
-                    class="circular-acimg"
-                    :class="{selected: id_img_selected == e.id}" 
-                    @click="selectImage('/'+e.path_file + e.name)"
-                    :style="{ backgroundImage: 'url(' + '/'+e.path_file + e.name + ')' }">
-                    </div>
-                </div>    
-            </div>        
         </div>
     </div>
 </template>
@@ -124,27 +108,15 @@
             }
         },      
         data: function(){
-            return {
-                paths: {
-                    media_profiles: "files/profiles/",
-                    files_docs: "files/pdfs/",
-                    files_images: "files/images/",                    
-                },                
+            return {          
                 post_approved: this.model.post.status == "review"?false:true,
                 post_delete: false,
-                media_img: [],
-                media_doc: [],
-                media_video: [],
-                id_img_selected: 0,
-                path_img_selected: "/images/no_image_found.png"
+                media_visuals: [], //para imagenes y videos 
+                media_docs: [], //van aparte 
+                id_img_selected: 0
             }
         },
-        created: function(){
-            console.log("Elemento PostGeneral creado");
-        },
         mounted: function(){
-            console.log("Elemento PostGeneral montado");
-            console.log(this.model.media);
             this.filterMedia(this.model.media);
         },
         watch: {
@@ -153,35 +125,24 @@
             }
         },
         methods: {
+            onSourceFiles: function(e){
+                this.$emit("source-files",e);
+            },
             filterMedia: function(media){
                 if(media === undefined){return;} 
-                //filtrando
-                this.media_img = [];
-                this.media_doc = [];
-                this.media_video = [];
 
-                for(let k of media){
-                    if(k.type_file == "image"){
-                        this.media_img.push(k);
+                this.media_visuals = [];
+                this.media_docs = [];
+                for(let gm of media){
+                    if(gm.type_file === "image" || gm.type_file === "video"){
+                        this.media_visuals.push(gm);
                         continue;
                     }
-                    if(k.type_file == "video"){
-                        this.media_video.push(k);
-                        continue;  
-                    }
-                    
-                    if(k.type_file == "docfile"){
-                        this.media_doc.push(k);
+                    if(gm.type_file === "docfile"){
+                        this.media_docs.push(k);
                     }                    
                 }
 
-                if(this.media_img.length > 0){ //selecionar la primer imagen 
-                    this.id_img_selected = this.media_img[0].id;
-                    this.path_img_selected = "/"+this.media_img[0].path_file+this.media_img[0].name;
-                }
-            },
-            selectImage: function(path){
-                this.path_img_selected = path;
             },
             setPostPopular: function(){
                 let current_sate = this.model.post.is_popular;
@@ -226,43 +187,39 @@
                 let last_state = this.model.post.status; 
                 let new_state = "";
                 if(state === null){    
-                    new_state = this.model.post.status === 'approved' ? 'review':'approved'; //sincronizando con el view                     
-                }else if(state === 'delete'){
-                    new_state = 'delete';
+                    new_state = this.model.post.status === 'approved' ? 'review':'approved';            
                 }
                 
-                let valid_values = ['review','approved','delete'];
+                let valid_values = ['review','approved'];
                 if(valid_values.indexOf(new_state) === -1){
                     StatusHandler.ValidationMsg("Inconsistencia en los valores, recargue el sitio");
                     return;
                 };
                 
                 this.model.post.status = new_state;
-                
+
                 let data = {
                     id: this.model.post.id,
                     new_state: new_state
                 };
 
+                //Necesario estar logeado, y tener los permisos
                 axios.post(`/api/post/setState`,data).then((result)=>{
                     let response = result.data;
                     if(response.code == 0){
                         StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
-                        //rollback state
-                        this.model.post.status = last_state;                         
+                        this.model.post.status = last_state;//rollback state                
                         return;
                     }                    
-                }).catch((ex)=>{
+                }).catch(ex=>{
                     let target_process = "Establecer estado del elemento"; 
-                    let msg = "El proceso ("+target_process+")no se ha podido completar, póngase con soporte técnico."
-                    StatusHandler.ShowStatus(msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
-                    console.error(ex.response);
-                    //rollback state
-                    this.model.post.status = last_state; 
+                    StatusHandler.Exception(target_process,ex);
+                    this.model.post.status = last_state;  //rollback state
                 });
+
             },
             has_cap(e){
-                return window.has_cap(e);
+                return window.has_cap == undefined ? false : window.has_cap(e);
             }            
         }
     }

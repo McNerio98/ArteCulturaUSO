@@ -13,4 +13,8 @@ class PostEvent extends Model
     public function media(){
         return $this->hasMany("App\FilesOnPostEvents",'id_post_event');
     }
+
+    public function img_presentation(){
+        return $this->hasOne('App\FilesOnPostEvents');
+    }
 }

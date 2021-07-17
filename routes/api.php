@@ -26,13 +26,16 @@ Route::post('storeTestValidJson','RequestAcountController@storeWithValidateJson'
 
 
 
+
 //Routes para el admin panel de administradores
 
 Route::post('requestaccounts','UsersController@requestAccount');
 //Route::apiResource('post', 'CreatePostEvent');
 Route::apiResource('users', 'UsersController');
-Route::get('users/dataConfig/{id}','UsersController@configUserData');
-Route::put('user/updateConfig/{id}','UsersController@updateConfigUser');
+
+
+
+
 Route::get('user/existEmail/{id}/{mail}','UsersController@validateEmail');
 Route::get('user/existUsername/{id}/{username}','UsersController@validateUsername');
 Route::post('user/uploadImgProfile','UsersController@uploadProfileImg');
@@ -50,7 +53,11 @@ Route::delete('profile/deltag/{idu}/{idtg}','ProfileController@deleteTag');
 Route::apiResource('usermeta','UsersMetasController');
 
 Route::post('post/findPostsPopular','PostEventController@findPostsPopular');
-Route::get('post/find/{id}','PostEventController@show')->name('post.show');
+
+//Este se queda aqui,puede ser utilizado como api 
+Route::get('post/{id}','PostEventController@show')->name('post.show');
+# ===========
+
 Route::post('post','PostEventController@store')->name('post.store');
 Route::post('post/setPopular','PostEventController@setPostPopular');
 Route::post('post/setState','PostEventController@switchStatePost');

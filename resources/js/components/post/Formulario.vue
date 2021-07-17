@@ -26,7 +26,44 @@
         </div>
         <div class="col-12">
           <div class="row">
-            <div class="col-12 col-lg-4 col-md-4">
+            <div class="col-2">
+                <label for="" class="text-muted">Dia</label>
+                <select v-model="event_type" size="5" class="form-control form-control-sm">
+                  <option selected value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+                  <option value="11">11</option>
+                  <option value="12">12</option>
+                  <option value="13">13</option>
+                  <option value="14">14</option>
+                  <option value="15">15</option>
+                  <option value="16">16</option>
+                  <option value="17">17</option>
+                  <option value="18">18</option>
+                  <option value="19">19</option>
+                  <option value="20">20</option>
+                  <option value="21">21</option>
+                  <option value="22">22</option>
+                  <option value="23">23</option>
+                  <option value="24">24</option>
+                  <option value="25">25</option>
+                  <option value="26">26</option>
+                  <option value="27">27</option>
+                  <option value="28">28</option>
+                  <option value="29">29</option>
+                  <option value="30">30</option>
+                  <option value="21">31</option>
+                </select>                
+            </div>
+
+            <!-- <div class="col-12 col-lg-4 col-md-4">
               <div class="form-group mb-0" v-if="postType == 'event'">
                 <label for="exampleFormControlTextarea1" class="text-muted">Fecha/hora</label>
 
@@ -38,7 +75,8 @@
                  :clearable="false"
                  :editable="false"></date-picker>
               </div>
-            </div>
+            </div> -->
+
             <div class="col-12 col-lg-4 col-md-4">
               <div class="form-group mb-0" v-if="postType == 'event'">
                 <label for="exampleFormControlTextarea1" class="text-muted">Tipo de evento</label >
@@ -231,7 +269,7 @@ export default {
             this.$emit('post-id-created',response.data);
             
       }).catch((ex) => {
-            console.log(ex);
+            StatusHandler.Exception("Crear elemento",ex);
       })
 
     },
@@ -245,54 +283,7 @@ export default {
 </script>
 
 <style scoped>
-.image-area {
-    position: relative;
-    background: rgb(197, 195, 195);
-    width: 100%;
-    display: flex;
-    border: 5px solid rgb(235, 230, 230);
-    height: 115px;
-  }
 
-  .image-area2 {
-    position: relative;
-    background: rgb(197, 195, 195);
-    width: 115px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 5px solid rgb(235, 230, 230);
-    height: 115px;
-    border-radius: 50%;
-  }
-
-  .remove-image {
-    display: none;
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    border-radius: 10em;
-    padding: 2px 6px 3px;
-    text-decoration: none;
-    font: 700 18px/17px sans-serif;
-    background: #555;
-    border: 3px solid #fff;
-    color: #fff;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5), inset 0 2px 4px rgba(0, 0, 0, 0.3);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-    -webkit-transition: background 0.5s;
-    transition: background 0.5s;
-  }
-  .remove-image:hover {
-    background: #e54e4e;
-    border: 3px solid #fff;
-    color: #fff;
-  }
-  .remove-image:active {
-    background: #e54e4e;
-    top: -10px;
-    right: -11px;
-  }
 .titleContainer{
     display: flex;
     justify-content: space-between;

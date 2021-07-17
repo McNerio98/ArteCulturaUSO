@@ -23,8 +23,6 @@ class UsersController extends Controller
     public function __construct(){
         //$this->middleware('auth',['only'=>['configUser']]);
         $this->middleware('auth:api',['only'=>[
-            'configUserData',
-            'updateConfigUser',
             'uploadProfileImg',
             'store'
             ]]);
@@ -145,8 +143,7 @@ class UsersController extends Controller
             return $salida;
         }
 
-        //Si no tiene los permisos o no es el usuario propietario de la cuenta 
-        if(! Auth::user()->can('configurar-usuario') && Auth::user()->id != $id){
+        if(! Auth::user()->can('configurar-usuario')){
             $salida["msg"] = "No posee permisos para esta acción";
         }
 
@@ -247,7 +244,17 @@ class UsersController extends Controller
                     if(isset($request->status)){
                         $user->status = trim($request->status);
                     }
-                    $user->assignRole(trim(Role::find($request->role)->name));
+
+                    // All current roles will be removed from the user and replaced by the array given
+                    $fresh_rol = Role::find($request->role);
+                    if(! $fresh_rol){
+                        $salida["msg"] = "El rol no es valido";
+                        return $salida;
+                    }
+                    
+                    //podra tener un unico rol
+                    $fresh_roles = [$fresh_rol->name];
+                    $user->syncRoles($fresh_roles);
 
                     if(!$user->save()){
                         $salida["msg"] = "Error en actualizar credenciales";

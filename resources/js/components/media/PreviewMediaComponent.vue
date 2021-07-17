@@ -1,8 +1,8 @@
 <template>
-  <div class="pnlParent" v-if="items.length > 0">
+  <div class="pnlParent" v-if="items.length > 0" @click="$emit('source-files',items)">
     <!--DISEÑO UNO (1 MEDIO)-->
     <div class="pvm-wrappen" v-if="items.length == 1">
-      <div class="_m1 _galHero" :style="{ backgroundImage: 'url(' + '/' + paths.files_images + items[0].name + ')' }"></div>
+      <div class="_m1 _galHero" :style="{ backgroundImage: 'url(' + items[0].name + ')' }"></div>
     </div>
     <!--END DISEÑO UNO (1 MEDIO)-->
 
@@ -15,10 +15,10 @@
 
     <!--DISEÑO UNO ( 3  ||  3+  MEDIOs)-->
     <div class="pvm-wrappen" v-if="items.length >= 3">
-      <div class="_m3 _galHero" :style="{ backgroundImage: 'url(' + '/' + paths.files_images + items[0].name + ')' }"></div>
+      <div class="_m3 _galHero" :style="{ backgroundImage: 'url(' + items[0].name + ')' }"></div>
       <div class="_m3 d-flex flex-column">
-          <div class="_scn _galHero" :style="{ backgroundImage: 'url(' + '/' + paths.files_images + items[1].name + ')' }"></div>
-          <div class="_scn _galHero" :style="{ backgroundImage: 'url(' + '/' + paths.files_images + items[2].name + ')' }">
+          <div class="_scn _galHero" :style="{ backgroundImage: 'url(' + items[1].name + ')' }"></div>
+          <div class="_scn _galHero" :style="{ backgroundImage: 'url(' + items[2].name + ')' }">
                 <div class="hero-text _hero-text" v-if="items.length > 3">
                     <h1 style="font-size:50px">+ {{items.length - 3}}</h1>
                 </div>          
@@ -33,8 +33,7 @@
 <script>
 export default {
   props: {
-    media: { type: Array, default: [] },
-    paths: {type: Object, default: {}}
+    media: { type: Array, default: [] }
   },
   data: function(){
       return {
@@ -50,6 +49,10 @@ export default {
   mounted() {
     console.log("Ciclo de vida del componente.");
   },
+  methods: {
+
+  }
+  
 };
 </script>
 

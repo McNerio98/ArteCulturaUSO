@@ -19,6 +19,7 @@ class CreatePostEventsTable extends Migration
             $table->longText('content');
             $table->enum('type_post',['post','event'])->default('post');
             $table->unsignedBigInteger('creator_id');
+            $table->unsignedBigInteger('presentation_img')->nullable(); //sin restrincion 
             $table->timestamps(); //este es el datepost, es decir cuando se publico el post 
             $table->foreign('creator_id')->references('id')->on('users');
         });

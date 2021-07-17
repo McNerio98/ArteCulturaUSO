@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\User;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
-
+use App\PostEvent;
 
 class DashboardController extends Controller
 {
@@ -14,6 +14,8 @@ class DashboardController extends Controller
 	public function __construct(){
 		//Todos requieren estar logeados 
 		$this->middleware('auth');
+		//adroles verifica que no sea un invitado el que esta intentado ver la dashboard 
+		$this->middleware('adroles');
 	}
 
 	private function userRequest(){
@@ -66,5 +68,30 @@ class DashboardController extends Controller
         return view("admin.config-user",['id_user_cur' => $id,'all_roles' =>$roles,'ac_option' =>'usuarios' , 'request_users' => $request_users]);
     }
 	
+	//Access via AJAX 
+	public function notifiers(){
+		$salida = [
+			"code" => 0,
+			"msg" => "",
+			"data" => null
+		];
+
+		$posts 		  =	PostEvent::where("type_post","post")->count();
+		$events 	= PostEvent::where("type_post","event")->count();
+		$requests 	= User::where("status","request")->count(); //se puede cambiar por otro 
+		$users 		   = User::count();
+
+		$salida["data"] = [
+			"posts" => $posts,
+			"events" => $events,
+			"requests" => $requests,
+			"users" => $users
+		];
+		$salida["code"] = 1;
+		$salida["msg"] = "Request complete";
+
+		return $salida;
+	}
+
 	
 }

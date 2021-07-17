@@ -43,7 +43,7 @@ const appProfile = new Vue({
             is_mdprofiles: false, // is media profiles 
             media_view: {
                 owner: 0,
-                target: 0,
+                target: {},
                 items: []
             },
             data_config: {
@@ -150,6 +150,21 @@ const appProfile = new Vue({
             }).catch((ex)=>{
                 StatusHandler.Exception("Registrar el metadato del usuario",ex);
             });
+        },
+        onSources: function(sources){
+            //Formateando segun el formato esperado por el preview 
+            var aux = sources.map((e)=>{
+                return {
+                    id: e.id,
+                    type: e.type_file,
+                    url: e.name,
+                    owner_id: 0,
+                }
+            });
+
+            this.media_view.items = aux;
+            this.media_view.target = aux[0];
+            $('#modaPreviewMedia').modal('show');            
         },
         PostEventCreated: function(e){
             console.log("Se emitio el evento");
@@ -273,7 +288,14 @@ const appProfile = new Vue({
                             artistic_name: this.user.artistic_name == undefined ? '(No Especificado)' : this.user.artistic_name,
                             img_owner: this.current_profile_media.path_file
                         },
-                        media: e.media,
+                        media: e.media.map(ng => {
+                            switch(ng.type_file){
+                                case "image": {ng.name = window.obj_ac_app.base_url +"/files/images/"  + ng.name;break;}
+                                case "docfile": {ng.name = window.obj_ac_app.base_url + "/files/pdfs/" + ng.name;break;}
+                                case "video": {ng.name_temp = window.obj_ac_app.base_url + "/images/youtube_item.jpg";break;}
+                            }
+                            return ng;
+                        }),
                         meta: []                        
                     }
                 });
@@ -295,7 +317,14 @@ const appProfile = new Vue({
                             artistic_name: this.user.artistic_name == undefined ? '(No Especificado)' : this.user.artistic_name,
                             img_owner: this.current_profile_media.path_file
                         },
-                        media: e.media,
+                        media: e.media.map(ng => {
+                            switch(ng.type_file){
+                                case "image": {ng.name = window.obj_ac_app.base_url +"/files/images/"  + ng.name;break;}
+                                case "docfile": {ng.name = window.obj_ac_app.base_url + "/files/pdfs/" + ng.name;break;}
+                                case "video": {ng.name_temp = window.obj_ac_app.base_url + "/images/youtube_item.jpg";break;}
+                            }
+                            return ng;
+                        }),
                         meta: []                        
                     }
                 });                
@@ -313,8 +342,17 @@ const appProfile = new Vue({
             //estableciendo como carga el panel 
             //asignando archivos 
             //mostrando 
+            var aux = this.media_profile.map((e)=>{
+                return {
+                    id: e.id,
+                    type: e.type_file,
+                    url: e.type_file == 'video' ? e.name : this.obj_ac_app.base_url +"/"+ this.paths.files_images + e.name,
+                    owner_id: 0,
+                }
+            });
+
             this.is_mdprofiles = true;
-            this.media_view.items = this.media_profile;
+            this.media_view.items = aux;
             this.media_view.target = target_media;
             $('#modaPreviewMedia').modal('show');
         },
