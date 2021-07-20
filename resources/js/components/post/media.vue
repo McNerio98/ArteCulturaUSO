@@ -77,16 +77,16 @@
       </div>
     </div>
 
-    <ul v-for="(m, key) in media_docs" v-bind:key="key" class="list-unstyled mb-2">
-        <li v-if="m.type === 'docfile'" class="docfile" :title="m.filename">
-        <a href="" class="btn-link text-secondary"><i class="far fa-file-pdf"></i> {{m.filename}}</a>
-        <a
-          @click="remove(key)"
-          class="remove-image alter-remove"
-          href="javascript:void(0);"
-          style="display: inline">
-          &#215;
-        </a>          
+    <ul class="list-unstyled">
+        <li v-for="(m, key) in media_docs" v-bind:key="key" class="docfile mb-2" :title="m.filename">
+          <a href="" class="btn-link text-secondary"><i class="far fa-file-pdf"></i> {{m.filename}}</a>
+          <a
+            @click="remove(key)"
+            class="remove-image alter-remove"
+            href="javascript:void(0);"
+            style="display: inline">
+            &#215;
+          </a>          
         </li>
     </ul>
 
@@ -242,7 +242,7 @@ export default {
       media_docs: [],
       link_youtube: "",
       show_modal: false,
-      limite: 5, //limite de archivos 
+      limite: 70, //limite de archivos 
     };
   },
   created: function () {

@@ -42,7 +42,6 @@ Route::post('user/uploadImgProfile','UsersController@uploadProfileImg');
 
 
 Route::get('tags/withCategories', 'TagsController@getBySeccion');
-Route::resource('tags', 'TagsController');
 Route::get('tags/byCategory/{id}','TagsController@tagsByCategory');
 
 Route::apiResource('profile','ProfileController');
@@ -58,7 +57,8 @@ Route::post('post/findPostsPopular','PostEventController@findPostsPopular');
 Route::get('post/{id}','PostEventController@show')->name('post.show');
 # ===========
 
-Route::post('post','PostEventController@store')->name('post.store');
+
+
 Route::post('post/setPopular','PostEventController@setPostPopular');
 Route::post('post/setState','PostEventController@switchStatePost');
 

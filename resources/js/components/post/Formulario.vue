@@ -26,44 +26,7 @@
         </div>
         <div class="col-12">
           <div class="row">
-            <div class="col-2">
-                <label for="" class="text-muted">Dia</label>
-                <select v-model="event_type" size="5" class="form-control form-control-sm">
-                  <option selected value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
-                  <option value="7">7</option>
-                  <option value="8">8</option>
-                  <option value="9">9</option>
-                  <option value="10">10</option>
-                  <option value="11">11</option>
-                  <option value="12">12</option>
-                  <option value="13">13</option>
-                  <option value="14">14</option>
-                  <option value="15">15</option>
-                  <option value="16">16</option>
-                  <option value="17">17</option>
-                  <option value="18">18</option>
-                  <option value="19">19</option>
-                  <option value="20">20</option>
-                  <option value="21">21</option>
-                  <option value="22">22</option>
-                  <option value="23">23</option>
-                  <option value="24">24</option>
-                  <option value="25">25</option>
-                  <option value="26">26</option>
-                  <option value="27">27</option>
-                  <option value="28">28</option>
-                  <option value="29">29</option>
-                  <option value="30">30</option>
-                  <option value="21">31</option>
-                </select>                
-            </div>
-
-            <!-- <div class="col-12 col-lg-4 col-md-4">
+            <div class="col-12 col-lg-4 col-md-4">
               <div class="form-group mb-0" v-if="postType == 'event'">
                 <label for="exampleFormControlTextarea1" class="text-muted">Fecha/hora</label>
 
@@ -75,14 +38,14 @@
                  :clearable="false"
                  :editable="false"></date-picker>
               </div>
-            </div> -->
+            </div>
 
             <div class="col-12 col-lg-4 col-md-4">
               <div class="form-group mb-0" v-if="postType == 'event'">
-                <label for="exampleFormControlTextarea1" class="text-muted">Tipo de evento</label >
-                <select v-model="event_type" class="custom-select">
-                  <option selected value="1">Eventual</option>
-                  <option value="2">Permanente</option>
+                <label for="exampleFormControlTextarea1" class="text-muted">Se repite</label >
+                <select v-model="frequency" class="custom-select">
+                  <option selected value="unique">No se repite</option>
+                  <option value="repeat">Cada año</option>
                 </select>
               </div>
             </div>
@@ -90,12 +53,9 @@
               <div class="form-group mb-0" v-if="postType == 'event'">
                 <label for="exampleFormControlTextarea1" class="text-muted">Categoria</label>
                 <select
-                  id="selectPrice"
-                  @change="openPriceModal"
-                  class="custom-select"
-                >
-                  <option selected value="1">Gratuito</option>
-                  <option value="2">Pagado</option>
+                  @change="openPriceModal" v-model="event_has_price" class="custom-select">
+                  <option value="1">Pagado</option>
+                  <option value="0">Gratuito</option>
                 </select>
               </div>
             </div>
@@ -195,8 +155,9 @@ export default {
       place_holder_title: this.postType === "event"?"Nombre del evento":"Título de la publicación",
       post_title: "",
       event_date: "",
-      event_type: "1",
+      frequency: "unique", 
       show_panel_price: false,
+      event_has_price: "0",
       event_price: 0.0,
       description: "",
       time1: new Date(),
@@ -220,7 +181,7 @@ export default {
     },    
     openPriceModal: function(event){
       this.event_price = 0.00;
-      this.show_panel_price =  event.target.value == "2"?true:false;
+      this.show_panel_price =  this.event_has_price == "1"?true:false;
     },
     publicarContent: function(){
       if(this.post_title.trim().length < 2 || this.description.trim().length < 2){
@@ -248,16 +209,16 @@ export default {
       if(this.postType == "event"){
         data_send = {
           ...data_send,
-          event_price: parseFloat(this.event_price).toFixed(2),
-          event_category: this.event_price > 0?"pagado":"gratis",
-          event_type: this.event_type == "1"?"eventual":"permanente",
+          event_price: isNaN(parseFloat(this.event_price)) ? 0 : parseFloat(this.event_price).toFixed(2),
+          event_has_price: this.event_has_price == "1"  ? true  : false,
+          frequency: this.frequency,
           event_date: this.time1.toISOString()
         }
       }
 
       console.table(data_send);
 
-      axios.post(`/api/post`,data_send).then((result) => {
+      axios.post(`/postevent`,data_send).then((result) => {
           let response = result.data;
           if(response.code == 0){
             StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
@@ -265,8 +226,7 @@ export default {
           }        
             console.log(response);
             this.cleanForm(); 
-            console.log("Antes de emitir ......");
-            this.$emit('post-id-created',response.data);
+            this.$emit('post-chiild-created',response.data);
             
       }).catch((ex) => {
             StatusHandler.Exception("Crear elemento",ex);

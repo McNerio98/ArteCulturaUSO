@@ -10,20 +10,24 @@ Vue.component('modal-trim-img', require('../components/trim/TrimComponent.vue').
 Vue.component('post-general',require('../components/post/PostGeneralComponent.vue').default);
 Vue.component('preview-media',require('../components/media/PreviewMediaComponent.vue').default);
 
+Vue.component('pagination-component',require('../components/pagination/PaginationComponent.vue').default);
+
+
 const appProfile = new Vue({
     el: "#appProfile",
     data: function(){
         return{
+            items_postevents: [],
             obj_ac_app: {},
-            is_creating_event : false,
-            is_creating_post : false,
+            flag_create: {
+                type: "post",
+                creating: false
+            },
+
             edit_mode_desc: false,
             description_insert: "",
             current_user_id: 0,
-            items_posts: [],
-            items_events: [],
-            items_events_server: [],
-            items_post_server: [],
+
             paths: {
                 media_profiles: "files/profiles/",
                 files_docs: "files/pdfs/",
@@ -59,12 +63,43 @@ const appProfile = new Vue({
     },
     mounted: function(){
         this.loadData();
+
     },
     created: function(){
         this.current_user_id = $("#current_user_id_request").val();        
         this.obj_ac_app = window.obj_ac_app;
     },
     methods: {
+        itemLoaded: function(fulldata){
+            this.items_postevents = fulldata.map(e=>{
+                return {
+                    post: {
+                        id: e.id,
+                        title: e.title,
+                        description: e.content,
+                        type: e.type_post,
+                        is_popular: false,
+                        status: 'review',
+                        created_at: e.created_at,
+                    },
+                    creator: {
+                        id: e.creator_id,
+                        name: e.creator_name,
+                        nickname: e.creator_nickname,
+                        profile_img:  window.obj_ac_app.base_url + "/files/profiles/" + e.creator_profile, 
+                    },
+                    media: e.media.map(ng => {//el formato para esto se filtra en el otro compnente
+                        switch(ng.type_file){
+                            case "image": {ng.name = window.obj_ac_app.base_url +"/files/images/"  + ng.name;break;}
+                            case "docfile": {ng.url = window.obj_ac_app.base_url + "/files/pdfs/" + ng.name;break;}
+                            case "video": {ng.name_temp = window.obj_ac_app.base_url + "/images/youtube_item.jpg";break;}
+                        }
+                        return ng;
+                    }),
+                    meta: []                      
+                }
+            });
+        },
         showListTags: function(){
             if(this.list_tags !== undefined){
                 this.is_edit_tags = true;
@@ -113,20 +148,6 @@ const appProfile = new Vue({
             });
 
         },
-        loadPosts: function(){
-            const data = {
-                type_post: "post",
-                user_id: this.current_user_id
-            }
-            //el componente de la mini general preview aun falta          
-        },
-        loadEvents: function(){
-            const data = {
-                type_post: "post",
-                user_id: this.current_user_id
-            }
-            //el componente de la mini general preview aun falta                       
-        },
         storeUserDescription: function(){
             let size_campo1 = this.data_config.description.value;
             if(size_campo1 < 1  || size_campo1 > 1000){
@@ -167,35 +188,34 @@ const appProfile = new Vue({
             $('#modaPreviewMedia').modal('show');            
         },
         PostEventCreated: function(e){
-            console.log("Se emitio el evento");
-
             var post = {
                 post: {
-                    id: e.id,
-                    title: e.title,
-                    description: e.content,
-                    type: e.type_post,
-                    creator_id: e.creator_id,
+                    id: e.post.id,
+                    title: e.post.title,
+                    description: e.post.content,
+                    type: e.post.type_post,
                     is_popular: false,
                     status: 'review',
-                    created_at: e.created_at,
-                    name: this.user.name,
-                    artistic_name: this.user.artistic_name == undefined ? '(No Especificado)' : this.user.artistic_name,
-                    img_owner: this.current_profile_media.path_file
+                    created_at: e.post.created_at,
                 },
-                media: e.media,
+                creator: {
+                    id: e.creator.id,
+                    name: e.creator.name,
+                    nickname: e.creator.nickname,
+                    profile_img: e.creator.profile_img != undefined ? window.obj_ac_app.base_url + "/files/profiles/" + e.creator.profile_img.path_file : null, 
+                },
+                media: e.post.media.map(ng => {//el formato para esto se filtra en el otro compnente
+                    switch(ng.type_file){
+                        case "image": {ng.name = window.obj_ac_app.base_url +"/files/images/"  + ng.name;break;}
+                        case "docfile": {ng.url = window.obj_ac_app.base_url + "/files/pdfs/" + ng.name;break;}
+                        case "video": {ng.name_temp = window.obj_ac_app.base_url + "/images/youtube_item.jpg";break;}
+                    }
+                    return ng;
+                }),
                 meta: []                        
             }
-            if(e.type_post == "post"){
-                this.items_posts.unshift(post);
-                this.is_creating_post = false;
-            }
 
-            if(e.type_post == "event"){
-                this.items_events.unshift(post);
-                this.is_creating_event = false;                
-            }            
-
+            this.flag_create.creating = false;        
         },
         toObject: function(metas){
             let mtx = [];
@@ -243,7 +263,7 @@ const appProfile = new Vue({
 
         },
         loadData: function(){
-            axios(`/api/profile/${this.current_user_id}`).then((result)=>{
+            axios(`/profile/${this.current_user_id}`).then((result)=>{
                 let response = result.data;                
                 if(response.code == 0){
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
@@ -260,80 +280,19 @@ const appProfile = new Vue({
                 this.data_config.address.value = response.data.metas.find(e => e.key === 'user_profile_address')?.value;
                 this.data_config.notes.value = response.data.metas.find(e => e.key === 'user_profile_notes')?.value;
 
-                //this.content_desc   = aux_desc == undefined ? "" : aux_desc;
                 this.media_profile = response.data.media_profile;
                 this.rubros = response.data.tags;
-                this.items_events_server = response.data.items_events;
-                this.items_post_server = response.data.items_post;
 
-                //extra data processing
                 this.description_insert = this.content_desc;
                 this.media_view.owner = this.user.id;
                 let aux_media  = this.media_profile.filter(e => e.id === this.user.img_profile_id);
                 this.current_profile_media = aux_media.length > 0 ? aux_media[0]: {};
 
-                //procesando eventos 
-                this.items_events = this.items_events_server.map(e =>{
-                    return {
-                        post: {
-                            id: e.id,
-                            title: e.title,
-                            description: e.content,
-                            type: e.type_post,
-                            creator_id: e.creator_id,
-                            is_popular: e.is_popular,
-                            status: e.status,
-                            created_at: e.created_at,
-                            name: this.user.name,
-                            artistic_name: this.user.artistic_name == undefined ? '(No Especificado)' : this.user.artistic_name,
-                            img_owner: this.current_profile_media.path_file
-                        },
-                        media: e.media.map(ng => {
-                            switch(ng.type_file){
-                                case "image": {ng.name = window.obj_ac_app.base_url +"/files/images/"  + ng.name;break;}
-                                case "docfile": {ng.name = window.obj_ac_app.base_url + "/files/pdfs/" + ng.name;break;}
-                                case "video": {ng.name_temp = window.obj_ac_app.base_url + "/images/youtube_item.jpg";break;}
-                            }
-                            return ng;
-                        }),
-                        meta: []                        
-                    }
-                });
-
-
-                //procesando post 
-                this.items_posts = this.items_post_server.map(e =>{
-                    return {
-                        post: {
-                            id: e.id,
-                            title: e.title,
-                            description: e.content,
-                            type: e.type_post,
-                            creator_id: e.creator_id,
-                            is_popular: e.is_popular,
-                            status: e.status,
-                            created_at: e.created_at,
-                            name: this.user.name,
-                            artistic_name: this.user.artistic_name == undefined ? '(No Especificado)' : this.user.artistic_name,
-                            img_owner: this.current_profile_media.path_file
-                        },
-                        media: e.media.map(ng => {
-                            switch(ng.type_file){
-                                case "image": {ng.name = window.obj_ac_app.base_url +"/files/images/"  + ng.name;break;}
-                                case "docfile": {ng.name = window.obj_ac_app.base_url + "/files/pdfs/" + ng.name;break;}
-                                case "video": {ng.name_temp = window.obj_ac_app.base_url + "/images/youtube_item.jpg";break;}
-                            }
-                            return ng;
-                        }),
-                        meta: []                        
-                    }
-                });                
-
             }).catch((ex)=>{
-                console.error("UN ERROR",ex);
-                closeLoadingAC();
-                showAlertMsgAC("Error al recuperar la infomacion",operacion.DEFAULT,operacionStatus.SUCCESS);
+                //closeLoadingAC();
+                //showAlertMsgAC("Error al recuperar la infomacion",operacion.DEFAULT,operacionStatus.SUCCESS);
             });
+
         },
         onClickEdit: function(){
             this.edit_mode_desc = true;

@@ -64,3 +64,10 @@ Route::get('/approval','PostEventController@approval')->name('items.approval')->
 Route::get('/users/dataConfig/{id}','UsersController@configUserData')->name("user.dataconf")->middleware('auth','adroles');
 Route::put('/user/updateConfig/{id}','UsersController@updateConfigUser')->name("user.updateconf")->middleware('auth','adroles');
 Route::get('/notifiers','DashboardController@notifiers')->name("notifiers"); //ya tiene los middleware el controller 
+
+Route::post('postevent','PostEventController@store')->name('postevent.store')->middleware('auth');
+
+
+//rutas que no necesitan proteccion 
+Route::get('/profile/{id}','ProfileController@show');
+Route::get('/postsevents/{id}','ProfileController@elements');

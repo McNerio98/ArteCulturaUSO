@@ -14,6 +14,10 @@ class PostEvent extends Model
         return $this->hasMany("App\FilesOnPostEvents",'id_post_event');
     }
 
+    public function owner(){
+        return $this->belongsTo("App\User","creator_id");
+    }
+
     public function img_presentation(){
         return $this->hasOne('App\FilesOnPostEvents');
     }
