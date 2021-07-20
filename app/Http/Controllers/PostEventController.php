@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\PostEvent;
+use App\DtlEvent;
 use App\FilesOnPostEvents as FilesPost;
 use App\postsEventsMeta;
 use Storage;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\ImageManagerStatic as Image;
+use Illuminate\Validation\Rule;
 
 class PostEventController extends Controller
 {
@@ -54,8 +56,6 @@ class PostEventController extends Controller
             "msg" => null
         ];
 
-        //permisos
-        //Se esta usando el middleware api entonces buscara el valor del api_token  
         $user = Auth::user();
 
         //validaciones de campos
@@ -73,20 +73,21 @@ class PostEventController extends Controller
         if($request->post_type == "event"){
             $validator = Validator::make($request->all(),[
                 "event_price" => "required",
-                "event_category" => "required",
-                "event_type" => "required",
-                "event_date"  => "required"
+                "event_has_price" => "required",
+                "frequency" => ["required",Rule::in(["unique","repeat"])],
+                "event_date"  => ["required","date"]
             ]);
         }
 
         if($validator->fails()){
-            $salida["msg"] = "Valores imcompletos linea 50";
+            $salida["msg"] = "Campos de evento imcompletos";
             return $salida;
         };
 
         DB::beginTransaction();
 
         $postEvent = new PostEvent();
+        $id_img_presentation = 0;
         try{
             $postEvent->title = $request->title;
             $postEvent->content = $request->description;
@@ -94,20 +95,17 @@ class PostEventController extends Controller
             $postEvent->creator_id = $user->id;
             $postEvent->save();
 
+            $dtlEvent = new DtlEvent();
             if($request->post_type == "event"){
-                //Se llenan los datos para un evento
-                $keys = ["event_date","event_price","event_type","event_category"];
-                foreach ($keys as $key => $value) {
-                    $option = new postsEventsMeta();
-                    $option->post_event_id = $postEvent->id;
-                    $option->key = $value;
-                    $option->value= $request->{$value};
-                    $option->save();
-                }
-
+                $dtlEvent->event_date        = $request->event_date;
+                $dtlEvent->frequency          = $request->frequency;
+                $dtlEvent->has_cost             = $request->event_has_price;
+                $dtlEvent->cost                     = $request->event_has_price == true ? $request->event_price : 0;
+                $dtlEvent->event_id             = $postEvent->id;
+                $dtlEvent->save();
             }
 
-            //Realizar validacion de, tipo de archivos permitidos (por extension), numero maximo de archivos multimedia 60 en total 
+            //Realizar validacion de, tipo de archivos permitidos (por extension)
             
             //Si el usuario sube contenido
             if(isset($request->media)){
@@ -126,18 +124,16 @@ class PostEventController extends Controller
                         preg_match('/^data:application\/(\w+);base64,/', $files[$numberfiles]['data'])
                     ) {
                         $data = substr($files[$numberfiles]['data'], strpos($files[$numberfiles]['data'], ',') + 1);
-
                         $data = base64_decode($data);
 
-                        //$filename = uniqid() . $files[$numberfiles]['filename'];
-                        //$pathname = $files[$numberfiles]['type'] == "image" ? ("files/images/" . $filename) : ("files/pdfs/" . $filename);
+
                         
                         $extension = explode(".",$files[$numberfiles]['filename']);
+                        //obtener el ultimo elemento del array creado (explode)
                         $extension = $extension[count($extension)-1];
 
                         //al parecer no es necesario 
-                        date_default_timezone_set('America/Bogota');
-
+                        date_default_timezone_set('America/El_Salvador');
                         $filename = uniqid()."_".time().".".$extension;
                         $pathname =  $files[$numberfiles]['type'] == "image" ? "files/images/" : "files/pdfs/" ;
 
@@ -146,40 +142,66 @@ class PostEventController extends Controller
                         $filesOnPostEvents->type_file               = $files[$numberfiles]['type'];
                         $filesOnPostEvents->save();
 
+                        if($id_img_presentation === 0 && $filesOnPostEvents->type_file === "image"){
+                            $id_img_presentation = $filesOnPostEvents->id;
+                        }
+
                         $path_store = $pathname.$filename;
                         Storage::disk('local')->put($path_store, $data);
 
-                        //compresor de imagenes 
+                        //compresor de imagenes only image type 
+                        if($filesOnPostEvents->type_file === "image"){
                         // resize the image to a width of 1000 and constrain aspect ratio (auto height)
-                        $compress = Image::make(storage_path('app/' . $path_store));
-                        $width      = $compress->width();
-                        $height    = $compress->height();
+                            $compress = Image::make(storage_path('app/' . $path_store));
+                            $width      = $compress->width();
+                            $height    = $compress->height();
 
-                        if($width > 1500 || $height > 1500){
-                            $compress->resize(1000, null,function($constraint) {
-                                $constraint->aspectRatio();
-                                // prevent possible upsizing
-                                $constraint->upsize();
-                                //en las pruebas upsize no evitaba por completo el incremento de peso para archivos pequeños
-                            });
-                            $compress->save(null,100);
+                            if($width > 1500 || $height > 1500){
+                                $compress->resize(1000, null,function($constraint) {
+                                    $constraint->aspectRatio();
+                                    // prevent possible upsizing
+                                    $constraint->upsize();
+                                    //en las pruebas upsize no evitaba por completo el incremento de peso para archivos pequeños
+                                });
+                                $compress->save(null,100);
+                            }
+                            $compress->destroy();
                         }
-                        $compress->destroy();
 
                     }else{
                         $filesOnPostEvents->id_post_event = $postEvent->id;
                         $filesOnPostEvents->name = $files[$numberfiles]['data'];
                         $filesOnPostEvents->type_file = $files[$numberfiles]['type'];
                         $filesOnPostEvents->save();
+                        //Es un video
+                        if($id_img_presentation === 0){
+                            $id_img_presentation = $filesOnPostEvents->id;
+                        }                        
                     }
                     $numberfiles++;
                 }
             }
+
+            if($id_img_presentation !== 0){
+                $postEvent->presentation_img = $id_img_presentation;
+                $postEvent->save();
+            }
+
+            $propietario = [];
+            $propietario["id"] = $user->id;
+            $propietario["name"] = $user->name;
+            $propietario["nickname"] = $user->artistic_name;            
+            $propietario["profile_img"] = $user->profile_img;
+
             DB::commit();
+
             $salida = [
                 "code" => 1,
-                "data" =>  $postEvent->load("media"),
-                "msg" => "Ok MC ".$postEvent->id
+                "data" =>  [
+                    "post" => $postEvent->load("media"),
+                    "creator" => $propietario
+                ],
+                "msg" => "Request Complete"
             ];
         }catch(\Exception $e){
             DB::rollback();
@@ -187,8 +209,8 @@ class PostEventController extends Controller
         }
 
         return $salida;        
-        //$header = $request->header('Authorization');
     }
+
 
     public function popularPost(){
         $salida = [

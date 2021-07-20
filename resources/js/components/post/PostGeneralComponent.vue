@@ -2,8 +2,8 @@
     <div class="card card-widget" style="width: 100%;max-width: 600px;margin: auto;">
         <div class="card-header p-2">
             <div class="user-block">
-                <img class="img-circle" :src="model.post.img_owner" alt="User Image">
-                <span class="username"><a href="#">{{model.post.artistic_name == null?model.post.name:model.post.artistic_name}}</a></span>
+                <img class="img-circle" :src="model.creator.profile_img" alt="User Image">
+                <span class="username"><a href="#">{{model.creator.nickname == null?model.creator.name:model.creator.nickname}}</a></span>
                 <span class="description">{{model.post.title}}</span>
             </div>
             <!-- /.user-block -->
@@ -75,13 +75,27 @@
             <!--COMPONENTE GALLERY COMPONENTE (PREVIEW MEDIA)-->
             <preview-media @source-files="onSourceFiles" :media="media_visuals"></preview-media>
             <!--END COMPONENTE GALLERY COMPONENTE (PREVIEW MEDIA)-->
+
+            <!--DOCUMENTS-->
+            <ul v-for="(m, key) in media_docs" v-bind:key="key" class="list-unstyled mb-2">
+                <li class="docfile" :title="m.name">
+                <a  target="_blank" :href="m.url" class="btn-link text-secondary"><i class="far fa-file-pdf"></i> {{m.name}}</a>                      
+                </li>
+            </ul>
+
         </div>
     </div>
 </template>
+<style scoped>
+    li.docfile{
+        background-color: #f0f0f0;
+        padding: 5px 0;
+        overflow: hidden;
+        border-radius: 10px;
+    }
+</style>
 
 <script>
-    
-
     export default {
         props: {
             model: {
@@ -93,13 +107,19 @@
                             title: "",
                             description: "",
                             type: "post",
-                            creator_id: 0,
                             is_popular: 0,
                             status: "review",
-                            created_at: "",
+                            created_at: "",               
+                            frequency: "unique",
+                            has_cost: false,
+                            cost: 0,
+                            event_date: null                            
+                        },
+                        creator: {
+                            id: 0,
                             name: "",
-                            artistic_name: "",
-                            img_owner: ""                    
+                            profile_img: "",
+                            nickame: ""                            
                         },
                         media: [],
                         meta: []
@@ -139,7 +159,7 @@
                         continue;
                     }
                     if(gm.type_file === "docfile"){
-                        this.media_docs.push(k);
+                        this.media_docs.push(gm);
                     }                    
                 }
 

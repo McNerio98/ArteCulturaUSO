@@ -113,7 +113,8 @@
                                         <a @click.prevent="changePage(paginate_approval.current_page + 1)" class="page-link" href="#">Siguiente</a>
                                     </li>
                                 </ul>
-                            </nav>                            
+                            </nav>    
+                                                    
                         </div>
                     </div>
                 </div>
@@ -162,6 +163,7 @@
                                 como relevantes. <span style="color: #e83e8c !important;">Puede crear o buscar eventos o
                                     publicaciones en las siguientes opciones.</span></i> </p>
                         <div>
+                            
                             <div class="dropdown d-inline">
                                 <button class="btn  btn-outline-secondary btn-flat" type="button"
                                     id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
@@ -175,6 +177,7 @@
                                         href="#">Evento</a>
                                 </div>
                             </div>
+
                             <button v-on:click="changePanel1(2)" type="button"
                                 class="btn  d-inline btn-outline-secondary btn-flat"><i class="fas fa-search"></i>
                                 Buscar</button>
