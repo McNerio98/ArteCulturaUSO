@@ -219,6 +219,7 @@ class RolesPermissionSeeder extends Seeder
 			'email' => 'usodev@usonsonate.edu.sv',
 			'username' => 'social2020',
 			'password'	=> Hash::make('s4FFDEvYwbixn'),
+			'is_admin' => true,
 			'telephone' => '2222-2222',
 			'status' => 'enabled',
 		]);

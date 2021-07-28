@@ -3,7 +3,7 @@
 
 @section('content')
 <script>
-    window.params_search = {!! json_encode($parametros) !!};
+    window.params_search = {!! json_encode($filter_search) !!};
 </script>
 <main role="main" class="flex-shrink-0" id="app-search">
     <div class="container bg-white">
@@ -17,20 +17,15 @@
         </div>
 
         <div class="row mb-4">
-            <div class="col-md-8 offset-md-2">
-                <form action="simple-results.html">
-                    <div class="input-group">
-                        <input type="search" class="form-control form-control-lg"
-                            placeholder="Ejem. Grupo de música, payasos, casa de la cultura, etc.">
-                        <div class="input-group-append">
-                            <button type="submit" class="btn btn-lg btn-default">
-                                <i class="fa fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
-                </form>
+            <div class="col-12">
+                @if($filter_search == null)
+                    <search-component @generated-filter="exeSeach"></search-component>
+                @else
+                    <search-component @generated-filter="exeSeach" :prev-search="{{json_encode($filter_search)}}"></search-component>
+                @endif                
             </div>
         </div>
+
         <div class="row" v-if="loading_page">
             <div class="col-12 text-center">
                 <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>         

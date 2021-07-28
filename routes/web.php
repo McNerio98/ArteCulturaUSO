@@ -51,7 +51,7 @@ Route::get('/admin/roles','DashboardController@roles')->name('roles');
 Route::get('/admin/users/config/{id}','DashboardController@infoUser')->name('user.info');
 
 //Routes para busquedas 
-Route::get('/search/{builderSearch}','SearchController@index')->name('search');
+Route::get('/search','SearchController@index')->name('search');
 
 
 //Route::post('rolesdata/{id}','RequestAcountController@indexRoles')->middleware('auth');

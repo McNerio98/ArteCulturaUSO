@@ -24,7 +24,7 @@ class WebsiteController extends Controller
     }
 
     public function artistas(){
-        return view("artitas");
+        return view("talents");
     }
 
     public function promotores(){
@@ -36,19 +36,19 @@ class WebsiteController extends Controller
     }
 
     public function recursos(){
-        return view("recursos");
+        return view("resources");
     }
 
     public function biografias(){
-        return view("biografias");
+        return view("biographies");
     }
     
     public function homenajes(){
-        return view("homenajes");
+        return view("memories");
     }    
 
     public function acercade(){
-        return view("acercade");
+        return view("about");
     }
 
     public function events(){

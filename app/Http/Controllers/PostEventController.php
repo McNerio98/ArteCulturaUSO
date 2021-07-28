@@ -13,11 +13,43 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Validation\Rule;
+use App\DtlEvent as Devs;
 
 class PostEventController extends Controller
 {
     public function __construct(){
 		//$this->middleware('auth:api',['only'=>['store','findPostsPopular','switchStatePost','setPostPopular']]);
+    }
+
+    /**
+    * Display table events 
+    * @return \Illuminate\Http\Response
+    */
+    public function eventsTable(Request $request){
+
+        $salida = [
+            "code" => 0,
+            "msg" => "",
+            "data" => null
+        ];
+
+        /* Mas adenta se consultara si es necesario agregar la hora del evento, por ahora solo los muestra conforme 
+        ** a la fecha que se ira a realizar   ----  Pero no sabra a que horas finaliza exactamente
+        */
+
+        date_default_timezone_set('America/El_Salvador');
+        $range_init = date("Y-m-d")." 00:00:00"; //today
+        $range_init = "2021-07-23 00:00:00"; //quitar este, es solo para pruebas 
+        $range_end = date('Y-m-d', strtotime("+3 months", strtotime($range_init)))." 00:00:00";
+        $limit = 3;
+
+        $params = "call getEvents('$range_init','$range_end',$limit,@cn)";
+        $items = DB::select($params);
+
+        //crear pagination
+        $salida["data"] = $items;
+
+        return $salida;
     }
 
     public function approval(Request $request){

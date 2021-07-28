@@ -18,8 +18,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="SectionWelcome">
-                    <h1 style="text-align: center; color:rgb(104, 104, 104);; font-size:25px; margin-top: 50px">¿BUSCAS ALGÚN
-                        TALENTO/ARTISTA? </h1>
+                    <h4 class="hSectionW text-center">¿BUSCAS ALGÚN TALENTO/ARTISTA?</h4>
                     <div class="row featurette">
                         <div style="display: flex; justify-content: center;" class="col-12">
                             <p class="lead" style="text-align: center; font-size: 18px; color:#212529;width: 700px">
@@ -32,18 +31,8 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8 offset-md-2">
-                <form action="simple-results.html">
-                    <div class="input-group">
-                        <input type="search" id="qsearch" name="qsearch" class="form-control form-control-lg"
-                            placeholder="Ejem. Grupo de música, payasos, casa de la cultura, etc.">
-                        <div class="input-group-append">
-                            <button type="submit" class="btn btn-lg btn-default">
-                                <i class="fa fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
-                </form>
+            <div class="col-12">
+                <search-component @generated-filter="exeSeach"></search-component>
             </div>
         </div>
 
@@ -51,7 +40,7 @@
         <div class="row pt-2 pt-md-3">
             @foreach($some_categories as $c)
             <div class="col-6 col-md-3">
-                <a class="unique-section" href="{{route("search","type=profiles&pattern=0&category_id=".$c->id)}}" target="_blank">
+                <a class="unique-section" href="{{url('/')."/search?sp=both&cat=".$c->id}}">
                     <img class="avatarArt" src="{{asset($c->img_presentation)}}">
                     <span class="text-section">{{$c->name}}</span>
                 </a>
@@ -64,16 +53,57 @@
         @endif
 
         <hr />
-        <p style="margin-top: 30px; margin-bottom:0px;font-size:4rem;" class="text-center text-muted"><i class="fas fa-broom"></i></p>
-        <div class="text-center">
-            <h3 class="featurette-heading">Centros de Enseñanza y Academias <span class="text-muted">en Sonsonate.</span></h3>
-            <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula
-                porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl
-                consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
-            <div style="display: flex; justify-content: center;" class="col-12">
-                <a class="btn btn-primary" href="#" role="button">Ver todos los centros</a>
+
+        <!--EVENTS TABLE-->
+        <div class="row mt-2 mt-md-5">
+            <div class="col-12">
+                <div class="SectionWelcome">
+                    <h4 class="hSectionW text-center">TABLERO DE EVENTOS</h4>
+                    <div class="row featurette">
+                        <div style="display: flex; justify-content: center;" class="col-12">
+                            <p class="lead" style="text-align: center; font-size: 18px; color:#212529;width: 700px">
+                                Descubre todos los eventos a los que puedes asistir en los próximos días.
+                            </p>
+                        </div>
+                    </div>               
+                </div>
             </div>
         </div>
+
+        <div class="row mt-2 mt-md-3">
+            <div class="col-md-4" style="padding-left:15px !important;padding-right: 15px !important;">
+                <div class="bg-primary">Content</div>
+            </div>
+        </div>
+        <p class="text-center h4"><a style="text-decoration:underline;" href="#">Ver todos los eventos</a></p>
+        <!--END EVENTS TABLE-->
+        
+    <hr/>
+        <!--CENTROS DE ENSEÑANZAS Y ACADEMIAS-->
+        <div class="row mt-2 mt-md-5">
+            <div class="col-12">
+                <div class="SectionWelcome">
+                    <h4 class="hSectionW text-center">CENTROS DE ENSEÑANZAS Y ACADEMIAS</h4>
+                    <div class="row featurette">
+                        <div style="display: flex; justify-content: center;" class="col-12">
+                            <p class="lead" style="text-align: center; font-size: 18px; color:#212529;width: 700px">
+                                Encuentra lugares que te ofrecer la oportunidad en el maravilloso mundo al arte y cultura.
+                            </p>
+                        </div>
+                    </div>               
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-2 mt-md-3">
+            <div class="col-md-4" style="padding-left:15px !important;padding-right: 15px !important;">
+                Contet......
+            </div>
+        </div>
+        <p class="text-center h4"><a style="text-decoration:underline;" href="#">Ver todos</a></p>
+        <!--END CENTROS DE ENSEÑANZAS Y ACADEMIAS-->
+
+
         <h1 style="text-align: center; color:rgb(104, 104, 104);; font-size:25px;margin-top: 50px">
             RECURSOS VIRTUALES
         </h1>
@@ -103,5 +133,4 @@
 
 @Push('customScript')
     <script src="{{ asset('js/app-inicio.js') }}"></script>
-    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js" integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E=" crossorigin="anonymous"></script>
 @endpush

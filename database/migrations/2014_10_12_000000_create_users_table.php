@@ -25,6 +25,7 @@ class CreateUsersTable extends Migration
             $table->unsignedBigInteger('img_profile_id')->nullable(); //sin restrincion 
             $table->boolean('active')->default(true);
             $table->json('rubros')->nullable();
+            $table->boolean('is_admin')->default(false);
             $table->enum('status',['enabled','disabled','request'])->default('request');
             $table->string('api_token',60)->nullable()->unique();
             $table->rememberToken();
