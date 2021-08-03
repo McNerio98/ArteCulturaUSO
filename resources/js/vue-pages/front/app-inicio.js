@@ -1,4 +1,5 @@
-Vue.component('request-component', require('../../components/requestAccount.vue').default);
+Vue.component('request-component', require('../../components/RequestAccount.vue').default);
+Vue.component('search-component', require('../../components/search/SearchComponent.vue').default);
 
 const app_inicio = new Vue({
     el: '#app_inicio',
@@ -7,9 +8,27 @@ const app_inicio = new Vue({
     },
     mounted: function(){
         //Cargar post destacados 
-        this.cargarPostDestacados();
+        //this.cargarPostDestacados();
+        this.loadAdminData();
     },
     methods: {
+        loadAdminData: function(){
+            console.log("Cargando la data admin TX");
+            //peticion get 
+            axios(`/rolesdata`).then(result=>{
+                //let response = result.data;
+                console.log("TX Este es el resultado");
+                console.log(result);
+            }).catch(ex=>{
+                console.log("TX Este es el error");
+                console.log(ex);
+                // if(ex.reponse.status == 401){
+                //     window.reload();
+                // }
+            });
+            //peticion post 
+
+        },        
         cargarPostDestacados: function(){
             axios(`/api/post/populars`).then((result)=>{
                 let response = result.data;
@@ -36,6 +55,13 @@ const app_inicio = new Vue({
             }).catch((ex)=>{
                 StatusHandler.Exception("Recuperar post populares",ex);
             });
+        },
+        exeSeach: function(ng){
+            if(ng.id_filter == undefined || ng.label == undefined || ng.type_search == undefined){
+                alert("Error");
+                return;
+            }
+            window.location.href = window.obj_ac_app.base_url+`/search?id_filter=${ng.id_filter}&label=${ng.label}&type_search=${ng.type_search}`;
         }
     }
 });

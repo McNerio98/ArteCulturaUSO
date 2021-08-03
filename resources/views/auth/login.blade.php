@@ -5,30 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <title>{{ config('app.name', 'Login') }}</title>
-
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
-
-    <!-- Fonts -->
+    <title>Login</title>
+        <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+    
 </head>
-<body class="hold-transition login-page">
-<div class="login-box">
-  <div class="login-logo">
-    <a href="../../index2.html"><b>Observatorio</b>Cultural</a>
-  </div>
-  <!-- /.login-logo -->
-  <div class="card">
-    <div class="card-body login-card-body">
-      <p class="login-box-msg">Sign in to start your session</p>
+<body class="hold-transition login-page" style="flex-direction: row;align-items: stretch;">
 
-      <form method="POST" action="{{ route('login') }}">
+<div class="login-box" style="width: 75% !important;">
+    <div style="background-color: #31333f;height: 60%;">
+          <div style="width: 70%;max-width: 700px;margin: auto;">
+            <img src="{{asset('images/Banner.png')}}" alt="" style="width: 100%;">
+          </div>
+    </div>
+    <div style="background-color: #31333f;height: 40%;">
+
+    </div>
+</div>
+  
+<div class="login-box" style="width: 25% !important;">
+    <div>
+      <div class="card">
+        <div class="card-body login-card-body">
+          <p class="login-box-msg">Sign in to start your session</p>      
+
+          <form method="POST" action="{{ route('login') }}">
         @csrf
         <div class="input-group mb-3">
           <input name="username" type="text" class="form-control @error('username') is-invalid @enderror" value="{{ old('username') }}" placeholder="Nombre de Usuario" required autocomplete="username" autofocus>
@@ -72,29 +77,14 @@
           </div>
           <!-- /.col -->
         </div>
-      </form>
+      </form> 
 
-      <div class="social-auth-links text-center mb-3">
-        <p>- OR -</p>
-        <a href="#" class="btn btn-block btn-primary">
-          <i class="fab fa-facebook mr-2"></i> Sign in using Facebook
-        </a>
-        <a href="#" class="btn btn-block btn-danger">
-          <i class="fab fa-google-plus mr-2"></i> Sign in using Google+
-        </a>
+        </div>
       </div>
-      <!-- /.social-auth-links -->
-
-      <p class="mb-1">
-        <a href="forgot-password.html">I forgot my password</a>
-      </p>
-      <p class="mb-0">
-        <a href="register.html" class="text-center">Register a new membership</a>
-      </p>
+     
     </div>
-    <!-- /.login-card-body -->
-  </div>
 </div>
-<!-- /.login-box -->
+
+<script src="{{ mix('js/app.js') }}" defer></script>
 </body>
 </html>

@@ -7,15 +7,35 @@
     <title>@yield('title') | Observatorio Cultural</title>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">    
     <link href="{{ asset('css/observatorio_styles.css') }}" rel="stylesheet">       
+    <script>
+        window.obj_ac_app = {!! json_encode([
+            'csrfToken' => csrf_token(), // token 
+            'permissions' => Auth::user() == null?null:Auth::user()->getPermissionsViaRoles(), //Los permisos del usuario actual 
+            'base_url' => url('/'), //URL BASE 
+            'full_url' => url()->full(),
+            'current_url' => url()->current()
+        ]) !!};
+
+        window.has_cap = function(cap){
+            let status_cap = false;
+            if(window.obj_ac_app.permissions == undefined){
+                return false;
+            }
+            
+            for(let val of window.obj_ac_app.permissions){
+                if(val.name === cap){
+                    return !status_cap;
+                }
+            }
+            return status_cap;
+        }
+    </script>     
     @stack('styles')
 </head>
 
 <body style="padding-top: 4.5rem; background-color: #f4f6f9 !important;">
     @include('layouts.components.navbar')
-    <!--Tag hidden Token-->
-    <input type="hidden" value="{{Auth::user()->api_token}}" id="current_save_token_generate" />
-    <input type="hidden" value="{{Auth::user()->id}}" id="current_id_user_log"/>
-    <!--End Tag Hidden Token-->    
+    <input type="hidden" value="{{Auth::user() == null?'':Auth::user()->api_token}}" id="current_save_token_generate" /> 
     <div class="content-wrapper" style="margin-left: 0px !important;">
         <section class="content">
             <div class="container">

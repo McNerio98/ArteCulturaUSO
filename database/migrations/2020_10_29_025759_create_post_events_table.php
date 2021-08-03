@@ -15,12 +15,14 @@ class CreatePostEventsTable extends Migration
     {
         Schema::create('post_events', function (Blueprint $table) {
             $table->id();
-            $table->string("title",500);
+            $table->string("title",300);
             $table->longText('content');
             $table->enum('type_post',['post','event'])->default('post');
             $table->unsignedBigInteger('creator_id');
+            $table->unsignedBigInteger('presentation_img')->nullable(); //sin restrincion 
             $table->timestamps(); //este es el datepost, es decir cuando se publico el post 
             $table->foreign('creator_id')->references('id')->on('users');
+            $table->index("title"); //plain index for search
         });
     }
 

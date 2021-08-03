@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 
 class TagsController extends Controller
 {
+
     public function tagsByCategory($id_cat){
         $salida = [
             "code" => 0,
@@ -39,11 +40,15 @@ class TagsController extends Controller
 
     public function index()
     {
-        $result = DB::table('tags')
-                    ->whereNotIn('name',['Artistas','Promotores','Expresiones','Escuelas','Recursos'])
-                    ->get();
+        $salida = [
+            "code" => 0,
+            "data" => null,
+            "msg" => ""
+        ];
+        $salida["code"] = 1;
+        $salida["data"]  = Tag::all();
 
-        return $result;
+        return $salida;
     }
 
 
@@ -152,7 +157,8 @@ class TagsController extends Controller
         $query = DB::select("select t.id, t.name as tag, c.name as category from tags t, categories c where t.category_id = c.id;");
         $collection = collect($query);
 
-        return $collection->groupBy('category');
+        $grouped = $collection->groupBy('category');
+        return $grouped->toArray();
     }
 
     /**

@@ -1,3 +1,15 @@
+/*Styles for Dev3 (Poca)*/
+
+.classac-555 {
+  color: red;
+}
+
+/*Styles for Dev2 (Nelson)*/
+
+.classac-777 {
+  color: red;
+}
+
 .container-img-hscroll {
   text-align: center;
   overflow-x: auto;
@@ -124,8 +136,8 @@
 }
 
 .profile-pic {
-  height: 100px !important;
-  width: 100px !important;
+  height: 150px !important;
+  width: 150px !important;
   background-size: cover;
   background-position: center;
   background-blend-mode: multiply;
@@ -142,5 +154,224 @@
   z-index: 10000;
   color: #fafafa;
   transition: all 0.3s ease;
+}
+
+._acEmeraldTx {
+  color: #00cd6a;
+}
+
+._acNephTx {
+  color: #00b05c;
+}
+
+._acAlizaTx {
+  color: #ff4b3a;
+}
+
+._acEmeraldBg {
+  background-color: #00cd6a;
+}
+
+._acNephBg {
+  background-color: #00b05c;
+}
+
+._acAlizaBg {
+  background-color: #ff4b3a;
+}
+
+.edit-pencial {
+  background-color: #868480;
+  cursor: pointer;
+  border: 1px solid #b0b0b0;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin: 0 0.5rem;
+  color: #fff;
+}
+
+/*Spinner Custom*/
+
+.lds-ellipsis {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.lds-ellipsis div {
+  position: absolute;
+  top: 33px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #00cd6a;
+  -webkit-animation-timing-function: cubic-bezier(0, 1, 1, 0);
+          animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+
+.lds-ellipsis div:nth-child(1) {
+  left: 8px;
+  -webkit-animation: lds-ellipsis1 0.6s infinite;
+          animation: lds-ellipsis1 0.6s infinite;
+}
+
+.lds-ellipsis div:nth-child(2) {
+  left: 8px;
+  -webkit-animation: lds-ellipsis2 0.6s infinite;
+          animation: lds-ellipsis2 0.6s infinite;
+}
+
+.lds-ellipsis div:nth-child(3) {
+  left: 32px;
+  -webkit-animation: lds-ellipsis2 0.6s infinite;
+          animation: lds-ellipsis2 0.6s infinite;
+}
+
+.lds-ellipsis div:nth-child(4) {
+  left: 56px;
+  -webkit-animation: lds-ellipsis3 0.6s infinite;
+          animation: lds-ellipsis3 0.6s infinite;
+}
+
+@-webkit-keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@-webkit-keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(0);
+  }
+}
+
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(0);
+  }
+}
+
+@-webkit-keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(24px, 0);
+  }
+}
+
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(24px, 0);
+  }
+}
+
+.usTagProfile {
+  padding: 0px 4px;
+  display: inline-block;
+  border-radius: 5px;
+  margin: 2px;
+}
+
+.usTagProfile .iconDel {
+  display: none;
+  cursor: pointer;
+}
+
+.usTagProfile:hover .iconDel {
+  display: inline;
+}
+
+.btnOptionsPreMedia {
+  background-color: #00cd6a;
+}
+
+._acHoverA:hover {
+  background-color: #6c757d !important;
+  color: #ffffff !important;
+  cursor: pointer;
+}
+
+.ad-popular-pe:hover {
+  cursor: pointer;
+  background-color: #f2f4f6 !important;
+}
+
+.bg-hpolis {
+  background-color: #2c3749 !important;
+}
+
+.text-hpolis {
+  color: #d4cece !important;
+}
+
+.text-hpolis:hover {
+  color: white !important;
+}
+
+.nav-pills .nav-link.active {
+  color: white !important;
+}
+
+.ac-edit-about {
+  color: #c1bdbd;
+  font-size: 120%;
+  cursor: pointer;
+}
+
+.val-about:hover .ac-edit-about,
+.ac-edit-about:hover {
+  color: #34c558;
+  font-size: 120%;
+}
+
+button.makePosting {
+  display: block;
+  width: 100%;
+  padding: 5px;
+  color: green;
+  background-color: #eee;
+  border: 1px solid green;
+}
+
+img.makeItemPosting {
+  width: 40px;
+  height: auto;
+}
+
+.hSectionW {
+  color: #00b05c !important;
+}
+
+._acGreen {
+  color: #00b05c !important;
 }
 

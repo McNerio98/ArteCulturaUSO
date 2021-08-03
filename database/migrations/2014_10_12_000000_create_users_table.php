@@ -19,11 +19,13 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('username')->unique();
-            $table->string('password');
-            $table->string('telephone');
-            $table->string('img_profile')->default('/default_img_profile.png');
+            $table->string('username')->nullable()->unique();
+            $table->string('password',255);
+            $table->string('telephone',255);
+            $table->unsignedBigInteger('img_profile_id')->nullable(); //sin integridad referencial
+            $table->boolean('active')->default(true);
             $table->json('rubros')->nullable();
+            $table->boolean('is_admin')->default(false);
             $table->enum('status',['enabled','disabled','request'])->default('request');
             $table->string('api_token',60)->nullable()->unique();
             $table->rememberToken();

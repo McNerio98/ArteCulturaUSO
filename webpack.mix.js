@@ -16,20 +16,33 @@ const mix = require('laravel-mix');
     .sass('resources/sass/app.scss', 'public/css')
     .sass('resources/sass/admin.scss', 'public/css');*/
 
+    if (mix.inProduction()) {
+        mix.version();
+    }
+    
 
 mix.js('resources/js/app.js', 'public/js')
     //dashboard admin pages 
-    .js('resources/js/vue-pages/app-tags.js','public/js')
     .js('resources/js/vue-pages/app-users.js','public/js')
-    .js('resources/js/vue-pages/app-profile.js','public/js')
     .js('resources/js/vue-pages/app-post.js','public/js')
     .js('resources/js/vue-pages/app-admin.js','public/js')
     .js('resources/js/vue-pages/app-rubros.js','public/js')
+    .js('resources/js/vue-pages/app-config-user.js','public/js')
+    .js('resources/js/vue-pages/app-roles.js','public/js')
     //public pages 
     .js('resources/js/vue-pages/front/app-inicio.js','public/js')
+    .js('resources/js/vue-pages/front/app-search.js','public/js')
+    .js('resources/js/vue-pages/front/app-resources.js','public/js/')
+    .js('resources/js/vue-pages/front/app-memories.js','public/js/')
+    .js('resources/js/vue-pages/front/app-biographies.js','public/js/')
+    //app-resources-admin.js para administrados
     //other 
     .js('resources/js/vue-pages/specific-post.js','public/js')
     .js('resources/js/api/api.service.js','public/js')
     .sass('resources/sass/app.scss', 'public/css')
     .sass('resources/sass/observatorio_styles.scss','public/css')
     .sourceMaps();
+
+    mix.js('resources/js/vue-pages/app-profile.js','public/js');
+
+

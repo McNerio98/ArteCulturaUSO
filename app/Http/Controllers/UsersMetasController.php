@@ -5,9 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\UserMeta;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class UsersMetasController extends Controller
 {
+
+    public function __construct(){
+        //$this->middleware('auth',['only'=>['configUser']]);
+        $this->middleware('auth:api',['only'=>[
+            'store'
+            ]]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -35,8 +44,8 @@ class UsersMetasController extends Controller
 
         $validator = Validator::make($request->all(),[
             "user_id" => "required|numeric", 
-            "meta_key" => "required",
-            "meta_value" => "required"
+            "info_key" => "required",
+            "info_value" => "required"
         ]);
 
         if($validator->fails()){
@@ -44,27 +53,28 @@ class UsersMetasController extends Controller
             return $salida;
         }
 
-        /*
-        **Aqui verificar, si el use_id que viene en la request es igual al user_id del usuario logeado 
-        ** si es asi, se sigue ejecutando, de no ser asi validar que el usuario logeado tenga los permisos
-        ** si los tiene sigue, se manda un mensaje de error 
-        */
-        if(! isset($request->user_id)){
-            $salida["msg"] = "Usuario actual no identificado";
-            return $salida;            
+        if(Auth::user()->id != $request->user_id && ! Auth::user()->can('configurar-usuarios')){
+            $salida["msg"] = "Operacion denegada";
+            return $salida;
         }
 
-        $meta = UserMeta::where('key',$request->meta_key)->where('user_id',$request->user_id)->first();
+        $keys = ['user_profile_description','user_profile_address','user_profile_notes'];
+        if(! in_array($request->info_key,$keys)){
+            $salida["msg"] = "Operacion no valida";
+            return $salida;
+        }
+
+        $meta = UserMeta::where('key',$request->info_key)->where('user_id',$request->user_id)->first();
 
         //usar transacciones 
 
         if($meta){//ya existia, se modifica  
-            $meta->value = $request->meta_value;
+            $meta->value = $request->info_value;
         }else{//no existe, se crea  
             $meta = new UserMeta();
             $meta->user_id = $request->user_id;
-            $meta->key = $request->meta_key;
-            $meta->value = $request->meta_value;
+            $meta->key = $request->info_key;
+            $meta->value = $request->info_value;
         }
 
         if(! $meta->save()){

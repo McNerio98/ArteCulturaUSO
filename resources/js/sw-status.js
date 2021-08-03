@@ -32,10 +32,13 @@ export default class StatusHandler{
         Swal.close();
     }
 
-    static Exception(target_msg,exception_data){
+    static Exception(target_msg,data_ex){
         let msg = "El proceso ("+target_msg+")no se ha podido completar, póngase con soporte técnico."
-        this.ShowStatus(msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
-        console.error(exception_data);        
+        this.ShowStatus(msg,null,StatusHandler.STATUS.FAIL);
+        console.error(data_ex); 
+        if(data_ex.response.status == 401){//para volver al inicio/login 
+            window.location.reload();
+        }       
     }
 
     static ValidationMsg(mensaje){
@@ -81,5 +84,31 @@ export default class StatusHandler{
             text: msgContent,
             showCloseButton: true
         })
+    }
+
+    static get  TOAST_STATUS(){
+        return {
+        OK: 'success',
+        FAIL: 'error',
+        INFO: 'info',}
+    };
+
+    static StatusToast(type,msg){
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: false,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer)
+              toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+          })
+          
+          Toast.fire({
+            icon: type,
+            title: msg
+          })        
     }
 }

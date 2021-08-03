@@ -1,9 +1,9 @@
 <template>
-    <div class="card card-widget">
-        <div class="card-header">
+    <div class="card card-widget" style="width: 100%;max-width: 600px;margin: auto;">
+        <div class="card-header p-2">
             <div class="user-block">
-                <img class="img-circle" src="https://ca-times.brightspotcdn.com/dims4/default/5435fb6/2147483647/strip/true/crop/971x697+0+0/resize/840x603!/quality/90/?url=https%3A%2F%2Fcalifornia-times-brightspot.s3.amazonaws.com%2F12%2F40%2F0da1dd4f481494cdac1f4a7ae884%2Fla-novia-de-brad-pitt-esta-1180112.JPG" alt="User Image">
-                <span class="username"><a href="#">{{model.post.artistic_name == null?model.post.name:model.post.artistic_name}}</a></span>
+                <img class="img-circle" :src="model.creator.profile_img" alt="User Image">
+                <span class="username"><a href="#">{{model.creator.nickname == null?model.creator.name:model.creator.nickname}}</a></span>
                 <span class="description">{{model.post.title}}</span>
             </div>
             <!-- /.user-block -->
@@ -20,22 +20,24 @@
             <!-- /.card-tools -->
         </div>
         <!-- /.card-header -->
-        <div class="card-body">
-            <div class="form-group  m-0">
-                <div class="custom-control custom-switch custom-switch-on-success">
+        <div class="card-body p-2">
+            <div v-if="has_cap('aprobar-publicaciones')" class="form-group  m-0">
+                <div  class="custom-control custom-switch custom-switch-on-success">
                     <input type="checkbox"  class="custom-control-input" id="switchApprovedPost" :checked="validate_approved(model.post.status)" @change="switchStatePost"/>
                     <label v-if="model.post.status == 'review' " class="custom-control-label" for="switchApprovedPost">Aprueba este elemento para que sea visible
                         para todos</label>
                     <label v-if="model.post.status == 'approved' " class="custom-control-label" for="switchApprovedPost">El elemento ha sido aprobado</label>                        
                 </div>
             </div>            
-            <div class="form-group">
+
+            <div v-if="has_cap('destacar-publicaciones')" class="form-group">
                 <div class="custom-control custom-switch custom-switch-on-success">
                     <input type="checkbox" v-model="model.post.is_popular" class="custom-control-input" id="switchPopularPost" @change="setPostPopular" />
                     <label v-if="! model.post.is_popular" class="custom-control-label" for="switchPopularPost">Marcar elemento como destacado </label>
                     <label v-else class="custom-control-label" for="switchPopularPost">Marcado como elemento destacado</label>
                 </div>
             </div>
+
             <blockquote v-if="model.post.status == 'review' " class="quote-secondary">
                 <p>El elemento actual se encuentra en <b>revisión.</b> Deberá ser aprobado por los administradores para ser
                     visible para todos los usuarios.</p>
@@ -46,7 +48,7 @@
                     <div class="description-block border-right">
                         <span class="text-success h4"><i class="fas fa-dollar-sign"></i></span>
                         <h5 class="description-header">Costo de Entrada</h5>
-                        <span class="description-text">Costo de Entrada</span>
+                        <span class="description-text">Gratis</span>
                     </div>
                     <!-- /.description-block -->
                 </div>
@@ -55,7 +57,7 @@
                     <div class="description-block border-right">
                         <span class="text-warning h4"><i class="fas fa-calendar-alt"></i></span>
                         <h5 class="description-header">Fecha a realizarse</h5>
-                        <span class="description-text">Fecha a realizarse</span>
+                        <span class="description-text">26/05/2024</span>
                     </div>
                     <!-- /.description-block -->
                 </div>
@@ -64,34 +66,36 @@
                     <div class="description-block border-right">
                         <span class="text-success h4"><i class="fas fa-redo-alt"></i></span>
                         <h5 class="description-header">Se repite</h5>
-                        <span class="description-text">TOTAL PROFIT</span>
+                        <span class="description-text">Cada año</span>
                     </div>
                     <!-- /.description-block -->
                 </div>
             </div>
             <p>{{model.post.description}}</p>
-            <!--Aqui van las imagenes-->
-            <div>
-                <div class="text-center">
-                    <img style="width: 100%" :src="path_img_selected" alt="">
-                </div>
-                <div class="container-img-hscroll">
-                    <div v-for="e of media_img" 
-                    :key="e.id" 
-                    class="circular-acimg"
-                    :class="{selected: id_img_selected == e.id}" 
-                    @click="selectImage('/'+e.path_file + e.name)"
-                    :style="{ backgroundImage: 'url(' + '/'+e.path_file + e.name + ')' }">
-                    </div>
-                </div>    
-            </div>        
+            <!--COMPONENTE GALLERY COMPONENTE (PREVIEW MEDIA)-->
+            <preview-media @source-files="onSourceFiles" :media="media_visuals"></preview-media>
+            <!--END COMPONENTE GALLERY COMPONENTE (PREVIEW MEDIA)-->
+
+            <!--DOCUMENTS-->
+            <ul v-for="(m, key) in media_docs" v-bind:key="key" class="list-unstyled mb-2">
+                <li class="docfile" :title="m.name">
+                <a  target="_blank" :href="m.url" class="btn-link text-secondary"><i class="far fa-file-pdf"></i> {{m.name}}</a>                      
+                </li>
+            </ul>
+
         </div>
     </div>
 </template>
+<style scoped>
+    li.docfile{
+        background-color: #f0f0f0;
+        padding: 5px 0;
+        overflow: hidden;
+        border-radius: 10px;
+    }
+</style>
 
 <script>
-    
-
     export default {
         props: {
             model: {
@@ -103,12 +107,19 @@
                             title: "",
                             description: "",
                             type: "post",
-                            creator_id: 0,
                             is_popular: 0,
                             status: "review",
-                            created_at: "",
+                            created_at: "",               
+                            frequency: "unique",
+                            has_cost: false,
+                            cost: 0,
+                            event_date: null                            
+                        },
+                        creator: {
+                            id: 0,
                             name: "",
-                            artistic_name: ""                    
+                            profile_img: "",
+                            nickame: ""                            
                         },
                         media: [],
                         meta: []
@@ -117,22 +128,15 @@
             }
         },      
         data: function(){
-            return {
+            return {          
                 post_approved: this.model.post.status == "review"?false:true,
                 post_delete: false,
-                media_img: [],
-                media_doc: [],
-                media_video: [],
-                id_img_selected: 0,
-                path_img_selected: "/images/no_image_found.png"
+                media_visuals: [], //para imagenes y videos 
+                media_docs: [], //van aparte 
+                id_img_selected: 0
             }
         },
-        created: function(){
-            console.log("Elemento PostGeneral creado");
-        },
         mounted: function(){
-            console.log("Elemento PostGeneral montado");
-            console.log(this.model.media);
             this.filterMedia(this.model.media);
         },
         watch: {
@@ -141,35 +145,24 @@
             }
         },
         methods: {
+            onSourceFiles: function(e){
+                this.$emit("source-files",e);
+            },
             filterMedia: function(media){
                 if(media === undefined){return;} 
-                //filtrando
-                this.media_img = [];
-                this.media_doc = [];
-                this.media_video = [];
 
-                for(let k of media){
-                    if(k.type_file == "image"){
-                        this.media_img.push(k);
+                this.media_visuals = [];
+                this.media_docs = [];
+                for(let gm of media){
+                    if(gm.type_file === "image" || gm.type_file === "video"){
+                        this.media_visuals.push(gm);
                         continue;
                     }
-                    if(k.type_file == "video"){
-                        this.media_video.push(k);
-                        continue;  
-                    }
-                    
-                    if(k.type_file == "docfile"){
-                        this.media_doc.push(k);
+                    if(gm.type_file === "docfile"){
+                        this.media_docs.push(gm);
                     }                    
                 }
 
-                if(this.media_img.length > 0){ //selecionar la primer imagen 
-                    this.id_img_selected = this.media_img[0].id;
-                    this.path_img_selected = "/"+this.media_img[0].path_file+this.media_img[0].name;
-                }
-            },
-            selectImage: function(path){
-                this.path_img_selected = path;
             },
             setPostPopular: function(){
                 let current_sate = this.model.post.is_popular;
@@ -214,41 +207,40 @@
                 let last_state = this.model.post.status; 
                 let new_state = "";
                 if(state === null){    
-                    new_state = this.model.post.status === 'approved' ? 'review':'approved'; //sincronizando con el view                     
-                }else if(state === 'delete'){
-                    new_state = 'delete';
+                    new_state = this.model.post.status === 'approved' ? 'review':'approved';            
                 }
                 
-                let valid_values = ['review','approved','delete'];
+                let valid_values = ['review','approved'];
                 if(valid_values.indexOf(new_state) === -1){
                     StatusHandler.ValidationMsg("Inconsistencia en los valores, recargue el sitio");
                     return;
                 };
                 
                 this.model.post.status = new_state;
-                
+
                 let data = {
                     id: this.model.post.id,
                     new_state: new_state
                 };
 
+                //Necesario estar logeado, y tener los permisos
                 axios.post(`/api/post/setState`,data).then((result)=>{
                     let response = result.data;
                     if(response.code == 0){
                         StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
-                        //rollback state
-                        this.model.post.status = last_state;                         
+                        this.model.post.status = last_state;//rollback state                
                         return;
                     }                    
-                }).catch((ex)=>{
+                }).catch(ex=>{
                     let target_process = "Establecer estado del elemento"; 
-                    let msg = "El proceso ("+target_process+")no se ha podido completar, póngase con soporte técnico."
-                    StatusHandler.ShowStatus(msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
-                    console.error(ex.response);
-                    //rollback state
-                    this.model.post.status = last_state; 
+                    StatusHandler.Exception(target_process,ex);
+                    this.model.post.status = last_state;  //rollback state
                 });
-            }
+
+            },
+            has_cap(e){
+                return window.has_cap == undefined ? false : window.has_cap(e);
+            }            
         }
     }
 </script>

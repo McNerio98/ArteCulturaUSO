@@ -75,7 +75,7 @@ class TagsSeeder extends Seeder
 
         Tag::create(['name'=>'Escuelas de Cine','category_id' => $cat_aprendizaje->id]);
         Tag::create(['name'=>'Escuelas Circenses','category_id' => $cat_aprendizaje->id]);
-        Tag::create(['name'=>'Escuelas de  Danza','category_id' => $cat_aprendizaje->id]);
+        Tag::create(['name'=>'Escuelas de Danza','category_id' => $cat_aprendizaje->id]);
         Tag::create(['name'=>'Escuelas Escénicas','category_id' => $cat_aprendizaje->id]);
         Tag::create(['name'=>'Escuelas Esculturales ','category_id' => $cat_aprendizaje->id]);
         Tag::create(['name'=>'Escuelas de Literatura','category_id' => $cat_aprendizaje->id]);

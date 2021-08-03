@@ -23,6 +23,8 @@ Route::get('/page5','WebsiteController@biografias')->name("biografias");
 Route::get('/page6','WebsiteController@homenajes')->name("homenajes");
 Route::get('/page7','WebsiteController@acercade')->name("acercade");
 
+Route::get('/request/status/{name}','WebsiteController@accountRequest')->name("request_status");
+
 
 
 Route::get('/waiting','Auth\LoginController@waiting')->name('waiting');
@@ -34,24 +36,47 @@ Route::get('/login','Auth\LoginController@showLoginForm')->middleware('guest');
 Route::post('/login','Auth\LoginController@login')->name('login');
 Route::post('/logout','Auth\LoginController@logout')->name('logout');
 
-//Routes para navegacion con o sin logeado
-/*Route::get('/inicio','WebsiteController@index')->name('welcome');
-Route::get('/events','WebsiteController@events')->name('events');
-Route::get('/artistas','WebsiteController@artistas')->name('artistas');
-Route::get('/promotores','WebsiteController@promotores')->name('promotores');
-Route::get('/escuelas','WebsiteController@escuelas')->name('escuelas');
-Route::get('/recursos','WebsiteController@acercade')->name('acercade');*/
-Route::get('/perfil','WebsiteController@profile')->name('profile');
+
+Route::get('/perfil/{id}','ProfileController@index')->name('profile.show');
 
 
 
 
 //Routes para el administrador 
 Route::get('/admin/home','DashboardController@index')->name('dashboard');
+Route::get('/admin/content','DashboardController@content')->name('content');
+Route::get('/admin/memories','DashboardController@memories')->name('memories');
+Route::get('/admin/populars','DashboardController@populars')->name('populars');
 Route::get('/admin/users','DashboardController@users')->name('users');
-Route::get('/admin/tags','DashboardController@tags')->name('tags');
-Route::get('/admin/page3','DashboardController@rubros')->name('rubros');
+Route::get('/admin/categories','DashboardController@rubros')->name('rubros'); //categories and tags 
+Route::get('/admin/resources','DashboardController@resources')->name('resources');
+Route::get('/admin/roles','DashboardController@roles')->name('roles');
+Route::get('/admin/users/config/{id}','DashboardController@infoUser')->name('user.info');
+
+//Routes para busquedas 
+Route::get('/search','SearchController@index')->name('search');
+
+
+//Route::post('rolesdata/{id}','RequestAcountController@indexRoles')->middleware('auth');
+
+
+
+//Middleware addroles filtra que el usuario sea un administrador y no un invitado, si es invitado lo redirecciona 
+//Routes para petticiones ajax
+Route::get('/approval','PostEventController@approval')->name('items.approval')->middleware('auth','adroles');
+Route::get('/users/dataConfig/{id}','UsersController@configUserData')->name("user.dataconf")->middleware('auth','adroles');
+Route::put('/user/updateConfig/{id}','UsersController@updateConfigUser')->name("user.updateconf")->middleware('auth','adroles');
+Route::get('/notifiers','DashboardController@notifiers')->name("notifiers"); //ya tiene los middleware el controller 
+
+Route::post('postevent','PostEventController@store')->name('postevent.store')->middleware('auth');
+
+
+//rutas que no necesitan proteccion 
+Route::get('/profile/{id}','ProfileController@show');
+Route::get('/postsevents/{id}','ProfileController@elements');
 
 
 
 
+
+Route::get('res/send', 'RequestAcountController@index');

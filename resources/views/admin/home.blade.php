@@ -1,4 +1,6 @@
 @extends('layouts.admin-template')
+@section('title', 'Inicio')
+@section('windowName', 'PANEL PRINCIPAL')
 
 @section('content')
 <div class="container-fluid" id="appHome">
@@ -15,8 +17,7 @@
                 <div class="info-box-content">
                     <span class="info-box-text">Publicaciones</span>
                     <span class="info-box-number">
-                        10
-                        <small>%</small>
+                        @{{notifiers_data.posts === -1 ? '' : notifiers_data.posts}}
                     </span>
                 </div>
                 <!-- /.info-box-content -->
@@ -30,7 +31,9 @@
 
                 <div class="info-box-content">
                     <span class="info-box-text">Eventos</span>
-                    <span class="info-box-number">41,410</span>
+                    <span class="info-box-number">
+                        @{{notifiers_data.events === -1 ? '' : notifiers_data.events}}
+                    </span>
                 </div>
                 <!-- /.info-box-content -->
             </div>
@@ -46,8 +49,10 @@
                 <span class="info-box-icon bg-success elevation-1"><i class="fas fa-shopping-cart"></i></span>
 
                 <div class="info-box-content">
-                    <span class="info-box-text">Revision</span>
-                    <span class="info-box-number">760</span>
+                    <span class="info-box-text">Solicitudes</span>
+                    <span class="info-box-number">
+                        @{{notifiers_data.requests === -1 ? '' : notifiers_data.requests}}
+                    </span>
                 </div>
                 <!-- /.info-box-content -->
             </div>
@@ -60,13 +65,67 @@
 
                 <div class="info-box-content">
                     <span class="info-box-text">Usuarios</span>
-                    <span class="info-box-number">2,000</span>
+                    <span class="info-box-number">
+                        @{{notifiers_data.users === -1 ? '' : notifiers_data.users}}
+                    </span>
                 </div>
                 <!-- /.info-box-content -->
             </div>
             <!-- /.info-box -->
         </div>
         <!-- /.col -->
+    </div>
+
+
+    <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">ELEMENTOS POR APROBAR </div>
+                    <div class="card-body">
+                        <div class="flex-shrink text-center p-md-3" style="max-width: 42em; margin:auto;" v-if="approval_items.length === 0">
+                                <img src="{{asset('images/no-task.svg')}}" alt="" style="width: 80px;">
+                            <h2 class="text-success">Ningún elemento que aprobar</h2>
+                            <p class="lead">Actualmente ninguna publicación o evento se encuentra esperando tu aprobación</p>
+                            <a href="{{route('inicio')}}" class="">Crear contenido para aprobación aquí</a></p>
+                        </div>
+                        <div>
+                            <!--SPINNER LOADER-->
+                            <div class="p-md-5 d-flex justify-content-center align-items-center flex-column" v-if="spinner_approval">
+                                <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>             
+                                <h4 style="color: #38c172;">Cargando contenido...</h4>               
+                            </div>
+                            <!--END SPINNER LOADER-->
+
+                            <div v-if="postevent_selected !== null" class="p-3" style="background-color: #eaecee !important;">
+                                <post-general @source-files="onSources" v-bind:model="postevent_selected" @change-popular="setPostPopular"></post-general>                                
+                            </div>
+
+                            <div class="row">
+                                <summary-item @selected-item="getApprovalEl" v-for="app of approval_items" :model="app"></summary-item>
+                            </div>
+                            
+
+                            <!-- <span style="border: 1px solid gray;padding: 5px;display: inline-block;margin: 5px;"  @click="getApprovalEl(appr.id)">@{{appr.title}}</span>    -->
+
+                             
+                            <nav aria-label="Navegacion elementos en aprobación">
+                                <ul class="pagination justify-content-center">
+                                    <li v-bind:class="{'disabled' : ! (paginate_approval.current_page > 1)}" class="page-item">
+                                        <a @click.prevent="changePage(paginate_approval.current_page - 1)" class="page-link" href="#">Anterior</a>
+                                    </li>
+                                    <li v-for="page in pagesNumber" v-bind:key="page" v-bind:class="[page == isActive? 'active':'']" class="page-item">
+                                        <a @click.prevent="changePage(page)" class="page-link" href="#">@{{page}}</a>
+                                    </li>
+                                    <li v-bind:class="{'disabled' : ! (this.paginate_approval.current_page < this.paginate_approval.last_page)}" class="page-item">
+                                        <a @click.prevent="changePage(paginate_approval.current_page + 1)" class="page-link" href="#">Siguiente</a>
+                                    </li>
+                                </ul>
+                            </nav>    
+                                                    
+                        </div>
+                    </div>
+                </div>
+            </div>
     </div>
 
     <h5 class="mt-4 mb-2">ELEMENTOS DESTACADOS</h5>
@@ -111,6 +170,7 @@
                                 como relevantes. <span style="color: #e83e8c !important;">Puede crear o buscar eventos o
                                     publicaciones en las siguientes opciones.</span></i> </p>
                         <div>
+                            
                             <div class="dropdown d-inline">
                                 <button class="btn  btn-outline-secondary btn-flat" type="button"
                                     id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
@@ -124,6 +184,7 @@
                                         href="#">Evento</a>
                                 </div>
                             </div>
+
                             <button v-on:click="changePanel1(2)" type="button"
                                 class="btn  d-inline btn-outline-secondary btn-flat"><i class="fas fa-search"></i>
                                 Buscar</button>
@@ -170,6 +231,13 @@
             </div>
         </div>
 
+        <media-viewer 
+        :media-profile="false"  
+        :target="media_view.target"
+        :logged.number='{{Auth::user() == null ? 0 : Auth::user()->id}}'
+        :owner="media_view.owner"
+        :items="media_view.items">
+        </media-viewer>    
 
         <!--///////////////////////////////////////////////////////////////////////////////-->
         <!--END HERE ALL CONTENT-->
@@ -180,7 +248,7 @@
 
 
 @Push('customScript')
-    <script src="{{ asset('js/app-admin.js') }}"></script>
+    <script src="{{ mix('js/app-admin.js') }}"></script>
 @endpush
 
 

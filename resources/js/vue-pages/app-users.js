@@ -5,5 +5,14 @@ Vue.component('pnl-pagination',require('../components/users/ContainerPagination.
 import StatusHandler from "../sw-status"
 
 const appUsers = new Vue({
-    el: '#users'
+    el: '#users',
+    data: function(){
+        return {
+            paths: {
+                media_profiles: "../files/profiles/",
+                files_docs: "../files/pdfs/",
+                files_images: "../files/images/",                    
+            }            
+        }
+    }
 });

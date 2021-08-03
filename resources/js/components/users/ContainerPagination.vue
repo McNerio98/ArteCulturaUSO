@@ -6,14 +6,14 @@
                 <div class="form-group col-md-6">
                     <label for="inputEmail4"></label>
                     <select @change="changeRange($event)" class="form-control form-control-sm">
-                        <option v-for="e in rangesPages" :value="e">{{e}}</option>
+                        <option v-for="e in rangesPages" v-bind:key="e" :value="e">{{e}}</option>
                     </select>
                 </div>
             </div>
         </div>
         <div class="card-body pb-0">
             <div class="row d-flex align-items-stretch">
-                <contact v-for="e in user_list" :key="e.id" :user="e"></contact>
+                <contact :paths="paths" v-for="e in user_list" :key="e.id" :user="e"></contact>
             </div>
         </div>
         <div class="card-footer">
@@ -22,7 +22,7 @@
                     <li v-bind:class="{'disabled' : ! (this.paginate.current_page > 1)}" class="page-item">
                         <a @click.prevent="changePage(paginate.current_page - 1)" class="page-link" href="#">Anterior</a>
                     </li>
-                    <li v-for="page in pagesNumber" v-bind:class="[page == isActive? 'active':'']" class="page-item">
+                    <li v-for="page in pagesNumber" v-bind:key="page" v-bind:class="[page == isActive? 'active':'']" class="page-item">
                         <a @click.prevent="changePage(page)" class="page-link" href="#">{{page}}</a>
                     </li>
                     <li v-bind:class="{'disabled' : ! (this.paginate.current_page < this.paginate.last_page)}" class="page-item">
@@ -36,8 +36,8 @@
 
 <script>
 	export default{
-		props:{
-			pathaction: ""
+		props: {
+			paths: {type: Object,required:true}
 		},
 		data(){
 			return {
@@ -83,7 +83,6 @@
 			}			
 		},
 		mounted(){
-			//showLoadingAC();
 			this.loadData();
 		},
 		methods: {
@@ -91,10 +90,8 @@
 				axios(`/api/users?page=${page}&per_page=${per_page}`).then((result)=>{
 					this.user_list = result.data.users.data;
 					this.paginate = result.data.paginate;
-					closeLoading();
+
 				}).catch((ex)=>{
-					//closeLoading();
-					//showAlertMsg("Error al cargar la infomacion",operacion.DEFAULT,operacionStatus.FAIL)
 					console.log(ex);
 				});
 			},

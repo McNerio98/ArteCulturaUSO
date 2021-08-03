@@ -19,7 +19,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','username','telephone','status','api_token'
+        'name', 'email', 'password','is_admin','username','telephone','status','api_token','img_profile_id' //quitar el api token 
     ];
 
     /**
@@ -40,7 +40,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function profile(){
-        return $this->hasOne('App\Profile');
+    public function profile_img(){
+        return $this->hasOne("App\MediaProfile");
     }
+
 }

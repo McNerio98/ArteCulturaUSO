@@ -13,7 +13,7 @@ class WebsiteController extends Controller
 
     public function welcome(){
 
-        $query = "select pe.id,pe.title,concat(substring(pe.content,1,100),'...') as content,pe.type_post,pe.is_popular,fop.name,fop.path_file,fop.type_file from post_events pe
+        $query = "select pe.id,pe.title,concat(substring(pe.content,1,100),'...') as content,pe.type_post,pe.is_popular,fop.name,fop.type_file from post_events pe
         left join (select * from files_on_post_events fope where fope.type_file = 'image' group by fope.id_post_event) as fop on fop.id_post_event = pe.id
         where pe.is_popular = true";
         
@@ -24,7 +24,7 @@ class WebsiteController extends Controller
     }
 
     public function artistas(){
-        return view("artitas");
+        return view("talents");
     }
 
     public function promotores(){
@@ -36,30 +36,26 @@ class WebsiteController extends Controller
     }
 
     public function recursos(){
-        return view("recursos");
+        return view("resources");
     }
 
     public function biografias(){
-        return view("biografias");
+        return view("biographies");
     }
     
     public function homenajes(){
-        return view("homenajes");
+        return view("memories");
     }    
 
     public function acercade(){
-        return view("acercade");
-    }
-
-    //este es el metodo primero 
-    public function profile(){
-        $current_user = Auth::user();
-        $description = UserMeta::select("value")->where('key','user_profile_description')->where('user_id',Auth::user()->id)->first();
-        
-        return view("profile",['current_user'=>$current_user,'user_description'=>$description]);
+        return view("about");
     }
 
     public function events(){
         return view("events");
+    }
+
+    public function accountRequest($user_name){
+        return view('request-status',['user_name'=>$user_name]);
     }
 }

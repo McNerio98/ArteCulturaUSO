@@ -4,38 +4,41 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script>
-    window.Laravel = {!! json_encode([
-        'csrfToken' => csrf_token(),
-        'permissions' => Auth::user()->getPermissionsViaRoles()
-    ]) !!};
-
-    window.has_cap = function(cap){
-        let status_cap = false;
-        if(Laravel.permissions === undefined){
-            return false;
-        }
-        
-        for(let val of Laravel.permissions){
-            if(val.name === cap){
-                return !status_cap;
-            }
-        }
-        return status_cap;
-    }
-    </script>
-
-    <title>AdminLTE 3 | Dashboard 2.0</title>
+    <title>@yield('title') | Dashboard</title>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/observatorio_styles.css') }}" rel="stylesheet">
 
-    <link href="{{ asset('css/dashboardAdminCustom.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/observatorio_styles.css') }}" rel="stylesheet">
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <script>
+        window.obj_ac_app = {!! json_encode([
+            'csrfToken' => csrf_token(), // token 
+            'permissions' => Auth::user() == null?null:Auth::user()->getPermissionsViaRoles(), //Los permisos del usuario actual 
+            'base_url' => url('/'), //URL BASE 
+            'full_url' => url()->full(),
+            'current_url' => url()->current()
+        ]) !!};
+
+        window.has_cap = function(cap){
+            let status_cap = false;
+            if(window.obj_ac_app.permissions == undefined){
+                return false;
+            }
+            
+            for(let val of window.obj_ac_app.permissions){
+                if(val.name === cap){
+                    return !status_cap;
+                }
+            }
+            return status_cap;
+        }
+    </script>     
     @stack('customStyles')
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<input type="hidden" value="{{Auth::user() == null?'':Auth::user()->api_token}}" id="current_save_token_generate" />
     <div class="wrapper">
         @include('layouts.components.admin-navbar')
         @include('layouts.components.admin-aside')
@@ -46,7 +49,7 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0 text-dark">Dashboard v2</h1>
+                            <h1 class="m-0 text-dark">@yield('windowName')</h1>
                         </div><!-- /.col -->
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">

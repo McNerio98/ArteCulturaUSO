@@ -14,7 +14,7 @@
       @if(count($posts_popular) > 0)
         @foreach($posts_popular as $e)
           <div class="carousel-item {{$loop->first ? 'active':''}}">
-              <img src="{{asset($e->path_file . $e->name)}}" class="d-block w-100 sliderImage" style="object-fit: cover" height="450px" alt="...">
+              <img src="{{asset('files/images/' . $e->name)}}" class="d-block w-100 sliderImage" style="object-fit: cover" height="450px" alt="...">
               <div class="carousel-caption d-none d-md-block ">
                 <h5>{{$e->title}}</h5>
                 <p>{{$e->content}}<a href="#">Ver mas</a></p>

@@ -19,6 +19,7 @@ class CategoriesController extends Controller
         ];
         
         $categories = Category::all();
+        $salida["code"] = 1;
         $salida["data"] = $categories;
         return $salida;
     }
@@ -81,7 +82,7 @@ class CategoriesController extends Controller
             return $salida;
         };
 
-        $cat = Category::findOrFail($request->id_category);
+        $cat = Category::find($request->id_category);
         if(!$cat){
             $salida["msg"] = "Categoria no encontrada";
             return $salida;

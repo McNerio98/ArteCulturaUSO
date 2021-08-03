@@ -1,10 +1,8 @@
 <template>
   <div class="row">
-    <link href="/css/post/media.css" rel="stylesheet">
-  <link href="/css/post/post.css" rel="stylesheet">
     <div class="col-12">
       <div class="row">
-        <div class="col-12 titleContainer">
+        <div class="col-12 titleContainer mb-2">
           <img
             width="60px"
             height="60px"
@@ -13,12 +11,13 @@
             :src="userData.profile_path"
             alt="user image"
           />
-          <div style="width: 100%; margin-left: 10px" class="form-group">
+          <div style="width: 100%; margin-left: 10px" class="form-group mb-0">
             <input
               v-model="post_title"
               v-bind:placeholder="place_holder_title"
               width="100%"
               type="email"
+              style="margin-bottom: 0px;"
               class="form-control"
               id="exampleInputEmail1"
               aria-describedby="emailHelp"
@@ -26,10 +25,9 @@
           </div>
         </div>
         <div class="col-12">
-          <br />
           <div class="row">
             <div class="col-12 col-lg-4 col-md-4">
-              <div class="form-group" v-if="postType == 'event'">
+              <div class="form-group mb-0" v-if="postType == 'event'">
                 <label for="exampleFormControlTextarea1" class="text-muted">Fecha/hora</label>
 
                  <date-picker v-model="time1" 
@@ -41,30 +39,28 @@
                  :editable="false"></date-picker>
               </div>
             </div>
+
             <div class="col-12 col-lg-4 col-md-4">
-              <div class="form-group" v-if="postType == 'event'">
-                <label for="exampleFormControlTextarea1" class="text-muted">Tipo de evento</label >
-                <select v-model="event_type" class="custom-select">
-                  <option selected value="1">Eventual</option>
-                  <option value="2">Permanente</option>
+              <div class="form-group mb-0" v-if="postType == 'event'">
+                <label for="exampleFormControlTextarea1" class="text-muted">Se repite</label >
+                <select v-model="frequency" class="custom-select">
+                  <option selected value="unique">No se repite</option>
+                  <option value="repeat">Cada año</option>
                 </select>
               </div>
             </div>
             <div class="col-12 col-lg-4 col-md-4">
-              <div class="form-group" v-if="postType == 'event'">
+              <div class="form-group mb-0" v-if="postType == 'event'">
                 <label for="exampleFormControlTextarea1" class="text-muted">Categoria</label>
                 <select
-                  id="selectPrice"
-                  @change="openPriceModal"
-                  class="custom-select"
-                >
-                  <option selected value="1">Gratuito</option>
-                  <option value="2">Pagado</option>
+                  @change="openPriceModal" v-model="event_has_price" class="custom-select">
+                  <option value="1">Pagado</option>
+                  <option value="0">Gratuito</option>
                 </select>
               </div>
             </div>
             <div v-if="show_panel_price" class="col-12 col-lg-12 col-md-12">
-              <div class="form-group">
+              <div class="form-group mb-0">
                 <label
                   for="exampleFormControlTextarea1"
                   class="text-muted"
@@ -109,7 +105,7 @@
           </div>
         </div>
         <div class="col-12">
-          <div class="form-group">
+          <div class="form-group mb-0">
             <label for="exampleFormControlTextarea1"></label>
             <textarea
               v-model="description"
@@ -159,8 +155,9 @@ export default {
       place_holder_title: this.postType === "event"?"Nombre del evento":"Título de la publicación",
       post_title: "",
       event_date: "",
-      event_type: "1",
+      frequency: "unique", 
       show_panel_price: false,
+      event_has_price: "0",
       event_price: 0.0,
       description: "",
       time1: new Date(),
@@ -184,7 +181,7 @@ export default {
     },    
     openPriceModal: function(event){
       this.event_price = 0.00;
-      this.show_panel_price =  event.target.value == "2"?true:false;
+      this.show_panel_price =  this.event_has_price == "1"?true:false;
     },
     publicarContent: function(){
       if(this.post_title.trim().length < 2 || this.description.trim().length < 2){
@@ -212,16 +209,16 @@ export default {
       if(this.postType == "event"){
         data_send = {
           ...data_send,
-          event_price: parseFloat(this.event_price).toFixed(2),
-          event_category: this.event_price > 0?"pagado":"gratis",
-          event_type: this.event_type == "1"?"eventual":"permanente",
+          event_price: isNaN(parseFloat(this.event_price)) ? 0 : parseFloat(this.event_price).toFixed(2),
+          event_has_price: this.event_has_price == "1"  ? true  : false,
+          frequency: this.frequency,
           event_date: this.time1.toISOString()
         }
       }
 
       console.table(data_send);
 
-      axios.post(`/api/post`,data_send).then((result) => {
+      axios.post(`/postevent`,data_send).then((result) => {
           let response = result.data;
           if(response.code == 0){
             StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
@@ -229,9 +226,10 @@ export default {
           }        
             console.log(response);
             this.cleanForm(); 
-            this.$emit('post-id-created',response.data.id);
+            this.$emit('post-chiild-created',response.data);
+            
       }).catch((ex) => {
-            console.log(ex);
+            StatusHandler.Exception("Crear elemento",ex);
       })
 
     },
@@ -244,3 +242,24 @@ export default {
 }
 </script>
 
+<style scoped>
+
+.titleContainer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mx-input{
+	height: calc(2.25rem + 2px) !important;
+	padding: 0.375rem 0.75rem !important;
+	font-size: 1rem !important;
+}
+
+.mx-datepicker {
+	display: block !important;
+	width: 100% !important;
+}
+
+
+</style>

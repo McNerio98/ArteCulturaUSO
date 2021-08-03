@@ -1,8 +1,8 @@
-import Axios from 'axios';
+//import Axios from 'axios';
 
 export function requestAccount(data) {
     return new Promise((resolve, reject) => {
-        Axios.post("/api/requestaccounts", data).then(response => {
+        axios.post("/api/requestaccounts", data).then(response => {
             resolve(response);
         }).catch(e => {
             reject(e);
@@ -12,7 +12,7 @@ export function requestAccount(data) {
 
 export function getTags() {
     return new Promise((resolve, reject) => {
-        Axios.get("/api/tags/withCategories").then(response => {
+        axios.get("/api/tags/withCategories").then(response => {
             resolve(response);
         }).catch(e => {
             reject(e);
@@ -23,13 +23,15 @@ export function getTags() {
 
 export function createPostEvent(token, data){
     return new Promise((resolve, reject) => {
-        Axios.post(`/api/post?api_token=${token}`, data).then(response => {
+        axios.post(`/api/post?api_token=${token}`, data).then(response => {
             resolve(response);
         }).catch(e => {
             reject(e);
         })
     })
 }
+
+
 
 
 export function util(type, msg) {
