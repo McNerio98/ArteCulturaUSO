@@ -44,21 +44,24 @@ Route::get('/perfil/{id}','ProfileController@index')->name('profile.show');
 
 //Routes para el administrador 
 Route::get('/admin/home','DashboardController@index')->name('dashboard');
+Route::get('/admin/content','DashboardController@content')->name('content');
+Route::get('/admin/memories','DashboardController@memories')->name('memories');
+Route::get('/admin/populars','DashboardController@populars')->name('populars');
 Route::get('/admin/users','DashboardController@users')->name('users');
-Route::get('/admin/tags','DashboardController@tags')->name('tags');
-Route::get('/admin/page3','DashboardController@rubros')->name('rubros');
+Route::get('/admin/categories','DashboardController@rubros')->name('rubros'); //categories and tags 
+Route::get('/admin/resources','DashboardController@resources')->name('resources');
 Route::get('/admin/roles','DashboardController@roles')->name('roles');
 Route::get('/admin/users/config/{id}','DashboardController@infoUser')->name('user.info');
 
 //Routes para busquedas 
-Route::get('/search/{builderSearch}','SearchController@index')->name('search');
+Route::get('/search','SearchController@index')->name('search');
 
 
 //Route::post('rolesdata/{id}','RequestAcountController@indexRoles')->middleware('auth');
 
 
 
-
+//Middleware addroles filtra que el usuario sea un administrador y no un invitado, si es invitado lo redirecciona 
 //Routes para petticiones ajax
 Route::get('/approval','PostEventController@approval')->name('items.approval')->middleware('auth','adroles');
 Route::get('/users/dataConfig/{id}','UsersController@configUserData')->name("user.dataconf")->middleware('auth','adroles');
@@ -71,3 +74,9 @@ Route::post('postevent','PostEventController@store')->name('postevent.store')->m
 //rutas que no necesitan proteccion 
 Route::get('/profile/{id}','ProfileController@show');
 Route::get('/postsevents/{id}','ProfileController@elements');
+
+
+
+
+
+Route::get('res/send', 'RequestAcountController@index');

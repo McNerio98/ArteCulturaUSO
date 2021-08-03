@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Validation\Rule;
+use App\DtlEvent as Devs;
 
 class PostEventController extends Controller
 {
@@ -20,6 +21,38 @@ class PostEventController extends Controller
 		//$this->middleware('auth:api',['only'=>['store','findPostsPopular','switchStatePost','setPostPopular']]);
     }
 
+    /**
+    * Display table events 
+    * @return \Illuminate\Http\Response
+    */
+    public function eventsTable(Request $request){
+
+        $salida = [
+            "code" => 0,
+            "msg" => "",
+            "data" => null
+        ];
+
+        /* Mas adenta se consultara si es necesario agregar la hora del evento, por ahora solo los muestra conforme 
+        ** a la fecha que se ira a realizar   ----  Pero no sabra a que horas finaliza exactamente
+        */
+
+        date_default_timezone_set('America/El_Salvador');
+        $range_init = date("Y-m-d")." 00:00:00"; //today
+        $range_init = "2021-07-23 00:00:00"; //quitar este, es solo para pruebas 
+        $range_end = date('Y-m-d', strtotime("+3 months", strtotime($range_init)))." 00:00:00";
+        $limit = 3;
+
+        $params = "call getEvents('$range_init','$range_end',$limit,@cn)";
+        $items = DB::select($params);
+
+        //crear pagination
+        $salida["data"] = $items;
+
+        return $salida;
+    }
+
+    //Filter for only manager roles and auth (Done)
     public function approval(Request $request){
         $salida = [
             "code" => 0,
@@ -28,12 +61,16 @@ class PostEventController extends Controller
             'paginate' => null
         ];
 
-        if(Auth::user()->hasRole("Invitado")){
-            $salida["msg"] = "Acción no permitida";
-            return $salida;
-        }
+
         $per_page = ($request->per_page === null)?15:$request->per_page;
-        $result = PostEvent::where("status","review")->paginate($per_page);
+        //$result = PostEvent::where("status","review")->paginate($per_page);
+
+        $result = DB::table("post_events AS e")
+        ->join("users AS u","u.id","=","e.creator_id")
+        ->leftJoin("dtl_events AS dtl","dtl.event_id","=","e.id")
+        ->leftJoin("files_on_post_events AS f","f.id","=","e.presentation_img")
+        ->select("e.id","e.title","e.content AS description", "e.type_post AS type",
+        "f.name as presentation_img","e.is_popular","dtl.event_date","dtl.has_cost","dtl.cost","dtl.frequency","u.artistic_name AS nickname","u.id AS creator_id")->where("e.status","review")->paginate($per_page);
 
         $salida["paginate"] = [
             'total' =>$result->total(),
@@ -291,29 +328,31 @@ class PostEventController extends Controller
             return $salida;
         }
 
-        $post = DB::table("post_events AS pe")
-        ->join("users AS u", "u.id","=","pe.creator_id")
-        ->leftJoin("media_profiles AS mp","u.img_profile_id","=","mp.id")
-        ->select("pe.id","pe.title","pe.content AS description","pe.type_post AS type","pe.creator_id","pe.is_popular",
-            "pe.status","pe.created_at","u.name","u.artistic_name","mp.path_file AS img_owner")->where("pe.id",$id)->first();
+		$post = PostEvent::with('media')
+						->leftJoin('dtl_events','post_events.id','=', 'dtl_events.event_id')
+						->join('users','users.id','=','post_events.creator_id')
+						->leftJoin('media_profiles AS mp','mp.id','users.img_profile_id')
+						->select('post_events.*','dtl_events.event_date','dtl_events.frequency','dtl_events.has_cost','dtl_events.cost',
+						'dtl_events.frequency','mp.path_file AS creator_profile','users.name AS creator_name','users.artistic_name AS creator_nickname','users.id AS creator_id')
+                        ->where("post_events.id",$id)->first();
+
+        // $post = DB::table("post_events AS pe")
+        // ->join("users AS u", "u.id","=","pe.creator_id")
+        // ->leftJoin("media_profiles AS mp","u.img_profile_id","=","mp.id")
+        // ->select("pe.id","pe.title","pe.content AS description","pe.type_post AS type","pe.creator_id","pe.is_popular",
+        //     "pe.status","pe.created_at","u.name","u.artistic_name","mp.path_file AS img_owner")->where("pe.id",$id)->first();
 
         if($post == null){
             $salida["msg"] = "El elemento no existe";
             return $salida;
         };
 
-        $media = FilesPost::where('id_post_event',$id)->get();
-        $meta = postsEventsMeta::where('post_event_id',$id)->get();
-
-        $info = [
-            "post" => $post,
-            "media" => $media,
-            "meta" => $meta
-        ];
+        //$media = FilesPost::where('id_post_event',$id)->get();
+        //$meta = postsEventsMeta::where('post_event_id',$id)->get();
 
         $salida = [
             "code" => 1,
-            "data" => $info,
+            "data" => $post,
             "msg" => "result ok"
         ];
 

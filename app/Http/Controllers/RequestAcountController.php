@@ -12,6 +12,11 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
+
+use App\Mail\CredentialsUpdated;
+use Illuminate\Support\Facades\Mail;
+
+
 class RequestAcountController extends Controller
 {
     /**
@@ -21,7 +26,8 @@ class RequestAcountController extends Controller
      */
     public function index()
     {
-        //
+        $name = "Nerio";
+        Mail::to("ax.minck@gmail.com")->send(new CredentialsUpdated($name));
     }
 
 

@@ -19,6 +19,7 @@ class CategoriesController extends Controller
         ];
         
         $categories = Category::all();
+        $salida["code"] = 1;
         $salida["data"] = $categories;
         return $salida;
     }

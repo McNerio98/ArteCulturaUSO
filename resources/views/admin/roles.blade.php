@@ -1,5 +1,7 @@
 
 @extends('layouts.admin-template')
+@section('title', 'Privilegios')
+@section('windowName', 'ROLES Y PERMISOS')
 
 @section('content')
     <div class="container-fluid" id="appRoles">
@@ -33,7 +35,7 @@
 
                             <table class="table table-bordered">
                                 <thead>
-                                    <th>Permiso</th>
+                                    <th style="width: 40%;">Permiso</th>
                                     <th>Descripcion</th>
                                 </thead>
                                 <tbody>

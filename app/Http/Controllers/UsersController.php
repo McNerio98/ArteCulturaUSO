@@ -14,7 +14,8 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use Storage;
 use App\MediaProfile;
-
+use App\Mail\CredentialsUpdated;
+use Illuminate\Support\Facades\Mail;
 
 class UsersController extends Controller
 {
@@ -131,6 +132,7 @@ class UsersController extends Controller
         return $salida;
     }
 
+    //Filtrado por el middleware addroles, auth web (Done)
     public function updateConfigUser(Request $request,$id){
         $salida = [
             'code' => 0,
@@ -143,8 +145,12 @@ class UsersController extends Controller
             return $salida;
         }
 
-        if(! Auth::user()->can('configurar-usuario')){
+
+        if(! Auth::user()->can('configurar-usuarios') && $id != Auth::user()->id){
+            //Si el administrador actual no tiene el permiso de configurar usuario
+            //Si el administrador no tiene el permiso pero si es dueño de la cuenta si puede continuar 
             $salida["msg"] = "No posee permisos para esta acción";
+            return $salida;
         }
 
         $validator = Validator::make($request->all(),[
@@ -153,7 +159,7 @@ class UsersController extends Controller
                 Rule::in([
                     'enable-user',
                     'disable-user',
-                    'delete-user',
+                    'delete-user', //set active = 0 
                     'update-credentials',
                     'edit-meta' //for example description 
                 ]),
@@ -162,107 +168,77 @@ class UsersController extends Controller
 
 
         if($validator->fails()){
-            $salida['msg'] = "Inconsistencia de datos, intente más tarde";
+            $salida['msg'] = "Inconsistencia de datos, recargue el sitio";
             return $salida;
         }
 
+        $user = User::find($id);
+        if(!$user){
+            $salida["msg"] = "El usuario no existe";
+            return $salida;
+        
+        }
+    
         try{
+            DB::beginTransaction();
             switch($request->operation){
+                case 'delete-user': {
+                    $user->active = false;
+                    $user->save();//esta dentro del try el captura posible error 
+                    break;
+                }
                 case 'edit-meta': {
                     $persist = UserMeta::updateOrCreate(
                         ['user_id' => $id,'key' => trim($request->conf_key)],
                         ['value' => trim($request->conf_value)]
                     );
-                    if(!$persist){
-                        $salida["msg"] = "La acción no pudo ser completada, intente más tarde";
-                    }else{
-                        $salida["code"] = 1;
-                        $salida["msg"] = "Accion completa con exito";
-                    }
-
                     break;
                 }
                 case 'enable-user': {
-                    $user = User::find($id);
-                    if(!$user){
-                        $salida["msg"] = "El usuario no existe";
-                        break;
-                    }
-
                     $user->status = 'enabled';
-
-                    if(!$user->save()){
-                        $salida["msg"] = "Error al establecer el nuevo estado";
-                        break;
-                    }
-                    $salida["code"] = 1;
-                    $salida["msg"] = "Accion Completada";
+                    $user->save();
                     break;
                 }
                 case 'disable-user': {
-                    $user = User::find($id);
-                    if(!$user){
-                        $salida["msg"] = "El usuario no existe";
-                        break;
-                    }
-
                     $user->status = 'disabled';
-
-                    if(!$user->save()){
-                        $salida["msg"] = "Error al establecer el nuevo estado";
-                        break;
-                    }
-                    $salida["code"] = 1;
-                    $salida["msg"] = "Accion Completada";
+                    $user->save();
                     break;
                 }                
                 case 'update-credentials': {
-                    $user = User::find($id);
-                    if(!$user){
-                        $salida["msg"] = "El usuario no existe";
-                        break;
-                    }
-
                     //guardando raw pass 
                     $persist = UserMeta::updateOrCreate(
                         ['user_id' => $id,'key' => 'user_profile_rawpass'],
                         ['value' => $request->raw_pass]
                     );
 
-                    if(!$persist){
-                        $salida["msg"] = "La acción no pudo ser completada, intente más tarde";
-                        break; 
-                    }
                     //ya estan validado que no se repita nombre de usuario y email 
                     $user->username = trim($request->username);
                     $user->email = trim($request->email);
                     $user->password =  Hash::make($request->raw_pass);
-                    if(! Role::find($request->role)){
-                        $salida["msg"] = "El rol selecionado no existe";
-                        break;
+                    
+                    //Solo los usuarios con el permiso pueden asignar roles.
+                    if( Auth::user()->can('configurar-usuario') ){
+                        $roset = Role::find($request->role);
+
+                        if(!$roset){throw new \Exception("El rol selecionado no existe");}
+                        // All current roles will be removed from the user and replaced by the array given
+                        //podra tener un unico rol
+                        $fresh_roles = [$roset->name];
+                        $user->syncRoles($fresh_roles);
                     }
+
                     if(isset($request->status)){
                         $user->status = trim($request->status);
                     }
-
-                    // All current roles will be removed from the user and replaced by the array given
-                    $fresh_rol = Role::find($request->role);
-                    if(! $fresh_rol){
-                        $salida["msg"] = "El rol no es valido";
-                        return $salida;
-                    }
-                    
-                    //podra tener un unico rol
-                    $fresh_roles = [$fresh_rol->name];
-                    $user->syncRoles($fresh_roles);
-
-                    if(!$user->save()){
-                        $salida["msg"] = "Error en actualizar credenciales";
-                        break;
-                    }
-
+                    $user->save();
                     if($request->send_email == true){
-                        //enviando email 
+                        $tmp_mail = trim($user->email);
+                        $uitem = new \stdClass();
+                        $uitem->name = $user->name;
+                        $uitem->username = $user->username;
+                        $uitem->password = $request->raw_pass;
+                        $uitem->email = $user->email;
+                        Mail::to($tmp_mail)->send(new CredentialsUpdated($uitem));
                     }
 
                     $salida["code"] = 1;
@@ -270,8 +246,13 @@ class UsersController extends Controller
                     break;
                 }
             }
+
+            $salida["code"] = 1;
+            $salida["msg"] = "Operacion completa";
+            DB::commit();
         }catch(Throwable $ex){
-            $salida["msg"] = "Error en la Operacion php version 7";
+            DB::rollback();
+            $salida["msg"] = "Error en la Operacion";
         }
 
         return $salida;
@@ -326,6 +307,8 @@ class UsersController extends Controller
         if(! in_array($per_page,$valid_range)){
             $per_page = 6;
         }
+
+        $per_page = 2;
 		
         $result = DB::table('users')
         ->join("model_has_roles","model_has_roles.model_id","=","users.id")

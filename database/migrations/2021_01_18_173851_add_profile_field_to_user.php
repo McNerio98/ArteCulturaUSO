@@ -14,9 +14,10 @@ class AddProfileFieldToUser extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('artistic_name',45)->nullable();
+            $table->string('artistic_name',50)->nullable();
             $table->integer('count_posts')->default(0);
             $table->integer('count_events')->default(0);
+            $table->index('artistic_name');
         });
     }
 

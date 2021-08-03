@@ -16,7 +16,10 @@ const mix = require('laravel-mix');
     .sass('resources/sass/app.scss', 'public/css')
     .sass('resources/sass/admin.scss', 'public/css');*/
 
-mix.version();
+    if (mix.inProduction()) {
+        mix.version();
+    }
+    
 
 mix.js('resources/js/app.js', 'public/js')
     //dashboard admin pages 
@@ -29,6 +32,10 @@ mix.js('resources/js/app.js', 'public/js')
     //public pages 
     .js('resources/js/vue-pages/front/app-inicio.js','public/js')
     .js('resources/js/vue-pages/front/app-search.js','public/js')
+    .js('resources/js/vue-pages/front/app-resources.js','public/js/')
+    .js('resources/js/vue-pages/front/app-memories.js','public/js/')
+    .js('resources/js/vue-pages/front/app-biographies.js','public/js/')
+    //app-resources-admin.js para administrados
     //other 
     .js('resources/js/vue-pages/specific-post.js','public/js')
     .js('resources/js/api/api.service.js','public/js')
@@ -38,6 +45,4 @@ mix.js('resources/js/app.js', 'public/js')
 
     mix.js('resources/js/vue-pages/app-profile.js','public/js');
 
-    if (mix.inProduction()) {
-        mix.version();
-    }
+

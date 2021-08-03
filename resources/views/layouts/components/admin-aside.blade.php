@@ -33,15 +33,15 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="javascript.void(0);" class="nav-link text-hpolis">
-                        <i class="nav-icon fas fa-cubes"></i>
+                    <a href="{{route('content')}}" class="nav-link text-hpolis  {{ $ac_option == 'content' ? 'active' : ''}} ">
+                        <i class="nav-icon fas fa-photo-video"></i>
                         <p>Mi contenido</p>
                     </a>
                 </li>
 
-                @can('ver-homenajes')
+                @can('ver-reseñas')
                 <li class="nav-item">
-                    <a href="javascript.void(0);" class="nav-link text-hpolis  {{ $ac_option == 'homenajes' ? 'active' : ''}} ">
+                    <a href="{{route('memories')}}" class="nav-link text-hpolis  {{ $ac_option == 'memories' ? 'active' : ''}} ">
                         <i class="nav-icon fas fa-star-half-alt"></i>
                         <p>Homenajes</p>
                     </a>
@@ -50,7 +50,7 @@
 
                 @can('ver-destacados')
                 <li class="nav-item">
-                    <a href="javascript.void(0);" class="nav-link text-hpolis  {{ $ac_option == 'destacados' ? 'active' : ''}}">
+                    <a href="{{route('populars')}}" class="nav-link text-hpolis  {{ $ac_option == 'populars' ? 'active' : ''}}">
                         <i class="nav-icon fas fa-cubes"></i>
                         <p>Destacados</p>
                     </a>
@@ -86,6 +86,15 @@
                     </li>
                 @endcan
 
+                @can('ver-recursos')                
+                <li class="nav-item">
+                    <a href="{{route('resources')}}" class="nav-link text-hpolis  {{ $ac_option == 'resources' ? 'active' : ''}}">
+                        <i class="nav-icon fas fa-book"></i>
+                        <p>Recursos</p>
+                    </a>
+                </li>
+                @endcan
+
                 @can('ver-roles')                
                 <li class="nav-item">
                     <a href="{{route('roles')}}" class="nav-link text-hpolis  {{ $ac_option == 'roles' ? 'active' : ''}}">
@@ -95,14 +104,7 @@
                 </li>
                 @endcan
 
-                <!--Agregar permiso cuando se agregue-->
-                <li class="nav-item">
-                    <a href="{{route('roles')}}" class="nav-link text-hpolis  {{ $ac_option == 'roles' ? 'active' : ''}}">
-                        <i class="nav-icon fas fa-user-cog"></i>
-                        <p>Biblioteca</p>
-                    </a>
-                </li>
-                
+               
 
                 <li class="nav-item">
                     <a href="#" class="nav-link text-hpolis" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

@@ -12,6 +12,9 @@ use App\MediaProfile;
 use App\PostEvent;
 
 
+/*
+** Obtiene los elementos, (Publicaciones o eventos) del perfil pasado como parametro 
+*/
 class ProfileController extends Controller
 {
 	public function __construct(){
@@ -43,7 +46,8 @@ class ProfileController extends Controller
 						->select('post_events.*','dtl_events.event_date','dtl_events.frequency','dtl_events.has_cost','dtl_events.cost',
 						'dtl_events.frequency','mp.path_file AS creator_profile','users.name AS creator_name','users.artistic_name AS creator_nickname','users.id AS creator_id')
 						->orderBy('dtl_events.id','desc')->paginate($per_page);
-
+		//AGREGAR EL ACTIVE ARRIVA 
+		
         $salida["pagination"] = [
             'total' =>$result->total(),
             'current_page'  => $result->currentPage(),

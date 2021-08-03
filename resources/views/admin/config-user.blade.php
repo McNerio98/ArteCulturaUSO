@@ -1,5 +1,6 @@
 @extends('layouts.admin-template')
-
+@section('title', 'Configuración')
+@section('windowName', 'CONFIGURACIÓN DE CUENTA')
 @section('content')
     <div class="container-fluid" id="appConfigUser">
         <input type="hidden" value="{{$id_user_cur}}" id="current_user_id_request" />
@@ -64,7 +65,7 @@
                                     </div>
 
                                     <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                                        <input type="checkbox" class="form-check-input" id="exampleCheck1" v-model="send_email" :disabled="!is_edit_credential">
                                         <label class="form-check-label" for="exampleCheck1">Notificar por correo</label>
                                     </div>
 

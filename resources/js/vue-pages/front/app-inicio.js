@@ -1,5 +1,5 @@
 Vue.component('request-component', require('../../components/RequestAccount.vue').default);
-
+Vue.component('search-component', require('../../components/search/SearchComponent.vue').default);
 
 const app_inicio = new Vue({
     el: '#app_inicio',
@@ -55,6 +55,13 @@ const app_inicio = new Vue({
             }).catch((ex)=>{
                 StatusHandler.Exception("Recuperar post populares",ex);
             });
+        },
+        exeSeach: function(ng){
+            if(ng.id_filter == undefined || ng.label == undefined || ng.type_search == undefined){
+                alert("Error");
+                return;
+            }
+            window.location.href = window.obj_ac_app.base_url+`/search?id_filter=${ng.id_filter}&label=${ng.label}&type_search=${ng.type_search}`;
         }
     }
 });
