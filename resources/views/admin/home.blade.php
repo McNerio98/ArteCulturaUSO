@@ -1,4 +1,6 @@
 @extends('layouts.admin-template')
+@section('title', 'Inicio')
+@section('windowName', 'PANEL PRINCIPAL')
 
 @section('content')
 <div class="container-fluid" id="appHome">
@@ -98,7 +100,12 @@
                                 <post-general @source-files="onSources" v-bind:model="postevent_selected" @change-popular="setPostPopular"></post-general>                                
                             </div>
 
-                            <span style="border: 1px solid gray;padding: 5px;display: inline-block;margin: 5px;" v-for="appr of approval_items" @click="getApprovalEl(appr.id)">@{{appr.title}}</span>   
+                            <div class="row">
+                                <summary-item @selected-item="getApprovalEl" v-for="app of approval_items" :model="app"></summary-item>
+                            </div>
+                            
+
+                            <!-- <span style="border: 1px solid gray;padding: 5px;display: inline-block;margin: 5px;"  @click="getApprovalEl(appr.id)">@{{appr.title}}</span>    -->
 
                              
                             <nav aria-label="Navegacion elementos en aprobación">
@@ -241,7 +248,7 @@
 
 
 @Push('customScript')
-    <script src="{{ asset('js/app-admin.js') }}"></script>
+    <script src="{{ mix('js/app-admin.js') }}"></script>
 @endpush
 
 

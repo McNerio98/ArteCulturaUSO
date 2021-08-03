@@ -53,7 +53,7 @@ Route::apiResource('usermeta','UsersMetasController');
 
 Route::post('post/findPostsPopular','PostEventController@findPostsPopular');
 
-//Este se queda aqui,puede ser utilizado como api 
+//ESTOS SE QUEDAN AQUI, PUEDEN SER UTILIZADOS PARA UNA API FUTURA
 Route::get('post/{id}','PostEventController@show')->name('post.show');
 Route::get('posts/events','PostEventController@eventsTable')->name('table.events');
 

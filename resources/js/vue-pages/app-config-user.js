@@ -12,6 +12,7 @@ const appConfigUser = new Vue({
             is_accept_account: false,
             is_edit_pass: false,
             is_edit_desc: false,
+            send_email: true,
             credentials_restore: {
                 username: "",
                 email: "",
@@ -90,7 +91,7 @@ const appConfigUser = new Vue({
             }
         },
         saveDescription: function(){
-            if(this.user_description.length < 2){
+            if(this.user_description.length < 2 || this.user_description.length >= 5000){
                 StatusHandler.ValidationMsg('La descripción no es valida');
                 return;
             }
@@ -101,7 +102,7 @@ const appConfigUser = new Vue({
                 conf_value: this.user_description
             };
 
-            axios.put(`/api/user/updateConfig/${this.id_current_user}`,data).then(result=>{
+            axios.put(`/user/updateConfig/${this.id_current_user}`,data).then(result=>{
                 let response = result.data;
                 if(response.code == 0){
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
@@ -121,7 +122,7 @@ const appConfigUser = new Vue({
                 operation: status.trim()
             };
             $(e.target).addClass("disabled");            
-            axios.put(`/api/user/updateConfig/${this.user.id}`,params).then((result)=>{
+            axios.put(`/user/updateConfig/${this.user.id}`,params).then((result)=>{
                 let response = result.data;
                 if(response.code == 0){
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
@@ -162,7 +163,7 @@ const appConfigUser = new Vue({
                 username: this.credentials.username,
                 raw_pass: this.credentials.pass,
                 role: this.role_selected,
-                send_email: false
+                send_email: this.send_email
             }
             
             if(this.is_accept_account){
@@ -214,7 +215,7 @@ const appConfigUser = new Vue({
                     }
                 }).catch(ex =>{
                     console.error(ex);
-                    reject({exists: null});
+                    resolve({exists: null});
                 });                
             });
         }

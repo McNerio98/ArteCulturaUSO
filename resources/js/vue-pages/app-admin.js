@@ -14,6 +14,7 @@ Vue.component('post-preview-mini-desing',require('../components/post/PostEventPr
 Vue.component('preview-media',require('../components/media/PreviewMediaComponent.vue').default);
 Vue.component('post-general',require('../components/post/PostGeneralComponent.vue').default);
 Vue.component('media-viewer', require('../components/media/ViewMediaComponent.vue').default);
+Vue.component('summary-item',require('../components/post/PostEventComponent.vue').default);
 
 const STATE_SEARCH= {
     DEFAULT: 1,
@@ -119,24 +120,47 @@ const appHome = new Vue({
             this.media_view.target = aux[0];
             $('#modaPreviewMedia').modal('show');            
         },
-        getApprovalEl: function(id){
+        getApprovalEl: function(emit_data){
             this.spinner_approval  = true;
-            axios(`/api/post/${id}`).then(result=>{
+            axios(`/api/post/${emit_data.id}`).then(result=>{
                 let response = result.data;
-                this.spinner_approval = false;
+                if(response.code == 0){
+                    StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                    return;
+                }
 
-                //por alguna razon logra mutar el valor sin el aux, pero se dejo el aux para asegurar
-                var aux = response.data.media.map(ng=>{
-                    switch(ng.type_file){
-                        case "image": {ng.name = window.obj_ac_app.base_url +"/files/images/"  + ng.name;break;}
-                        case "docfile": {ng.name = window.obj_ac_app.base_url + "/files/pdfs/" + ng.name;break;}
-                        case "video": {ng.name_temp = window.obj_ac_app.base_url + "/images/youtube_item.jpg";break;}
-                    }
-                    return ng;
-                });
-                response.data.post.img_owner =  window.obj_ac_app.base_url +"/files/profiles/" + response.data.post.img_owner; 
-                response.data.media = aux;
-                this.postevent_selected = response.data;
+                this.spinner_approval = false;
+                var e = response.data;
+                console.log("Este es response");
+                console.log(e);
+                var current = {
+                    post: {
+                        id: e.id,
+                        title: e.title,
+                        description: e.content,
+                        type: e.type_post,
+                        is_popular: false,
+                        status: 'review',
+                        created_at: e.created_at,
+                    },
+                    creator: {
+                        id: e.creator_id,
+                        name: e.creator_name,
+                        nickname: e.creator_nickname,
+                        profile_img:  window.obj_ac_app.base_url + "/files/profiles/" + e.creator_profile, 
+                    },
+                    media: e.media.map(ng => {//el formato para esto se filtra en el otro compnente
+                        switch(ng.type_file){
+                            case "image": {ng.name = window.obj_ac_app.base_url +"/files/images/"  + ng.name;break;}
+                            case "docfile": {ng.url = window.obj_ac_app.base_url + "/files/pdfs/" + ng.name;break;}
+                            case "video": {ng.name_temp = window.obj_ac_app.base_url + "/images/youtube_item.jpg";break;}
+                        }
+                        return ng;
+                    }),
+                    meta: e.meta
+                }
+
+                this.postevent_selected = current;
             }).catch(ex=>{
                 StatusHandler.Exception("Recuperar PostEvent ", ex);
             }).finally(e => {
@@ -151,7 +175,26 @@ const appHome = new Vue({
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
                     return;
                 }
-                this.approval_items = response.data;
+                this.approval_items = response.data.map(e => {
+                    return {
+                        id: e.id, 
+                        title: e.title,
+                        description: e.description,
+                        type: e.type,
+                        presentation_img: e.presentation_img != undefined ? window.obj_ac_app.base_url + "/files/images/"+e.presentation_img : null,
+                        is_popular: e.is_popular,
+                        dtl_event: {
+                            event_date: e.event_date, //convertir a letras 
+                            has_cost: e.has_cost,
+                            cost: e.cost,
+                            frequency: e.frequency
+                        },
+                        creator: {
+                            id: e.creator_id,
+                            nickname: e.nickname
+                        }
+                    }
+                });
                 this.paginate_approval = response.paginate;                
             }).catch(ex=>{
                 let name_process = "Recuperar elementos en aprobación";

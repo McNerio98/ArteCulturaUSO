@@ -123,12 +123,14 @@
                 var temp = {
                     id_filter: 0,
                     label: this.target_match,
-                    type_search: ""
+                    type_search: undefined
                 };
-
-                if(this.selected_val.label.trim().toUpperCase() == this.target_match.trim().toUpperCase()){
-                    temp.id_filter = this.selected_val.id_filter;
-                    temp.type_serch = this.selected_val.type_serch;
+                
+                if(this.selected_val.label){
+                    if(this.selected_val.label.trim().toUpperCase() == this.target_match.trim().toUpperCase()){
+                        temp.id_filter = this.selected_val.id_filter;
+                        temp.type_serch = this.selected_val.type_serch;
+                    }
                 }
 
                 this.$emit("generated-filter", temp);

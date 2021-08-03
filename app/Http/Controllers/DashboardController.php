@@ -23,14 +23,44 @@ class DashboardController extends Controller
 	}
 
     public function index(){
-		//Si el usuario es un invitado, no debe tener acceso a este apartado 
-		if(Auth::user()->hasRole("Invitado") ){  
-            return redirect()->route('inicio');
-        };		
 		$request_users = $this->userRequest();
     	return view('admin.home' , ['ac_option' =>'home' , 'request_users' => $request_users]);
 	}
+
+	//MY CONTENT OPTION 
+    public function content(){
+		$request_users = $this->userRequest();
+    	return view('admin.content' , ['ac_option' =>'content' , 'request_users' => $request_users]);
+	}
 	
+	//MEMORIES OPTION 
+    public function memories(){
+		if( ! Auth::user()->can('ver-reseñas')){ //poner esto en los de arriba 
+            return redirect()->route('dashboard');
+        };		
+		$request_users = $this->userRequest();
+    	return view('admin.memories' , ['ac_option' =>'memories' , 'request_users' => $request_users]);
+	}
+
+	//POPULAR OPTIONS 
+    public function populars(){
+		if( ! Auth::user()->can('ver-destacados')){ //poner esto en los de arriba 
+            return redirect()->route('dashboard');
+        };		
+		$request_users = $this->userRequest();
+    	return view('admin.populars' , ['ac_option' =>'populars' , 'request_users' => $request_users]);
+	}	
+	
+	
+	//USERS OPTION	
+    public function users(){
+		if( ! Auth::user()->can('ver-usuarios')){ //poner esto en los de arriba 
+            return redirect()->route('dashboard');
+        };
+		$request_users = $this->userRequest();
+    	return view('admin.users' , ['ac_option' =>'usuarios' , 'request_users' => $request_users]);
+	}
+
 	public function rubros(){
 		if( ! Auth::user()->can('ver-rubros')){ 
             return redirect()->route('dashboard');
@@ -39,16 +69,15 @@ class DashboardController extends Controller
 		return view("admin.rubros", ['ac_option' =>'rubros' , 'request_users' => $request_users]); 
 	}
 
-	//Falta Elementos Destacados
-	//Falta Homenajes 
-	
-    public function users(){
-		if( ! Auth::user()->can('ver-usuarios')){ //poner esto en los de arriba 
+
+	public function resources(){
+		if( ! Auth::user()->can('ver-recursos')){ 
             return redirect()->route('dashboard');
         };
 		$request_users = $this->userRequest();
-    	return view('admin.users' , ['ac_option' =>'usuarios' , 'request_users' => $request_users]);
+		return view("admin.resources", ['ac_option' =>'resources' , 'request_users' => $request_users]); 
 	}
+
 	
 	public function roles(){
 		if( ! Auth::user()->can('ver-roles')){ //poner esto en los de arriba 
@@ -67,6 +96,7 @@ class DashboardController extends Controller
 
         return view("admin.config-user",['id_user_cur' => $id,'all_roles' =>$roles,'ac_option' =>'usuarios' , 'request_users' => $request_users]);
     }
+
 	
 	//Access via AJAX 
 	public function notifiers(){
