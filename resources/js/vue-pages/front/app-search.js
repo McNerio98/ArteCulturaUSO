@@ -13,7 +13,7 @@ const appSearch = new Vue({
         has_paginate2: false, //For post events 
         valid_params: false,
         spinners: {
-            S1: false,
+            S1: false, //LOAD PROFILES 
         },
         params: {},
         profiles: [],

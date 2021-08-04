@@ -117,7 +117,8 @@ class SearchController extends Controller
         $limit        = $paginate["per_page"];
 
         //Si ya tiene la paginacion se omite calcularla nuevamente 
-        $init_pagination = true;
+        //IMPORTANTE
+        $init_pagination = true; //ajustar aqui 
         switch($target_filter){
             case "cat": { //Busqueda de categorias 
                     if($init_pagination){

@@ -41,7 +41,7 @@
     <!-- </main> -->
     <div class="mb-md-3"></div>
     @include('layouts.components.footer')
-    <script src="{{asset('js/app.js')}}"></script>
+    <script src="{{mix('js/app.js')}}"></script>
     @stack('customScript')
 </body>
 

@@ -55,6 +55,7 @@ Route::post('post/findPostsPopular','PostEventController@findPostsPopular');
 
 //ESTOS SE QUEDAN AQUI, PUEDEN SER UTILIZADOS PARA UNA API FUTURA
 Route::get('post/{id}','PostEventController@show')->name('post.show');
+#Obtiene los eventos dentro de los tres meses siguientes 
 Route::get('posts/events','PostEventController@eventsTable')->name('table.events');
 
 # Obtiene todas las etiquetas, respuesta en JSON 
