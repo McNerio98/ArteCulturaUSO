@@ -34,7 +34,8 @@ mix.js('resources/js/app.js', 'public/js')
     .js('resources/js/vue-pages/front/app-search.js','public/js')
     .js('resources/js/vue-pages/front/app-resources.js','public/js/')
     .js('resources/js/vue-pages/front/app-memories.js','public/js/')
-    .js('resources/js/vue-pages/front/app-biographies.js','public/js/')
+    .js('resources/js/vue-pages/front/app-biographies.js','public/js/') //BIOGRAPHIES PUBLIC 
+    .js('resources/js/vue-pages/front/app-events-table.js','public/js/')//TABLE EVENTS PUBLIC 
     //app-resources-admin.js para administrados
     //other 
     .js('resources/js/vue-pages/specific-post.js','public/js')

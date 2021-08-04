@@ -71,11 +71,9 @@
         </div>
 
         <div class="row mt-2 mt-md-3">
-            <div class="col-md-4" style="padding-left:15px !important;padding-right: 15px !important;">
-                <div class="bg-primary">Content</div>
-            </div>
+                <summary-item v-for="event of events" :model="event"></summary-item>
         </div>
-        <p class="text-center h4"><a style="text-decoration:underline;" href="#">Ver todos los eventos</a></p>
+        <p class="text-center h4"><a style="text-decoration:underline;" href="{{route('events')}}">Ver todos los eventos</a></p>
         <!--END EVENTS TABLE-->
         
     <hr/>
@@ -132,5 +130,5 @@
 @endsection
 
 @Push('customScript')
-    <script src="{{ asset('js/app-inicio.js') }}"></script>
+    <script src="{{ mix('js/app-inicio.js') }}"></script>
 @endpush

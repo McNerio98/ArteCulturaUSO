@@ -131,8 +131,6 @@ const appHome = new Vue({
 
                 this.spinner_approval = false;
                 var e = response.data;
-                console.log("Este es response");
-                console.log(e);
                 var current = {
                     post: {
                         id: e.id,
@@ -176,12 +174,13 @@ const appHome = new Vue({
                     return;
                 }
                 this.approval_items = response.data.map(e => {
-                    return {
+                    let ret = {
                         id: e.id, 
                         title: e.title,
                         description: e.description,
                         type: e.type,
-                        presentation_img: e.presentation_img != undefined ? window.obj_ac_app.base_url + "/files/images/"+e.presentation_img : null,
+                        presentation_img: (e.presentation_img != undefined && e.presentation_type != "video") ? window.obj_ac_app.base_url + "/files/images/"+e.presentation_img : null,
+                        presentation_type: e.presentation_type,
                         is_popular: e.is_popular,
                         dtl_event: {
                             event_date: e.event_date, //convertir a letras 
@@ -194,6 +193,10 @@ const appHome = new Vue({
                             nickname: e.nickname
                         }
                     }
+                    if(ret.presentation_type == "video"){
+                        ret.presentation_img = window.obj_ac_app.base_url +"/images/youtube_item.jpg";
+                    }
+                    return ret;
                 });
                 this.paginate_approval = response.paginate;                
             }).catch(ex=>{
