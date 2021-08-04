@@ -1,35 +1,38 @@
-Vue.component('request-component', require('../../components/RequestAccount.vue').default);
-Vue.component('search-component', require('../../components/search/SearchComponent.vue').default);
+Vue.component('spinner1',require('../../components/spinners/Spinner1Component.vue').default);
 Vue.component('summary-item',require('../../components/post/PostEventComponent.vue').default);
 
-const app_inicio = new Vue({
-    el: '#app_inicio',
+const appEvents = new Vue({
+    el: "#app_events",
     data: {
-        events: [] //only 3 elements 
-    },
+        flags: {
+            has_paged1: false,//SI SE TIENE LA PAGINACION 1, (EVENTOS)
+        },
+        spinners: {
+            S1: false
+        },
+        events: []
+    }, 
     mounted: function(){
         this.loadEvents();
     },
-    methods: {  
-        loadEvents: function(){
-            /* init_pagination=false porque solo necesitamos 3 elementos, los demas se muestra 
-            ** en el tablero de eventos. 
-            */
-            axios(`/api/posts/events?init_pagination=false`).then(result=>{
+    methods: {
+        loadEvents: function(page = 1){
+            var data = {
+                page: page,
+                init_pagination: ! this.flags.has_paged1 ? true: false //sino se tiene la paginacion se pide una vez 
+            }
+
+
+            this.spinners.S1 = true;
+            axios(`/api/posts/events`,{params: data}).then(result =>{
                 let response = result.data;
                 if(response.code == 0){
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
                     return;
                 }  
 
-                var temp = [];
-                if(response.data.length > 3){
-                    temp = response.data.splice(0,3); //only three elements
-                }else{
-                    temp = response.data;
-                }
-                //Formatting elements
-                this.events = temp.map(e => {
+                //Formating 
+                this.events = response.data.map(e => {
                     let ret = {
                         id: e.id, 
                         title: e.title,
@@ -53,19 +56,16 @@ const app_inicio = new Vue({
                     if(ret.presentation_type == "video"){
                         ret.presentation_img = window.obj_ac_app.base_url +"/images/youtube_item.jpg";
                     }
-                    return ret;                    
+                    return ret;                         
                 });
+                //Se establece que ya se paginado, si se envio init_pagination = true
+                if(! this.flags.has_paged1){this.flags.has_paged1 = true}
             }).catch(ex=>{
-                    let target_process = "Recuperar eventos cercanos";
-                    StatusHandler.Exception(target_process,ex);
-            });
-        },
-        exeSeach: function(ng){
-            if(ng.id_filter == undefined || ng.label == undefined || ng.type_search == undefined){
-                alert("Error");
-                return;
-            }
-            window.location.href = window.obj_ac_app.base_url+`/search?id_filter=${ng.id_filter}&label=${ng.label}&type_search=${ng.type_search}`;
+                let target_process = "Recuperar eventos cercanos";
+                StatusHandler.Exception(target_process,ex);                
+            }).finally(e=>{
+                this.spinners.S1 = false;
+            })
         }
     }
 });

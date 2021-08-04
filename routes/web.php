@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 
 //Router Pagina principal 
 Route::get('/','WebsiteController@welcome')->name("inicio");
+Route::get('/events','WebsiteController@events')->name('events');
+Route::get('/','WebsiteController@welcome')->name("inicio");
 Route::get('/page1','WebsiteController@artitas')->name("artistas");
 Route::get('/page2','WebsiteController@promotores')->name("promotores");
 Route::get('/page3','WebsiteController@escuelas')->name("escuelas");
@@ -55,9 +57,6 @@ Route::get('/admin/users/config/{id}','DashboardController@infoUser')->name('use
 
 //Routes para busquedas 
 Route::get('/search','SearchController@index')->name('search');
-
-
-//Route::post('rolesdata/{id}','RequestAcountController@indexRoles')->middleware('auth');
 
 
 

@@ -33,6 +33,24 @@ class PostEventController extends Controller
             "data" => null
         ];
 
+        //Si no se paso la variable la inicia con 1, sino hace la conversion del que trae 
+        $page_aux = $request->page == null ? 1 : intval($request->page);
+        //Si la conversion fue 0, es porque es el parseo no fue exitoso, se establece a uno 
+        if($page_aux === 0){    $page_aux = 1;  }        
+        $init_pagination = $request->init_pagination == null ? false : boolval($request->init_pagination);
+
+        $paginate = [
+            "total" => 0,
+            "current_page" => 0,
+            "per_page" => 0,
+            "last_page" => 0,
+            "from" => 0,
+            "to" => 0
+        ];    
+        $paginate["per_page"] = 12;
+        $paginate["current_page"] = $page_aux;
+        $paginate["from"] = ( ($paginate["current_page"] * $paginate["per_page"]) - $paginate["per_page"]) +1;
+
         /* Mas adenta se consultara si es necesario agregar la hora del evento, por ahora solo los muestra conforme 
         ** a la fecha que se ira a realizar   ----  Pero no sabra a que horas finaliza exactamente
         */
@@ -41,14 +59,27 @@ class PostEventController extends Controller
         $range_init = date("Y-m-d")." 00:00:00"; //today
         $range_init = "2021-07-23 00:00:00"; //quitar este, es solo para pruebas 
         $range_end = date('Y-m-d', strtotime("+3 months", strtotime($range_init)))." 00:00:00";
-        $limit = 3;
+        $items      = null;
+        $offset     = $paginate["from"] - 1;
+        $limit        = $paginate["per_page"];
 
-        $params = "call getEvents('$range_init','$range_end',$limit,@cn)";
-        $items = DB::select($params);
+        if($init_pagination){
+            $call_string            = "call getEvents('$range_init','$range_end',0,0,true)";
+            $result                    = DB::select($call_string);
+            $paginate["total"]= intval($result[0]->calc_total);
+        }
 
-        //crear pagination
+        $call_string            = "call getEvents('$range_init','$range_end',$limit,$offset,false)";
+        $items                    = DB::select($call_string);
+
+
+        //Segun la paginacion usada en todos los modulos, la variable "to" es la misma que la ultima pagina 
+        $paginate["last_page"] = intval(ceil($paginate["total"] / $paginate["per_page"]));
+        $paginate["to"] = $paginate["last_page"];         
+
+        $salida["code"] = 1;
         $salida["data"] = $items;
-
+        $salida["pagination"] = $paginate;
         return $salida;
     }
 
@@ -70,7 +101,8 @@ class PostEventController extends Controller
         ->leftJoin("dtl_events AS dtl","dtl.event_id","=","e.id")
         ->leftJoin("files_on_post_events AS f","f.id","=","e.presentation_img")
         ->select("e.id","e.title","e.content AS description", "e.type_post AS type",
-        "f.name as presentation_img","e.is_popular","dtl.event_date","dtl.has_cost","dtl.cost","dtl.frequency","u.artistic_name AS nickname","u.id AS creator_id")->where("e.status","review")->paginate($per_page);
+        "f.name AS presentation_img","f.type_file AS presentation_type", "e.is_popular","dtl.event_date","dtl.has_cost","dtl.cost","dtl.frequency","u.artistic_name AS nickname",
+        "u.id AS creator_id")->where("e.status","review")->paginate($per_page);
 
         $salida["paginate"] = [
             'total' =>$result->total(),
@@ -206,6 +238,7 @@ class PostEventController extends Controller
                         }
 
                     }else{
+                        //Es un video
                         $filesOnPostEvents->id_post_event = $postEvent->id;
                         $filesOnPostEvents->name = $files[$numberfiles]['data'];
                         $filesOnPostEvents->type_file = $files[$numberfiles]['type'];

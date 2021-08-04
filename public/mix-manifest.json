@@ -6,6 +6,7 @@
     "/js/app-admin.js": "/js/app-admin.js",
     "/js/app-biographies.js": "/js/app-biographies.js",
     "/js/app-config-user.js": "/js/app-config-user.js",
+    "/js/app-events-table.js": "/js/app-events-table.js",
     "/js/app-inicio.js": "/js/app-inicio.js",
     "/js/app-memories.js": "/js/app-memories.js",
     "/js/app-post.js": "/js/app-post.js",
