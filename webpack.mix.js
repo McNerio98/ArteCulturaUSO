@@ -24,9 +24,11 @@ const mix = require('laravel-mix');
 mix.js('resources/js/app.js', 'public/js')
     //dashboard admin pages 
     .js('resources/js/vue-pages/app-users.js','public/js')
-    .js('resources/js/vue-pages/app-post.js','public/js')
-    .js('resources/js/vue-pages/app-admin.js','public/js')
-    .js('resources/js/vue-pages/app-rubros.js','public/js')
+    .js('resources/js/vue-pages/admin/app-content.js','public/js/admin') //USE THIS FOLDER FORMAT 
+    .js('resources/js/vue-pages/admin/app-populars.js','public/js/admin') //USE THIS FOLDER FORMAT 
+    .js('resources/js/vue-pages/admin/app-admin.js','public/js/admin')
+    .js('resources/js/vue-pages/admin/app-rubros.js','public/js/admin')
+    .js('resources/js/vue-pages/admin/app-item-update.js','public/js/admin')
     .js('resources/js/vue-pages/app-config-user.js','public/js')
     .js('resources/js/vue-pages/app-roles.js','public/js')
     //public pages 
@@ -41,8 +43,7 @@ mix.js('resources/js/app.js', 'public/js')
     .js('resources/js/vue-pages/specific-post.js','public/js')
     .js('resources/js/api/api.service.js','public/js')
     .sass('resources/sass/app.scss', 'public/css')
-    .sass('resources/sass/observatorio_styles.scss','public/css')
-    .sourceMaps();
+    .sass('resources/sass/observatorio_styles.scss','public/css');
 
     mix.js('resources/js/vue-pages/app-profile.js','public/js');
 

@@ -1,7 +1,7 @@
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar elevation-2 bg-hpolis">
     <!-- Logo -->
-    <a href="{{route('dashboard')}}" class="brand-link" style="border-bottom: 1px solid #515151 !important;">
+    <a href="{{route('inicio')}}" class="brand-link" style="border-bottom: 1px solid #515151 !important;">
         <!--
         <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
         -->
@@ -16,7 +16,7 @@
                 <img src="{{asset('files/profiles/'.session()->get('media_profile_user'))}}" class="elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="#" class="d-block text-hpolis">{{ session()->get('name_cur_user') }}</a>
+                <a href="{{route('user.info', Auth::user()->id)}}" class="d-block text-hpolis">{{ session()->get('name_cur_user') }}</a>
             </div>
         </div>
         <!-- Sidebar Menu -->

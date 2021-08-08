@@ -114,6 +114,11 @@ class RolesPermissionSeeder extends Seeder
 		]);
 
 		$permission = Permission::create([
+			'name' => 'editar-publicaciones',
+			'description' => 'Capacidad de editar publicaciones/eventos. El usuario propietario (creador original) siempre podrá editar, si edita se establecerá a estado de revisión nuevamente.'
+		]);
+
+		$permission = Permission::create([
 			'name' => 'eliminar-publicaciones',
 			'description' => 'Capacidad de eliminar publicaciones/eventos. El usuario propietario (creador original) siempre podrá eliminarlas.'
 		]);
@@ -165,6 +170,7 @@ class RolesPermissionSeeder extends Seeder
 			'destacar-publicaciones',
 			'aprobar-reseñas',
 			'aprobar-publicaciones',
+			'editar-publicaciones',
 			'eliminar-publicaciones',
 			'crear-roles',
 			'ver-roles',
@@ -187,6 +193,7 @@ class RolesPermissionSeeder extends Seeder
 			'ver-destacados',
 			'destacar-publicaciones',
 			'aprobar-publicaciones',
+			'editar-publicaciones',
 			'eliminar-publicaciones',
 			'ver-roles'
 		];
@@ -196,6 +203,7 @@ class RolesPermissionSeeder extends Seeder
 			'ver-destacados',
 			'destacar-publicaciones',
 			'aprobar-publicaciones',
+			'editar-publicaciones',
 			'eliminar-publicaciones',
 			'ver-roles'
 		];
@@ -216,7 +224,8 @@ class RolesPermissionSeeder extends Seeder
 
 		$admin = User::create([
 			'name' => 'Rene Lara',
-			'email' => 'usodev@usonsonate.edu.sv',
+			'artistic_name' => 'Rene Lara',
+			'email' => 'rene.lara@usonsonate.edu.sv',
 			'username' => 'social2020',
 			'password'	=> Hash::make('s4FFDEvYwbixn'),
 			'is_admin' => true,
@@ -252,22 +261,5 @@ class RolesPermissionSeeder extends Seeder
 		$invitado1->img_profile_id = $profile1->id;
 		$invitado1->save();
 		$invitado1->assignRole('Invitado');
-
-		
-		$invitado2 = User::create([
-			'name' => 'Alex Chinque',
-			'email' => 'alexcnk97@gmail.com',
-			'username' => 'cnk2020',
-			'password'	=> Hash::make('123456789'),
-			'telephone' => '2222-2222',
-			'status' => 'request',
-		]);
-		$profile2 = MediaProfile::create([
-			'user_id' => $invitado2->id,
-			'path_file' => 'default_img_profile.png'
-		]);			
-		$invitado2->img_profile_id = $profile2->id;
-		$invitado2->save();
-		$invitado2->assignRole('Invitado');			        
     }
 }

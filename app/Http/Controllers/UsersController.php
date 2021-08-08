@@ -145,10 +145,9 @@ class UsersController extends Controller
             return $salida;
         }
 
-
+        //Si el administrador actual no tiene el permiso de configurar usuario
+        //Si el administrador no tiene el permiso pero si es dueño de la cuenta si puede continuar 
         if(! Auth::user()->can('configurar-usuarios') && $id != Auth::user()->id){
-            //Si el administrador actual no tiene el permiso de configurar usuario
-            //Si el administrador no tiene el permiso pero si es dueño de la cuenta si puede continuar 
             $salida["msg"] = "No posee permisos para esta acción";
             return $salida;
         }
@@ -184,7 +183,7 @@ class UsersController extends Controller
             switch($request->operation){
                 case 'delete-user': {
                     $user->active = false;
-                    $user->save();//esta dentro del try el captura posible error 
+                    $user->saveOrFail();//esta dentro del try el captura posible error 
                     break;
                 }
                 case 'edit-meta': {
@@ -196,12 +195,12 @@ class UsersController extends Controller
                 }
                 case 'enable-user': {
                     $user->status = 'enabled';
-                    $user->save();
+                    $user->saveOrFail();
                     break;
                 }
                 case 'disable-user': {
                     $user->status = 'disabled';
-                    $user->save();
+                    $user->saveOrFail();
                     break;
                 }                
                 case 'update-credentials': {
@@ -217,20 +216,21 @@ class UsersController extends Controller
                     $user->password =  Hash::make($request->raw_pass);
                     
                     //Solo los usuarios con el permiso pueden asignar roles.
-                    if( Auth::user()->can('configurar-usuario') ){
+                    if( Auth::user()->can('configurar-usuarios') ){
                         $roset = Role::find($request->role);
-
+                        //$salida["extra"] = "Seiguio despues de no encontrarlo"; Si siguio 
                         if(!$roset){throw new \Exception("El rol selecionado no existe");}
                         // All current roles will be removed from the user and replaced by the array given
                         //podra tener un unico rol
                         $fresh_roles = [$roset->name];
                         $user->syncRoles($fresh_roles);
+                        $user->is_admin = (trim($roset->name) != "Invitado") ? true:false;
                     }
 
                     if(isset($request->status)){
                         $user->status = trim($request->status);
                     }
-                    $user->save();
+                    $user->saveOrFail();
                     if($request->send_email == true){
                         $tmp_mail = trim($user->email);
                         $uitem = new \stdClass();
@@ -250,9 +250,9 @@ class UsersController extends Controller
             $salida["code"] = 1;
             $salida["msg"] = "Operacion completa";
             DB::commit();
-        }catch(Throwable $ex){
+        }catch(\Throwable $ex){
             DB::rollback();
-            $salida["msg"] = "Error en la Operacion";
+            $salida["msg"] = "Error en la Operacion ";
         }
 
         return $salida;

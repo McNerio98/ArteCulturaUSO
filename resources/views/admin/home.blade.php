@@ -248,7 +248,7 @@
 
 
 @Push('customScript')
-    <script src="{{ mix('js/app-admin.js') }}"></script>
+    <script src="{{ mix('js/admin/app-admin.js') }}"></script>
 @endpush
 
 
