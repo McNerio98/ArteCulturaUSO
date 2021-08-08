@@ -1,12 +1,11 @@
-const { result } = require('lodash');
-const { default: StatusHandler } = require('../sw-status');
 
-Vue.component('modal-trim-img', require('../components/trim/TrimComponent.vue').default);
-Vue.component('tag-rubro',require('../components/tags/Tag.vue').default);
+Vue.component('modal-trim-img', require('../../components/trim/TrimComponent.vue').default);
+Vue.component('tag-rubro',require('../../components/tags/Tag.vue').default);
 
 const appRubros = new Vue({
     el: '#appRubros',
     data: {
+        acAppData: {},
         categories: [],
         cat_selected: {id: 0, img_presentation: "/images/default_img_category.png",name: "",tags: []},
         ref_cat_selected: {id: 0, img_presentation: "",name: ""},
@@ -23,7 +22,11 @@ const appRubros = new Vue({
         loadCategories: function(){
             axios(`/api/categories`).then((result)=>{
                 let response = result.data;
-                this.categories = response.data;
+                this.categories = response.data.map(e=>{
+                    e.img_presentation = this.acAppData.base_url + "/files/categories/" + e.img_presentation;
+                    return e;
+                });
+
                 this.selectFirstCategory();
             }).catch((ex)=>{
                 console.error("Error");
@@ -130,14 +133,14 @@ const appRubros = new Vue({
                 img_presentation: base64
 
             };
-            axios.post(`/api/categories/saveImgPresentation`,data).then((result)=>{
+            axios.post(`/categories/saveImgPresentation`,data).then((result)=>{
                 let response = result.data;
                 if(response.code == 0){
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
                     this.ref_cat_selected.img_presentation = prev_path_img;
                     return;
                 }
-                this.ref_cat_selected.img_presentation = response.data; //containt new path 
+                this.ref_cat_selected.img_presentation = this.acAppData.base_url+"/files/categories/"+ response.data; //containt new path 
             }).catch((ex)=>{
                 StatusHandler.Exception("Establecer presentación de categoría",ex);
                 this.ref_cat_selected.img_presentation = prev_path_img;
@@ -147,6 +150,7 @@ const appRubros = new Vue({
         }
     },
     mounted: function(){
+        this.acAppData = window.obj_ac_app;
         this.loadCategories();
     }
 });

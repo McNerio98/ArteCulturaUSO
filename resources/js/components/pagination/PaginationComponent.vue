@@ -39,6 +39,7 @@
         },
         mounted() {
            this.loadData();
+           console.log("Pagionacion montada");
         },
         methods: {
             loadData:  function(page = 1){

@@ -1,5 +1,5 @@
 <template>
-    <div class="card mb-3 alterCard">
+    <div class="card mb-3 alterCard overlay dark">
         <div class="card-header bg-secondary alterHeader">
             <span>{{ title }}</span>
         </div>
@@ -11,7 +11,11 @@
               </div>
             </div> -->
 
-            <post-form-component :post-type="postType" @post-chiild-created="emitCreatedId"
+            <post-form-component  
+                :edit-mode="editMode" 
+                :source-edit="sourceEdit"  
+                :post-type="postType" 
+                @post-chiild-created="emitCreatedId"
                 :user-data="userInfo">
             </post-form-component>
         </div>
@@ -24,19 +28,34 @@ export default {
       userInfo:{
         type: Object,
         default: function(){
-          return {username:"(No Especificado)", profile_path: "https://i.insider.com/51c1d74aecad048224000021?width=762&format=jpeg"}
+          return {
+            id: 0,
+            nickname:"(No Especificado)", 
+            fullname: "(No Especificado)",
+            profile_path: "https://i.insider.com/51c1d74aecad048224000021?width=762&format=jpeg"}
         }
       },
-      postType: {type: String,default:"post"}
+      postType: {type: String,default:"post"},
+      editMode: {type: Boolean,default: false}, //indica si esta en modo edicion 
+      sourceEdit: {type: Object, default: function(){//fuente de datos para edicion 
+        return {}
+      }} 
   },
   data: function () {
     return {
         title: this.postType == "event" ? "Crear Evento" : "Publicar contenido"
     };
   },
+  mounted: function(){
+    if(this.editMode){
+      this.userInfo.id = this.sourceEdit.creator.id;
+      this.userInfo.nickname = this.sourceEdit.creator.nickname;
+      this.userInfo.fullname = this.sourceEdit.creator.name;
+      this.userInfo.profile_path = this.sourceEdit.creator.profile_img;
+    }
+  },
   methods: {
     emitCreatedId: function(post ){
-//      console.log("Se creo un post con este id " + id_created);
       this.$emit("post-created",post);
     }
   }

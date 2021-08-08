@@ -7,13 +7,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title') | Observatorio Cultural</title>
     <script>
-    window.obj_ac_app = {!! json_encode([
-        'csrfToken' => csrf_token(), // token 
-        'permissions' => Auth::user() == null?null:Auth::user()->getPermissionsViaRoles(), //Los permisos del usuario actual 
-        'base_url' => url('/'), //URL BASE 
-        'full_url' => url()->full(),
-        'current_url' => url()->current()
-    ]) !!};
+        
+        @auth //Usuario logeado
+            window.obj_ac_app = {!! json_encode([
+                'csrfToken' => csrf_token(), // token 
+                'permissions' => Auth::user()->caps, 
+                'base_url' => url('/'), //URL BASE 
+                'full_url' => url()->full(),
+                'current_url' => url()->current(),
+                "current_user" => [
+                    "id" => Auth::user()->id,
+                    "nickname" => Auth::user()->artistic_name,
+                    "fullname" => Auth::user()->name,
+                    "email" => Auth::user()->email,
+                    "presentation_img" => [
+                        "id" => Auth::user()->profile_img->id,
+                        "name" =>Auth::user()->profile_img->path_file
+                    ]
+                ]
+            ]) !!};
+        @endauth
+
+        @guest //Usuario no logeado
+            window.obj_ac_app = {!! json_encode([
+                'csrfToken' => csrf_token(), // token 
+                'permissions' => null,
+                'base_url' => url('/'), //URL BASE 
+                'full_url' => url()->full(),
+                'current_url' => url()->current(),
+                "current_user" => [
+                    "id" => null,
+                    "nickname" => null,
+                    "fullname" => null,
+                    "email" => null,
+                    "presentation_img" => [
+                        "id" => null,
+                        "name" => null
+                    ]
+                ]
+            ]) !!};        
+        @endguest
+        
 
     window.has_cap = function(cap){
         let status_cap = false;
@@ -22,7 +56,7 @@
         }
         
         for(let val of window.obj_ac_app.permissions){
-            if(val.name === cap){
+            if(val === cap){
                 return !status_cap;
             }
         }

@@ -88,7 +88,9 @@ class DashboardController extends Controller
 	}
 
     public function infoUser($id){
-        if( ! Auth::user()->can('ver-usuarios')){ //poner esto en los de arriba 
+		//Si el usuario no tiene los permisos y tampoco es su perfin el que desea acceder 
+		//se redireccionar 
+        if( ! Auth::user()->can('ver-usuarios') && Auth::user()->id != $id){
             return redirect()->route('dashboard');
         };
         $request_users = $this->userRequest();
@@ -97,6 +99,19 @@ class DashboardController extends Controller
         return view("admin.config-user",['id_user_cur' => $id,'all_roles' =>$roles,'ac_option' =>'usuarios' , 'request_users' => $request_users]);
     }
 
+	public function editElement($id){
+		$e = PostEvent::find($id);
+		if(!$e){
+			return redirect()->route('dashboard');
+		}
+		
+		if(!Auth::user()->can('editar-publicaciones') &&  intval($e->creator_id) !==  intval($id)){
+			return redirect()->route('dashboard');
+		}
+
+		$request_users = $this->userRequest();
+		return view("admin.edit-item",['request_users' => $request_users,'id_elem_edit' => $id,'ac_option' =>'null']);
+	}
 	
 	//Access via AJAX 
 	public function notifiers(){

@@ -2,6 +2,7 @@
   <div
     class="modal fade"
     id="trimModalComponent"
+    data-backdrop="static"
     tabindex="-1"
     role="dialog"
     aria-labelledby="exampleModalScrollableTitle"

@@ -1,20 +1,9 @@
 
-//import StatusHandler from "../sw-status"
-
-//Se van para mi contenido 
-Vue.component('post-event', require('../components/post/PostComponent.vue').default);
-Vue.component('post-form-component', require('../components/post/Formulario.vue').default);
-Vue.component('post-media-component', require('../components/post/Media.vue').default);
-Vue.component('post-modal-component', require('../components/post/ModalVideo.vue').default);
-
-// Este se va para eventos 
-Vue.component('post-preview-mini-desing',require('../components/post/PostEventPreviewRow.vue').default);
-
 //Se queda 
-Vue.component('preview-media',require('../components/media/PreviewMediaComponent.vue').default);
-Vue.component('post-general',require('../components/post/PostGeneralComponent.vue').default);
-Vue.component('media-viewer', require('../components/media/ViewMediaComponent.vue').default);
-Vue.component('summary-item',require('../components/post/PostEventComponent.vue').default);
+Vue.component('preview-media',require('../../components/media/PreviewMediaComponent.vue').default);
+Vue.component('post-general',require('../../components/post/PostGeneralComponent.vue').default);
+Vue.component('media-viewer', require('../../components/media/ViewMediaComponent.vue').default);
+Vue.component('summary-item',require('../../components/post/PostEventComponent.vue').default);
 
 const STATE_SEARCH= {
     DEFAULT: 1,

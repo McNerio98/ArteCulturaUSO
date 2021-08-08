@@ -241,7 +241,7 @@
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="timeline">
-                        <div id="event-cp" style="width: 100%;max-width: 600px;margin: auto;">
+                        <div id="event-cp" style="width: 100%;max-width: 600px;margin: auto;background-color: #fff;padding: 10px;border-left: 1px solid #d8d5d5;border-right: 1px solid #d8d5d5;">
                             <!--SOLO SI EL USUARIO ESTA LOGEADO-->
                             @auth
                                 @if(Auth::user()->id == $id_user_cur)
@@ -283,7 +283,6 @@
     
     <media-viewer 
     :media-profile="is_mdprofiles"  
-    :paths="paths" 
     :target="media_view.target"
     :logged.number='{{Auth::user() == null ? 0 : Auth::user()->id}}'
     :owner="media_view.owner"

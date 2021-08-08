@@ -281,6 +281,119 @@ class PostEventController extends Controller
         return $salida;        
     }
 
+    public function update(Request $request, $id){
+        $salida = [
+            "code" => 0,
+            "data" => null,
+            "msg" => null
+        ];
+
+
+        $user = Auth::user();
+        
+        $postEvent = PostEvent::find($id);
+        if(!$postEvent){
+            $salida["msg"] = "No existe el elemento";
+            return;
+        }
+
+        //Verificando permisos 
+        if(!$user->can('editar-publicaciones') && $postEvent->creator_id != $user->id){
+            $salida["msg"] = "Operación denegada";
+            return $salida;
+        }
+
+        //validaciones de campos
+        $validator = Validator::make($request->all(),[
+            "post_type" => "required",
+            "title" => "required",
+            "description" => "required"
+        ]);
+
+        if($validator->fails()){
+            $salida["msg"] = "Valores imcompletos";
+            return $salida;
+        };
+
+        if($request->post_type == "event"){
+            $validator = Validator::make($request->all(),[
+                "event_price" => "required",
+                "event_has_price" => "required",
+                "frequency" => ["required",Rule::in(["unique","repeat"])],
+                "event_date"  => ["required","date"]
+            ]);
+        }
+
+        if($validator->fails()){
+            $salida["msg"] = "Campos de evento imcompletos";
+            return $salida;
+        };
+
+
+        DB::beginTransaction();
+        $id_img_presentation = 0;
+        try{
+            $postEvent->title = $request->title;
+            $postEvent->content = $request->description;
+            $postEvent->type_post = $request->post_type;
+            $postEvent->save();
+
+            if($postEvent->type_post == "event"){
+                $dtlEvent = DtlEvent::where("event_id","=",$postEvent->id)->first();
+                if(!$dtlEvent){
+                    throw new \Exception("Detalle de evento no encontrado");
+                }
+                $dtlEvent->event_date        = $request->event_date;
+                $dtlEvent->frequency          = $request->frequency;
+                $dtlEvent->has_cost             = $request->event_has_price;
+                $dtlEvent->cost                     = $request->event_has_price == true ? $request->event_price : 0;
+                $dtlEvent->event_id             = $postEvent->id;
+                $dtlEvent->save();                
+            }
+            
+            //ELIMINACION DE CONTENIDO EXISTENTE 
+            $count_drop = 0;
+            if($request->mediadrop_ids){
+                foreach($postEvent->media as $drope){//por cada medio dentro de la publicacion 
+                    foreach($request->mediadrop_ids as $dropid){
+                        //aqui aplicacar una verificacion para los pdf ya que se guardan dentro de folders 
+                        if($drope->id === $dropid ){
+                            $aux_path = "";
+                            switch($drope->type_file){
+                                case 'image': $aux_path = "files/images/".$drope->name;break;
+                                case 'docfile': $aux_path = "files/pdfs/".$drope->name;break; //aplicar filtro, solo agregar id de post 
+                            }
+                            if(trim($aux_path) !== ""){
+                                if(! Storage::disk('local')->delete($aux_path) ){
+                                    throw new \Exception("No se logró eliminar algunos archivos");
+                                }   
+                            }
+                            if(!$drope->delete()){
+                                throw new \Exception("No se logró eliminar el registro");
+                            }
+                            $count_drop++;
+                            break;//primer form 
+                        }
+                    }
+
+                    if($count_drop == count($request->mediadrop_ids)){
+                        $salida["extra"] = "Se eliminaron " .$count_drop . " Elementos";
+                        break; //break 2 for, all element was deleted 
+                    }
+                }
+            }
+            //CARGA DE CONTENIDO NUEVO 
+            DB::commit();
+            $salida["code"] = 1;
+            $salida["msg"] = "Request complete";
+        }catch(\Throwable $ex){
+            DB::rollback();
+            $salida["msg"] = "Error al actualizar publicacion";
+            //$salida["msg"] = "Error al actualizar publicacion ".$ex->getMessage(); //for debug
+        }
+
+        return $salida;
+    }
 
     public function popularPost(){
         $salida = [

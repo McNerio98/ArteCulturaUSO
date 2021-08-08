@@ -19,7 +19,17 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','is_admin','username','telephone','status','api_token','img_profile_id' //quitar el api token 
+        'name', 
+        'email', 
+        'password',
+        'is_admin',
+        'username',
+        'telephone',
+        'status',
+        'api_token',
+        'img_profile_id', //quitar el api token 
+        'count_posts',
+        'count_events'
     ];
 
     /**
@@ -42,6 +52,16 @@ class User extends Authenticatable
 
     public function profile_img(){
         return $this->hasOne("App\MediaProfile");
+    }
+
+    //Get Only names from permissions 
+    public function getCapsAttribute(){
+        $ret = [];
+        $list = $this->getPermissionsViaRoles();
+        foreach($list as $c){
+            array_push($ret,$c["name"]);
+        }
+        return $ret; 
     }
 
 }
