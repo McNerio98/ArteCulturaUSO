@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Category;
 use Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class CategoriesController extends Controller
 {
@@ -70,6 +71,11 @@ class CategoriesController extends Controller
             "data" => null,
             "msg" => null
         ];
+
+        if(! Auth::user()->can('editar-rubros')){
+            $salida["msg"] = "No posee permisos para esta acción";
+            return $salida;
+        }
         
         $validator = Validator::make($request->all(),[
             "id_category" =>"required",
@@ -95,21 +101,33 @@ class CategoriesController extends Controller
 
             $data = substr($img, strpos($img, ',') + 1);
             $img_name = uniqid().'.jpg';
-            $path_store =  "/files/images/".$img_name;
+            $path_store =  "files/categories/".$img_name;
 
-            Storage::disk('local')->put($path_store,base64_decode($data));
-            $cat->img_presentation = $path_store;
+            if(! Storage::disk('local')->put($path_store,base64_decode($data)) ){
+                throw new \Exception("Error al guardan la imagen de presentation");
+            }
+
+            $prev_name = $cat->img_presentation; 
+            $cat->img_presentation = $img_name;
             $cat->save();
+
+            //Para categorias se usa una unica foto para los img default 
+            //Eliminando fotografia anterior si es diferente de la default 
+            if(trim($prev_name) !== "default_img_category.png"){
+                if(! Storage::disk('local')->delete('files/categories/'.$prev_name) ){
+                    throw new \Exception("No se logró eliminar la imagen previa");
+                }
+            }
 
             DB::commit();
             $salida = [
                 "code" => 1,
-                "data" => $path_store,
-                "msg" => "Ok|"
+                "data" => $img_name,
+                "msg" => "Operation Complete"
             ];            
-        }catch(\Exception $ex){
+        }catch(\Throwable $ex){
             DB::rollback();
-            $salida['msg'] = "Error: " . $ex;            
+            $salida['msg'] = "Error al guardar imagen";            
         }
 
         return $salida;

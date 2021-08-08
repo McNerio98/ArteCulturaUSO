@@ -1,5 +1,5 @@
 <template>
-    <div class="card card-widget" style="width: 100%;max-width: 600px;margin: auto;">
+    <div class="card card-widget mb-1 mb-md-3" style="width: 100%;max-width: 600px;margin: auto;">
         <div class="card-header p-2">
             <div class="user-block">
                 <img class="img-circle" :src="model.creator.profile_img" alt="User Image">
@@ -8,14 +8,16 @@
             </div>
             <!-- /.user-block -->
             <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-toggle="tooltip" data-placement="right"
+
+                <button @click="onClickEdit" v-if="has_cap('editar-publicaciones')" type="button" class="btn btn-tool" data-toggle="tooltip" data-placement="right"
                     title="Editar elemento">
                     <i class="fas fa-pen"></i> Editar
                 </button>
-                <button type="button" class="btn btn-tool" data-toggle="tooltip" data-placement="right"
+                <button @click="onClickDelete" v-if="has_cap('eliminar-publicaciones')" type="button" class="btn btn-tool" data-toggle="tooltip" data-placement="right"
                     title="Eliminar elemento">
-                    <i class="fas fa-trash-alt"></i> Remover
+                    <i class="fas fa-trash-alt"></i> Eliminar
                 </button>
+
             </div>
             <!-- /.card-tools -->
         </div>
@@ -110,11 +112,13 @@
                             is_popular: 0,
                             status: "review",
                             created_at: "",               
-                            frequency: "unique",
+                        },
+                        dtl_event: {
+                            event_date: 0,
                             has_cost: false,
                             cost: 0,
-                            event_date: null                            
-                        },
+                            frequency: "unique"
+                        },                        
                         creator: {
                             id: 0,
                             name: "",
@@ -125,10 +129,12 @@
                         meta: []
                     }
                 }
-            }
+            },
+            authId: {type: Number, default: 0}
         },      
         data: function(){
-            return {          
+            return {       
+                acAppData: {},   
                 post_approved: this.model.post.status == "review"?false:true,
                 post_delete: false,
                 media_visuals: [], //para imagenes y videos 
@@ -138,6 +144,7 @@
         },
         mounted: function(){
             this.filterMedia(this.model.media);
+            this.acAppData = window.obj_ac_app;
         },
         watch: {
             model: function(e){
@@ -145,6 +152,12 @@
             }
         },
         methods: {
+            onClickEdit: function(){
+                this.$emit('edit-item',this.model.post.id);
+            },
+            onClickDelete: function(){
+                this.$emit('delete-item',this.model.post.id);
+            },
             onSourceFiles: function(e){
                 this.$emit("source-files",e);
             },

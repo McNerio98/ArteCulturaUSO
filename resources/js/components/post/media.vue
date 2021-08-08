@@ -1,18 +1,14 @@
 <template>
   <div>
-    <div
-      style="margin-bottom: 15px; max-height: 200px"
-      class="row overflow-auto"
-    >
+    <div style="margin-bottom: 15px; max-height: 200px" class="row overflow-auto">
+      <!--LISTA PRINCIPAL DE IMAGENES O VIDEOS-->
       <div v-for="(m, key) in media" v-bind:key="key" class="col-6 col-lg-3 col-md-3">
         
         <div v-if="m.type === 'image'">
-          <div
-            class="image-area"
+          <div class="image-area"
             data-toggle="tooltip"
             data-placement="top"
-            :title="m.filename"
-          >
+            :title="m.filename">
             <img
               :ref="'image' + key"
               style="object-fit: contain; padding-top: 3px"
@@ -22,7 +18,7 @@
               alt="Preview"
             />
             <a
-              @click="remove(key)"
+              @click="remove(key,m.id)"
               class="remove-image"
               href="javascript:void(0);"
               style="display: inline"
@@ -50,7 +46,7 @@
               "
             ></iframe>
             <a
-              @click="remove(key)"
+              @click="remove(key,m.id)"
               class="remove-image"
               href="javascript:void(0);"
               style="display: inline"
@@ -59,7 +55,7 @@
           </div>
         </div>
       </div>
-
+      <!--BOTON 0 PARA AGREGAR IMAGENES-->
       <div v-if="media.length > 0" class="col-6 col-lg-3 col-md-3">
         <label for="imageInput" @click="this.triggerInputForImages">
           <div id="content">
@@ -68,7 +64,7 @@
                 style="object-fit: contain; cursor: pointer"
                 width="80px"
                 height="80px"
-                src="https://icon-library.com/images/add-camera-icon/add-camera-icon-25.jpg"
+                :src="acAppData.base_url + '/images/iconBtnAddImg2.png'"
                 alt="Preview"
               />
             </div>
@@ -77,11 +73,12 @@
       </div>
     </div>
 
+    <!--SECCION PARA MOSTRAR SOLO LOS DOCUMENTOS-->
     <ul class="list-unstyled">
         <li v-for="(m, key) in media_docs" v-bind:key="key" class="docfile mb-2" :title="m.filename">
-          <a href="" class="btn-link text-secondary"><i class="far fa-file-pdf"></i> {{m.filename}}</a>
+          <a :href="buffer.edit_mode ? m.data : 'javascript:void(0);'" target="_blank" class="btn-link text-secondary"><i class="far fa-file-pdf"></i> {{m.filename}}</a>
           <a
-            @click="remove(key)"
+            @click="removeDocs(key,m.id)"
             class="remove-image alter-remove"
             href="javascript:void(0);"
             style="display: inline">
@@ -90,6 +87,7 @@
         </li>
     </ul>
 
+    <!--BOTONES DE AGREGAR FOTO / VIDEO / ARCHIVO-->
     <div class="row">
       <div class="col-4">
         <label
@@ -99,7 +97,7 @@
           @click="this.triggerInputForImages"
         >
           <img
-            src="https://winaero.com/blog/wp-content/uploads/2019/11/Photos-new-icon.png"
+            :src="acAppData.base_url + '/images/iconBtnAddImg.png'"
             class="img-fluid"
             width="20px"
             height="20px"
@@ -124,7 +122,7 @@
           @click="show_modal = true"
         >
           <img
-            src="https://www.freeiconspng.com/thumbs/video-icon/video-icon-1.png"
+            :src="acAppData.base_url + '/images/iconBtnAddVideo.png'"
             class="img-fluid"
             width="20px"
             height="20px"
@@ -141,7 +139,7 @@
           class="btn btn-light btn-block text-break"
         >
           <img
-            src="https://cdn.iconscout.com/icon/free/png-512/my-files-1-461722.png"
+           :src="acAppData.base_url + '/images/iconBtnAddDoc.png'"
             width="20px"
             height="20px"
             style="object-fit: cover"
@@ -236,17 +234,45 @@ li.docfile i{
 
 <script>
 export default {
+    props: {
+        buffer: {type: Object,default: function(){
+          return {
+            edit_mode: false,
+            medias: [] //all video, docs and files 
+          }
+        }}                
+    },  
   data: function () {
     return {
+      acAppData: {},
       media: [],
       media_docs: [],
       link_youtube: "",
       show_modal: false,
-      limite: 70, //limite de archivos 
+      limite: 70, //limite de archivos,
+      media_del: [] //Ids de elementos a eliminar en modo edicion 
     };
   },
   created: function () {
+    //Cuando el padre emita el evento update 
     this.$parent.$on("update", this.setMediaNull);
+  },
+  mounted: function(){
+    this.acAppData = window.obj_ac_app;
+    
+    if(this.buffer.edit_mode){
+      this.buffer.medias.map(e=>{
+          var temp = {
+              id: e.id,
+              type: e.type_file,
+              filename: e.name,
+              data: e.url
+            };
+
+          if(e.type_file=="image" || e.type_file == "video")this.media.push(temp);
+          if(e.type_file =="docfile")this.media_docs.push(temp);     
+      })
+    }
   },
   methods: {
     triggerInputForImages: function () {
@@ -262,8 +288,6 @@ export default {
         return;
       }
 
-console.log("Target");
-console.log(e);
       for(let ng = 0 ; ng < e.target.files.length; ng++){
         this.addFileToMultimedia(e.target.files[ng]);
       }
@@ -282,10 +306,8 @@ console.log(e);
         //console.log(e.target.result.substring(0, 20));
 
         var data = {
-          type:
-            e.target.result.substring(0, 10) == "data:image"
-              ? "image"
-              : "docfile",
+          id: null,
+          type: e.target.result.substring(0, 10) == "data:image" ? "image" : "docfile",
           filename: file.name,
           data: e.target.result,
         };
@@ -299,8 +321,21 @@ console.log(e);
         this.$emit("media", this.media.concat(this.media_docs));
       };
     },
-    remove: function (key) {
+    remove: function (key,id = null) {
       this.media.splice(key, 1);
+      //Si esta en modo edicion y el id pasado es de un archivo existente (ya almacenado)
+      //entonces agregar el id a los medios a eliminar y emitir evento con lista de identificadores 
+      if(id != null && id != 0 && this.buffer.edit_mode){
+          this.media_del.push(id);
+          this.$emit("media-del",this.media_del);
+      }      
+    },
+    removeDocs: function(key,id=null){
+      this.media_docs.splice(key,1);
+      if(id != null && id != 0 && this.buffer.edit_mode){
+          this.media_del.push(id);
+          this.$emit("media-del",this.media_del);
+      }
     },
     setMediaNull: function () {
       this.media = [];

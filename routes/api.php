@@ -53,7 +53,9 @@ Route::apiResource('usermeta','UsersMetasController');
 
 Route::post('post/findPostsPopular','PostEventController@findPostsPopular');
 
+
 //ESTOS SE QUEDAN AQUI, PUEDEN SER UTILIZADOS PARA UNA API FUTURA
+#Obtiene la informacion de un elemento/ evento/publicacion 
 Route::get('post/{id}','PostEventController@show')->name('post.show');
 #Obtiene los eventos dentro de los tres meses siguientes 
 Route::get('posts/events','PostEventController@eventsTable')->name('table.events');
@@ -77,7 +79,7 @@ Route::get('post/populars','PostEventController@popularPost');
 
 
 
-Route::post('categories/saveImgPresentation','CategoriesController@changeImgPresentation');
+
 Route::post('categories','CategoriesController@store')->name('tags.store');
 
 

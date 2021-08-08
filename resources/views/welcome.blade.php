@@ -41,7 +41,7 @@
             @foreach($some_categories as $c)
             <div class="col-6 col-md-3">
                 <a class="unique-section" href="{{url('/')."/search?sp=both&cat=".$c->id}}">
-                    <img class="avatarArt" src="{{asset($c->img_presentation)}}">
+                    <img class="avatarArt" src="{{asset('/images/'.$c->img_presentation)}}">
                     <span class="text-section">{{$c->name}}</span>
                 </a>
             </div>

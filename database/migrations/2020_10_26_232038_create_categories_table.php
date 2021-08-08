@@ -17,8 +17,8 @@ class CreateCategoriesTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string('name',50);
-            $table->string('img_presentation')->default('/images/default_img_category.png');
-            $table->boolean('active')->default(true);
+            $table->string('img_presentation')->default('default_img_category.png');
+            $table->boolean('active')->default(true);//eliminar mas adelante si no se utiliza 
         });
     }
 

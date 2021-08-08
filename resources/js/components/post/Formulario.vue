@@ -111,7 +111,7 @@
               v-model="description"
               style="resize: none"
               class="form-control"
-              v-bind:placeholder="place_holder_msg"
+              v-bind:placeholder="place_holder_msg + userData.nickname + '?'"
               id="exampleFormControlTextarea1"
               rows="3"
             ></textarea>
@@ -119,19 +119,19 @@
         </div>
         <div class="col-12">
 
-          <post-media-component @media="setListMedia"></post-media-component>
+          <post-media-component :buffer="{edit_mode: editMode, medias: sourceEdit.media}" @media-del="setMediaDel" @media="setListMedia"></post-media-component>
 
-        </div>
+        </div>      
         <div class="col-12">
           <br />
-          <label
+          <button 
             style="width: 100%; cursor: pointer"
             type="button"
             @click="publicarContent"
-            class="btn btn-success btn-block"
-          >
-            Publicar
-          </label>
+            class="btn btn-success btn-block">
+            <span v-if="spinners.S1" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>            
+            {{label_btn}}
+          </button>
         </div>
       </div>
     </div>
@@ -141,18 +141,45 @@
   import DatePicker from 'vue2-datepicker';
   import 'vue2-datepicker/index.css';
   import 'vue2-datepicker/locale/es';
-  const {createPostEvent } = require("../../api/api.service");
-
+  
 export default {
   components: { DatePicker },
   props: { //Las props deben ir en formato camell case 
       userData: {type: Object,required:true}, //name,img-profile
-      postType: {type: String,default: "post"} 
+      postType: {type: String,default: "post"},
+      editMode: {type: Boolean, default: false},
+      sourceEdit: {type: Object, default: function(){
+        return {
+          post: {
+            id: 34,
+            title: "Evento deportivo",
+            description: "Detalle del evento",
+            type: "post",
+            is_popular: false,
+            status: 'review',
+            created_at: "2021/05/23",
+          },
+          dtl_event: {
+            event_date: null,
+            has_cost: false,
+            cost: 45.67,
+            frequency: "unique"
+          },
+          creator: {
+            id: 3,
+            name: "Mario Nerio",
+            profile_img: "asdjusdaadd.png",
+            nickame: "Cocolito"
+          },
+          media: [],
+          metas: []          
+        }
+      }}
   },
   data: function(){
     return {
-      place_holder_msg: this.postType === "event"?"Explica de qué trata tu evento...":"¿Qué estás pensado "+this.userData.username+"?",
-      place_holder_title: this.postType === "event"?"Nombre del evento":"Título de la publicación",
+      label_btn: "Publicar", 
+      spinners: {S1:false},
       post_title: "",
       event_date: "",
       frequency: "unique", 
@@ -161,13 +188,30 @@ export default {
       event_price: 0.0,
       description: "",
       time1: new Date(),
-      multimedia: []
+      multimedia: [],
+      multimedia_del: [], //only for edit mode
+    }
+  },
+  computed: {
+    place_holder_msg: function(){
+        return this.postType === "event"?"Explica de qué trata tu evento...":"¿Qué estás pensado ";
+    },
+    place_holder_title: function(){
+        return this.postType === "event"?"Nombre del evento":"Título de la publicación";
     }
   },
   mounted(){
+
     $(function () {
-        $('[data-toggle="tooltip"]').tooltip();
+        $('[data-toggle="tooltip"]').tooltip(); //??
     });    
+
+  if(this.editMode){
+      this.description = this.sourceEdit.post.description;
+      this.post_title = this.sourceEdit.post.title;
+      this.label_btn = "Guardar";
+  }
+
   },
   methods: {
     cleanForm: function(){
@@ -179,6 +223,9 @@ export default {
     setListMedia: function (media) {
       this.multimedia = media;
     },    
+    setMediaDel: function(del_list){
+      this.multimedia_del = del_list;
+    },
     openPriceModal: function(event){
       this.event_price = 0.00;
       this.show_panel_price =  this.event_has_price == "1"?true:false;
@@ -195,10 +242,18 @@ export default {
       }
 
       if(this.postType == "event" && this.time1 == null){
-          StatusHandler.ValidationMsg("Debe especificar una fecha para el evento");
+          StatusHandler.ValidationMsg("Debe especificar una fecha y hora para el evento");
           return;        
       }
-      
+
+      if(this.editMode){
+            this.updatePostEvent ();
+      }else{
+          this.savePostEvent();
+      } 
+    },
+    savePostEvent: function(){
+
       let data_send = {
           post_type: this.postType,
           title: this.post_title,
@@ -215,22 +270,58 @@ export default {
           event_date: this.time1.toISOString()
         }
       }
-
-      console.table(data_send);
-
+      //Creando
       axios.post(`/postevent`,data_send).then((result) => {
           let response = result.data;
           if(response.code == 0){
             StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
             return;
           }        
-            console.log(response);
-            this.cleanForm(); 
-            this.$emit('post-chiild-created',response.data);
+          this.cleanForm(); 
+          this.$emit('post-chiild-created',response.data);
             
       }).catch((ex) => {
             StatusHandler.Exception("Crear elemento",ex);
+      }).finally(e=>{
+            this.spinners.S1 = false;
       })
+
+    },
+    updatePostEvent: function(){
+      console.log("editando el elemento");
+      let data_send = {
+          post_type: this.postType,
+          title: this.post_title,
+          description: this.description,
+          media: []
+      };
+      data_send.media = this.multimedia.filter(e => e.id == null); //son los nuevos, (id == 0)
+      data_send.mediadrop_ids = this.multimedia_del;//id de elementos a eliminar 
+
+
+      if(this.postType == "event"){
+        data_send = {
+          ...data_send,
+          event_price: isNaN(parseFloat(this.event_price)) ? 0 : parseFloat(this.event_price).toFixed(2),
+          event_has_price: this.event_has_price == "1"  ? true  : false,
+          frequency: this.frequency,
+          event_date: this.time1.toISOString()
+        }
+      }
+      //Actualizando 
+      axios.put(`/postevent/${this.sourceEdit.post.id}`,data_send).then(result =>{
+          let response = result.data;
+          if(response.code == 0){
+            StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+            return;
+          }        
+          this.cleanForm(); 
+          this.$emit('post-chiild-created',response.data);
+      }).catch(ex =>{
+          StatusHandler.Exception("Actualizar elemento",ex);
+      }).finally(e=>{
+        this.spinners.S1 = false;
+      });
 
     },
     verfecha: function(mx){

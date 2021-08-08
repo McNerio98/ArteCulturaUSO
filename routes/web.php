@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\Route;
 //Router Pagina principal 
 Route::get('/','WebsiteController@welcome')->name("inicio");
 Route::get('/events','WebsiteController@events')->name('events');
-Route::get('/','WebsiteController@welcome')->name("inicio");
 Route::get('/page1','WebsiteController@artitas')->name("artistas");
 Route::get('/page2','WebsiteController@promotores')->name("promotores");
 Route::get('/page3','WebsiteController@escuelas')->name("escuelas");
@@ -54,6 +53,7 @@ Route::get('/admin/categories','DashboardController@rubros')->name('rubros'); //
 Route::get('/admin/resources','DashboardController@resources')->name('resources');
 Route::get('/admin/roles','DashboardController@roles')->name('roles');
 Route::get('/admin/users/config/{id}','DashboardController@infoUser')->name('user.info');
+Route::get('/admin/post/edit/{id}','DashboardController@editElement')->name('admin.edit.item');
 
 //Routes para busquedas 
 Route::get('/search','SearchController@index')->name('search');
@@ -65,13 +65,20 @@ Route::get('/search','SearchController@index')->name('search');
 Route::get('/approval','PostEventController@approval')->name('items.approval')->middleware('auth','adroles');
 Route::get('/users/dataConfig/{id}','UsersController@configUserData')->name("user.dataconf")->middleware('auth','adroles');
 Route::put('/user/updateConfig/{id}','UsersController@updateConfigUser')->name("user.updateconf")->middleware('auth','adroles');
-Route::get('/notifiers','DashboardController@notifiers')->name("notifiers"); //ya tiene los middleware el controller 
-
+# Guarda la fotografia de presentacion de la categoria que se esta editando 
+Route::post('/categories/saveImgPresentation','CategoriesController@changeImgPresentation')->middleware('auth','adroles');
+#Obtiene los notificadores, usuario, eventos, events para los paneles notificaciones en la pagina principal del admin 
+#Esta ruta ya tiene los middleware desde el constructor 
+Route::get('/notifiers','DashboardController@notifiers')->name("notifiers");
+#Almacena un elemento, publicacion o evento con sus medios digitales 
 Route::post('postevent','PostEventController@store')->name('postevent.store')->middleware('auth');
+#Actualiza un elemento, publicacion o evento con sus medios digitales 
+Route::put('postevent/{id}','PostEventController@update')->name('postevent.update')->middleware('auth');
 
 
-//rutas que no necesitan proteccion 
+//rutas que no necesitan proteccion pero son AJAX 
 Route::get('/profile/{id}','ProfileController@show');
+#Muestra la lista de elementos post y eventos del usuario parado como id 
 Route::get('/postsevents/{id}','ProfileController@elements');
 
 

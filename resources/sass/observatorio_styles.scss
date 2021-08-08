@@ -298,7 +298,8 @@ button.makePosting{
   padding: 5px;  
   color: green;
   background-color: #eee;
-  border: 1px solid green;  
+  border-radius: 25px;
+  border: 1px solid #2c3749;  
 }
 img.makeItemPosting{
   width: 40px;
@@ -311,4 +312,8 @@ img.makeItemPosting{
 
 ._acGreen{
   color: #00b05c !important;
+}
+
+._acNoCnt h2{
+  color: $gray3; 
 }
