@@ -66,5 +66,5 @@
 </main>
 @endsection
 @Push('customScript')
-    <script src="{{ mix('js/app-events-table.js') }}"></script>
+    <script src="{{ mix('js/front/app-events-table.js') }}"></script>
 @endpush

@@ -3,7 +3,7 @@
         <img :src="obj_ac_app.base_url + '/images/builders.svg'" alt="">
         <h5 class="text-muted">{{page}}</h5>
         <h3 class="_acGreen">¡¡Espérala pronto!!</h3>
-        <p>Esta página se encuentra en proceso de creación por el momento.</p>
+        <p>Esta página se encuentra en proceso de creación</p>
     </div>
 </template>
 <style scoped>

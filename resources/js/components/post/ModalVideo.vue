@@ -8,6 +8,7 @@
           </div>
 
           <div class="modal-body">
+            <img style="width: 100%;" :src="$parent.acAppData.base_url + '/images/step1_youtube.png' "  alt="step1">
             <p style="font-size: 18px" class="text-muted">
               Enlaza tu video de youtube copiando la URL.
             </p>

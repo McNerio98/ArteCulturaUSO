@@ -4,11 +4,20 @@
             <div class="card-header text-success border">
                 <h5><i class="far fa-clock"></i><span> {{model.creator.nickname}}</span></h5>
             </div>
-                <div class="bg-dark _galHero" style="height: 200px;" :style="{backgroundImage: 'url(' + model.presentation_img + ')'}">
-            </div>
+                <!--IF THE PRESENTATION IMG IS PDF OR UNDEFINED-->
+                <div v-if="model.presentation_type == undefined || model.presentation_type == 'docfile'" class="bg-dark" style="height: 200px; display: flex;flex-direction: column;justify-content: center;align-items: center;">
+                    <i class="fas fa-image text-muted" style="font-size: 2rem;"></i>
+                    <span class="text-muted">Sin Imagen</span>
+                </div>
+                <!--IF THE PRESENTATION IMG IS IMAGE OR VIDEO-->
+                <div v-if="model.presentation_type == 'image' || model.presentation_type == 'video'" class="bg-dark" style="height: 200px;">                    
+                    <img style="object-fit: contain; padding-top: 3px; width: 100%;height: 100%;" alt="" :src="model.presentation_img">
+                </div>
             <div class="card-body">
                 <a class="text-muted" @click="emitSelectedItem" href="javascript:void(0);">{{model.title}}</a>
-                <p class="card-text">{{model.description}}<a href=""><u> Ver mas</u></a> </p>
+
+                <p class="card-text"> {{ (model.description.length >= 70) ? model.description.substring(0,70) : model.description }} <a href="javascript:void(0);" @click="emitSelectedItem"> <u> Ver mas</u></a> </p>
+
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
                         <button type="button" class="btn btn-sm btn-outline-secondary"><i class="fas fa-share-alt"></i>
@@ -60,7 +69,7 @@
             }
         },
         mounted() {
-            console.log('Ciclo de vida del componente.')
+            
         },
         methods: {
             emitSelectedItem(){

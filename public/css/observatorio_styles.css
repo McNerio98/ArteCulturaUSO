@@ -10,6 +10,10 @@
   color: red;
 }
 
+.bg-tenue-ac {
+  background-color: #fbfbfb;
+}
+
 .container-img-hscroll {
   text-align: center;
   overflow-x: auto;

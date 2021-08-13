@@ -67,13 +67,13 @@ const appContent = new Vue({
                         id: e.creator_id,
                         name: e.creator_name,
                         nickname: e.creator_nickname,
-                        profile_img:  window.obj_ac_app.base_url + "/files/profiles/" + e.creator_profile, 
+                        profile_img:  this.acAppData.storage_url + "/files/profiles/" + e.creator_profile, 
                     },
                     media: e.media.map(ng => {//el formato para esto se filtra en el otro compnente
                         switch(ng.type_file){
-                            case "image": {ng.name = window.obj_ac_app.base_url +"/files/images/"  + ng.name;break;}
-                            case "docfile": {ng.url = window.obj_ac_app.base_url + "/files/pdfs/" + ng.name;break;}
-                            case "video": {ng.name_temp = window.obj_ac_app.base_url + "/images/youtube_item.jpg";break;}
+                            case "image": {ng.url = this.acAppData.storage_url +"/files/images/"  + ng.name;break;}
+                            case "docfile": {ng.url = this.acAppData.storage_url + "/files/docs/pe" + e.id + "/" + ng.name;break;}
+                            case "video": {ng.url = this.acAppData.storage_url + "/images/youtube_item.jpg";break;}
                         }
                         return ng;
                     }),
@@ -87,11 +87,13 @@ const appContent = new Vue({
                 return {
                     id: e.id,
                     type: e.type_file,
-                    url: e.name,
-                    owner_id: 0,
+                    name: e.name,
+                    url: e.url,
+                    owner: {
+                        id: e.owner
+                    }
                 }
             });
-
             this.media_view.items = aux;
             this.media_view.target = aux[0];
             $('#modaPreviewMedia').modal('show');         

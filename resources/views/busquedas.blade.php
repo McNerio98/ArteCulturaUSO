@@ -75,5 +75,5 @@
 @endsection
 
 @Push('customScript')
-    <script src="{{ asset('js/app-search.js') }}"></script>
+    <script src="{{ asset('js/front/app-search.js') }}"></script>
 @endpush

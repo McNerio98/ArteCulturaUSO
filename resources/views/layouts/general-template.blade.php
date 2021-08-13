@@ -13,6 +13,7 @@
                 'csrfToken' => csrf_token(), // token 
                 'permissions' => Auth::user()->caps, 
                 'base_url' => url('/'), //URL BASE 
+                'storage_url' => url('/'), //URL BASE 
                 'full_url' => url()->full(),
                 'current_url' => url()->current(),
                 "current_user" => [
@@ -33,6 +34,7 @@
                 'csrfToken' => csrf_token(), // token 
                 'permissions' => null,
                 'base_url' => url('/'), //URL BASE 
+                'storage_url' => url('/'), //URL BASE 
                 'full_url' => url()->full(),
                 'current_url' => url()->current(),
                 "current_user" => [
@@ -68,7 +70,7 @@
     <link href="{{ asset('css/general_styles.css')}}" rel="stylesheet">    
     @stack('styles')
 </head>
-<body class="d-flex flex-column h-100">
+<body class="d-flex flex-column h-100  wrapper dark-mode">
     @include('layouts.components.navbar')
     <!-- <main role="main" class="flex-shrink-0"> -->
         @yield('content')

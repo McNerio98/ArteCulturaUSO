@@ -39,13 +39,15 @@ Route::post('/logout','Auth\LoginController@logout')->name('logout');
 
 
 Route::get('/perfil/{id}','ProfileController@index')->name('profile.show');
-
+#Muestra la vista para editar un post 
+Route::get('/perfil/{idUser}/post/edit/{idPost}','ProfileController@editElement')->name('profile.edit.item')->middleware('auth');
 
 
 
 //Routes para el administrador 
 Route::get('/admin/home','DashboardController@index')->name('dashboard');
 Route::get('/admin/content','DashboardController@content')->name('content');
+Route::get('/admin/search','DashboardController@search')->name('admin.search'); //dado que hay otra para el cliente 
 Route::get('/admin/memories','DashboardController@memories')->name('memories');
 Route::get('/admin/populars','DashboardController@populars')->name('populars');
 Route::get('/admin/users','DashboardController@users')->name('users');
@@ -75,8 +77,19 @@ Route::post('postevent','PostEventController@store')->name('postevent.store')->m
 #Actualiza un elemento, publicacion o evento con sus medios digitales 
 Route::put('postevent/{id}','PostEventController@update')->name('postevent.update')->middleware('auth');
 
+//Middleware que necesitan que el usuario este logeado 
+#Guardar nueva etiqueta dentro del perfil 
+Route::put('/profile/tags/{id}','ProfileController@updateTags')->middleware('auth');
+#Eliminar etiqueta desde perfil 
+Route::delete('/profile/deltag/{idu}/{idtg}','ProfileController@deleteTag')->middleware('auth');
+#Guardar informacion del usuario, informacion como ['user_email','user_phone','user_other_name','user_nickname'];
+#Todas las rutas deben estar sin el separador(/)
+Route::post('users','UsersController@store')->middleware('auth');
+#Guarda cualquier meta dato del usuario
+Route::post('usersmeta','UsersMetasController@store')->middleware('auth');
 
-//rutas que no necesitan proteccion pero son AJAX 
+
+//RUTAS AJAX QUE NO NECESITAN PROTECCION
 Route::get('/profile/{id}','ProfileController@show');
 #Muestra la lista de elementos post y eventos del usuario parado como id 
 Route::get('/postsevents/{id}','ProfileController@elements');
