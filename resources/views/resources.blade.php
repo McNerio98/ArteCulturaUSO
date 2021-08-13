@@ -10,5 +10,5 @@
 @endsection
 
 @Push('customScript')
-    <script src="{{ asset('js/app-resources.js') }}"></script>
+    <script src="{{ asset('js/front/app-resources.js') }}"></script>
 @endpush

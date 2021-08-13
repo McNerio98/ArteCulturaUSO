@@ -24,8 +24,7 @@ class UsersController extends Controller
     public function __construct(){
         //$this->middleware('auth',['only'=>['configUser']]);
         $this->middleware('auth:api',['only'=>[
-            'uploadProfileImg',
-            'store'
+            'uploadProfileImg'
             ]]);
     }
 

@@ -1,24 +1,13 @@
-<template>
-    <div class="col-md-4" style="padding-left:15px !important;padding-right: 15px !important;">
-        <div class="card mb-4 shadow-sm">
-            <div class="card-header text-success border">
-                <h5><i class="far fa-clock"></i><span> Lunes 24 de Agosto de 2020</span></b></h5>
-            </div>
-            <div class="bg-dark container-embed-img" style="height: 200px;">
-                <img src="../img/cofradia-nahuizalco.jpg" class="adap-img-event" alt="">
-            </div>
-            <div class="card-body">
-                <h5 class="text-muted">Cofradia Nahuizalco</h5>
-                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
-                    content. This content is a little bit longer... <a href=""><u>Ver mas</u></a> </p>
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-outline-secondary"><i class="fas fa-share-alt"></i>
-                            Compartir</button>
-                    </div>
-                    <span class="text-muted"><i class="fas fa-star"></i></span>
-                </div>
-            </div>
-        </div>
-    </div>
-</template>
+<nav aria-label="Navegacion elementos en aprobación">
+    <ul class="pagination justify-content-center">
+        <li v-bind:class="{'disabled' : ! (paginate_approval.current_page > 1)}" class="page-item">
+            <a @click.prevent="changePage(paginate_approval.current_page - 1)" class="page-link" href="#">Anterior</a>
+        </li>
+        <li v-for="page in pagesNumber" v-bind:key="page" v-bind:class="[page == isActive? 'active':'']" class="page-item">
+            <a @click.prevent="changePage(page)" class="page-link" href="#">@{{page}}</a>
+        </li>
+        <li v-bind:class="{'disabled' : ! (this.paginate_approval.current_page < this.paginate_approval.last_page)}" class="page-item">
+            <a @click.prevent="changePage(paginate_approval.current_page + 1)" class="page-link" href="#">Siguiente</a>
+        </li>
+    </ul>
+</nav>   

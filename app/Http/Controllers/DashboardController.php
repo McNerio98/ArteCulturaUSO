@@ -32,6 +32,12 @@ class DashboardController extends Controller
 		$request_users = $this->userRequest();
     	return view('admin.content' , ['ac_option' =>'content' , 'request_users' => $request_users]);
 	}
+
+	//SEARCH PAGE  
+    public function search(){
+		$request_users = $this->userRequest();
+    	return view('admin.search' , ['ac_option' =>'search' , 'request_users' => $request_users]);
+	}	
 	
 	//MEMORIES OPTION 
     public function memories(){
@@ -105,7 +111,7 @@ class DashboardController extends Controller
 			return redirect()->route('dashboard');
 		}
 		
-		if(!Auth::user()->can('editar-publicaciones') &&  intval($e->creator_id) !==  intval($id)){
+		if(!Auth::user()->can('editar-publicaciones') &&  intval($e->creator_id) !==  intval(Auth::user()->id)){
 			return redirect()->route('dashboard');
 		}
 

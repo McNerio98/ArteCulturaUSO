@@ -10,5 +10,5 @@
 @endsection
 
 @Push('customScript')
-    <script src="{{ asset('js/app-memories.js') }}"></script>
+    <script src="{{ asset('js/front/app-memories.js') }}"></script>
 @endpush

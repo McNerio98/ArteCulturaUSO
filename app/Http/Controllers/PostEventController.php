@@ -93,7 +93,8 @@ class PostEventController extends Controller
         ];
 
 
-        $per_page = ($request->per_page === null)?15:$request->per_page;
+        $per_page = ($request->per_page == null)?15:$request->per_page;
+        $salida["extra"] = $per_page;
         //$result = PostEvent::where("status","review")->paginate($per_page);
 
         $result = DB::table("post_events AS e")
@@ -203,8 +204,13 @@ class PostEventController extends Controller
 
                         //al parecer no es necesario 
                         date_default_timezone_set('America/El_Salvador');
-                        $filename = uniqid()."_".time().".".$extension;
-                        $pathname =  $files[$numberfiles]['type'] == "image" ? "files/images/" : "files/pdfs/" ;
+                        if($files[$numberfiles]['type'] == "image"){ //is a img
+                            $filename = uniqid()."_".time().".".$extension;
+                            $pathname = "files/images/";
+                        }else if($files[$numberfiles]['type'] == "docfile"){ //is a document
+                            $filename = $files[$numberfiles]['filename'];
+                            $pathname = "files/docs/pe".$postEvent->id."/";
+                        }
 
                         $filesOnPostEvents->id_post_event      = $postEvent->id;
                         $filesOnPostEvents->name                   = $filename;
@@ -269,13 +275,19 @@ class PostEventController extends Controller
                 "code" => 1,
                 "data" =>  [
                     "post" => $postEvent->load("media"),
-                    "creator" => $propietario
+                    "creator" => $propietario,
+                    'dtl_event' => []
                 ],
                 "msg" => "Request Complete"
             ];
+            //Agregar el detalle del evento 
+            if($request->post_type == "event"){
+                $salida["data"]["dtl_event"] = $dtlEvent;
+            }
         }catch(\Exception $e){
             DB::rollback();
-            $salida['msg'] = "Error: " . $e->getMessage();
+            //$salida["msg"] = "Error en la operación, consulte soporte técnico.";
+            $salida['msg'] = "Error: " . $e->getMessage(); //for debugin
         }
 
         return $salida;        
@@ -361,11 +373,11 @@ class PostEventController extends Controller
                             $aux_path = "";
                             switch($drope->type_file){
                                 case 'image': $aux_path = "files/images/".$drope->name;break;
-                                case 'docfile': $aux_path = "files/pdfs/".$drope->name;break; //aplicar filtro, solo agregar id de post 
+                                case 'docfile': $aux_path = "files/docs/pe".$postEvent->id."/".$drope->name;break; //aplicar filtro, solo agregar id de post 
                             }
-                            if(trim($aux_path) !== ""){
+                            if(trim($aux_path) !== "" && Storage::disk('local')->exists($aux_path)){
                                 if(! Storage::disk('local')->delete($aux_path) ){
-                                    throw new \Exception("No se logró eliminar algunos archivos");
+                                    throw new \Exception("No se logró eliminar algunos medios".$drope->name);
                                 }   
                             }
                             if(!$drope->delete()){
@@ -382,14 +394,121 @@ class PostEventController extends Controller
                     }
                 }
             }
+
+            $salida["extra"] = "Tipos: ";
             //CARGA DE CONTENIDO NUEVO 
+            if(isset($request->media)){
+
+                $limite_carga = 70; //dejar a 70, agregar esto en la vista
+                $files = $request->media;
+                if(count($files) >= $limite_carga){
+                    throw new \Exception("Límite de carga superado, máximo ".$limite_carga." archivos");
+                }
+
+                $numberfiles = 0;                
+                while($numberfiles < count($files)){
+                    $filesOnPostEvents = new FilesPost();
+                    if (preg_match('/^data:image\/(\w+);base64,/', $files[$numberfiles]['data'])
+                        ||
+                        preg_match('/^data:application\/(\w+);base64,/', $files[$numberfiles]['data'])
+                    ) {
+                        $data = substr($files[$numberfiles]['data'], strpos($files[$numberfiles]['data'], ',') + 1);
+                        $data = base64_decode($data);
+
+
+                        
+                        $extension = explode(".",$files[$numberfiles]['filename']);
+                        //obtener el ultimo elemento del array creado (explode)
+                        $extension = $extension[count($extension)-1];
+
+                        $salida["extra"] .= $files[$numberfiles]['type'] . " / ";
+                        //al parecer no es necesario 
+                        date_default_timezone_set('America/El_Salvador');
+                        if($files[$numberfiles]['type'] == "image"){ //is a img
+                            $filename = uniqid()."_".time().".".$extension;
+                            $pathname = "files/images/";
+                        }else if($files[$numberfiles]['type'] == "docfile"){ //is a document 
+                            $filename = $files[$numberfiles]['filename'];
+                            $pathname = "files/docs/pe".$postEvent->id."/";
+                        }
+
+
+                        $filesOnPostEvents->id_post_event      = $postEvent->id;
+                        $filesOnPostEvents->name                   = $filename;
+                        $filesOnPostEvents->type_file               = $files[$numberfiles]['type'];
+                        $filesOnPostEvents->save();
+
+                        if($id_img_presentation === 0 && $filesOnPostEvents->type_file === "image"){
+                            $id_img_presentation = $filesOnPostEvents->id;
+                        }
+
+                        $path_store = $pathname.$filename;
+                        Storage::disk('local')->put($path_store, $data);
+
+                        //compresor de imagenes only image type 
+                        if($filesOnPostEvents->type_file === "image"){
+                        // resize the image to a width of 1000 and constrain aspect ratio (auto height)
+                            $compress = Image::make(storage_path('app/' . $path_store));
+                            $width      = $compress->width();
+                            $height    = $compress->height();
+
+                            if($width > 1500 || $height > 1500){
+                                $compress->resize(1000, null,function($constraint) {
+                                    $constraint->aspectRatio();
+                                    // prevent possible upsizing
+                                    $constraint->upsize();
+                                    //en las pruebas upsize no evitaba por completo el incremento de peso para archivos pequeños
+                                });
+                                $compress->save(null,100);
+                            }
+                            $compress->destroy();
+                        }
+
+                    }else{
+                        //Es un video
+                        $filesOnPostEvents->id_post_event = $postEvent->id;
+                        $filesOnPostEvents->name = $files[$numberfiles]['data'];
+                        $filesOnPostEvents->type_file = $files[$numberfiles]['type'];
+                        $filesOnPostEvents->save();
+                        //Es un video
+                        if($id_img_presentation === 0){
+                            $id_img_presentation = $filesOnPostEvents->id;
+                        }                        
+                    }
+                    $numberfiles++;
+                }
+            }
+
+            //Si se elimino la imagen de presentacion que hacer ? 
+            if($id_img_presentation !== 0){
+                $postEvent->presentation_img = $id_img_presentation;
+                $postEvent->save();
+            }            
+
+            $postEvent->owner->id;
+            $propietario = [];
+            $propietario["id"] = $postEvent->owner->id;
+            $propietario["name"] = $postEvent->owner->name;
+            $propietario["nickname"] = $postEvent->owner->artistic_name;
+            $propietario["profile_img"] = $postEvent->owner->profile_img;
+
             DB::commit();
-            $salida["code"] = 1;
-            $salida["msg"] = "Request complete";
+            //Importante dejar en esta posicion, dato que en las lineas de arriba se carga el owner, se debe ocultar antes de 
+            //enviar, solo se debe enviar los medios/archivos ( load('media') )
+            $postEvent->makeHidden('owner');
+            $salida = [
+                "code" => 1,
+                "data" =>  [
+                    "post" => $postEvent->load("media"),
+                    "creator" => $propietario
+                ],
+                "msg" => "Request Complete"
+            ];
+
         }catch(\Throwable $ex){
             DB::rollback();
-            $salida["msg"] = "Error al actualizar publicacion";
-            //$salida["msg"] = "Error al actualizar publicacion ".$ex->getMessage(); //for debug
+            //$salida["msg"] = "Error al actualizar publicacion";
+            $salida["msg"] = "Error al actualizar publicacion ".$ex->getMessage(); //for debug
         }
 
         return $salida;
@@ -416,42 +535,26 @@ class PostEventController extends Controller
         return $salida;        
     }
 
-
-    public function findPostsPopular(Request $request)
-    {
+    //Uscar esta en lugar de la de arriba, y se elimina la de arriba 
+    public function popularItems(){
         $salida = [
             "code" => 0,
             "msg" =>"",
             "data" => []
         ];
 
-        if(! isset($request->popular)){
-            $salida['msg'] = "Valores imcompletos, Recargue la pagina";
-            return $salida;
-        }
-
-        $desc = $request->desc;
-        $popular = $request->popular;
-
-        //Todos los post establecidos como popular
-        $query = "select pe.id,pe.title,pe.content,pe.type_post,pe.is_popular,fop.name,fop.type_file from post_events pe
-        left join (select * from files_on_post_events fope where fope.type_file = 'image' group by fope.id_post_event) as fop on fop.id_post_event = pe.id
-        where pe.is_popular = true";
-
-        //Se busca por nombre y con campo popular = false  
-        if(strlen($desc) > 0 && $popular == false){
-            $query = "select pe.id,pe.title,pe.content,pe.type_post,pe.is_popular,fop.name,fop.type_file from post_events pe
-            left join (select * from files_on_post_events fope where fope.type_file = 'image' group by fope.id_post_event) as fop on fop.id_post_event = pe.id
-            where pe.is_popular = false and pe.title like '%$desc%' limit 6";
-        }
-        $result = DB::select(DB::raw($query));
-        $salida = [
-            "code" => 1,
-            "msg" =>"result ok",
-            "data" => $result
-        ];
-
-        return $salida;
+        #Se envian todas, para el administrador se muestran todas, para la pagina princila
+        #Se filtra en la vista solo los aprovados 
+        $result = DB::table("post_events AS e")
+        ->join("users AS u","u.id","=","e.creator_id")
+        ->leftJoin("dtl_events AS dtl","dtl.event_id","=","e.id")
+        ->leftJoin("files_on_post_events AS f","f.id","=","e.presentation_img")
+        ->select("e.id","e.title","e.content AS description", "e.type_post AS type","e.status",
+        "f.name AS presentation_img","f.type_file AS presentation_type", "e.is_popular","dtl.event_date","dtl.has_cost","dtl.cost","dtl.frequency","u.artistic_name AS nickname",
+        "u.id AS creator_id")->where("e.is_popular","=",true)->get();
+        $salida["code"] = 1;
+        $salida["data"] = $result;
+        return $salida;        
     }
 
     

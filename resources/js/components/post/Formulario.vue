@@ -15,6 +15,8 @@
             <input
               v-model="post_title"
               v-bind:placeholder="place_holder_title"
+              maxlength="100"
+              minlength="2"
               width="100%"
               type="email"
               style="margin-bottom: 0px;"
@@ -109,6 +111,8 @@
             <label for="exampleFormControlTextarea1"></label>
             <textarea
               v-model="description"
+              minlength="2"
+              maxlength="800"
               style="resize: none"
               class="form-control"
               v-bind:placeholder="place_holder_msg + userData.nickname + '?'"
@@ -127,6 +131,7 @@
           <button 
             style="width: 100%; cursor: pointer"
             type="button"
+            :disabled="spinners.S1"
             @click="publicarContent"
             class="btn btn-success btn-block">
             <span v-if="spinners.S1" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>            
@@ -174,7 +179,8 @@ export default {
           media: [],
           metas: []          
         }
-      }}
+      }},
+      acAppData: {type: Object, require: true}
   },
   data: function(){
     return {
@@ -236,6 +242,16 @@ export default {
         return;
       }
 
+      if(this.post_title.trim().length >= 100){
+        StatusHandler.ValidationMsg("El título muy largo, maximo 100 caracteres");
+        return;
+      }
+
+      if(this.description.trim().length >= 800){
+        StatusHandler.ValidationMsg("Descripcion muy extensa, limite 800 caracteres");
+        return;
+      }
+
       if(this.show_panel_price == true && this.event_price < 1){
           StatusHandler.ValidationMsg("El costo de asistencia del evento debe ser mayor que 0");
           return;
@@ -271,6 +287,7 @@ export default {
         }
       }
       //Creando
+      this.spinners.S1 = true;
       axios.post(`/postevent`,data_send).then((result) => {
           let response = result.data;
           if(response.code == 0){
@@ -288,7 +305,7 @@ export default {
 
     },
     updatePostEvent: function(){
-      console.log("editando el elemento");
+      //console.log("editando el elemento");
       let data_send = {
           post_type: this.postType,
           title: this.post_title,
@@ -308,6 +325,7 @@ export default {
           event_date: this.time1.toISOString()
         }
       }
+      this.spinners.S1 = true;
       //Actualizando 
       axios.put(`/postevent/${this.sourceEdit.post.id}`,data_send).then(result =>{
           let response = result.data;

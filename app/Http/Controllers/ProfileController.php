@@ -18,17 +18,31 @@ use App\PostEvent;
 class ProfileController extends Controller
 {
 	public function __construct(){
-		
-		$this->middleware('auth:api',['only'=>[
-			'updateTags',
-			'deleteTag'
-		]]);
 
 	}
 
     public function index($id){
 		return view("profile",['id_user_cur' => $id]);
 	}
+
+	public function editElement($id_user, $id_post){
+		$e = PostEvent::find($id_post);
+		if(!$e){
+			return redirect()->route('inicio');
+		}
+		
+		if(!Auth::user()->can('editar-publicaciones') &&  intval($e->creator_id) !==  intval(Auth::user()->id)){
+			return redirect()->route('inicio');//permiso denegado 
+		}
+
+		//Inconsistencia visual 
+		if( intval($e->creator_id) !==  intval($id_user) ){
+			return redirect()->route('inicio');
+		}
+
+		return view("edit-item",['id_user_cur' =>  $id_user, 'id_elem_edit' => $id_post]);
+	}
+	
 
 	public function elements(Request $request, $id){
 		$salida = [
@@ -96,6 +110,69 @@ class ProfileController extends Controller
 		return $salida;		
 	}
 
+	#Acceso publico, obtener modelo usuario y metadatos 
+	public function aboutInfo($id){
+		$salida = [
+			"code" => 0,
+			"msg"=>"",
+			"data" => null
+		];
+
+		$user = User::find($id);
+		if(!$user){
+			$salida["msg"] = "El usuario no existe";
+			return $salida;
+		}
+
+		$metas_get 		= ['user_profile_description','user_profile_address','user_profile_notes']; //add another meta 
+		$metas 				= UserMeta::whereIn('key',$metas_get)->where('user_id',$id)->get();		
+
+		$fulldata = [
+			'metas' => $metas,
+			'user' => $user->load('profile_img')
+		];
+
+        $salida = [
+            'code' => 1,
+            'data' => $fulldata,
+            'msg' => 'Datos recuperados'
+        ];
+
+		return $salida;				
+	}
+
+	#Acceso publico, Obtener informacion general e imagenes de perfil 
+	public function summaryInfo($id){
+		$salida = [
+			"code" => 0,
+			"msg"=>"",
+			"data" => null
+		];
+
+		$user = User::find($id);
+		
+		if(!$user){
+			$salida["msg"] = "El usuario no existe";
+			return $salida;
+		}
+
+		$tags 				= 	User::select('tg.id','tg.name')->join('tags_on_profiles AS top','top.user_id','users.id')
+									->join('tags AS tg','tg.id','top.tag_id')->where('users.id',$id)->get();
+		$profile_media = MediaProfile::where('user_id',$user->id)->get(); 									
+
+        $fulldata = [
+            'user' => $user,
+			'tags' => $tags,
+			'media_profile' => $profile_media
+        ];
+
+        $salida = [
+            'code' => 1,
+            'data' => $fulldata,
+            'msg' => 'Datos recuperados'
+        ];
+		return $salida;	
+	}
 
 	public function deleteTag($id_user,$id_tag){
         $salida = [
@@ -127,7 +204,6 @@ class ProfileController extends Controller
             'data' => null,
             'msg' => null
         ];
-
 	
 		if(Auth::user()->id != $id){
 			$salida["msg"] = "Permiso denegado";

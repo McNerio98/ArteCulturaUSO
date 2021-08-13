@@ -6,7 +6,8 @@
 <div class="container-fluid" id="appContent">
     <div class="row">
         <div class="col-12">
-            <div id="event-cp" style="width: 100%;max-width: 600px;margin: auto;background-color: #fff;padding: 10px;border-left: 1px solid #d8d5d5;border-right: 1px solid #d8d5d5;">
+            <div id="event-cp" style="width: 100%;max-width: 600px;margin: auto;padding: 10px;">
+            
                 <div class="text-center _acNoCnt" v-if="items_postevents.length == 0">
                     <img src="{{asset('images/no-task.svg')}}" alt="" style="width: 80%;max-width: 100px;">
                     <h2>No hay contenido que mostrar</h2>
