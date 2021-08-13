@@ -26,7 +26,10 @@ const appHome = new Vue({
             'to': 0				
         },
         //End key for pagination 
-        spinner_approval: false,
+        acAppData: {},
+        spinners: {
+            S1: true
+        },
         postevent_selected: null,
         media_view: {
             owner: 0,
@@ -48,38 +51,20 @@ const appHome = new Vue({
         node_child_selected : null,
         preview_mini_selected: null,
         post_to_create: "post",
-
-        post_selected: {
-            post: {
-                id: 0,
-                title: "",
-                description: "",
-                type: "post",
-                creator_id: 0,
-                is_popular: false,
-                status: "approved",
-                created_at: "",
-                name: "",
-                artistic_name: ""                    
-            },
-            media: [],
-            meta: []
-        }
-
     },
     created: function(){
         this.approval();
         this.notifiers();
     },
     mounted: function(){
-        //
+        this.acAppData = window.obj_ac_app;
     },
     methods: {
         /*Method for Pagination */
         changePage(pg){
             this.globalPage = pg;
             this.paginate_approval.current_page = this.globalPage;
-            this.approval(pg,15);
+            this.approval(pg);
         },        
         /*End Method for Pagination */
         notifiers: function(){
@@ -100,8 +85,11 @@ const appHome = new Vue({
                 return {
                     id: e.id,
                     type: e.type_file,
-                    url: e.name,
-                    owner_id: 0,
+                    name: e.name,
+                    url: e.url,
+                    owner: {
+                        id: e.owner
+                    }
                 }
             });
 
@@ -110,7 +98,7 @@ const appHome = new Vue({
             $('#modaPreviewMedia').modal('show');            
         },
         getApprovalEl: function(emit_data){
-            this.spinner_approval  = true;
+            this.spinners.S1  = true;
             axios(`/api/post/${emit_data.id}`).then(result=>{
                 let response = result.data;
                 if(response.code == 0){
@@ -118,7 +106,7 @@ const appHome = new Vue({
                     return;
                 }
 
-                this.spinner_approval = false;
+                this.spinners.S1 = false;
                 var e = response.data;
                 var current = {
                     post: {
@@ -130,6 +118,12 @@ const appHome = new Vue({
                         status: 'review',
                         created_at: e.created_at,
                     },
+                    dtl_event: {
+                        event_date: e.event_date,
+                        has_cost: e.has_cost,
+                        cost: e.cost,
+                        frequency: e.frequency
+                    },                        
                     creator: {
                         id: e.creator_id,
                         name: e.creator_name,
@@ -138,10 +132,11 @@ const appHome = new Vue({
                     },
                     media: e.media.map(ng => {//el formato para esto se filtra en el otro compnente
                         switch(ng.type_file){
-                            case "image": {ng.name = window.obj_ac_app.base_url +"/files/images/"  + ng.name;break;}
-                            case "docfile": {ng.url = window.obj_ac_app.base_url + "/files/pdfs/" + ng.name;break;}
-                            case "video": {ng.name_temp = window.obj_ac_app.base_url + "/images/youtube_item.jpg";break;}
+                            case "image": {ng.url = this.acAppData.storage_url +"/files/images/"  + ng.name;break;}
+                            case "docfile": {ng.url = this.acAppData.storage_url + "/files/pdfs/" + ng.name;break;}
+                            case "video": {ng.url = this.acAppData.storage_url + "/images/youtube_item.jpg";break;}
                         }
+                        ng.owner = e.creator_id;
                         return ng;
                     }),
                     meta: e.meta
@@ -151,11 +146,11 @@ const appHome = new Vue({
             }).catch(ex=>{
                 StatusHandler.Exception("Recuperar PostEvent ", ex);
             }).finally(e => {
-                this.spinner_approval = false;
+                this.spinners.S1 = false;
             });
         },
-        approval: function(page = 1, per_page = 15){            
-            this.spinner_approval = true;
+        approval: function(page = 1, per_page = 5){            
+            this.spinners.S1 = true;
             axios(`/approval?page=${page}&per_page=${per_page}`).then(result=>{
                 let response = result.data;
                 if(response.code == 0){
@@ -168,7 +163,7 @@ const appHome = new Vue({
                         title: e.title,
                         description: e.description,
                         type: e.type,
-                        presentation_img: (e.presentation_img != undefined && e.presentation_type != "video") ? window.obj_ac_app.base_url + "/files/images/"+e.presentation_img : null,
+                        presentation_img: (e.presentation_img != undefined && e.presentation_type != "video") ? this.acAppData.storage_url + "/files/images/"+e.presentation_img : null,
                         presentation_type: e.presentation_type,
                         is_popular: e.is_popular,
                         dtl_event: {
@@ -192,44 +187,10 @@ const appHome = new Vue({
                 let name_process = "Recuperar elementos en aprobación";
                 StatusHandler.Exception(name_process,ex);
             }).finally(e=>{
-                this.spinner_approval = false;
+                this.spinners.S1 = false;
             });
         },
-        loadPostById: function(id_post){
-            console.log("Voy a cargar info del nuevo post creado con este id " + id_post);
-            axios(`/api/post/find/${id_post}`).then((result)=>{
-                let response = result.data;
-                if(response.code == 0){
-                    StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
-                    return;
-                }
-                this.post_selected = response.data;
-                console.log(this.post_selected);
-                this.panel1_index = 3;
-            }).catch((ex)=>{
-                StatusHandler.Exception("Recuperar Post",ex);
-            });
-        },
-        loadPopularPost: function(){
-            //Leyendo elementos destacados/populares
-            const params = {
-                desc: "", //esto lo reconoce como indefinido laravel en el controller
-                popular: true
-            };
-            axios.post(`/api/post/findPostsPopular`,params).then((result)=>{
-                let response = result.data;
-                if(response.code == 0){
-                    StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
-                    return;
-                }
-                this.popular_post = response.data;
-            }).catch((error)=>{
-                let target_process = "Recuperar post populares"; 
-                let msg = "El proceso ("+target_process+")no se ha podido completar, póngase con soporte técnico."
-                StatusHandler.ShowStatus(msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
-                console.error(error);
-            });
-        },
+
         changePanel1: function(new_index){
             if(this.panel1_index === 4){
                 this.panel1_index = 1;
@@ -237,10 +198,7 @@ const appHome = new Vue({
             }
             this.panel1_index = new_index;
         },
-        createNewPostEvent: function(type_element,new_index){
-            this.post_to_create = type_element === "event"?"event":"post";
-            this.changePanel1(new_index);
-        },
+
         runFindPostEvent: function(){
             //Validaciones 
             if(this.desc_to_search.length < 2){
@@ -267,45 +225,6 @@ const appHome = new Vue({
                 console.error(error);
             });
         },
-        ShowPanelPostData: function(unit){
-            this.preview_mini_selected = unit;
-            axios(`/api/post/find/${unit.id}`).then((result)=>{
-                let response = result.data;
-                if(response.code == 0){
-                    StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
-                    return;
-                }
-                this.post_selected = response.data;
-                console.log(this.post_selected);
-                this.panel1_index = 3;
-            }).catch((error)=>{
-                let target_process = "Recuperar Post"; 
-                let msg = "El proceso ("+target_process+")no se ha podido completar, póngase con soporte técnico."
-                StatusHandler.ShowStatus(msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
-                console.error(error);
-            });
-        },
-        setPostPopular: function(state){
-            //state = {id,state}
-            this.preview_mini_selected.is_popular = state.is_popular;
-            if(state.is_popular){
-                this.popular_post.push(this.preview_mini_selected);
-            }else{
-                this.removeViewPopular(this.preview_mini_selected.id);
-            }
-        },
-        removeViewPopular: function(id_elemento){
-            let index = -1;
-            for(e in this.popular_post){
-                if(this.popular_post[e].id == id_elemento){
-                    index = e;
-                    break;
-                }
-            }
-            if(index > -1){
-                this.popular_post.splice(index,1);
-            }
-        }
     },
     computed: {
         //for pagination server side 

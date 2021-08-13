@@ -8,13 +8,15 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body p-0">
                     <div class="_acSelectedPreBox">
                         <div class="_acBtnNavigation" @click="preItem"><i class="fas fa-chevron-left"></i></div>
                         <div class="_acCurrentImgPreBox">
-                            <div class="_acCurrentImgPnl">
-                                <img :style="{width: dimg.width, height: dimg.height}" alt="" :src="Selected">
-                            </div>
+
+                            <iframe v-if="Selected.type == 'video'" style="width: 100%;height: 100%;" width="420" height="345" :src="'https://www.youtube.com/embed/' + Selected.name"></iframe>                                  
+                            <img  v-if="Selected.type == 'image'" style="object-fit: contain; padding-top: 3px; width: 100%;height: 100%;" alt="" :src="Selected.url">
+                            <!-- <div class="_acCurrentImgPnl">                              
+                            </div> -->
                         </div>
                         <div class="_acBtnNavigation" @click="nextItem"><i class="fas fa-chevron-right"></i></div>
                     </div>
@@ -78,30 +80,30 @@
         computed: {
             Selected: function(){
                 if(this.items[this.index_current] == undefined){
-                    return null; //retornar de no encontrado 
+                    return {}; //retornar de no encontrado 
                 }
 
-                if(this.items[this.index_current].type == 'image'){
-                    const img = new Image();
-                    const vu = this;
-                    img.onload = function(){
-                        if((this.width - 150) > this.height){
-                            vu.dimg.width = "100%";
-                            vu.dimg.height = "auto";
-                        }else if(this.height > this.width){
-                            vu.dimg.width = "auto";
-                            vu.dimg.height = "100%";
-                        }else{ // cuadrada, dado el radio de aspecto se ajusta al alto 
-                            vu.dimg.width = "auto";
-                            vu.dimg.height = "100%";                            
-                        }
+                // if(this.items[this.index_current].type == 'image'){
+                //     const img = new Image();
+                //     const vu = this;
+                //     img.onload = function(){
+                //         if((this.width - 150) > this.height){
+                //             vu.dimg.width = "100%";
+                //             vu.dimg.height = "auto";
+                //         }else if(this.height > this.width){
+                //             vu.dimg.width = "auto";
+                //             vu.dimg.height = "100%";
+                //         }else{ // cuadrada, dado el radio de aspecto se ajusta al alto 
+                //             vu.dimg.width = "auto";
+                //             vu.dimg.height = "100%";                            
+                //         }
                         
-                    }
-                    img.src = this.items[this.index_current].url;
-                }
+                //     }
+                //     img.src = this.items[this.index_current].url;
+                // }
 
                 //pasar mejor el fullpath 
-                return this.items[this.index_current].url; 
+                return this.items[this.index_current]; 
             }
         }
     }
@@ -117,12 +119,12 @@
 
             ._acSelectedPreBox ._acBtnNavigation{
                 background-color: #f4f3f3;
-                width: 10%;
+                width: 5%;
                 float: left;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                color: #b1acac;
+                color: #504e4e;
                 font-size: 150%;
                 padding: 5px;
                 overflow: hidden; 
@@ -134,11 +136,12 @@
             }
 
             ._acSelectedPreBox ._acCurrentImgPreBox{
-                width: 80%;
+                width: 90%;
+                height: 80vh;
                 background-color: #eae3e3;
-                position: relative;
+                /*position: relative;*/
                 /*padding-top: 100%;*/
-                padding-top: 65%; /* 4:3 Aspect Ratio */
+                /*padding-top: 65%;*/  /* 4:3 Aspect Ratio */
                 float: left;
                 background-position: center;
                 background-repeat: no-repeat;

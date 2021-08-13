@@ -14,10 +14,16 @@ class PostEvent extends Model
         return $this->hasMany("App\FilesOnPostEvents",'id_post_event');
     }
 
+    #Significa que desde el modelo de PostEvent puede alcanzar al creador del elemento
+    #la tabla de usuarios no tiene ninguna clave relacionada en su modelo, pero se hara match 
+    #usando el id del usuario con la clave llamada creator_id 
     public function owner(){
         return $this->belongsTo("App\User","creator_id");
     }
 
+    # Significa que el modelo tiene "un" registro en la tabla de archivos 
+    #pero en la tabla de archivos se debe encontrar una clave llamada id_post_event 
+    #con esa clave se hace math 
     public function img_presentation(){
         return $this->hasOne('App\FilesOnPostEvents');
     }

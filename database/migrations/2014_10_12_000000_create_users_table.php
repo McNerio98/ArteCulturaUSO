@@ -21,7 +21,7 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('username')->nullable()->unique();
             $table->string('password',255);
-            $table->string('telephone',255);
+            $table->string('telephone',255)->unique();
             $table->unsignedBigInteger('img_profile_id')->nullable(); //sin integridad referencial
             $table->boolean('active')->default(true);
             $table->json('rubros')->nullable();

@@ -9,11 +9,11 @@
             <!-- /.user-block -->
             <div class="card-tools">
 
-                <button @click="onClickEdit" v-if="has_cap('editar-publicaciones')" type="button" class="btn btn-tool" data-toggle="tooltip" data-placement="right"
+                <button @click="onClickEdit" v-if="has_cap('editar-publicaciones') || model.creator.id === authId" type="button" class="btn btn-tool" data-toggle="tooltip" data-placement="right"
                     title="Editar elemento">
                     <i class="fas fa-pen"></i> Editar
                 </button>
-                <button @click="onClickDelete" v-if="has_cap('eliminar-publicaciones')" type="button" class="btn btn-tool" data-toggle="tooltip" data-placement="right"
+                <button @click="onClickDelete" v-if="has_cap('eliminar-publicaciones') || model.creator.id === authId" type="button" class="btn btn-tool" data-toggle="tooltip" data-placement="right"
                     title="Eliminar elemento">
                     <i class="fas fa-trash-alt"></i> Eliminar
                 </button>
@@ -25,32 +25,31 @@
         <div class="card-body p-2">
             <div v-if="has_cap('aprobar-publicaciones')" class="form-group  m-0">
                 <div  class="custom-control custom-switch custom-switch-on-success">
-                    <input type="checkbox"  class="custom-control-input" id="switchApprovedPost" :checked="validate_approved(model.post.status)" @change="switchStatePost"/>
-                    <label v-if="model.post.status == 'review' " class="custom-control-label" for="switchApprovedPost">Aprueba este elemento para que sea visible
+                    <input type="checkbox"  class="custom-control-input" :id="'switchApprovedPost'+model.post.id" :checked="validate_approved(model.post.status)" @change="switchStatePost"/>
+                    <label v-if="model.post.status == 'review' " class="custom-control-label" :for="'switchApprovedPost'+model.post.id">Aprueba este elemento para que sea visible
                         para todos</label>
-                    <label v-if="model.post.status == 'approved' " class="custom-control-label" for="switchApprovedPost">El elemento ha sido aprobado</label>                        
+                    <label v-if="model.post.status == 'approved' " class="custom-control-label" :for="'switchApprovedPost'+model.post.id">El elemento ha sido aprobado</label>                        
                 </div>
             </div>            
 
             <div v-if="has_cap('destacar-publicaciones')" class="form-group">
                 <div class="custom-control custom-switch custom-switch-on-success">
-                    <input type="checkbox" v-model="model.post.is_popular" class="custom-control-input" id="switchPopularPost" @change="setPostPopular" />
-                    <label v-if="! model.post.is_popular" class="custom-control-label" for="switchPopularPost">Marcar elemento como destacado </label>
-                    <label v-else class="custom-control-label" for="switchPopularPost">Marcado como elemento destacado</label>
+                    <input type="checkbox" v-model="model.post.is_popular" class="custom-control-input" :id="'switchPopularPost'+model.post.id" @change="setPostPopular" />
+                    <label v-if="! model.post.is_popular" class="custom-control-label" :for="'switchPopularPost'+model.post.id">Marcar elemento como destacado </label>
+                    <label v-else class="custom-control-label" :for="'switchPopularPost' + model.post.id">Marcado como elemento destacado</label>
                 </div>
             </div>
 
-            <blockquote v-if="model.post.status == 'review' " class="quote-secondary">
-                <p>El elemento actual se encuentra en <b>revisión.</b> Deberá ser aprobado por los administradores para ser
-                    visible para todos los usuarios.</p>
-                <small>Informe de estado del elemento</small>
+            <blockquote v-if="model.post.status == 'review' " class="quote-secondary m-0 p-0 pl-1">
+                <small>El elemento actual se encuentra en <b>revisión.</b> Deberá ser aprobado por los administradores para ser
+                    visible para todos los usuarios.</small>
             </blockquote>
             <div class="row" v-if="model.post.type == 'event' ">
                 <div class="col-sm-4 col-12">
                     <div class="description-block border-right">
                         <span class="text-success h4"><i class="fas fa-dollar-sign"></i></span>
                         <h5 class="description-header">Costo de Entrada</h5>
-                        <span class="description-text">Gratis</span>
+                        <span class="description-text">{{model.dtl_event.has_cost ? model.dtl_event.cost : "GRATIS"}}</span>
                     </div>
                     <!-- /.description-block -->
                 </div>
@@ -59,7 +58,7 @@
                     <div class="description-block border-right">
                         <span class="text-warning h4"><i class="fas fa-calendar-alt"></i></span>
                         <h5 class="description-header">Fecha a realizarse</h5>
-                        <span class="description-text">26/05/2024</span>
+                        <span class="description-text">{{model.dtl_event.event_date | DateFormatES1}}</span>
                     </div>
                     <!-- /.description-block -->
                 </div>
@@ -68,7 +67,7 @@
                     <div class="description-block border-right">
                         <span class="text-success h4"><i class="fas fa-redo-alt"></i></span>
                         <h5 class="description-header">Se repite</h5>
-                        <span class="description-text">Cada año</span>
+                        <span class="description-text">{{model.dtl_event.frequency == "unique" ? 'FECHA ÚNICA ' : 'CADA AÑO'}}</span>
                     </div>
                     <!-- /.description-block -->
                 </div>
@@ -130,7 +129,7 @@
                     }
                 }
             },
-            authId: {type: Number, default: 0}
+            authId: {type: Number, default: 0}//Current user id 
         },      
         data: function(){
             return {       

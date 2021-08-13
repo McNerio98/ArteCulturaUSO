@@ -1,5 +1,5 @@
 <template>
-    <div class="card mb-3 alterCard overlay dark">
+    <div class="card mb-3 alterCard">
         <div class="card-header bg-secondary alterHeader">
             <span>{{ title }}</span>
         </div>
@@ -12,10 +12,11 @@
             </div> -->
 
             <post-form-component  
+                :ac-app-data="acAppData"
                 :edit-mode="editMode" 
                 :source-edit="sourceEdit"  
                 :post-type="postType" 
-                @post-chiild-created="emitCreatedId"
+                @post-chiild-created="emitCreatedId" 
                 :user-data="userInfo">
             </post-form-component>
         </div>
@@ -32,18 +33,20 @@ export default {
             id: 0,
             nickname:"(No Especificado)", 
             fullname: "(No Especificado)",
-            profile_path: "https://i.insider.com/51c1d74aecad048224000021?width=762&format=jpeg"}
+            profile_path: null}
         }
       },
       postType: {type: String,default:"post"},
       editMode: {type: Boolean,default: false}, //indica si esta en modo edicion 
-      sourceEdit: {type: Object, default: function(){//fuente de datos para edicion 
+      sourceEdit: {type: Object, default: function(){//fuente de datos para edicion, 
         return {}
-      }} 
+      }},
+      authId: {type: Number, default: 0}//Current user id 
   },
   data: function () {
     return {
-        title: this.postType == "event" ? "Crear Evento" : "Publicar contenido"
+        title: this.postType == "event" ? "Crear Evento" : "Publicar contenido",
+        acAppData: {}
     };
   },
   mounted: function(){
@@ -53,6 +56,8 @@ export default {
       this.userInfo.fullname = this.sourceEdit.creator.name;
       this.userInfo.profile_path = this.sourceEdit.creator.profile_img;
     }
+
+    this.acAppData = window.obj_ac_app;
   },
   methods: {
     emitCreatedId: function(post ){

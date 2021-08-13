@@ -31,9 +31,10 @@ Route::post('storeTestValidJson','RequestAcountController@storeWithValidateJson'
 
 Route::post('requestaccounts','UsersController@requestAccount');
 //Route::apiResource('post', 'CreatePostEvent');
+
 Route::apiResource('users', 'UsersController');
 
-
+//Route::get('user/{id}','ProfileController@show')->
 
 
 Route::get('user/existEmail/{id}/{mail}','UsersController@validateEmail');
@@ -45,13 +46,7 @@ Route::get('tags/withCategories', 'TagsController@getBySeccion');
 Route::get('tags/byCategory/{id}','TagsController@tagsByCategory');
 
 Route::apiResource('profile','ProfileController');
-Route::put('profile/tags/{id}','ProfileController@updateTags');
-Route::delete('profile/deltag/{idu}/{idtg}','ProfileController@deleteTag');
 
-//aqui para agregar todas las metas 
-Route::apiResource('usermeta','UsersMetasController');
-
-Route::post('post/findPostsPopular','PostEventController@findPostsPopular');
 
 
 //ESTOS SE QUEDAN AQUI, PUEDEN SER UTILIZADOS PARA UNA API FUTURA
@@ -60,6 +55,9 @@ Route::get('post/{id}','PostEventController@show')->name('post.show');
 #Obtiene los eventos dentro de los tres meses siguientes 
 Route::get('posts/events','PostEventController@eventsTable')->name('table.events');
 
+# Obtiene la lista de elementos destacados, independiente si esta o no aprovados 
+Route::get('posts/populars','PostEventController@popularItems')->name("posts.populars");
+
 # Obtiene todas las etiquetas, respuesta en JSON 
 Route::get('tags','TagsController@index')->name('tags.index');
 # Obtiene todas las categorias, respuesta en JSON 
@@ -67,6 +65,12 @@ Route::get('categories','CategoriesController@index');
 
 # falta terminarla, pero inicialmente realiza las busquedas a traves de ajax 
 Route::get('exeSearch','SearchController@execSearch')->name("search.exec");
+
+#Obtiene la informacion basica y las fotografias de perfiles de un usuario 
+Route::get('profile/gnInfo/{id}','ProfileController@summaryInfo')->name('profile.general.info');
+# Ontiene el modelo del usuario y los metadatos 
+Route::get('profile/aboutUser/{id}','ProfileController@aboutInfo')->name('profile.about.info');
+
 
 # ===========
 

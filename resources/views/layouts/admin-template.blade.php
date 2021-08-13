@@ -18,6 +18,7 @@
                 'csrfToken' => csrf_token(), // token 
                 'permissions' => Auth::user()->caps, 
                 'base_url' => url('/'), //URL BASE 
+                'storage_url' => url('/'), //URL BASE 
                 'full_url' => url()->full(),
                 'current_url' => url()->current(),
                 "current_user" => [
@@ -38,6 +39,7 @@
                 'csrfToken' => csrf_token(), // token 
                 'permissions' => null,
                 'base_url' => url('/'), //URL BASE 
+                'storage_url' => url('/'), //URL BASE 
                 'full_url' => url()->full(),
                 'current_url' => url()->current(),
                 "current_user" => [
@@ -72,7 +74,7 @@
     @stack('customStyles')
 </head>
 
-<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed dark-mode">
 <input type="hidden" value="{{Auth::user() == null?'':Auth::user()->api_token}}" id="current_save_token_generate" />
     <div class="wrapper">
         @include('layouts.components.admin-navbar')

@@ -34,17 +34,17 @@
             data-placement="top"
             :title="m.filename"
           >
-            <iframe
+            <a :href="'https://youtu.be/'+m.filename" target="_blank">
+            <img
               :ref="'image' + key"
-              width="100%"
               style="object-fit: contain; padding-top: 3px"
+              width="100%"
               height="100px"
-              frameborder="0"
-              :src="
-                'https://www.youtube.com/embed/' +
-                m.data.substring(m.data.length, 32)
-              "
-            ></iframe>
+              :src="acAppData.base_url + '/images/youtube_media_cmp.jpg'"
+              alt="Preview"
+            />
+            </a>
+
             <a
               @click="remove(key,m.id)"
               class="remove-image"
@@ -156,7 +156,7 @@
         />
       </div>
     </div>
-
+    <!--VIDEO MODAL COMPONENT-->
     <post-modal-component
       @add="addVideo"
       v-if="show_modal"
@@ -254,8 +254,8 @@ export default {
     };
   },
   created: function () {
-    //Cuando el padre emita el evento update 
-    this.$parent.$on("update", this.setMediaNull);
+    //Cuando el padre emita el evento update se limpian lo medios
+    this.$parent.$on("post-chiild-created", this.setMediaNull);
   },
   mounted: function(){
     this.acAppData = window.obj_ac_app;
@@ -339,16 +339,33 @@ export default {
     },
     setMediaNull: function () {
       this.media = [];
+      this.media_docs = [];
     },
-    addVideo: function (video) {
+    addVideo: function (video_uri) {
       if((this.media.length + this.media_docs.length + 1) >= this.limite){
         StatusHandler.ValidationMsg("Límite de carga de archivos superado, elimine algunos elementos.")
         return;
       }
 
+      if(!video_uri.includes('youtu')){
+        StatusHandler.ValidationMsg("Debe cargar un video desde YOUTUBE.")
+        return;        
+      }
+
+      var mtx = video_uri.split('/');
+      var target = mtx[mtx.length -1 ];
+      var id_video = "";
+
+      //Aplicar algoritmo de extraccion de id para url full 
+      if(video_uri.includes('watch')){
+        id_video = target.split('=')[1].split('&')[0];
+      }
+
       const data = {
+        id: null,
         type: "video",
-        data: video,
+        filename: id_video,
+        data: id_video,//vendria siendo el path completo 
       };
       this.media.push(data);
       this.$emit("media", this.media.concat(this.media_docs));

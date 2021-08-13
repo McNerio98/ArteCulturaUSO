@@ -38,7 +38,12 @@
                         <p>Mi contenido</p>
                     </a>
                 </li>
-
+                <li class="nav-item">
+                    <a href="{{route('admin.search')}}" class="nav-link text-hpolis  {{ $ac_option == 'search' ? 'active' : ''}} ">
+                        <i class="nav-icon fas fa-search"></i>
+                        <p>Buscador</p>
+                    </a>
+                </li>                
                 @can('ver-reseñas')
                 <li class="nav-item">
                     <a href="{{route('memories')}}" class="nav-link text-hpolis  {{ $ac_option == 'memories' ? 'active' : ''}} ">

@@ -13,7 +13,7 @@
             </div>
         </div>
     </div>
-    <div class="container bg-white">
+    <div class="container bg-tenue-ac">
         <!--::::::::::::::::::::::::::::::::::::::START CONTENT::::::::::::::::::::::::::::::::::::::-->
         <div class="row">
             <div class="col-12">
@@ -130,5 +130,5 @@
 @endsection
 
 @Push('customScript')
-    <script src="{{ mix('js/app-inicio.js') }}"></script>
+    <script src="{{ mix('js/front/app-inicio.js') }}"></script>
 @endpush
