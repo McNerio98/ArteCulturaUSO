@@ -12,79 +12,61 @@
 
     <!-- Styles -->
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
-    
+    <link href="{{ asset('css/observatorio_styles.css') }}" rel="stylesheet">
 </head>
-<body class="hold-transition login-page" style="flex-direction: row;align-items: stretch;">
-
-<div class="login-box" style="width: 75% !important;">
-    <div style="background-color: #31333f;height: 60%;">
-          <div style="width: 70%;max-width: 700px;margin: auto;">
-            <img src="{{asset('images/Banner.png')}}" alt="" style="width: 100%;">
-          </div>
+<body class="_acScreenLogin">
+  <div class="_logPanel1">
+    <div class="_wrpBrand">
+        <img src="{{asset('images/Banner1.1.png')}}" alt="">
+          <h1>Aristas, talentos, músicos, centros de enseñanzas</h2>
+          <h5>Sonsonate tiene mucho talento que los puedes encontrar e  <a href="{{route('inicio')}}">nuestro sitio</a></h5>        
     </div>
-    <div style="background-color: #31333f;height: 40%;">
-
-    </div>
-</div>
-  
-<div class="login-box" style="width: 25% !important;">
-    <div>
+  </div>  
+  <div class="_logPanel2" style="background-image: url({{asset('images/bground1.jpg')}});">
+    <div class="_wrappenPnl">
+      <div class="_acCntBrand">
+          <img src="{{asset('images/logo.png')}}" alt="">
+      </div>
       <div class="card">
         <div class="card-body login-card-body">
-          <p class="login-box-msg">Sign in to start your session</p>      
-
-          <form method="POST" action="{{ route('login') }}">
-        @csrf
-        <div class="input-group mb-3">
-          <input name="username" type="text" class="form-control @error('username') is-invalid @enderror" value="{{ old('username') }}" placeholder="Nombre de Usuario" required autocomplete="username" autofocus>
-
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-envelope"></span>
-            </div>
-          </div>
-        </div>
-        @error('username')
-          <span class="invalid-feedback" role="alert">
-            <strong>{{ $message }}</strong>
-          </span>
-        @enderror        
-        <div class="input-group mb-3">
-          <input type="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password" name="password" required autocomplete="current-password">
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-lock"></span>
-            </div>
-          </div>
-        </div>
-        @error('password')
-          <span class="invalid-feedback" role="alert">
-            <strong>{{ $message }}</strong>
-          </span>
-        @enderror        
-        <div class="row">
-          <div class="col-8">
-            <div class="icheck-primary">
-              <input type="checkbox" id="remember" {{ old('remember') ? 'checked' : '' }}>
-              <label for="remember">
-                Remember Me
-              </label>
-            </div>
-          </div>
-          <!-- /.col -->
-          <div class="col-4">
-            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-          </div>
-          <!-- /.col -->
-        </div>
-      </form> 
-
+            <p class="login-box-msg">Iniciar sesión</p>      
+            <form method="POST" action="{{ route('login') }}">
+            @csrf
+              <div class="input-group mb-3">
+                <input name="username" type="text" class="form-control @error('username') is-invalid @enderror" value="{{ old('username') }}" placeholder="Nombre de Usuario" required autocomplete="username" autofocus>
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fas fa-envelope"></span>
+                  </div>
+                </div>
+              </div>  
+              @error('username')
+                <span class="invalid-feedback" role="alert">
+                  <strong>{{ $message }}</strong>
+                </span>
+              @enderror                
+              <div class="input-group mb-3">
+                <input type="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password" name="password" required autocomplete="current-password">
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fas fa-lock"></span>
+                  </div>
+                </div>
+              </div>
+              @error('password')
+                <span class="invalid-feedback" role="alert">
+                  <strong>{{ $message }}</strong>
+                </span>
+              @enderror               
+              <div class="row">
+                  <div class="col-12">
+                      <button type="submit" class="btn btn-primary btn-block">Iniciar</button>                    
+                  </div>
+              </div>
+            </form>
         </div>
       </div>
-     
     </div>
-</div>
-
-<script src="{{ mix('js/app.js') }}" defer></script>
+  </div>    
 </body>
 </html>

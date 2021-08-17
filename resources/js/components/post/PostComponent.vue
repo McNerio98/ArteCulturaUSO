@@ -55,6 +55,7 @@ export default {
       this.userInfo.nickname = this.sourceEdit.creator.nickname;
       this.userInfo.fullname = this.sourceEdit.creator.name;
       this.userInfo.profile_path = this.sourceEdit.creator.profile_img;
+      //this.postType = this.sourceEdit.post.type;
     }
 
     this.acAppData = window.obj_ac_app;

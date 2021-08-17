@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use App\Category;
 
 class SearchController extends Controller
 {
@@ -19,6 +20,7 @@ class SearchController extends Controller
         ** cat: (Number) Identificador de la categoria que fue ingresada desde otra seccion 
         */
 
+        //por defecto muestra todos los artistas 
         $params = null;
         //Si almenos un parametro se paso es porque viene de otra busqueda originada en otra seccion 
         if($request->id_filter || $request->label || $request->type_search){
@@ -29,7 +31,9 @@ class SearchController extends Controller
             ];
         }
 
-        return view("busquedas",['filter_search' => $params]);
+        $cats = Category::all();
+
+        return view("busquedas",['filter_search' => $params,'cats' => $cats]);
     }
 
     public function execSearch(Request $request){

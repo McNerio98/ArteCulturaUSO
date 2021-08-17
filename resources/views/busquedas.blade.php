@@ -1,14 +1,24 @@
 @extends('layouts.general-template')
-@section('title', 'Inicio')
+@section('title', 'Búsquedas')
 
 @section('content')
 <main role="main" class="flex-shrink-0" id="app-search">
     <div class="container bg-white">
         <!--::::::::::::::::::::::::::::::::::::::START CONTENT::::::::::::::::::::::::::::::::::::::-->
+        <div class="_acScrollmenu mb-1 mb-md-2">
+            @foreach($cats as $c)
+            <div class="_acCatItem m-1 m-md-2">
+                    <a class="_uniqueSection" style="padding: 10px;"> 
+                        <img  src="{{asset('/files/categories/'.$c->img_presentation)}}" alt="" class="avatarArt">
+                        <span class="text-section">{{$c->name}}</span>
+                    </a>
+            </div>
+            @endforeach
+        </div>        
         <div class="row mb-2">
             <div class="col-12">
                 <div class="SectionWelcome">
-                    <h1 style="text-align: center; color:rgb(104, 104, 104);; font-size:25px; margin-top: 50px">¿BUSCAS ALGÚN TALENTO/ARTISTA? </h1>            
+                    <h1 style="text-align: center; color:rgb(104, 104, 104);; font-size:25px;">¿BUSCAS ALGÚN TALENTO/ARTISTA? </h1>            
                 </div>
             </div>
         </div>
