@@ -172,6 +172,11 @@ export default {
         StatusHandler.Exception("Recuperar rubros",ex);
       });
   },
+  mounted: function(){
+      if(document.getElementById("openRegister").value === "true"){
+        $("#requestAccountModal").modal();
+      }
+  },
   methods: {
     validPatternTel: function(){
       if(this.tel.length == 5 && this.tel[4] !== '-'){

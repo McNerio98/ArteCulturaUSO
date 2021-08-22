@@ -1,14 +1,24 @@
 @extends('layouts.general-template')
-@section('title', 'Inicio')
+@section('title', 'Búsquedas')
 
 @section('content')
 <main role="main" class="flex-shrink-0" id="app-search">
     <div class="container bg-white">
         <!--::::::::::::::::::::::::::::::::::::::START CONTENT::::::::::::::::::::::::::::::::::::::-->
+        <div class="_acScrollmenu mb-1 mb-md-2">
+            @foreach($cats as $c)
+            <div class="_acCatItem m-1 m-md-2">
+                    <a class="_uniqueSection" style="padding: 10px;" @click="exeSeach({id_filter: {{$c->id}}, label: '{{$c->name}}', type_search:'cat'})"> 
+                        <img  src="{{asset('/files/categories/'.$c->img_presentation)}}" alt="" class="avatarArt">
+                        <span class="text-section">{{$c->name}}</span>
+                    </a>
+            </div>
+            @endforeach
+        </div>        
         <div class="row mb-2">
             <div class="col-12">
                 <div class="SectionWelcome">
-                    <h1 style="text-align: center; color:rgb(104, 104, 104);; font-size:25px; margin-top: 50px">¿BUSCAS ALGÚN TALENTO/ARTISTA? </h1>            
+                    <h1 style="text-align: center; color:rgb(104, 104, 104);; font-size:25px;">¿BUSCAS ALGÚN TALENTO/ARTISTA? </h1>            
                 </div>
             </div>
         </div>
@@ -34,22 +44,25 @@
 
          <div class="row">
          <div style="width: 100%;max-width: 600px;margin: auto;">
-            <div class="card">
+
+            <div class="card" v-if="!spinners.S1">
                 <div class="card-header">
                     <h3 class="card-title">Artistas / Talentos</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body p-0">
+                    <empty1 v-if="profiles.length == 0 && !spinners.S1" 
+                    path-register="{{url('/').'?register=true'}}" 
+                    img-path="{{asset('images/icons/box.svg')}}"></empty1>
                     <ul class="products-list product-list-in-card pl-2 pr-2">
-
-                    <profile v-for="e of profiles" :user="e" :path-redirect=" '../perfil/'+e.id"></profile>
+                        <profile v-for="e of profiles" :user="e" :path-redirect=" '../perfil/'+e.id"></profile>
                     </ul>
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer text-center">
                     <!-- <a href="javascript:void(0)" class="uppercase">Ver todos</a> -->
                     <!--PAGINATION-->
-                    <ul class="pagination justify-content-center">
+                    <ul v-if="profiles.length > 0" class="pagination justify-content-center">
                         <li v-bind:class="{'disabled' : ! (pagination1.current_page > 1)}" class="page-item">
                             <a @click.prevent="changePage(pagination1.current_page - 1)" class="page-link"
                                 href="javascript.void(0);">Anterior</a>

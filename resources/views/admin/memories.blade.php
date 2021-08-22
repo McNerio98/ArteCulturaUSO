@@ -4,8 +4,13 @@
 
 
 @section('content')
-<div class="container-fluid" id="appMemories">
-        <building-page page="Homenajes/Biografías "></building-page>
+<div class="container-fluid" id="appMemories">        
+        <div class="container">
+           <div>
+          
+           <memory-create></memory-create>
+           </div>
+        </div>
 </div>
 <!--/. container-fluid -->               
 @endsection

@@ -119,7 +119,7 @@ const appPopulars = new Vue({
                     media: e.media.map(ng => {//el formato para esto se filtra en el otro compnente
                         switch(ng.type_file){
                             case "image": {ng.url = this.acAppData.storage_url +"/files/images/"  + ng.name;break;}
-                            case "docfile": {ng.url = this.acAppData.storage_url + "/files/pdfs/" + ng.name;break;}
+                            case "docfile": {ng.url = this.acAppData.storage_url + "/files/docs/pe" + e.id + "/" + ng.name;break;}
                             case "video": {ng.url = this.acAppData.storage_url + "/images/youtube_item.jpg";break;}
                         }
                         ng.owner = e.creator_id;

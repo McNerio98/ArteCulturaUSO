@@ -395,7 +395,7 @@ class PostEventController extends Controller
                 }
             }
 
-            $salida["extra"] = "Tipos: ";
+            //$salida["extra"] = "Tipos: ";
             //CARGA DE CONTENIDO NUEVO 
             if(isset($request->media)){
 
@@ -500,11 +500,16 @@ class PostEventController extends Controller
                 "code" => 1,
                 "data" =>  [
                     "post" => $postEvent->load("media"),
-                    "creator" => $propietario
+                    "creator" => $propietario,
+                    'dtl_event' => []
                 ],
                 "msg" => "Request Complete"
             ];
 
+            //Agregar el detalle del evento 
+            if($request->post_type == "event"){
+                $salida["data"]["dtl_event"] = $dtlEvent;
+            }            
         }catch(\Throwable $ex){
             DB::rollback();
             //$salida["msg"] = "Error al actualizar publicacion";

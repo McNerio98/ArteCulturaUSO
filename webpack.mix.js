@@ -23,7 +23,7 @@ const mix = require('laravel-mix');
 
 mix.js('resources/js/app.js', 'public/js')
     //dashboard admin pages 
-    .js('resources/js/vue-pages/app-users.js','public/js')
+    .js('resources/js/vue-pages/admin/app-users.js','public/js/admin')
     .js('resources/js/vue-pages/admin/app-content.js','public/js/admin') 
     .js('resources/js/vue-pages/admin/app-populars.js','public/js/admin') 
     .js('resources/js/vue-pages/admin/app-admin.js','public/js/admin')

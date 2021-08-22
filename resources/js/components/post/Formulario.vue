@@ -216,6 +216,14 @@ export default {
       this.description = this.sourceEdit.post.description;
       this.post_title = this.sourceEdit.post.title;
       this.label_btn = "Guardar";
+      if(this.sourceEdit.post.type == "event"){
+          this.time1 = new Date(this.sourceEdit.dtl_event.event_date);
+          this.frequency = this.sourceEdit.dtl_event.frequency;
+          this.event_has_price = this.sourceEdit.dtl_event.has_cost == true ? "1":"0";
+          this.event_price = this.sourceEdit.dtl_event.cost;
+          this.show_panel_price = this.sourceEdit.dtl_event.has_cost;
+
+      }
   }
 
   },
@@ -232,7 +240,7 @@ export default {
     setMediaDel: function(del_list){
       this.multimedia_del = del_list;
     },
-    openPriceModal: function(event){
+    openPriceModal: function(event = null){
       this.event_price = 0.00;
       this.show_panel_price =  this.event_has_price == "1"?true:false;
     },
