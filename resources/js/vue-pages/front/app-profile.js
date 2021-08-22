@@ -35,7 +35,7 @@ const appProfileVue = new Vue({
             desc_empty: false,
             isEditStatus: false,
             current_user: {},            
-            is_mdprofiles: false, // is media profiles 
+            type_media: "", // PROFILE_MEDIAS
             media_view: {
                 owner: 0,
                 target: {},
@@ -132,6 +132,7 @@ const appProfileVue = new Vue({
         },        
         onPhotosProfiles: function(object_media){
             this.media_view = object_media;
+            this.type_media = 'PROFILE_MEDIAS'; //para imagenes de perfiles
             $('#modaPreviewMedia').modal('show');            
         },
         onSources: function(sources){

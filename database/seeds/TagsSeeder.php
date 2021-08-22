@@ -35,53 +35,52 @@ class TagsSeeder extends Seeder
 
 
     	// Estos deben ocultarse en el admin panel para evitar eliminacion 
-    	Tag::create(['name'=>'Actores','category_id' => $cat_cine->id]);
-    	Tag::create(['name'=>'Productores','category_id' => $cat_cine->id]);
+    	Tag::create(['name'=>'Actor','category_id' => $cat_cine->id]);
+    	Tag::create(['name'=>'Productor','category_id' => $cat_cine->id]);
 
-    	Tag::create(['name'=>'Acróbatas','category_id' => $cat_circenses->id]);
-        Tag::create(['name'=>'Contorsionistas','category_id' => $cat_circenses->id]);
-        Tag::create(['name'=>'Equilibristas','category_id' => $cat_circenses->id]);
-    	Tag::create(['name'=>'Malabaristas','category_id' => $cat_circenses->id]);	
-        Tag::create(['name'=>'Mimos','category_id' => $cat_circenses->id]);
-        Tag::create(['name'=>'Payasos','category_id' => $cat_circenses->id]);
+    	Tag::create(['name'=>'Acróbata','category_id' => $cat_circenses->id]);
+        Tag::create(['name'=>'Contorsionista','category_id' => $cat_circenses->id]);
+        Tag::create(['name'=>'Equilibrista','category_id' => $cat_circenses->id]);
+    	Tag::create(['name'=>'Malabarista','category_id' => $cat_circenses->id]);	
+        Tag::create(['name'=>'Mimo','category_id' => $cat_circenses->id]);
+        Tag::create(['name'=>'Payaso','category_id' => $cat_circenses->id]);
 
         Tag::create(['name'=>'Grupo de danza','category_id' => $cat_danza->id]);
 
         Tag::create(['name'=>'Grupo de teatro','category_id' => $cat_escenicas->id]);
-        Tag::create(['name'=>'Payasos (Clown)','category_id' => $cat_escenicas->id]);
+        Tag::create(['name'=>'Payaso (Clown)','category_id' => $cat_escenicas->id]);
 
-        Tag::create(['name'=>'Escultores','category_id' => $cat_escenicas->id]);
+        Tag::create(['name'=>'Escultor','category_id' => $cat_escenicas->id]);
 
-        Tag::create(['name'=>'Escritores','category_id' => $cat_literatura->id]);
-        Tag::create(['name'=>'Declamadores','category_id' => $cat_literatura->id]);
+        Tag::create(['name'=>'Escritor','category_id' => $cat_literatura->id]);
+        Tag::create(['name'=>'Declamador','category_id' => $cat_literatura->id]);
 
         Tag::create(['name'=>'Grupos de música','category_id' => $cat_musicos->id]);
-        Tag::create(['name'=>'Solistas','category_id' => $cat_musicos->id]);
+        Tag::create(['name'=>'Solista','category_id' => $cat_musicos->id]);
 
-        Tag::create(['name'=>'Fotógrafos','category_id' => $cat_visuales->id]);
-        Tag::create(['name'=>'Grafiteros','category_id' => $cat_visuales->id]);
-        Tag::create(['name'=>'Muralistas','category_id' => $cat_visuales->id]);
-        Tag::create(['name'=>'Dibujantes','category_id' => $cat_visuales->id]);
-        Tag::create(['name'=>'Pintores','category_id' => $cat_visuales->id]);
+        Tag::create(['name'=>'Fotógrafo','category_id' => $cat_visuales->id]);
+        Tag::create(['name'=>'Grafitero','category_id' => $cat_visuales->id]);
+        Tag::create(['name'=>'Muralista','category_id' => $cat_visuales->id]);
+        Tag::create(['name'=>'Dibujante','category_id' => $cat_visuales->id]);
+        Tag::create(['name'=>'Pintor','category_id' => $cat_visuales->id]);
 
         Tag::create(['name'=>'Casas de la cultura','category_id' => $cat_promotores->id]);
         Tag::create(['name'=>'Asociaciones ONG’s','category_id' => $cat_promotores->id]);
         Tag::create(['name'=>'Exposiciones permanentes','category_id' => $cat_promotores->id]);
-        Tag::create(['name'=>'Museos','category_id' => $cat_promotores->id]);
+        Tag::create(['name'=>'Museo','category_id' => $cat_promotores->id]);
         Tag::create(['name'=>'Cafeterías o bares culturales','category_id' => $cat_promotores->id]);
-        Tag::create(['name'=>'Colectivos artísticos','category_id' => $cat_promotores->id]);
+        Tag::create(['name'=>'Colectivo artísticos','category_id' => $cat_promotores->id]);
         Tag::create(['name'=>'Asociaciones de artistas','category_id' => $cat_promotores->id]);
 
 
-        Tag::create(['name'=>'Escuelas de Cine','category_id' => $cat_aprendizaje->id]);
-        Tag::create(['name'=>'Escuelas Circenses','category_id' => $cat_aprendizaje->id]);
-        Tag::create(['name'=>'Escuelas de Danza','category_id' => $cat_aprendizaje->id]);
-        Tag::create(['name'=>'Escuelas Escénicas','category_id' => $cat_aprendizaje->id]);
-        Tag::create(['name'=>'Escuelas Esculturales ','category_id' => $cat_aprendizaje->id]);
-        Tag::create(['name'=>'Escuelas de Literatura','category_id' => $cat_aprendizaje->id]);
-        Tag::create(['name'=>'Escuelas de música','category_id' => $cat_aprendizaje->id]);
-        Tag::create(['name'=>'Escuelas Visuales','category_id' => $cat_aprendizaje->id]);
-
+        Tag::create(['name'=>'Escuela de Cine','category_id' => $cat_aprendizaje->id]);
+        Tag::create(['name'=>'Escuela Circense','category_id' => $cat_aprendizaje->id]);
+        Tag::create(['name'=>'Escuela de Danza','category_id' => $cat_aprendizaje->id]);
+        Tag::create(['name'=>'Escuela Escénica','category_id' => $cat_aprendizaje->id]);
+        Tag::create(['name'=>'Escuela Esculturales ','category_id' => $cat_aprendizaje->id]);
+        Tag::create(['name'=>'Escuela de Literatura','category_id' => $cat_aprendizaje->id]);
+        Tag::create(['name'=>'Escuela de música','category_id' => $cat_aprendizaje->id]);
+        Tag::create(['name'=>'Escuela Visual','category_id' => $cat_aprendizaje->id]);
 
         Tag::create(['name'=>'Otros','category_id' => $cat_default->id]);
     }

@@ -21,7 +21,7 @@
                         <div class="_acBtnNavigation" @click="nextItem"><i class="fas fa-chevron-right"></i></div>
                     </div>
                 </div>
-                <div v-if="mediaProfile && owner === logged" class="modal-footer" style="justify-content: center !important;">
+                <div v-if="typeMedia == 'PROFILE_MEDIAS' && target.owner.id === logged" class="modal-footer" style="justify-content: center !important;">
                     <button @click="$emit('new-profile-media')" type="button" class="btn btnOptionsPreMedia">Subir nueva</button>
                     <button @click="$emit('set-profile-media')"  type="button" class="btn btnOptionsPreMedia">Seleccionar como Perfil </button>
                 </div>
@@ -34,7 +34,8 @@
     export default {
         props: {
             logged: {type: Number,default: 0}, //id del usuario logeado 
-            mediaProfile: {type: Boolean, default: false},
+            mediaProfile: {type: Boolean, default: false}, //deprecated, se sustituye por type-media
+            typeMedia: {type: String}, // MEDIA_PROFILES (Images de perfiles)
             target: {type: Object,required:true}, //elemento actual objecto completo()
             loadedMedia: {type: Boolean,default: true},
             items: {type: Array, default: []}, //los items se deben pasar formateados 

@@ -7,6 +7,14 @@
 }
 
 
+.actext-teal1{
+  color: #20c997;
+}
+
+.actext-gray-e1{
+  color: $gray3;
+}
+
 .container-img-hscroll{
     text-align: center;
     overflow-x: auto;
@@ -80,42 +88,6 @@
 .ac-tag input[type="text"]{
     background-color: #f8f9fa;
     border: 0px;
-}
-
-.unique-section{
-    width: 100%;
-    height: 200px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    &:hover{
-        cursor: pointer;
-        .avatarArt{
-            border: 2px solid $dark-blue-ac;
-        }
-        .text-section{
-            color: $dark-blue-ac;
-            text-decoration: underline;
-        }
-    }
-
-    .avatarArt{
-        border: 3px solid white;
-        width: 150px;
-        height: 150px;
-        object-fit: cover;
-        border-radius: 50%;
-    }
-    
-    .text-section{
-        margin-top: 10px;
-        font-size: 20px;
-        font-weight: 600px;
-        color: rgb(104, 104, 104);
-    }
-
 }
 
 
@@ -322,3 +294,177 @@ img.makeItemPosting{
 ._acNoCnt h2{
   color: $gray3; 
 }
+
+div._acScrollmenu {
+  overflow: auto;
+  white-space: nowrap;
+  text-align: center;
+}
+
+div._acScrollmenu ._acCatItem {
+  width: 140px; //Debe ser igual al width del div interior inmediato
+  display: inline-block;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  border: 1px solid #a29e9e;
+  border-radius: 15px 0px;
+  background-color: #efecec;
+
+}
+
+
+div._acScrollmenu ._acCatItem ._uniqueSection {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &:hover{
+      cursor: pointer;
+      .avatarArt{
+          border: 2px solid $dark-blue-ac;
+      }
+      .text-section{
+          color: $dark-blue-ac;
+          text-decoration: underline;
+      }
+  }
+
+  .avatarArt{
+      border: 3px solid white;
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 50%;
+  }
+  
+  .text-section{
+      margin-top: 10px;
+      font-size: 20px;
+      font-weight: 600px;
+      color: rgb(104, 104, 104);
+  }
+
+
+}
+
+main>.container {
+  padding: 20px 15px 0;
+}
+
+
+/*LOGIN STYLES*/
+._acScreenLogin{
+  background-color: #e9ecef;
+  min-height: 100%;  
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+  ._logPanel1{
+    width: 75%;
+    background-color: $dark-blue-ac2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 10px;    
+    align-items: center;    
+    h1{
+      color:$acNeph;
+    }
+    h5{
+      color: $gray1;
+      a{
+        color: $gray3;
+        text-decoration: underline;
+      }
+    }
+  }
+  ._logPanel2{
+    width: 25%;
+    background-color: $tenue-gray-ac;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 10px;    
+    align-items: center;
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover; /* Resize the background image to cover the entire container */    
+  }
+
+  ._logPanel2 ._wrappenPnl{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    max-width: 300px;
+    
+    ._acCntBrand{
+      padding: 20px;
+      background-color: $dark-blue-ac;
+      border-radius: 10px 10px 0px 0px;
+      img {
+        width: 100%;
+      }
+    }
+
+  }
+
+  ._wrpBrand{
+    width: 100%;
+    max-width: 900px;
+
+    img{
+      width: 100%;
+    }
+  }
+
+  
+/*END LOGIN STYLES*/
+
+/*ABOUT STYLES*/
+._acPlaqueAbout{
+  display: flex;
+  justify-content: center;
+  img{
+    width: 80%;
+    max-width: 600px;
+    margin: auto;
+  }
+}
+/*END ABOUT STYLES*/
+
+
+/*MEDIAS QUERYS*/
+ /* Extra small devices (phones, 600px and down) */
+ @media only screen and (max-width: 600px) {
+   
+ }
+
+ /* Small devices (portrait tablets and large phones, 600px and up) */
+ @media only screen and (max-width: 600px) {
+  /*LOGIN STYLES*/
+
+  /*END LOGIN STYLES*/
+ }
+ 
+ /* Medium devices (landscape tablets, 768px and up) */
+ @media only screen and (max-width: 768px) {
+  /*LOGIN STYLES*/
+    ._logPanel1{
+      display: none;
+    }
+    ._logPanel2{
+      width: 100%;
+    }
+  /*END LOGIN STYLES*/
+ }
+ 
+
+/*END MEDIAS QUERYS*/

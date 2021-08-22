@@ -251,7 +251,9 @@ class UsersController extends Controller
             DB::commit();
         }catch(\Throwable $ex){
             DB::rollback();
-            $salida["msg"] = "Error en la Operacion ";
+            //$salida["msg"] = "Error en la Operacion ";
+            $salida["msg"] = "Error ".$ex->getMessage();
+
         }
 
         return $salida;

@@ -3,6 +3,7 @@
 
 @section('content')
 <main role="main" class="flex-shrink-0" id="app_inicio">
+    <input type="hidden" id="openRegister" value="{{app('request')->input('register')}}">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-7 margin-no">
@@ -37,17 +38,17 @@
         </div>
 
         @if(count($some_categories)>0)
-        <div class="row pt-2 pt-md-3">
+        <div class="_acScrollmenu mb-1 mb-md-2">
             @foreach($some_categories as $c)
-            <div class="col-6 col-md-3">
-                <a class="unique-section" href="{{url('/')."/search?sp=both&cat=".$c->id}}">
-                    <img class="avatarArt" src="{{asset('/images/'.$c->img_presentation)}}">
-                    <span class="text-section">{{$c->name}}</span>
-                </a>
+            <div class="_acCatItem m-1 m-md-2">
+                    <a class="_uniqueSection" style="padding: 10px;" href="{{url('/').'/search?id_filter='.$c->id.'&label='.$c->name.'&type_search=cat'}}"> 
+                        <img  src="{{asset('/files/categories/'.$c->img_presentation)}}" alt="" class="avatarArt">
+                        <span class="text-section">{{$c->name}}</span>
+                    </a>
             </div>
-            @endforeach
+            @endforeach            
         </div>
-        <p class="text-center h4"><a style="text-decoration:underline;" href="#">Ver todas las categorías</a></p>
+        <p class="text-center h4"><a style="text-decoration:underline;" href="{{route('search')}}">Ver todas las categorías</a></p>
         @else
         <p class="text-center text-primary h3">Actualmente no hay categorías disponibles</p>
         @endif
@@ -90,12 +91,6 @@
                         </div>
                     </div>               
                 </div>
-            </div>
-        </div>
-
-        <div class="row mt-2 mt-md-3">
-            <div class="col-md-4" style="padding-left:15px !important;padding-right: 15px !important;">
-                Contet......
             </div>
         </div>
         <p class="text-center h4"><a style="text-decoration:underline;" href="#">Ver todos</a></p>

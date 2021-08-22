@@ -1,5 +1,6 @@
-
 @extends('layouts.admin-template')
+@section('title', 'Usuarios')
+@section('windowName', 'USUARIOS REGISTRADOS ')
 
 @section('content')
 <div class="container-fluid" id="users">
@@ -10,5 +11,5 @@
 
 
 @Push('customScript')
-    <script src="{{ asset('js/app-users.js') }}"></script>
+    <script src="{{ asset('js/admin/app-users.js') }}"></script>
 @endpush

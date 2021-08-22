@@ -79,7 +79,7 @@ export default {
             };
 
             $(e.target).addClass("disabled");
-            axios.put(`/api/user/updateConfig/${this.user.id}`,params).then((result)=>{
+            axios.put(`/user/updateConfig/${this.user.id}`,params).then((result)=>{
                 let response = result.data;
                 console.log("Esta es la response");
                 console.log(response);
