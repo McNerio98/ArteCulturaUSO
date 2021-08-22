@@ -15,15 +15,15 @@
                         Inicio <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item" style="margin-left:20px">
-                    <a class="nav-link" style="color:#20B7EB" href="{{route('artistas')}}"> <i
+                    <a class="nav-link" style="color:#20B7EB" href="{{url('/').'/search?id_filter=0&label=&type_search=all'}}"> <i
                             class="fas fa-guitar"></i> Artistas</a>
                 </li>
                 <li class="nav-item" style="margin-left:20px">
-                    <a class="nav-link" style="color:#20B7EB" href="{{route('promotores')}}"> <i
+                    <a class="nav-link" style="color:#20B7EB" href="{{url('/').'/search?id_filter=9&label=Promotores&type_search=cat'}}"> <i
                             class="fas fa-compress-arrows-alt"></i> Promotores</a>
                 </li>
                 <li class="nav-item" style="margin-left:20px">
-                    <a class="nav-link" style="color:#20B7EB" href="{{route('escuelas')}}"> <i
+                    <a class="nav-link" style="color:#20B7EB" href="{{url('/').'/search?id_filter=10&label=Escuelas&type_search=cat'}}"> <i
                             class="fas fa-book-open"></i> Escuelas</a>
                 </li>
                 <li class="nav-item" style="margin-left:20px">

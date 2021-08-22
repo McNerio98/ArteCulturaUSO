@@ -4,7 +4,7 @@
 Vue.component('profile', require('../../components/users/SearchProfile.vue').default);
 Vue.component('search-component', require('../../components/search/SearchComponent.vue').default);
 Vue.component('spinner1',require('../../components/spinners/Spinner1Component.vue').default);
-
+Vue.component('empty1',require('../../components/notifiers/NoElements1Component.vue').default);
 const appSearch = new Vue({
     el: '#app-search',
     data: {
@@ -37,12 +37,12 @@ const appSearch = new Vue({
     },
     methods: {
         exeSeach: function(ng){
-            if(ng.label == undefined){
-                alert("Error, variables no definidas");
-                return;
-            }
+            // if(ng.label == undefined){
+            //     alert("Error, variables no definidas");
+            //     return;
+            // }
 
-            if(ng.type_search != "cat" && ng.type_search != "tag" && ng.type_search != "default"){
+            if(ng.type_search != "cat" && ng.type_search != "tag" && ng.type_search != "all" && ng.type_search != "custom"){
                 alert("Inconsistencia de datos");
                 return;
             }
@@ -56,7 +56,7 @@ const appSearch = new Vue({
         },
         loadDataProfiles: function(page = 1){
             //El per page se maneja desde el controlador 
-            if(this.finded.type_search != "cat" && this.finded.type_search != "tag" && this.finded.type_search != "default"){
+            if(this.finded.type_search != "cat" && this.finded.type_search != "tag" && this.finded.type_search != 'all' && this.finded.type_search != "custom"){
                 StatusHandler.ValidationMsg("Inconsistencia de datos, recargue el sitio");
                 return;
             }
@@ -67,6 +67,7 @@ const appSearch = new Vue({
                 label: this.finded.label,
                 type_search: this.finded.type_search,
                 init_paginate: ! this.has_paginate1 ? true: false //sino se tiene la paginacion se pide 
+                //init_paginate: false
             }
 
             this.spinners.S1 = true;

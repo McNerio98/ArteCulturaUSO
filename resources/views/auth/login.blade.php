@@ -62,6 +62,9 @@
                   <div class="col-12">
                       <button type="submit" class="btn btn-primary btn-block">Iniciar</button>                    
                   </div>
+                  <div class="col-12">
+                    <p class="mt-2 mt-md-3">¿No tiene una cuenta? <a href="{{url('/').'?register=true'}}">Cree una</a></p>
+                  </div>
               </div>
             </form>
         </div>

@@ -14,6 +14,14 @@
   background-color: #fbfbfb;
 }
 
+.actext-teal1 {
+  color: #20c997;
+}
+
+.actext-gray-e1 {
+  color: #8b909b;
+}
+
 .container-img-hscroll {
   text-align: center;
   overflow-x: auto;
@@ -484,6 +492,21 @@ main > .container {
 }
 
 /*END LOGIN STYLES*/
+
+/*ABOUT STYLES*/
+
+._acPlaqueAbout {
+  display: flex;
+  justify-content: center;
+}
+
+._acPlaqueAbout img {
+  width: 80%;
+  max-width: 600px;
+  margin: auto;
+}
+
+/*END ABOUT STYLES*/
 
 /*MEDIAS QUERYS*/
 

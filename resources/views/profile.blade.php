@@ -106,7 +106,7 @@
         <!-- ::::::::::::::::::::::::::::::::::::::END CONTENT::::::::::::::::::::::::::::::::::::::-->
     </div>        
     <media-viewer 
-    :media-profile="is_mdprofiles"  
+    :type-media = "type_media"
     :target="media_view.target"
     :logged.number='{{Auth::user() == null ? 0 : Auth::user()->id}}'
     :owner="media_view.owner"
