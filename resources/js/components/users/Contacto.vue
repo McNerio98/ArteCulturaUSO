@@ -10,7 +10,7 @@
                         <h2 class="lead"><b>{{contact.nombre_artistico}}</b></h2>
                         <p class="text-muted text-sm"><b>Rubro Artistico: </b>
                             <template v-for="(e,index) in contact.rubros">
-                                <span>{{e}}</span> <template v-if="index < (contact.rubros.length - 1)"> / </template>
+                                <span v-bind:key="index">{{e}}</span> <template v-if="index < (contact.rubros.length - 1)"> / </template>
                             </template>
                         </p>
                         <ul class="ml-4 mb-0 fa-ul text-muted">
@@ -20,7 +20,7 @@
                         </ul>
                     </div>
                     <div class="col-5 text-center">
-                        <img :src="paths.media_profiles + contact.img_profile" alt="" class="img-circle img-fluid">
+                        <img :src="contact.img_profile" alt="" class="img-circle img-fluid">
                     </div>
                 </div>
             </div>
@@ -51,7 +51,6 @@
 export default {
     props: {
         user: {type: Object,required:true},
-        paths: {type: Object,required:true}
     },    
     data(){
         return {

@@ -1,44 +1,31 @@
 <template>
-    <div class="card card-solid">
-        <div class="card-header">
-            <!--Select per_page-->
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="inputEmail4"></label>
-                    <select @change="changeRange($event)" class="form-control form-control-sm">
-                        <option v-for="e in rangesPages" v-bind:key="e" :value="e">{{e}}</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div class="card-body pb-0">
-            <div class="row d-flex align-items-stretch">
-                <contact :paths="paths" v-for="e in user_list" :key="e.id" :user="e"></contact>
-            </div>
-        </div>
-        <div class="card-footer">
-            <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                    <li v-bind:class="{'disabled' : ! (this.paginate.current_page > 1)}" class="page-item">
-                        <a @click.prevent="changePage(paginate.current_page - 1)" class="page-link" href="#">Anterior</a>
-                    </li>
-                    <li v-for="page in pagesNumber" v-bind:key="page" v-bind:class="[page == isActive? 'active':'']" class="page-item">
-                        <a @click.prevent="changePage(page)" class="page-link" href="#">{{page}}</a>
-                    </li>
-                    <li v-bind:class="{'disabled' : ! (this.paginate.current_page < this.paginate.last_page)}" class="page-item">
-                        <a @click.prevent="changePage(paginate.current_page + 1)" class="page-link" href="#">Siguiente</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </div>
+	<div>
+		<div>
+			<div class="custom-control custom-radio">
+				<input class="custom-control-input" type="radio" id="customRadio1" name="customRadio">
+				<label for="customRadio1" class="custom-control-label">Todos los usuarios</label>
+			</div>
+			<div class="custom-control custom-radio">
+				<input class="custom-control-input" type="radio" id="customRadio2" name="customRadio">
+				<label for="customRadio2" class="custom-control-label">Solicitudes</label>
+			</div>
+			<div class="custom-control custom-radio">
+				<input class="custom-control-input" type="radio" id="customRadio3" name="customRadio">
+				<label for="customRadio3" class="custom-control-label">Habilitados</label>
+			</div>						
+			<div class="custom-control custom-radio">
+				<input class="custom-control-input" type="radio" id="customRadio4" name="customRadio">
+				<label for="customRadio4" class="custom-control-label">Inhabilitados</label>
+			</div>									
+		</div>
+		<div class="row">
+			<contact v-for="e in user_list" :key="e.id" :user="e"></contact>
+		</div>
+	</div>
 </template>
 
 <script>
 	export default{
-		props: {
-			paths: {type: Object,required:true}
-		},
 		data(){
 			return {
 				user_list: [],
@@ -83,10 +70,10 @@
 			}			
 		},
 		mounted(){
-			this.loadData();
+			//this.loadData();
 		},
 		methods: {
-			loadData(page = 1, per_page = 5){
+			loadData(page = 1, per_page = 15){
 				axios(`/api/users?page=${page}&per_page=${per_page}`).then((result)=>{
 					this.user_list = result.data.users.data;
 					this.paginate = result.data.paginate;

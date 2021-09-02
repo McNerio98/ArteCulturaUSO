@@ -1,13 +1,8 @@
-<nav aria-label="Navegacion elementos en aprobación">
-    <ul class="pagination justify-content-center">
-        <li v-bind:class="{'disabled' : ! (paginate_approval.current_page > 1)}" class="page-item">
-            <a @click.prevent="changePage(paginate_approval.current_page - 1)" class="page-link" href="#">Anterior</a>
-        </li>
-        <li v-for="page in pagesNumber" v-bind:key="page" v-bind:class="[page == isActive? 'active':'']" class="page-item">
-            <a @click.prevent="changePage(page)" class="page-link" href="#">@{{page}}</a>
-        </li>
-        <li v-bind:class="{'disabled' : ! (this.paginate_approval.current_page < this.paginate_approval.last_page)}" class="page-item">
-            <a @click.prevent="changePage(paginate_approval.current_page + 1)" class="page-link" href="#">Siguiente</a>
-        </li>
-    </ul>
-</nav>   
+<div class="custom-control custom-radio">
+    <input class="custom-control-input" type="radio" id="customRadio1" name="customRadio1">
+    <label for="customRadio1" class="custom-control-label">Crear biografía</label>
+</div>
+<div class="custom-control custom-radio">
+    <input class="custom-control-input" type="radio" id="customRadio2" name="customRadio2">
+    <label for="customRadio2" class="custom-control-label">Crear homenaje</label>
+</div>

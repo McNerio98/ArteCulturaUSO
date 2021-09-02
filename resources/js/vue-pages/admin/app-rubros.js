@@ -7,7 +7,6 @@ const appRubros = new Vue({
     data: {
         acAppData: {},
         categories: [],
-        cat_selected: {id: 0, img_presentation: "/images/default_img_category.png",name: "",tags: []},
         ref_cat_selected: {id: 0, img_presentation: "",name: ""},
         cat_id_selected: 0,
         tags: [],
@@ -23,7 +22,7 @@ const appRubros = new Vue({
             axios(`/api/categories`).then((result)=>{
                 let response = result.data;
                 this.categories = response.data.map(e=>{
-                    e.img_presentation = this.acAppData.base_url + "/files/categories/" + e.img_presentation;
+                    e.img_presentation = this.acAppData.storage_url + "/files/categories/" + e.img_presentation;
                     return e;
                 });
 
@@ -43,7 +42,7 @@ const appRubros = new Vue({
             this.loadDataCategory(cat.id);
         },
         loadDataCategory: function(id_category){
-            axios(`/api/tags/byCategory/${id_category}`).then((result)=>{
+            axios(`/tags/byCategory/${id_category}`).then((result)=>{
                 let response = result.data;
                 if(response.code == 0){
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
@@ -59,18 +58,20 @@ const appRubros = new Vue({
         storeCategory: function(){
             let size_campo1 = this.category_insert.length;
             if(size_campo1 < 1  || size_campo1 > 50){
-                StatusHandler.ValidationMsg("Nombre de Categoria no valido");
+                StatusHandler.ValidationMsg("Longitud de categoria no valida (1-50)");
                 return;
             }
             const data = {
                 category_name: this.category_insert.trim()
             };
-            axios.post(`/api/categories`,data).then((result)=>{
+
+            axios.post(`/categories`,data).then((result)=>{
                 let response = result.data;
                 if(response.code == 0){
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
                     return;
                 };
+                response.data.img_presentation = this.acAppData.storage_url + "/files/categories/"+response.data.img_presentation;
                 //ingresando la nueva categoria 
                 this.categories.unshift(response.data);
                 this.creating_category = false;
@@ -90,7 +91,7 @@ const appRubros = new Vue({
                 tag_name: this.tag_insert,
                 category_id: this.ref_cat_selected.id
             };
-            axios.post(`/api/tags`,data).then((result)=>{
+            axios.post(`/tags`,data).then((result)=>{
                 let response = result.data;
                 if(response.code == 0){
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);

@@ -32,14 +32,14 @@
             onClickUpdate(){
                 let size_campo1 = this.tag.name.length;
                 if(size_campo1 < 1  || size_campo1 > 50){
-                    StatusHandler.ValidationMsg("Nombre de etiqueta no valido");
+                    StatusHandler.ValidationMsg("Longitud de etiqueta no valido (2-50)");
                     return;
                 }
                 const params = {
                     tag_name : this.tag.name, 
                 }; 
                 this.editMode = false; //se bloquea otro click 
-                axios.put(`/api/tags/${this.tag.id}`,params).then((result)=>{
+                axios.put(`/tags/${this.tag.id}`,params).then((result)=>{
                     let response = result.data;
                     if(response.code == 0){
                         StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);

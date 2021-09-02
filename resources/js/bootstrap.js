@@ -13,12 +13,12 @@ try {
 
     window.axios = require('axios');
 
-    window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-    let token_acces =  $("#current_save_token_generate").val();
-    console.log("Se ha agredado el token de acceso, es este " + token_acces);
-    if(token_acces != undefined){
-        window.axios.defaults.headers.common['Authorization'] = `Bearer ${token_acces.trim()}`;
-    }
+    //window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+    //let token_acces =  $("#current_save_token_generate").val();
+    //console.log("Se ha agredado el token de acceso, es este " + token_acces);
+    // if(token_acces != undefined){
+    //     window.axios.defaults.headers.common['Authorization'] = `Bearer ${token_acces.trim()}`;
+    // }
 
 } catch (e) {}
 

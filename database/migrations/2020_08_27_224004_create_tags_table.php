@@ -18,6 +18,7 @@ class CreateTagsTable extends Migration
             $table->string('name',60);
             $table->boolean('active')->default(true);
             $table->timestamps();
+            $table->index("name");
         });
     }
 
