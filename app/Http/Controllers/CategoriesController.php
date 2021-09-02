@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class CategoriesController extends Controller
 {
-    //
+    
     public function index(){
         $salida = [
             "code" => 0,
@@ -32,8 +32,13 @@ class CategoriesController extends Controller
             "msg" => null
         ];
 
+        if(!Auth::user()->can('crear-rubros')){
+            $salida["msg"] = "Operación denegada";
+            return $salida;            
+        }
+
         $validator = Validator::make($request->all(),[
-            "category_name" => "required"
+            "category_name" => "required|min: 2|max: 50"
         ]);
 
         if($validator->fails()){
@@ -58,8 +63,8 @@ class CategoriesController extends Controller
 
         $salida = [
             "code" => 1,
-            "data" => Category::find($cat->id),
-            "msg" => "Ok"
+            "data" => $cat->refresh(),
+            "msg" => "Saved successfully"
         ];        
 
         return $salida;

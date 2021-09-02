@@ -18,23 +18,11 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div style="max-height: 400px;overflow-y: auto;">
-                                    <table class="table table-striped table-valign-middle">
-                                        <tbody>
-                                            <tr v-for="e of categories">
-                                                <td>
-                                                    <label class="form-check-label"
-                                                    v-bind:class="[ref_cat_selected.id == e.id?'active':'','actable-item']"
-                                                    @click="selectCategory(e)">
-                                                    @{{e.name}}
-                                                    </label>
-                                                </td>
-                                                <td>
-                                                    <span> <i class="fas fa-pencil-alt icon"></i></span>
-                                                </td>
-                                                <td><span><i class="fas fa-trash-alt icon"></i></span></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <div  class="bg-light border-bottom rounded-left p-1 p-md-3" v-for="e of categories" @click="selectCategory(e)" v-bind:class="[ref_cat_selected.id == e.id?'active':'','actable-item']">
+                                    @{{e.name}}
+                                    </div>
+
+                                    
                                 </div>
 
                                 <div class="input-group" v-if="creating_category">

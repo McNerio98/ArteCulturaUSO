@@ -19,6 +19,7 @@ class CreateCategoriesTable extends Migration
             $table->string('name',50);
             $table->string('img_presentation')->default('default_img_category.png');
             $table->boolean('active')->default(true);//eliminar mas adelante si no se utiliza 
+            $table->index('name');
         });
     }
 

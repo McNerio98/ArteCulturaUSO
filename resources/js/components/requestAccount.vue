@@ -3,12 +3,12 @@
     <div class="col-12">
       <div class="row">
         <div class="col-12 titleContainer">
-          <form novalidate ref="frmRequestAccount">
+          <form id="frmDataRequest" novalidate ref="frmRequestAccount">
             <div class="form-row">
 
               <div class="form-group col-12">
-                  <label for="raCompleteName">Nombre completo</label>
-                  <label class="sr-only" for="raCompleteName">Nombre completo</label>
+                  <label for="raCompleteName">Nombre propietario cuenta</label>
+                  <label class="sr-only" for="raCompleteName">Nombre propietario cuenta</label>
                     <div class="input-group mb-2">
                       <div class="input-group-prepend">
                         <div class="input-group-text"><i class="fas fa-address-book"></i></div>
@@ -38,6 +38,7 @@
                       </div>
                         <input
                           v-model="correo"
+                          @keyup="flags.email_exists = false"
                           type="email"
                           required
                           maxlength="255"
@@ -51,8 +52,8 @@
                       <div class="invalid-feedback">
                         Ingrese su correo electrónico
                       </div>
-                      <div v-if="email_exists" style="width: 100%;margin-top: 0.25rem;font-size: 80%;color: #dc3545;font-weight: bold;">
-                        Ingrese otro correo electrónico
+                      <div v-if="flags.email_exists" style="width: 100%;margin-top: 0.25rem;font-size: 80%;color: #dc3545;font-weight: bold;">
+                          El correo electrónico ya ha sido registrado
                         </div>                                            
                     </div>
               </div>
@@ -79,6 +80,9 @@
                       <div class="invalid-feedback">
                        Ingrese su número de contacto
                       </div>                                      
+                      <div v-if="flags.telephone_exist" style="width: 100%;margin-top: 0.25rem;font-size: 80%;color: #dc3545;font-weight: bold;">
+                          El número de teléfono ya ha sido registrado
+                        </div>                              
                     </div>
               </div>
 
@@ -117,7 +121,7 @@
                         <div class="input-group-text"><i class="fas fa-fingerprint"></i></div>
                       </div>
                       <select required v-model="rubro" class="custom-select" id="raRubro">
-                          <option value="0" disabled selected>Elegir</option>
+                          <option disabled value="" >Elegir</option>
                         <optgroup  v-for="(main, key) in listTags" v-bind:key="key" :label="key">
                           <option  v-for="(item, i) in main" v-bind:key="i" :value="item.id">{{item.tag}}</option>
                         </optgroup>
@@ -154,9 +158,12 @@ export default {
   data() {
     return {
       sending_data: false,
-      email_exists: false, 
+      flags: {
+        email_exists: false,
+        telephone_exist: false
+      }, 
       listTags: [],
-      rubro: 0,
+      rubro: "",
       fullname: "",
       correo: "",
       tel: "",
@@ -178,7 +185,47 @@ export default {
       }
   },
   methods: {
+    checkExistData: function(){
+        //Verificar si existe otro registro con ese correo, numero de telefono o email 
+        var temp = {
+          code: 0,
+          data: {
+            exist_email: false,
+            exist_telephone: false
+          },
+          msg: ""
+        };
+
+        return new Promise((resolve,reject)=>{
+            axios.get(`/api/user/existEmail/${-1}/${this.correo.trim()}`).then(result=>{
+              let response = result.data;
+              if(response.code == 0){
+                temp.msg = "Ocurrio un error interno en la verificacion de correo, contacte Soporte Tecnico";
+                resolve(temp);
+              }
+
+              //here code is 1 
+              if(response.data == 1){
+                temp.data.exist_email = true;
+              }
+              return axios.get(`/api/user/existTelephone/${-1}/${this.tel.trim()}`);
+            }).then(result=>{
+                let response2 = result.data;
+                if(response2.code == 0){
+                  temp.msg = "Ocurrio un error interno en la verificacion de correo, contacte Soporte Tecnico";
+                  resolve(temp);
+                }
+                //here code is 1 
+                if(response2.data == 1){
+                  temp.data.exist_telephone = true;
+                }
+                temp.code = 1;
+                resolve(temp);                              
+            });
+        });
+    },
     validPatternTel: function(){
+      this.flags.telephone_exist = false;
       if(this.tel.length == 5 && this.tel[4] !== '-'){
          if(!isNaN(parseInt(this.tel[4]))){
            this.tel = this.tel.substring(0,4) + '-' + this.tel[4];
@@ -202,9 +249,26 @@ export default {
          }         
       }
     },
-    onSubmit() {
+    onSubmit: async function(){
       if(this.$refs.frmRequestAccount.checkValidity() !== false){
-        this.SolicitarCuenta();
+        //validate only for id tag, if equals 0 is unselected
+        if(this.rubro == 0 || this.rubro == ""){
+          StatusHandler.StatusToast(StatusHandler.TOAST_STATUS.FAIL,"Debe seleccionar un rol");
+          return;
+        }
+        //Verificate if email or telephone already exist
+        var response = await this.checkExistData();
+        if(response.code == 0){
+          $("#requestAccountModal").modal('hide');
+          StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+        }
+
+        this.flags.email_exists = response.data.exist_email;
+        this.flags.telephone_exist = response.data.exist_telephone;
+
+        if(!this.flags.email_exists && !this.flags.telephone_exist){
+          this.SolicitarCuenta();
+        }
       }else{
         this.$refs.frmRequestAccount.classList.add('was-validated');
       }
@@ -220,15 +284,19 @@ export default {
       this.sending_data = true;
       axios.post(`/api/requestaccounts`,data).then(result=>{
         let response = result.data;
-        console.log(response);
         if(response.code ==0){
-          console.log("iene error");
           if(response.errors.email != undefined){
-            console.log("El email esta definido");
-            this.email_exists = true;
+            this.flags.email_exists = true;
             StatusHandler.StatusToast(StatusHandler.TOAST_STATUS.FAIL,response.errors.email[0]);
-            return;
+            //se omite el return para que pueda llegar al slguiente 
           }
+
+          if(response.errors.telephone != undefined){
+            this.flags.telephone_exist = true;
+            StatusHandler.StatusToast(StatusHandler.TOAST_STATUS.FAIL,response.errors.telephone[0]);
+            return;
+          }          
+
           StatusHandler.StatusToast(StatusHandler.TOAST_STATUS.FAIL,response.msg);
           return;
         }

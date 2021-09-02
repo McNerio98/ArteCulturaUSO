@@ -50,6 +50,15 @@ export default class StatusHandler{
         })        
     }
 
+    static BadDataMsg(mensaje){
+        Swal.fire({
+            icon: 'error',
+            title: 'Inconsistencia de datos',
+            text: mensaje,
+            showCloseButton: true
+        })        
+    }    
+
     static ShowStatus(mensaje, tipo, estado){
         let msgContent = "";
         let msgTitle = "";

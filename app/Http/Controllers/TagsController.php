@@ -6,10 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Tag;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class TagsController extends Controller
 {
 
+    //Already has filter protection (Auth only)
     public function tagsByCategory($id_cat){
         $salida = [
             "code" => 0,
@@ -32,7 +34,7 @@ class TagsController extends Controller
         $salida = [
             "code" => 1,
             "data" => $tags,
-            "msg" => "OK"
+            "msg" => "Request complete"
         ];
         
         return $salida; 
@@ -59,10 +61,17 @@ class TagsController extends Controller
             "msg" => null
         ];
 
+        if(!Auth::user()->can('crear-rubros')){
+            $salida["msg"] = "Operación denegada";
+            return $salida;            
+        }
+
+        //min:0 make sure the minimum value is 0 and no negative values are allowed. not_in:0 make sure value cannot be 0
         $validator = Validator::make($request->all(),[
-            "tag_name" => "required",
-            "category_id" =>"required"
+            "tag_name" => "required|min:2|max:50",
+            "category_id" =>"required|numeric|min:0|not_in:0"
         ]);
+
 
         if($validator->fails()){
             $salida["msg"] = "Valores imcompletos";
@@ -89,17 +98,6 @@ class TagsController extends Controller
 
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -114,14 +112,20 @@ class TagsController extends Controller
             "msg" => null
         ];
 
-        if(! isset($id)){
+        if(!Auth::user()->can('editar-rubros')){
+            $salida["msg"] = "Operación denegada";
+            return $salida;            
+        }
+
+        if($id == null || $id == 0){
             $salida["msg"] = "Parametros imcompletos";
             return $salida;
         }
 
         $validator = Validator::make($request->all(),[
-            "tag_name" => "required",
+            "tag_name" => "required|min:2|max:50",
         ]);
+
         if($validator->fails()){
             $salida["msg"] = "Valores imcompletos";
             return $salida;
@@ -142,7 +146,7 @@ class TagsController extends Controller
         $salida = [
             "code" => 1,
             "data" => $tag,
-            "msg" => "Ok"
+            "msg" => "Updated successfully"
         ];
 
         return $salida;

@@ -17,7 +17,7 @@ class AddProfileFieldToUser extends Migration
             $table->string('artistic_name',50)->nullable();
             $table->integer('count_posts')->default(0);
             $table->integer('count_events')->default(0);
-            $table->index('artistic_name')->unique();
+            $table->index('artistic_name');
         });
     }
 
