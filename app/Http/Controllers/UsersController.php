@@ -94,7 +94,7 @@ class UsersController extends Controller
             "data" => null
         ];
 
-        $user = User::where('email',trim($email))->where('id','<>',$id)->first();
+        $user = User::where('email',trim($email))->where('id','<>',$id)->where("active","=",true)->first();
         if($user){
             $salida["code"] = 1;
             $salida["msg"] = "El correo existe";
@@ -108,6 +108,27 @@ class UsersController extends Controller
         return $salida;
     }
 
+    public function validateTelephone($id,$target){
+        $salida = [
+            "code" => 0,
+            "msg" => "",
+            "data" => null
+        ];
+
+        $user = User::where('telephone',trim($target))->where('id','<>',$id)->where("active","=",true)->first();
+        if($user){
+            $salida["code"] = 1;
+            $salida["msg"] = "Ya existe el numero";
+            $salida["data"] = 1;
+        }else{
+            $salida["code"] = 1;
+            $salida["msg"] = "No existe el numero";
+            $salida["data"] = 0;
+        }
+
+        return $salida;        
+    }
+
     public function validateUsername($id,$username){
         $salida = [
             "code" => 0,
@@ -116,7 +137,7 @@ class UsersController extends Controller
             'extra' => null
         ];
         
-        $user = User::where('username',trim($username))->where('id','<>',$id)->first();
+        $user = User::where('username',trim($username))->where('id','<>',$id)->where("active","=",true)->first();
         $salida["extra"] = "Contenido, username : ".$username." iden: ".$id;
         if($user){
             $salida["code"] = 1;
@@ -301,37 +322,60 @@ class UsersController extends Controller
      */
     public function index(Request $request)
     {
+        $salida = [
+            "code" => 0,
+            "data" => null,
+            "msg" => ""
+        ];
 
-        $per_page = ($request->per_page === null)?6:$request->per_page;
-
-        $valid_range = array(6,12,24);
-        if(! in_array($per_page,$valid_range)){
-            $per_page = 6;
+        $per_page = ($request->per_page === null)?15:$request->per_page;
+        $filter = ($request->filter === null)?'all':$request->filter;
+        $valid_filters = array('all','enabled','disabled','request');
+        if(! in_array($filter,$valid_filters)){
+            $salida["msg"] = "Inconsistencia de datos, recargue el sitio";
+            return $salida;
         }
-
-        $per_page = 2;
+        //only for test 
+        //$per_page = 2;
 		
-        $result = DB::table('users')
+        $builder = DB::table('users')
         ->join("model_has_roles","model_has_roles.model_id","=","users.id")
         ->join("roles","roles.id","=","model_has_roles.role_id")
         ->leftJoin('media_profiles','media_profiles.id','=','users.img_profile_id')
         ->select("users.id","roles.name as role","users.name","users.img_profile_id","users.email",
-            "users.username","users.telephone","users.rubros","users.status","media_profiles.path_file AS img_profile")
-        ->paginate($per_page);
+            "users.username","users.telephone","users.rubros","users.status","media_profiles.path_file AS img_profile");
 
-        return [
-            'paginate' =>[
-                    'total' =>$result->total(),
-                    'current_page'  => $result->currentPage(),
-                    'per_page'      => $result->perPage(),
-                    'last_page'     => $result->lastPage(),
-                    'from'          => $result->firstItem(),
-                    'to'            => $result->lastPage(),
+        switch($filter){
+            case "enabled": {
+                $builder->where("status","enabled");
+                break;
+            }
+            case "disabled": {
+                $builder->where("status","disabled");
+                break;
+            }
+            case "request": {
+                $builder->where("status","request");
+                break;
+            }
+        }
+
+        //by default get all if no pass extra filter
+        $result = $builder->paginate($per_page);
+        $salida["code"] = 1;
+        $salida["data"] = [
+            "pagination" => [
+                'total' =>$result->total(),
+                'current_page'  => $result->currentPage(),
+                'per_page'      => $result->perPage(),
+                'last_page'     => $result->lastPage(),
+                'from'          => $result->firstItem(),
+                'to'            => $result->lastPage(),                
             ],
-            'users' => $result
-
+            "items" => $result->items()
         ];
-        return $users;
+
+        return $salida;
     }
 
     /**
@@ -482,14 +526,15 @@ class UsersController extends Controller
         ];
 
         $validation_messages = [
-            'email.unique' => 'El correo electrónico ya existe'
+            'email.unique' => 'El correo electrónico ya existe',
+            'telephone.unique' => 'El numero de contacto ya existe'
         ];
 
         $validator = Validator::make($request->all(),[
             'name' => 'required|max:200|min:2',
             'email' => 'required|email|unique:users',
             //'telephone' => 'required|numeric|digits_between:8,9',  //8 sin guion, 9 con guion 
-            'telephone' => 'required: max: 9',
+            'telephone' => 'required| max: 9|unique:users',
             'rubros' => 'required|numeric|min:1',
             'artistic_name' => 'required|max:100|min:2'            
         ],$validation_messages);

@@ -354,6 +354,9 @@ main>.container {
   padding: 20px 15px 0;
 }
 
+body.no-scroll {
+  overflow: hidden !important;
+}
 
 /*LOGIN STYLES*/
 ._acScreenLogin{

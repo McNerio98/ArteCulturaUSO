@@ -79,8 +79,9 @@ export default {
     this.image_tag = document.querySelector("#cropperNaturalPhoto");
     this.modal = $("#trimModalComponent")[0];
     let vm = this;
-    $(this.modal)
-      .on("shown.bs.modal", function () {
+    $(this.modal).on("shown.bs.modal", function () {
+      console.log("Creando");
+        //vm.image_tag.src = "";
         vm.cropper_el = new Cropper(vm.image_tag, {
           aspectRatio: 1 / 1,
           viewMode: 1,
@@ -91,8 +92,8 @@ export default {
               .setCanvasData(vm.canvasData);
           },
         });
-      })
-      .on("hidden.bs.modal", function () {
+      }).on("hidden.bs.modal", function () {
+        console.log("Destruyendo");
         vm.cropBoxData = vm.cropper_el.getCropBoxData();
         vm.canvasData = vm.cropper_el.getCanvasData();
         vm.cropper_el.destroy();

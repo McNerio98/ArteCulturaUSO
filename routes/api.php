@@ -25,27 +25,18 @@ Route::post('storeTestValidJson','RequestAcountController@storeWithValidateJson'
 
 
 
-
-
-//Routes para el admin panel de administradores
-
-Route::post('requestaccounts','UsersController@requestAccount');
-//Route::apiResource('post', 'CreatePostEvent');
-
+//Depurar estos 
 Route::apiResource('users', 'UsersController');
+Route::apiResource('profile','ProfileController');
 
 //Route::get('user/{id}','ProfileController@show')->
 
-
-Route::get('user/existEmail/{id}/{mail}','UsersController@validateEmail');
-Route::get('user/existUsername/{id}/{username}','UsersController@validateUsername');
 Route::post('user/uploadImgProfile','UsersController@uploadProfileImg');
-
-
+#Obtiene las categorias con sus etiquetas segmentadas 
 Route::get('tags/withCategories', 'TagsController@getBySeccion');
-Route::get('tags/byCategory/{id}','TagsController@tagsByCategory');
 
-Route::apiResource('profile','ProfileController');
+
+
 
 
 
@@ -70,8 +61,14 @@ Route::get('exeSearch','SearchController@execSearch')->name("search.exec");
 Route::get('profile/gnInfo/{id}','ProfileController@summaryInfo')->name('profile.general.info');
 # Ontiene el modelo del usuario y los metadatos 
 Route::get('profile/aboutUser/{id}','ProfileController@aboutInfo')->name('profile.about.info');
-
-
+#Verifica si ya existe un usuario con el numero de telefono especifico
+Route::get('user/existTelephone/{id}/{target}','UsersController@validateTelephone');
+#Verifica si ya existe un usuario con el email  especifico
+Route::get('user/existEmail/{id}/{mail}','UsersController@validateEmail');
+#Verifica si ya existe un usuario con el nombre de usuario especifico
+Route::get('user/existUsername/{id}/{username}','UsersController@validateUsername');
+#Envia datos para su almacenaje como nueva solicitud de cuenta 
+Route::post('requestaccounts','UsersController@requestAccount');
 # ===========
 
 
@@ -81,10 +78,6 @@ Route::post('post/setState','PostEventController@switchStatePost');
 
 Route::get('post/populars','PostEventController@popularPost');
 
-
-
-
-Route::post('categories','CategoriesController@store')->name('tags.store');
 
 
 //Rutas para busquedas 

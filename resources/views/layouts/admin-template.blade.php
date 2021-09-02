@@ -75,7 +75,6 @@
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed dark-mode">
-<input type="hidden" value="{{Auth::user() == null?'':Auth::user()->api_token}}" id="current_save_token_generate" />
     <div class="wrapper">
         @include('layouts.components.admin-navbar')
         @include('layouts.components.admin-aside')

@@ -251,7 +251,7 @@ class RolesPermissionSeeder extends Seeder
 			'email' => 'ax.minck@gmail.com',
 			'username' => 'mcnerio2020',
 			'password'	=> Hash::make('123456789'),
-			'telephone' => '2222-2222',
+			'telephone' => '2222-1222',
 			'status' => 'enabled',
 		]);
 		$profile1 = MediaProfile::create([

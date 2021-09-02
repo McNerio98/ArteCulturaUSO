@@ -74,7 +74,7 @@
         <div class="row mt-2 mt-md-3">
                 <summary-item v-for="event of events" :model="event"></summary-item>
         </div>
-        <p class="text-center h4"><a style="text-decoration:underline;" href="{{route('events')}}">Ver todos los eventos</a></p>
+        <p class="text-center h4 mb-1 mb-md-5"><a style="text-decoration:underline;" href="{{route('events')}}">Ver todos los eventos</a></p>
         <!--END EVENTS TABLE-->
         
     <hr/>
@@ -93,18 +93,12 @@
                 </div>
             </div>
         </div>
-        <p class="text-center h4"><a style="text-decoration:underline;" href="#">Ver todos</a></p>
+        <p class="text-center h4 mb-1 mb-md-5"><a style="text-decoration:underline;" href="{{url('/').'/search?id_filter=10&label=Escuelas&type_search=cat'}}">Ver todos</a></p>
         <!--END CENTROS DE ENSEÑANZAS Y ACADEMIAS-->
 
-
-        <h1 style="text-align: center; color:rgb(104, 104, 104);; font-size:25px;margin-top: 50px">
-            RECURSOS VIRTUALES
-        </h1>
         <hr />
         <div class="row">
-            <div style="display: flex; justify-content: center;" class="col-12">
-                <img src="{{asset('images/bibloteca.png')}}" alt="">
-            </div>
+            <img src="{{asset('images/biblioteca_virtual.png')}}" alt="" style="width: 100%;">
         </div>
         <div class="row">
             <div style="display: flex; justify-content: center;" class="col-12">
@@ -114,9 +108,9 @@
                 </p>
             </div>
         </div>            
-        <div class="row mb-md-3">
+        <div class="row mb-1 mb-md-5">
             <div style="display: flex; justify-content: center;" class="col-12">
-                <a class="btn btn-primary" href="#" role="button">Ver todos los recursos</a>
+                <a class="btn btn-primary " href="{{route('recursos')}}" role="button">Ver todos los recursos</a>
             </div>
         </div>    
         <!-- ::::::::::::::::::::::::::::::::::::::END CONTENT::::::::::::::::::::::::::::::::::::::-->

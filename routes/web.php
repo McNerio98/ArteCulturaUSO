@@ -16,9 +16,9 @@ use Illuminate\Support\Facades\Route;
 //Router Pagina principal 
 Route::get('/','WebsiteController@welcome')->name("inicio");
 Route::get('/events','WebsiteController@events')->name('events');
-Route::get('/page1','WebsiteController@artitas')->name("artistas");
-Route::get('/page2','WebsiteController@promotores')->name("promotores");
-Route::get('/page3','WebsiteController@escuelas')->name("escuelas");
+//Route::get('/page1','WebsiteController@artitas')->name("artistas");
+//Route::get('/page2','WebsiteController@promotores')->name("promotores");
+//Route::get('/page3','WebsiteController@escuelas')->name("escuelas");
 Route::get('/page4','WebsiteController@recursos')->name("recursos");
 Route::get('/page5','WebsiteController@biografias')->name("biografias");
 Route::get('/page6','WebsiteController@homenajes')->name("homenajes");
@@ -67,10 +67,21 @@ Route::get('/search','SearchController@index')->name('search');
 Route::get('/approval','PostEventController@approval')->name('items.approval')->middleware('auth','adroles');
 Route::get('/users/dataConfig/{id}','UsersController@configUserData')->name("user.dataconf")->middleware('auth','adroles');
 Route::put('/user/updateConfig/{id}','UsersController@updateConfigUser')->name("user.updateconf")->middleware('auth','adroles');
+
+#Obtiene los usuarios dentro de la plataforma, con filtros para todos los usuarios, solicitudes, habilitados, no activos 
+Route::get('users','UsersController@index')->name('users.fetch')->middleware('auth','adroles');
 # Guarda la fotografia de presentacion de la categoria que se esta editando 
 Route::post('/categories/saveImgPresentation','CategoriesController@changeImgPresentation')->middleware('auth','adroles');
+# Almacena una nueva categoria 
+Route::post('categories','CategoriesController@store')->name('cat.store')->middleware('auth','adroles');
+#Actualiza una etiqueta 
+Route::put('tags/{id}','TagsController@update')->name("tag.update")->middleware('auth','adroles');
+Route::post('tags','TagsController@store')->name('tags.store')->middleware('auth','adroles');
+#Obtiene todas las etiquetas mediante el paso de una categoria , solo es necesario que este logeado sea rol o podria ser un invitado 
+Route::get('tags/byCategory/{id}','TagsController@tagsByCategory')->name('tag.select')->middleware('auth');
+
 #Obtiene los notificadores, usuario, eventos, events para los paneles notificaciones en la pagina principal del admin 
-#Esta ruta ya tiene los middleware desde el constructor 
+#Esta ruta ya tiene los middleware adroles desde el constructor 
 Route::get('/notifiers','DashboardController@notifiers')->name("notifiers");
 #Almacena un elemento, publicacion o evento con sus medios digitales 
 Route::post('postevent','PostEventController@store')->name('postevent.store')->middleware('auth');

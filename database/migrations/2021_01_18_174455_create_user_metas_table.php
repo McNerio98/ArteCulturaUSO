@@ -15,10 +15,11 @@ class CreateUserMetasTable extends Migration
     {
         Schema::create('user_metas', function (Blueprint $table) {
             $table->id();
-            $table->string('key',45);
+            $table->string('key',60);
             $table->longText('value');
             $table->foreignId('user_id')->constrained();
             $table->timestamps();
+            $table->index("key"); //plain index for search
         });
     }
 

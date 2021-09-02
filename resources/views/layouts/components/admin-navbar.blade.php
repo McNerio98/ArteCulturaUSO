@@ -36,7 +36,7 @@
 
                 <div class="dropdown-divider"></div>
                 <!--Aqui se debe mandar un filtro al panel usuario, filtro aun no creado-->
-                <a href="{{route('users')}}" class="dropdown-item dropdown-footer">Todas las solicitudes</a>
+                <a href="{{url('/admin/users').'?filter=request'}}" class="dropdown-item dropdown-footer">Todas las solicitudes</a>
             </div>
         </li>
     </ul>

@@ -1,5 +1,5 @@
 <link href="{{ asset('css/bannerSolicitud.css') }}" rel="stylesheet">
-<div class="containerSolicitud">
+<div class="containerSolicitud mb-4 md-md-1">
     <div id='show_bg_2'>
         <span class="title">Arte y Cultura en Sonsonate</span>
         <p class="parrafoInfo">
