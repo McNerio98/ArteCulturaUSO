@@ -21,13 +21,6 @@ class UsersController extends Controller
 {
     public $path_store_profiles =  "/files/profiles/";
 
-    public function __construct(){
-        //$this->middleware('auth',['only'=>['configUser']]);
-        $this->middleware('auth:api',['only'=>[
-            'uploadProfileImg'
-            ]]);
-    }
-
 
     public function uploadProfileImg(Request $request){
         $salida = [

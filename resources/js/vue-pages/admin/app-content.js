@@ -32,7 +32,7 @@ const appContent = new Vue({
                 id                      : this.acAppData.current_user.id,
                 nickname        : this.acAppData.current_user.nickname,
                 fullname          : this.acAppData.current_user.fullname,
-                profile_path    : window.obj_ac_app.base_url + "/files/images/" + this.acAppData.current_user.presentation_img.name,
+                profile_path    : window.obj_ac_app.base_url + "/files/profiles/" + this.acAppData.current_user.presentation_img.name,
             }
         }
 

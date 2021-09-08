@@ -14,7 +14,6 @@ const appMemoriesVue = new Vue({
         acAppData: {},
         trim_buffer: {
             aspec_ratio: 2/3,
-            file: {},
             window_open: false,
             target: "" //element that open cropper 
         },
@@ -26,17 +25,14 @@ const appMemoriesVue = new Vue({
     },
     methods: {
         openTrimPrincipalPic: function(file){
-            this.trim_buffer.file  = file;
-            this.trim_buffer.window_open = true;
+            this.$refs.acVmCompCropper.openTrim(file);
             this.trim_buffer.target = "MAIN_IMG_MEMOY";
         },
         principalPicCropped: function(base64){
             switch(this.trim_buffer.target){
                 case "MAIN_IMG_MEMOY": {
                     //pass to component 
-                    this.main_img_buffer.change = false;
-                    this.main_img_buffer.base64 = base64;
-                    this.main_img_buffer.change = true;
+                    this.$refs.acVmCompMemory.setPresentationImg(base64);
                     break;
                 }
             }

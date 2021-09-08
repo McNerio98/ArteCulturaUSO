@@ -24,12 +24,22 @@ class LoginController extends Controller
     }
 
     public function login(){
+
+        //Redirecciona automaticamente 
         $credentials = $this->validate(request(),[
-            'username'  => 'required|string',
-            'password'  => 'required|string'
+            'username'  => 'required|string|min: 2',
+            'password'  => 'required|string| min: 2'
         ]);
 
-        if(Auth::attempt($credentials)){
+        $username = request()->username;
+        $password = request()->password;
+
+        Auth::attempt(['email' => $username, 'password' => $password]);
+        if(! Auth::check()){
+            Auth::attempt(['username' => $username, 'password' => $password]);
+        }
+
+        if(Auth::check()){
             // validar 
             $current_user = Auth::user();
 
@@ -38,9 +48,9 @@ class LoginController extends Controller
             }
 
             //generando token de acceso 
-            $api_token_access = (string) Str::uuid();
+            //$api_token_access = (string) Str::uuid();
             //quitar esto cuando este completo toda la migracion
-            $current_user->api_token = $api_token_access;
+            //$current_user->api_token = $api_token_access;
 
             $mtx_name = explode(" ",trim($current_user->name));
             $name_user_short = "";
@@ -58,7 +68,6 @@ class LoginController extends Controller
             session([
                 'name_cur_user' => $name_user,
                 'name_cur_user_short' => $name_user_short,
-                'cur_user_token_access' => $api_token_access,
                 'media_profile_user' => $media->path_file,
                 ]);
              
@@ -73,7 +82,8 @@ class LoginController extends Controller
             }
         }
 
-        return back()->withErrors(['username' => trans('auth.failed')])->withInput(request(['username']));
+        return back()->withErrors(["no_match"=>"Credenciales incorrectas"])->withInput(request(['username','password']));
+        //return back()->withErrors(['username' => trans('auth.failed')])->withInput(request(['username']));
     }
 
 

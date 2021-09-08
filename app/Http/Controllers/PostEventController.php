@@ -140,9 +140,11 @@ class PostEventController extends Controller
             return $salida;
         };
 
+        //min:0 make sure the minimum value is 0 and no negative values are allowed. 
+        //not_in:0 make sure value cannot be 0. So, combination of both of these rules does the job. 
         if($request->post_type == "event"){
             $validator = Validator::make($request->all(),[
-                "event_price" => "required",
+                "event_price" => "required | numeric | min: 0 | not_in: 0",
                 "event_has_price" => "required",
                 "frequency" => ["required",Rule::in(["unique","repeat"])],
                 "event_date"  => ["required","date"]
@@ -175,6 +177,18 @@ class PostEventController extends Controller
                 $dtlEvent->save();
             }
 
+            //Guardando contador global de eventos o post para el usuario
+            if($request->post_type == "event"){
+                $global_items = intval($user->count_events);
+                $global_items++;
+                $user->count_events = $global_items;
+            }else{
+                $global_items = intval($user->count_posts);
+                $global_items++;
+                $user->count_posts = $global_items;
+            }
+            $user->save();
+            
             //Realizar validacion de, tipo de archivos permitidos (por extension)
             
             //Si el usuario sube contenido
@@ -195,15 +209,11 @@ class PostEventController extends Controller
                     ) {
                         $data = substr($files[$numberfiles]['data'], strpos($files[$numberfiles]['data'], ',') + 1);
                         $data = base64_decode($data);
-
-
                         
                         $extension = explode(".",$files[$numberfiles]['filename']);
                         //obtener el ultimo elemento del array creado (explode)
                         $extension = $extension[count($extension)-1];
 
-                        //al parecer no es necesario 
-                        date_default_timezone_set('America/El_Salvador');
                         if($files[$numberfiles]['type'] == "image"){ //is a img
                             $filename = uniqid()."_".time().".".$extension;
                             $pathname = "files/images/";
@@ -268,6 +278,8 @@ class PostEventController extends Controller
             $propietario["name"] = $user->name;
             $propietario["nickname"] = $user->artistic_name;            
             $propietario["profile_img"] = $user->profile_img;
+            $propietario["count_posts"] = $user->count_posts;
+            $propietario["count_events"] = $user->count_events;
 
             DB::commit();
 
@@ -297,7 +309,8 @@ class PostEventController extends Controller
         $salida = [
             "code" => 0,
             "data" => null,
-            "msg" => null
+            "msg" => null,
+            "extra" => ""
         ];
 
 
@@ -512,8 +525,8 @@ class PostEventController extends Controller
             }            
         }catch(\Throwable $ex){
             DB::rollback();
-            //$salida["msg"] = "Error al actualizar publicacion";
-            $salida["msg"] = "Error al actualizar publicacion ".$ex->getMessage(); //for debug
+            $salida["msg"] = "Error al actualizar publicacion";
+            //$salida["msg"] = "Error al actualizar publicacion ".$ex->getMessage(); //for debug
         }
 
         return $salida;

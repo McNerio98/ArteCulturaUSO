@@ -1,6 +1,6 @@
 <template>
     <div class="pnl-memory card">
-        <div class="card-body">
+        <form class="card-body" ref="acFrmMemoryItem">
             <div class="row">
                 <div class="col-12 col-md-7">
                     <div class="custom-control custom-radio">
@@ -16,35 +16,52 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="nav-icon fas fa-star-half-alt"></i></span>
                         </div>
-                        <input type="email" class="form-control" placeholder="Email">
+                        <input v-model="area" type="text" class="form-control" placeholder="Músico, escritor, pintor …" minlength="2" maxlength="150" required>
+                        <div class="invalid-feedback">
+                            Ingrese un valor valido
+                        </div>                          
                     </div>                    
+                      
                     <h5>Nombre completo</h5>                    
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="nav-icon fas fa-star-half-alt"></i></span>
                         </div>
-                        <input type="email" class="form-control" placeholder="Nombre completo">
+                        <input v-model="name" type="text" class="form-control" placeholder="Nombre completo" minlength="2" maxlength="100" required>
+                        <div class="invalid-feedback">
+                            Ingrese un valor valido
+                        </div>                        
                     </div>   
                     <h5>Otros nombres</h5>                    
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="nav-icon fas fa-star-half-alt"></i></span>
                         </div>
-                        <input type="email" class="form-control" placeholder="Otros nombres">
+                        <input v-model="other_name" type="text" class="form-control" minlength="2" maxlength="150" placeholder="Otros nombres">
                     </div>                       
                     <h5>Fecha nacimiento</h5>                    
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                         </div>
-                        <input type="email" class="form-control" placeholder="dd/mm/yyyy">
+                        <date-picker
+                            v-model="birth_date"
+                            format="DD-MM-YYYY"
+                            type="date"
+                            placeholder="Ejem. 01/07/1990"
+                        ></date-picker>                        
                     </div>                                           
                     <h5 v-if="type == 'memory'">Fecha de fallecimiento </h5>                    
                     <div v-if="type == 'memory'" class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                         </div>
-                        <input type="email" class="form-control" placeholder="dd/mm/yyyy">
+                        <date-picker
+                            v-model="death_date"
+                            format="DD-MM-YYYY"
+                            type="date"
+                            placeholder="Ejem. 01/11/2000"
+                        ></date-picker>                                           
                     </div>                        
                 </div>
                 <div class="col-12 col-md-5">
@@ -57,18 +74,21 @@
             </div>
             <div class="row mb-1 mt-1">
                 <div class="col-12">
-                    <textarea name="" id="" rows="10"></textarea>
+                    <textarea v-model="content" class="form-control" name="" id="" rows="10" required></textarea>
+                    <div class="invalid-feedback">
+                        Ingrese un valor valido
+                    </div>                     
                 </div>
             </div>
             <div>
                 <a class="btn btn-app">
                     <i class="fas fa-save"></i> Guardar
                 </a>                    
-                <a class="btn btn-app">
+                <a class="btn btn-app" @click="onCancel">
                     <i class="fas fa-minus"></i> Cancelar
                 </a>                 
             </div>
-        </div>
+        </form>
     </div>
 </template>
 <style scoped>
@@ -91,56 +111,121 @@
     textarea{
         width: 100%;
     }
+
+    .mx-datepicker {
+        height: 100%;
+        flex: 1 1 0%;
+    }
+
+.mx-input{
+	height: 100% !important;
+	font-size: 1rem !important;
+}
+
 </style>
 <script>
+    import DatePicker from 'vue2-datepicker';
+    import 'vue2-datepicker/index.css';
+    import 'vue2-datepicker/locale/es';
     export default {
         props: {
-            model: {type: Object, default: function(){
-                return {
-                    type: "biography"
-                }
-            }},
-            mainImgChange: {require: false, default: false},
-            mainImg: {require: false,default: null}
+            editMode: {type: Boolean, default: false},
         },
         data(){
             return{
-                 type: "biography",
-                 media: [],
-                 presentation_img_preview: null
-            }
-        },
-        watch: {
-            mainImgChange: function(newVal,oldVal){
-                if(newVal === true){
-                    let index = -1;
-                    for(let e in this.media){
-                        if(this.media[e].type == "image" && this.media[e].presentation == true){
-                            index = e
-                            break;
-                        }
-                    }
-
-                    //Objeto con datos de imagenes 
-                    var img_add = {
-                        id: null,
-                        type: "image",
-                        filename: "",
-                        data: this.mainImg,
-                        presentation: true
-                    }
-                    this.presentation_img_preview = img_add.data;
-                    //Si no se encontro se agrega 
-                    if(index === -1){
-                        this.media.push(img_add);
-                    }else{
-                    //Si se encontro se remplaza 
-                        this.media[index] = img_add;
-                    }
-                }
+                area: "",
+                name: "",
+                other_name: "",
+                content: "",
+                birth_date: new Date("2000-01-02"),
+                death_date: new Date(),
+                type: "biography",
+                multimedia: [],
+                spinners: {S1: false},
+                presentation_img_preview: null
             }
         },
         methods: {
+            setPresentationImg: function(base64_img){
+                let index = -1;
+                for(let e in this.media){
+                    if(this.media[e].type == "image" && this.media[e].presentation == true){
+                        index = e
+                        break;
+                    }
+                }
+                //Objeto con datos de imagenes 
+                var img_add = {
+                    id: null,
+                    type: "image",
+                    filename: "generated.jpg",
+                    data: base64_img,
+                    presentation: true
+                }
+                this.presentation_img_preview = img_add.data;
+                if(index === -1){//Si no se encontro se agrega 
+                    this.multimedia.push(img_add);
+                }else{//Si se encontro se remplaza 
+                    this.multimedia[index] = img_add;
+                }                
+            },
+            onCancel: function(){
+
+            },
+            onSave: function(){
+                //Realizar validaciones 
+                if(!this.$refs.acFrmMemoryItem.checkValidity()){
+                    this.$refs.acFrmMemoryItem.classList.add('was-validated');
+                    return;
+                }
+
+                if(this.area.length < 2 || this.area.length > 150){
+                    StatusHandler.ValidationMsg("Rubro,Talento / Longitud no valida (mayor a 1 y menor a 150)");
+                    return;
+                }
+
+                if(this.area.name < 2 || this.area.name > 100){
+                    StatusHandler.ValidationMsg("Nombre / Longitud no valida (mayor a 1 y menor a 100)");
+                    return;
+                }
+
+                if(this.editMode){
+                    this.updateMemory();
+                }else{
+                    this.createMemory();
+                }                 
+            },
+            createMemory: function(){
+                var data_send = {
+                    area: this.area,
+                    name: this.name,
+                    other_name: this.other_name,
+                    birth_date: this.birth_date,
+                    content: this.content,
+                    type: this.type,
+                     media: [...this.multimedia] 
+                }
+
+                if(this.type == "memory"){
+                    data_send.death_date = this.death_date;
+                }
+
+                axios.post("/memories",data_send).then(result=>{
+                    let response = result.data;
+                    if(response.code == 0){
+                        StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                        return;
+                    }    
+                    alert("SE guardo");
+                }).catch(ex=>{
+                    StatusHandler.Exception("Crear elemento",ex);
+                }).finally(e=>{
+                    this.spinners.S1 = false;
+                });
+            },
+            updateMemory: function(){
+
+            },
             addMedia: function(media){
                 
             },

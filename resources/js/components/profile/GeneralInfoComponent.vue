@@ -76,7 +76,7 @@
             authId: {type: Number, default :0},
             itemConfig: {type: Object, default: function(){
                 return undefined;
-            }},
+            }}
         },
         data: function(){
             return {
@@ -106,9 +106,16 @@
             }else{
                 this.data_config = this.itemConfig;
             }
-            this.acAppData = window.obj_ac_app;
+            this.acAppData = window.obj_ac_app;        
         },
         methods: {
+            setCounts: function(posts,events){
+                this.user.count_posts = posts;
+                this.user.count_events = events;
+            },
+            setProfileImg: function(url){
+                this.current_profile_media.url = url;
+            },
             loadData: function(){
                 //# get User model and tags relacionated 
                 axios(`/api/profile/gnInfo/${this.targetId}`).then(result=>{

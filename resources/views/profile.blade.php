@@ -10,10 +10,12 @@
         <div class="row">
             <div class="col-md-3">
                 <!-- Profile Image -->
-                <general-info-profile 
+                <general-info-profile
+                ref="vmInfoGeneral" 
                 @medias-view="onPhotosProfiles"
                 :auth-id="{{Auth::user() == null ? 0 : Auth::user()->id}}" 
                 :target-id="{{$id_user_cur}}"></general-info-profile>
+
                 <!-- /.card -->
                 <!-- About Me Box -->
                 <about-profile 
@@ -102,7 +104,7 @@
             <!-- /.row -->
         </div>
 
-
+        <input type="file" @change="cropperImageProfile" accept="image/png, image/jpeg" ref="fileElementImage" class="d-none">
         <!-- ::::::::::::::::::::::::::::::::::::::END CONTENT::::::::::::::::::::::::::::::::::::::-->
     </div>        
     <media-viewer 
@@ -110,11 +112,15 @@
     :target="media_view.target"
     :logged.number='{{Auth::user() == null ? 0 : Auth::user()->id}}'
     :owner="media_view.owner"
-    @new-profile-media="openTrim"
+    @new-profile-media="onChageImage"
      :items="media_view.items">
     </media-viewer>    
 
-    <modal-trim-img @base64-generated="filterModalCropper"></modal-trim-img>    
+
+    <control-trim
+        ref="acVmCompCropper"
+        @base64-generated="filterModalCropper"
+        :aspect-ratio="trim_buffer.aspec_ratio">    
 </main>
 @endsection
 

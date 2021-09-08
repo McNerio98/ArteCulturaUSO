@@ -30,7 +30,8 @@ class CredentialsUpdated extends Mailable
     public function build()
     {
         //$this->from('ax.minckgmail.com'); Se pasa de forma global
-        $this->view('emails.credentials-updated');
+        $this->view('emails.credentials-updated')
+                ->subject("Credenciales actualizadas");
 
         //return $this->view('view.name');
     }
