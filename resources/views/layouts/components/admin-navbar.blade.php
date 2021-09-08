@@ -27,7 +27,7 @@
                                     <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
                                 </h3>
                                 <p class="text-sm">{{$e->email}}</p>
-                                <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                                <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i>{{AcHelper::getDatetimeInterval($e->created_at)}}</p>
                             </div>
                         </div>
                     </a>                    

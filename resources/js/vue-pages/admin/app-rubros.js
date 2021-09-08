@@ -1,6 +1,7 @@
 
 Vue.component('modal-trim-img', require('../../components/trim/TrimComponent.vue').default);
 Vue.component('tag-rubro',require('../../components/tags/Tag.vue').default);
+Vue.component('category-row',require('../../components/tags/CategoryComponent.vue').default);
 
 const appRubros = new Vue({
     el: '#appRubros',

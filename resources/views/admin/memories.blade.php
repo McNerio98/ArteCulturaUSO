@@ -9,6 +9,7 @@
            <div>
           
            <memory-create
+                ref="acVmCompMemory"
                 :main-img-change="main_img_buffer.change"
                 :main-Img="main_img_buffer.base64"
                 @trim-principal-img="openTrimPrincipalPic"
@@ -17,12 +18,9 @@
         </div>
 
         <control-trim
-        @oncancel="trim_buffer.window_open = false"
+        ref="acVmCompCropper"
         @base64-generated="principalPicCropped"
-        :aspect-ratio="trim_buffer.aspec_ratio"
-        :window-open="trim_buffer.window_open"
-        :file-element="trim_buffer.file">
-        
+        :aspect-ratio="trim_buffer.aspec_ratio">
         </control-trim>
 </div>
 <!--/. container-fluid -->               

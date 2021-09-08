@@ -1,23 +1,30 @@
 
-
+/*Registro de componentes globales */
 Vue.component('content-create', require('../../components/post/PostComponent.vue').default);
 Vue.component('post-form-component', require('../../components/post/Formulario.vue').default);
 Vue.component('post-media-component', require('../../components/post/Media.vue').default);
 Vue.component('post-modal-component', require('../../components/post/ModalVideo.vue').default);
 
 Vue.component('media-viewer', require('../../components/media/ViewMediaComponent.vue').default);
-Vue.component('modal-trim-img', require('../../components/trim/TrimComponent.vue').default);
+Vue.component('control-trim', require('../../components/trim/TrimComponentv2.vue').default);
 Vue.component('post-general',require('../../components/post/PostGeneralComponent.vue').default);
 Vue.component('preview-media',require('../../components/media/PreviewMediaComponent.vue').default);
 
 Vue.component('pagination-component',require('../../components/pagination/PaginationComponent.vue').default);
 
 
-Vue.component('general-info-profile',require('../../components/profile/GeneralInfoComponent.vue').default);
-Vue.component('about-profile',require('../../components/profile/AboutComponent.vue').default);
+
+//Registro de componentes locales 
+import Component1 from '../../components/profile/GeneralInfoComponent.vue';
+import Component2 from '../../components/profile/AboutComponent.vue';
 
 const appProfileVue = new Vue({
     el: "#appProfile",
+    components: {
+        //Registro de componentes locales 
+        "general-info-profile": Component1,
+        "about-profile": Component2
+    },
     data: function(){
         return{
             flags: {
@@ -43,8 +50,17 @@ const appProfileVue = new Vue({
             },
             data_config: {
                 description:  {value: undefined, bk: undefined, edit_mode: false},
-            }
+            },
+            //Buffer para componente recorte 
+            trim_buffer: {
+                aspec_ratio: 1/1,
+                target: "" //element that open cropper 
+            },
+            //End Buffer componente recorte             
         }
+    },
+    mounted: function(){
+        
     },
     created: function(){
         this.current_user_id = $("#current_user_id_request").val();        
@@ -154,6 +170,7 @@ const appProfileVue = new Vue({
             $('#modaPreviewMedia').modal('show');            
         },
         PostEventCreated: function(e){
+            this.$refs.vmInfoGeneral.setCounts(e.creator.count_posts,e.creator.count_events);
             var post = {
                 post: {
                     id: e.post.id,
@@ -192,43 +209,45 @@ const appProfileVue = new Vue({
         onItemEdit: function(id){
             window.location.href = this.acAppData.base_url + '/perfil/' + this.current_user_id + '/post/edit/' + id;
         },
-        openTrim: function(){
-            this.modal_cropper = "IMG_MEDIA_PROFILE";
+        onChageImage: function(){
+            this.$refs.fileElementImage.click();
+        },
+        cropperImageProfile: function(event){
             $('#modaPreviewMedia').modal('hide');
-            $("#hiddenImgFileTrim").trigger("click");            
+            this.$refs.acVmCompCropper.openTrim( event.target.files[0]);
+            this.trim_buffer.target = "IMG_MEDIA_PROFILE"; 
         },
         filterModalCropper: function(base64){
-            if(this.modal_cropper === "DEFAULT"){console.error("Llamada inconsiste de modal cropper");return;};
-            switch(this.modal_cropper){
+            switch(this.trim_buffer.target){
                 case "IMG_MEDIA_PROFILE": {
                     this.SendImgProfile(base64);
+                    break;
                 }
             }
+            //Se debe dejar vacio, dado que el evento ya ocurrio y se espera otro nuevo
+            this.trim_buffer.target = '';
         },
         SendImgProfile: function(base64){
-            let prev_path_img = this.current_profile_media.path_file;
-
             let data = {
                 user_id: this.current_user_id,
                 img_profile_upload: base64
             };
 
-            axios.post(`/api/user/uploadImgProfile`,data).then((result)=>{
+            axios.post(`/user/uploadImgProfile`,data).then((result)=>{
                 let response = result.data;
                 if(response.code == 0){
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
-                    this.current_profile_media.path_file = prev_path_img;
                     return;
                 }
-                this.current_profile_media = response.data; //nueva imagen 
-                this.media_profile.push(response.data);
-
-
+                
+                var image_url = this.acAppData.storage_url + "/files/profiles/" +response.data.path_file;
+                this.current_user.profile_path = image_url;
+                this.$refs.vmInfoGeneral.setProfileImg(image_url);
+                this.items_postevents.map(e=>{
+                    e.creator.profile_img = image_url;
+                });
             }).catch((ex)=>{
                 StatusHandler.Exception("Establecer la nueva imagen",ex);
-                this.current_profile_media.path_file = prev_path_img;
-            }).finally(()=>{
-                
             });
         }                       
     }

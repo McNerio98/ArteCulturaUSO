@@ -68,6 +68,8 @@ Route::get('/approval','PostEventController@approval')->name('items.approval')->
 Route::get('/users/dataConfig/{id}','UsersController@configUserData')->name("user.dataconf")->middleware('auth','adroles');
 Route::put('/user/updateConfig/{id}','UsersController@updateConfigUser')->name("user.updateconf")->middleware('auth','adroles');
 
+# Crea un nuevo recurso del tipo reseña, [Homenaje o Biografias]
+Route::post('memories','MemoriesController@store')->name("memory.store")->middleware('auth','adroles');
 #Obtiene los usuarios dentro de la plataforma, con filtros para todos los usuarios, solicitudes, habilitados, no activos 
 Route::get('users','UsersController@index')->name('users.fetch')->middleware('auth','adroles');
 # Guarda la fotografia de presentacion de la categoria que se esta editando 
@@ -79,7 +81,8 @@ Route::put('tags/{id}','TagsController@update')->name("tag.update")->middleware(
 Route::post('tags','TagsController@store')->name('tags.store')->middleware('auth','adroles');
 #Obtiene todas las etiquetas mediante el paso de una categoria , solo es necesario que este logeado sea rol o podria ser un invitado 
 Route::get('tags/byCategory/{id}','TagsController@tagsByCategory')->name('tag.select')->middleware('auth');
-
+#Guarda una nueva imagen de perfil del usuario logeado 
+Route::post('user/uploadImgProfile','UsersController@uploadProfileImg')->middleware('auth');
 #Obtiene los notificadores, usuario, eventos, events para los paneles notificaciones en la pagina principal del admin 
 #Esta ruta ya tiene los middleware adroles desde el constructor 
 Route::get('/notifiers','DashboardController@notifiers')->name("notifiers");
@@ -87,6 +90,7 @@ Route::get('/notifiers','DashboardController@notifiers')->name("notifiers");
 Route::post('postevent','PostEventController@store')->name('postevent.store')->middleware('auth');
 #Actualiza un elemento, publicacion o evento con sus medios digitales 
 Route::put('postevent/{id}','PostEventController@update')->name('postevent.update')->middleware('auth');
+
 
 //Middleware que necesitan que el usuario este logeado 
 #Guardar nueva etiqueta dentro del perfil 

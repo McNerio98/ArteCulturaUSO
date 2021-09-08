@@ -122,6 +122,12 @@ const appProfileItemEditVue = new Vue({
                     status: 'review',
                     created_at: e.post.created_at,
                 },
+                dtl_event: {
+                    event_date: e.dtl_event.event_date,
+                    has_cost: e.dtl_event.has_cost,
+                    cost: e.dtl_event.cost,
+                    frequency: e.dtl_event.frequency,
+                },                     
                 creator: {
                     id: e.creator.id,
                     name: e.creator.name,

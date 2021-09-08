@@ -3,7 +3,7 @@
 @section('windowName', 'PANEL PRINCIPAL')
 
 @section('content')
-<div class="container-fluid" id="appHome">
+<div class="container" id="appHome">
     <!--Tag hidden Token-->
     <input type="hidden" value="{{Auth::user()->api_token}}" id="current_save_token_generate" />
     <!--End Tag Hidden Token-->
@@ -101,7 +101,7 @@
     </div>
     <!--END SPINNER LOADER-->
     <div  v-if="postevent_selected !== undefined">
-        <post-general @source-files="onSources" v-bind:model="postevent_selected"></post-general>                                
+        <post-general @source-files="onSources" v-if="postevent_selected != undefined" v-bind:model="postevent_selected"></post-general>                                
     </div>
 
     <div class="row">
@@ -109,7 +109,7 @@
     </div>
 
     <!--PAGINATION-->
-    <div>
+    <div v-if="approval_items.length > 0">
         <nav aria-label="Navegacion elementos en aprobación">
             <ul class="pagination justify-content-center">
                 <li v-bind:class="{'disabled' : ! (paginate_approval.current_page > 1)}" class="page-item">
