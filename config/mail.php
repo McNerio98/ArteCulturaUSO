@@ -84,7 +84,7 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'nc17i04@usonsonate.edu.sv'),
+        'address' => env('MAIL_FROM_ADDRESS', 'observatorio.cultural@outlook.es'),
         'name' => env('MAIL_FROM_NAME', 'Oservatorio Cultural'),
     ],
 

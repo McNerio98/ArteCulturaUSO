@@ -55,11 +55,29 @@
     }
 }
 
-  .actable-item.active, .actable-item:hover{
-    font-size: 1.3rem;
+  .ac-item-cat{
+    display: flex;
+    span{
+      width: 100%;
+    }
+    .icon{
+      margin: 0px 10px;
+    }
+
+    .i-edit:hover{
+      color: $acNeph !important;
+    }
+
+    .i-del:hover{
+      color: $acPink !important;
+    }    
+
+  }
+
+  .ac-item-cat.active, .ac-item-cat:hover{
     font-weight: bold;
-    color: $red2;
     cursor: pointer;
+    background-color: $gray4;
   }
 
 .ac-tag {

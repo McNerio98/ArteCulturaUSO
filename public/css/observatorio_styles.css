@@ -62,12 +62,31 @@
   border: 2px solid #f4f6f5;
 }
 
-.actable-item.active,
-.actable-item:hover {
-  font-size: 1.3rem;
+.ac-item-cat {
+  display: flex;
+}
+
+.ac-item-cat span {
+  width: 100%;
+}
+
+.ac-item-cat .icon {
+  margin: 0px 10px;
+}
+
+.ac-item-cat .i-edit:hover {
+  color: #00b05c !important;
+}
+
+.ac-item-cat .i-del:hover {
+  color: #e83e8c !important;
+}
+
+.ac-item-cat.active,
+.ac-item-cat:hover {
   font-weight: bold;
-  color: #c74b49;
   cursor: pointer;
+  background-color: #d2d6de;
 }
 
 .ac-tag {

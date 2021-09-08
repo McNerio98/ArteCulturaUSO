@@ -203,7 +203,7 @@ export default {
         return this.postType === "event"?"Explica de qué trata tu evento...":"¿Qué estás pensado ";
     },
     place_holder_title: function(){
-        return this.postType === "event"?"Nombre del evento":"Título de la publicación";
+        return this.postType === "event"?"Lugar del evento":"Título de la publicación";
     }
   },
   mounted(){
@@ -212,19 +212,19 @@ export default {
         $('[data-toggle="tooltip"]').tooltip(); //??
     });    
 
-  if(this.editMode){
-      this.description = this.sourceEdit.post.description;
-      this.post_title = this.sourceEdit.post.title;
-      this.label_btn = "Guardar";
-      if(this.sourceEdit.post.type == "event"){
-          this.time1 = new Date(this.sourceEdit.dtl_event.event_date);
-          this.frequency = this.sourceEdit.dtl_event.frequency;
-          this.event_has_price = this.sourceEdit.dtl_event.has_cost == true ? "1":"0";
-          this.event_price = this.sourceEdit.dtl_event.cost;
-          this.show_panel_price = this.sourceEdit.dtl_event.has_cost;
+    if(this.editMode){
+        this.description = this.sourceEdit.post.description;
+        this.post_title = this.sourceEdit.post.title;
+        this.label_btn = "Guardar";
+        if(this.sourceEdit.post.type == "event"){
+            this.time1 = new Date(this.sourceEdit.dtl_event.event_date);
+            this.frequency = this.sourceEdit.dtl_event.frequency;
+            this.event_has_price = this.sourceEdit.dtl_event.has_cost == true ? "1":"0";
+            this.event_price = this.sourceEdit.dtl_event.cost;
+            this.show_panel_price = this.sourceEdit.dtl_event.has_cost;
 
-      }
-  }
+        }
+    }
 
   },
   methods: {
@@ -351,7 +351,6 @@ export default {
 
     },
     verfecha: function(mx){
-      console.log("Estoy entrando desde la fecha con estos valores");
       console.log(mx);
       console.log(this.time1);
     }

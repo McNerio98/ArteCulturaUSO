@@ -242,24 +242,5 @@ class RolesPermissionSeeder extends Seeder
 		$admin->save();
 		//this is the default users with SuperAdmin role
 		$admin->assignRole('SuperAdmin');
-
-		
-		// for testing 
-		// IMPORTANT: This section most be deleted before deploy	
-		$invitado1 = User::create([
-			'name' => 'Mario Nerio',
-			'email' => 'ax.minck@gmail.com',
-			'username' => 'mcnerio2020',
-			'password'	=> Hash::make('123456789'),
-			'telephone' => '2222-1222',
-			'status' => 'enabled',
-		]);
-		$profile1 = MediaProfile::create([
-			'user_id' => $invitado1->id,
-			'path_file' => 'default_img_profile.png'
-		]);			
-		$invitado1->img_profile_id = $profile1->id;
-		$invitado1->save();
-		$invitado1->assignRole('Invitado');
     }
 }

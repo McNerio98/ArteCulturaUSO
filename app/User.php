@@ -26,7 +26,6 @@ class User extends Authenticatable
         'username',
         'telephone',
         'status',
-        'api_token',
         'img_profile_id', //quitar el api token 
         'count_posts',
         'count_events'
@@ -51,7 +50,7 @@ class User extends Authenticatable
     ];
 
     public function profile_img(){
-        return $this->hasOne("App\MediaProfile");
+        return $this->hasOne("App\MediaProfile","id","img_profile_id");
     }
 
     //Get Only names from permissions 

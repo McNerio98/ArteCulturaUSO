@@ -17,8 +17,6 @@
 <script>
 export default {
   props: {
-    fileElement: {require: true},
-    windowOpen: {type: Boolean, default: false, require: true},
     aspectRatio: {type: Number,default: 1},
     viewMode: {type: Number,default: 1},
     minCropBoxWidth: {type: Number,default: 100},
@@ -39,25 +37,23 @@ export default {
       canvasData: null,      
     };
   },
-  watch: {
-    windowOpen: function(newVal, oldVal){
-        if(newVal === true){this.openTrim();}
-    }
-  },
   mounted: function(){
     //getting HTML Elements reference
     this.modal          = document.getElementById("trimComponentAC");
     this.image_tag  = document.getElementById("elementPictureNaturalAC");
   },
   methods: {
-    openTrim: function(){
+    openTrim: function(file_target){
       //validate file Element
-      let valid_file = false;
-      if(typeof this.fileElement != "object")valid_file = false;
-      if(this.fileElement.name == undefined)valid_file = false;
-      console.log(this.fileElement.name.split("."));
+      let valid_file = true;
+      var valid_format = ["jpg","jpeg","png","JPG","JPEG","PNG"];
+      var exten1 = file_target.name.split(".");
+      if(valid_format.indexOf(exten1[exten1.length -1]) == -1)valid_file = false;
+      if(file_target == undefined)valid_file = false;
+      if(file_target.name == undefined)valid_file = false;
+      if(!valid_file){alert("Error de formato, recargue el sitio"); this.closeTrim(); return;}
 
-      let urlImage = URL.createObjectURL(this.fileElement);
+      let urlImage = URL.createObjectURL(file_target);
       this.image_tag.setAttribute("src", urlImage);
       let vm = this;
 
@@ -86,7 +82,7 @@ export default {
         this.$emit("oncancel");
     },
     onClickClose: function(){
-      this.toConvertBase64();
+      //this.toConvertBase64();
       this.closeTrim();
     },
     toConvertBase64: function(){

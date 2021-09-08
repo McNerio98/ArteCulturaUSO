@@ -4,7 +4,7 @@
 
 
 @section('content')
-<div class="container-fluid" id="appSearch">
+<div class="container" id="appSearch">
         <building-page page="Búsquedas avanzadas"></building-page>
 </div>
 <!--/. container-fluid -->               

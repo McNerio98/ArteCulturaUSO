@@ -33,28 +33,23 @@
             <form method="POST" action="{{ route('login') }}">
             @csrf
               <div class="input-group mb-3">
-                <input name="username" type="text" class="form-control @error('username') is-invalid @enderror" value="{{ old('username') }}" placeholder="Nombre de Usuario" required autocomplete="username" autofocus>
+                <input name="username" type="text" class="form-control @error('no_match') is-invalid @enderror" value="{{ old('username') }}" placeholder="Nombre de Usuario" required autocomplete="username" autofocus>
                 <div class="input-group-append">
                   <div class="input-group-text">
                     <span class="fas fa-envelope"></span>
                   </div>
                 </div>
-              </div>  
-              @error('username')
-                <span class="invalid-feedback" role="alert">
-                  <strong>{{ $message }}</strong>
-                </span>
-              @enderror                
+              </div>              
               <div class="input-group mb-3">
-                <input type="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password" name="password" required autocomplete="current-password">
+                <input type="password" class="form-control @error('no_match') is-invalid @enderror" placeholder="Password" name="password" required autocomplete="current-password">
                 <div class="input-group-append">
                   <div class="input-group-text">
                     <span class="fas fa-lock"></span>
                   </div>
                 </div>
               </div>
-              @error('password')
-                <span class="invalid-feedback" role="alert">
+              @error('no_match')
+                <span class="invalid-feedback d-block m-0 mb-3" role="alert">
                   <strong>{{ $message }}</strong>
                 </span>
               @enderror               

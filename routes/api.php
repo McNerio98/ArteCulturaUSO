@@ -31,7 +31,7 @@ Route::apiResource('profile','ProfileController');
 
 //Route::get('user/{id}','ProfileController@show')->
 
-Route::post('user/uploadImgProfile','UsersController@uploadProfileImg');
+
 #Obtiene las categorias con sus etiquetas segmentadas 
 Route::get('tags/withCategories', 'TagsController@getBySeccion');
 

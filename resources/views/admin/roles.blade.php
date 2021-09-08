@@ -4,7 +4,7 @@
 @section('windowName', 'ROLES Y PERMISOS')
 
 @section('content')
-    <div class="container-fluid" id="appRoles">
+    <div class="container" id="appRoles">
         <section class="content">
             <div class="card">
                 <div class="card-body">
@@ -25,7 +25,7 @@
 
                             <div class="mt-4">
                                 <div class="btn btn-primary btn-lg btn-flat">
-                                    <i class="fas fa-cart-plus fa-lg mr-2"></i>
+                                <i class="fas fa-plus"></i>
                                     Crear Rol
                                 </div>
                             </div>

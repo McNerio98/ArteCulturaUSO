@@ -100,8 +100,8 @@ const appPopulars = new Vue({
                         title: e.title,
                         description: e.content,
                         type: e.type_post,
-                        is_popular: false,
-                        status: 'review',
+                        is_popular: e.is_popular == "1" ? true:false,
+                        status: e.status.trim(),
                         created_at: e.created_at,
                     },
                     dtl_event: {
