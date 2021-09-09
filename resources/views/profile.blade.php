@@ -65,7 +65,7 @@
                                     :auth-id="{{Auth::user() == null ? 0 : Auth::user()->id}}">
                                     </post-general>
 
-                                    <pagination-component  v-if="flags.show_pg1" @source-items="itemLoaded" route="{{'/postsevents/'.Auth::user()->id}}" :per_page="15"></pagination-component>            
+                                    <pagination-component  v-if="flags.show_pg1" @source-items="itemLoaded" route="{{'/postsevents/'.$id_user_cur}}" :per_page="15"></pagination-component>            
                                 </div>
                                 <!--END START CONTENT, EVENTS AND POST-->
                             </div>
