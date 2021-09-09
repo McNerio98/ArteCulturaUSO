@@ -11,6 +11,7 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 /public/css/app.css
+/public/css/observatorio_styles
 /public/js/app.js
 /public/js/*
 /public/files/*
