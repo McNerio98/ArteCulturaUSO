@@ -22,6 +22,15 @@ class ProfileController extends Controller
 	}
 
     public function index($id){
+		$user = User::find($id);
+		if(!$user){
+			return redirect()->route('inicio');
+		}
+
+		if($user->active == 0 || $user->is_admin == 1){
+			return redirect()->route('inicio');
+		}
+		
 		return view("profile",['id_user_cur' => $id]);
 	}
 
