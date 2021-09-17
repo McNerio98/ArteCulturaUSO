@@ -5,10 +5,12 @@ Vue.component('summary-item',require('../../components/post/PostEventComponent.v
 const app_inicio = new Vue({
     el: '#app_inicio',
     data: {
+        acAppData: {},
         events: [] //only 3 elements 
     },
     mounted: function(){
         this.loadEvents();
+        this.acAppData = window.obj_ac_app;
     },
     methods: {  
         loadEvents: function(){
@@ -65,7 +67,10 @@ const app_inicio = new Vue({
                 alert("Error");
                 return;
             }
-            window.location.href = window.obj_ac_app.base_url+`/search?id_filter=${ng.id_filter}&label=${ng.label}&type_search=${ng.type_search}`;
+            window.location.href =  this.acAppData.base_url+`/search?id_filter=${ng.id_filter}&label=${ng.label}&type_search=${ng.type_search}`;
+        },
+        onClickEvent: function(event_el){
+            window.location.href = this.acAppData.base_url + `/events?target=${event_el.id}`;
         }
     }
 });

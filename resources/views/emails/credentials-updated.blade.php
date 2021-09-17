@@ -7,8 +7,7 @@
             <img class="_cl11" style="width: 100%;max-width: 100px;display: block;margin: auto;" src="https://conexos.trekinggroup.com/images/well-done.png" alt="">
             <h3 class="_cl3" style="color: #00B05C;text-align: center;font-size: 160%;padding: 10px 0px;">Aprobación de cuenta</h3>
 
-            <p class="_cl10" style="font-size: 110%;color: #8b8484;margin: 10px 0px;">Hola, <span style="color: #31333f;">{{$user->name}}</span>, se ha aprobado el acceso a
-                nuestra plataforma, te brindamos tus credenciales de acceso</p>
+            <p class="_cl10" style="font-size: 110%;color: #8b8484;margin: 10px 0px;">Hola, <span style="color: #31333f;">{{$user->name}}</span>, tu cuenta de acceso a nuestra plataforma ha sido aprobada. Tú nombre de usuario y contraseña son: </p>
             <div class="_cl7" style="background-color: #eee;padding: 10px;border-radius: 15px;">
                 <table style="width: 100%;">
                     <tr>

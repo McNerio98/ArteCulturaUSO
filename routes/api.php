@@ -41,8 +41,6 @@ Route::get('tags/withCategories', 'TagsController@getBySeccion');
 
 
 //ESTOS SE QUEDAN AQUI, PUEDEN SER UTILIZADOS PARA UNA API FUTURA
-#Obtiene la informacion de un elemento/ evento/publicacion 
-Route::get('post/{id}','PostEventController@show')->name('post.show');
 #Obtiene los eventos dentro de los tres meses siguientes 
 Route::get('posts/events','PostEventController@eventsTable')->name('table.events');
 
@@ -73,8 +71,7 @@ Route::post('requestaccounts','UsersController@requestAccount');
 
 
 
-Route::post('post/setPopular','PostEventController@setPostPopular');
-Route::post('post/setState','PostEventController@switchStatePost');
+
 
 Route::get('post/populars','PostEventController@popularPost');
 
@@ -83,9 +80,3 @@ Route::get('post/populars','PostEventController@popularPost');
 //Rutas para busquedas 
 //por categoria 
 Route::get('search/byCategory/{id}','SearchController@byCategory');
-
-Route::get('roles','RolesController@index')->name("roles.index");
-Route::get('roles/{id}','RolesController@show')->name("roles.show");
-Route::put('roles/{id}','RolesController@update')->name("roles.update");
-
-

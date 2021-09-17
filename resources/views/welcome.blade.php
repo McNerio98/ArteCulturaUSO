@@ -19,13 +19,10 @@
         <div class="row">
             <div class="col-12">
                 <div class="SectionWelcome">
-                    <h4 class="hSectionW text-center">¿BUSCAS ALGÚN TALENTO/ARTISTA?</h4>
+                    <h4 class="hSectionW text-center">¿Qué buscas? ¿Algún artista o grupo?</h4>
                     <div class="row featurette">
                         <div style="display: flex; justify-content: center;" class="col-12">
-                            <p class="lead" style="text-align: center; font-size: 18px; color:#212529;width: 700px">
-                                En Sonsonate hay muchos tipos de artistas,
-                                que tienen un talento muy asombroso, puedes conocerlos a través de su perfil.
-                            </p>
+                            <p class="lead" style="text-align: center; font-size: 18px; color:#212529;width: 700px">En Sonsonate hay diversidad de artistas, grupo y promotores artísticos y culturales; puedes conocerlos a través de su perfil</p>
                         </div>
                     </div>               
                 </div>
@@ -72,7 +69,7 @@
         </div>
 
         <div class="row mt-2 mt-md-3">
-                <summary-item v-for="event of events" :model="event"></summary-item>
+                <summary-item v-for="event of events" @selected-item="onClickEvent" :model="event"></summary-item>
         </div>
         <p class="text-center h4 mb-1 mb-md-5"><a style="text-decoration:underline;" href="{{route('events')}}">Ver todos los eventos</a></p>
         <!--END EVENTS TABLE-->

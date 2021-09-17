@@ -13,7 +13,7 @@ const appRoles = new Vue({
     },
     methods: {
         loadData: function(){
-            axios(`/api/roles`).then(result=>{
+            axios(`/roles`).then(result=>{
                 let response = result.data;
                 if(response.code == 0){
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
@@ -33,7 +33,7 @@ const appRoles = new Vue({
             });
         },
         setRoleSelected: function(role){
-            axios(`/api/roles/${role.role_id}`).then(result=>{
+            axios(`/roles/${role.role_id}`).then(result=>{
                 let response = result.data;
                 if(response.code == 0){
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
@@ -51,7 +51,6 @@ const appRoles = new Vue({
             return this.role_selected.caps.find(e => e.id == cap_id) != undefined ? true: false;
         },
         switchStateCap: function(event, cap_id){
-            console.log(event);
             event.preventDefault();
             if(this.role_selected.role_id == undefined){
                 StatusHandler.ValidationMsg("Ningun rol selecionado");
@@ -67,7 +66,7 @@ const appRoles = new Vue({
             };
 
             event.target.disabled = true;//evitar click repetidos  
-            axios.put(`/api/roles/${this.role_selected.role_id}`,data).then(result=>{
+            axios.put(`/roles/${this.role_selected.role_id}`,data).then(result=>{
                 let response = result.data;
                 if(response.code == 0){
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
