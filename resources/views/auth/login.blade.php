@@ -18,8 +18,8 @@
   <div class="_logPanel1">
     <div class="_wrpBrand">
         <img src="{{asset('images/Banner1.1.png')}}" alt="">
-          <h1>Aristas, talentos, músicos, centros de enseñanzas</h2>
-          <h5>Sonsonate tiene mucho talento que los puedes encontrar e  <a href="{{route('inicio')}}">nuestro sitio</a></h5>        
+          <h1>Sonsonate tiene mucho que ofrecer cultural y artísticamente</h2>
+          <h5>Artistas, Grupos, Promotores, Academias, Sitios, Fiestas, Actividades, conoce más en <a href="{{route('inicio')}}">nuestro sitio</a></h5>        
     </div>
   </div>  
   <div class="_logPanel2" style="background-image: url({{asset('images/bground1.jpg')}});">

@@ -4,19 +4,6 @@
 
 @section('content')
 <style>
-    .jumbotron {
-    padding-top: 3rem;
-    padding-bottom: 3rem;
-    margin-bottom: 0;
-    background-color: #fff;
-    }
-    @media (min-width: 768px) {
-    .jumbotron {
-        padding-top: 6rem;
-        padding-bottom: 6rem;
-    }
-    }
-
     .jumbotron p:last-child {
     margin-bottom: 0;
     }
@@ -28,27 +15,17 @@
     .jumbotron .container {
     max-width: 40rem;
     }
-
-    footer {
-    padding-top: 3rem;
-    padding-bottom: 3rem;
-    }
-
-    footer p {
-    margin-bottom: .25rem;
-    }    
 </style>
 <main role="main" class="flex-shrink-0" id="app_events">
-    <section class="jumbotron text-center">
+    <input type="hidden" id="targetOpenItem" value="{{app('request')->input('target')}}">
+
+    <section v-if="postevent_selected == undefined" class="jumbotron text-center" style="background-color: rgb(233, 236, 239);">
         <div class="container">
             <h1>Tablero de Eventos</h1>
             <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it entirely.</p>
-            <p>
-                <a href="#" class="btn btn-primary my-2">Main call to action</a>
-                <a href="#" class="btn btn-secondary my-2">Secondary action</a>
-            </p>
         </div>
-    </section>    
+    </section>
+
     <div class="container bg-white">
         <!--::::::::::::::::::::::::::::::::::::::START CONTENT::::::::::::::::::::::::::::::::::::::-->
         <div class="container pt-2">
@@ -57,8 +34,9 @@
                     <spinner1 label="Cargando eventos …"></spinner1>
                 </div>
             </div>
+            <post-general @source-files="onSources" v-if="postevent_selected != undefined" v-bind:model="postevent_selected"></post-general>             
             <div class="row" v-if="!spinners.S1">
-                <summary-item v-for="event of events" :model="event"></summary-item>                
+                <summary-item v-for="event of events" @selected-item="onClickEvent" :model="event"></summary-item>                
             </div> 
         </div>
         <!-- ::::::::::::::::::::::::::::::::::::::END CONTENT::::::::::::::::::::::::::::::::::::::-->

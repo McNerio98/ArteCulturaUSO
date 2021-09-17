@@ -24,8 +24,7 @@ require('./bootstrap');
 require('admin-lte');
 
 /**Sweet Alert */
-const swal = require('sweetalert2');
-window.Swal = swal;
+window.Swal = require('sweetalert2');
 /*This file handle the alerts*/
 window.StatusHandler = require('./sw-status').default;
 

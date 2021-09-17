@@ -86,7 +86,7 @@ const appPopulars = new Vue({
         },        
         getDataItem: function(emit_data){
             this.spinners.S1  = true;
-            axios(`/api/post/${emit_data.id}`).then(result=>{
+            axios(`/postevent/${emit_data.id}`).then(result=>{
                 let response = result.data;
                 if(response.code == 0){
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);

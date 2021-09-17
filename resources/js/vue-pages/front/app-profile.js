@@ -75,8 +75,8 @@ const appProfileVue = new Vue({
                         title: e.title,
                         description: e.content,
                         type: e.type_post,
-                        is_popular: false,
-                        status: 'review',
+                        is_popular: e.is_popular,
+                        status: e.status,
                         created_at: e.created_at,
                     },
                     dtl_event: {
@@ -147,7 +147,7 @@ const appProfileVue = new Vue({
             });                
         },        
         onPhotosProfiles: function(object_media){
-            this.media_view = object_media;
+            this.media_view = object_media; //Ya trae el target e items 
             this.type_media = 'PROFILE_MEDIAS'; //para imagenes de perfiles
             $('#modaPreviewMedia').modal('show');            
         },
@@ -167,6 +167,7 @@ const appProfileVue = new Vue({
 
             this.media_view.items = aux;
             this.media_view.target = aux[0];
+            this.type_media = 'POST_EVENTS';
             $('#modaPreviewMedia').modal('show');            
         },
         PostEventCreated: function(e){
@@ -177,8 +178,8 @@ const appProfileVue = new Vue({
                     title: e.post.title,
                     description: e.post.content,
                     type: e.post.type_post,
-                    is_popular: false,
-                    status: 'review',
+                    is_popular: e.post.is_popular,
+                    status: e.post.status,
                     created_at: e.post.created_at,
                 },
                 dtl_event: {
@@ -208,6 +209,9 @@ const appProfileVue = new Vue({
         },
         onItemEdit: function(id){
             window.location.href = this.acAppData.base_url + '/perfil/' + this.current_user_id + '/post/edit/' + id;
+        },
+        onDelete: function(index){
+            this.items_postevents.splice(index,1);
         },
         onChageImage: function(){
             this.$refs.fileElementImage.click();

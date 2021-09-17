@@ -37,7 +37,7 @@ const appUpdateItem = new Vue({
     methods: {
         loadData: function(){
             this.spinners.S1 = true;
-            axios(`/api/post/${this.target_id}`).then(result=>{
+            axios(`/postevent/${this.target_id}`).then(result=>{
                 let response = result.data;
                 if(response.code == 0){ //sino existe lo detiene aqui 
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
