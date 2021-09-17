@@ -7,13 +7,22 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission as Cap;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class RolesController extends Controller
 {
     
+    /**
+     *  Ya cuenta con el middleware auth y roles solo administradores 
+     */
     public function index(){
-        //Verificar que tenga los permisos correspondientes
-        //permiso --> confgurar-roles
+
+        //Verificando permisos 
+        if(! Auth::user()->can('ver-roles')){
+            $salida["msg"] = "Operación denegada";
+            return $salida;
+        }
+
         $salida = [
             "code" => 0,
             "data" => null,
@@ -28,13 +37,22 @@ class RolesController extends Controller
             "roles" => $roles,
             "caps" => $caps
         ];
+        $salida["msg"] = "Proccesed Successfully";
 
         return $salida;
     }
 
+    /**
+     * Obtiene una lista de permisos asociada a un rol determinado 
+     */
     public function show(Request $request, $id){
-        //Verificar que tenga los permisos correspondientes
-        //permiso --> confgurar-roles        
+
+        //Verificando permisos 
+        if(!Auth::user()->can('ver-roles') || !Auth::user()->can('editar-roles')){
+            $salida["msg"] = "Operación denegada";
+            return $salida;
+        }
+
         $salida = [
             "code" => 0,
             "data" => null,
@@ -50,14 +68,18 @@ class RolesController extends Controller
 
         $salida["code"] = 1;
         $salida["data"] = $rol->permissions()->get();
-        $salida["msg"] = "Request Success";
+        $salida["msg"] = "Proccesed Successfully";
         
         return $salida;
     }
 
     public function update(Request $request,$id){
-        //Verificar que tenga los permisos correspondientes
-        //permiso --> confgurar-roles        
+
+        if(!Auth::user()->can('ver-roles') || !Auth::user()->can('editar-roles')){
+            $salida["msg"] = "Operación denegada";
+            return $salida;
+        }
+
         $salida = [
             "code" => 0,
             "data" => null,
@@ -83,6 +105,12 @@ class RolesController extends Controller
                 $salida["msg"] = "El rol no existe";
                 return $salida;
             }
+
+            if($rol->name == "Invitado"){
+                $salida["msg"] = "Operacion no permitida";
+                return $salida;
+            }
+
             //obteniendo el permiso 
             $cap = Cap::find($request->cap_id);
             if(! $cap){

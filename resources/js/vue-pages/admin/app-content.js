@@ -11,6 +11,10 @@ Vue.component('preview-media',require('../../components/media/PreviewMediaCompon
 const appContent = new Vue({
     el: "#appContent",
     data: {
+        spinners: {
+            S1: false,//load post and events 
+        },
+        no_data_postevents: false,
         items_postevents: [],
         acAppData: {},
         current_user: {},
@@ -42,10 +46,11 @@ const appContent = new Vue({
             //console.log("Editando este id " + id);
             window.location.href = this.acAppData.base_url + '/admin/post/edit/' + id;
         },
-        onItemDelete: function(id){
-            console.log("Eliminando este id " + id);
+        onDeletePost: function(index){
+            this.items_postevents.splice(index,1);
         },
         itemLoaded: function(fulldata){
+            this.no_data_postevents = (fulldata.length == 0) ? true:false;
             this.items_postevents = fulldata.map(e=>{
                 return {
                     post: {
@@ -53,8 +58,8 @@ const appContent = new Vue({
                         title: e.title,
                         description: e.content,
                         type: e.type_post,
-                        is_popular: false,
-                        status: 'review',
+                        is_popular: e.is_popular,
+                        status: e.status,
                         created_at: e.created_at,
                     },
                     dtl_event: {
@@ -98,5 +103,40 @@ const appContent = new Vue({
             this.media_view.target = aux[0];
             $('#modaPreviewMedia').modal('show');         
         },        
+        PostEventCreated: function(e){
+            var post = {
+                post: {
+                    id: e.post.id,
+                    title: e.post.title,
+                    description: e.post.content,
+                    type: e.post.type_post,
+                    is_popular: e.post.is_popular,
+                    status: e.post.status,
+                    created_at: e.post.created_at,
+                },
+                dtl_event: {
+                    event_date: e.dtl_event.event_date,
+                    has_cost: e.dtl_event.has_cost,
+                    cost: e.dtl_event.cost,
+                    frequency: e.dtl_event.frequency,
+                },                
+                creator: {
+                    id: e.creator.id,
+                    name: e.creator.name,
+                    nickname: e.creator.nickname,
+                    profile_img: e.creator.profile_img != undefined ? this.acAppData.storage_url + "/files/profiles/" + e.creator.profile_img.path_file : null, 
+                },
+                media: e.post.media.map(ng => {//el formato para esto se filtra en el otro compnente
+                    switch(ng.type_file){
+                        case "image": {ng.url = this.acAppData.storage_url +"/files/images/"  + ng.name;break;}
+                        case "docfile": {ng.url = this.acAppData.storage_url + "/files/docs/pe" + e.post.id + "/" + ng.name;break;}
+                        case "video": {ng.url = this.acAppData.storage_url + "/images/youtube_item.jpg";break;}
+                    }
+                    return ng;
+                }),
+                meta: []                        
+            }
+            this.items_postevents.unshift(post);            
+        }
     }
 });

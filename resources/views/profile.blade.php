@@ -58,9 +58,11 @@
                                         @endif
                                     @endauth
                                     <post-general 
+                                    v-for="(e,index) of items_postevents"  
                                     @source-files="onSources" 
                                     @edit-item="onItemEdit" 
-                                    v-for="e of items_postevents"  
+                                    @delete-item="onDelete(index)"
+                                    v-bind:key="index"
                                     :model="e" 
                                     :auth-id="{{Auth::user() == null ? 0 : Auth::user()->id}}">
                                     </post-general>

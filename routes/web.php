@@ -74,8 +74,20 @@ Route::post('memories','MemoriesController@store')->name("memory.store")->middle
 Route::get('users','UsersController@index')->name('users.fetch')->middleware('auth','adroles');
 # Guarda la fotografia de presentacion de la categoria que se esta editando 
 Route::post('/categories/saveImgPresentation','CategoriesController@changeImgPresentation')->middleware('auth','adroles');
+# Establece un recurso de tipo publicacion como popular o no popular 
+Route::post('post/setPopular','PostEventController@setPostPopular')->name('post.set.popular')->middleware('auth','adroles');
+# Establece el estado de un recurso de tipo publicacion, con estados de approval, review. deleted
+Route::post('post/setState','PostEventController@switchStatePost')->name('post.set.state')->middleware('auth','adroles');
 # Almacena una nueva categoria 
 Route::post('categories','CategoriesController@store')->name('cat.store')->middleware('auth','adroles');
+
+#Obtiene la lista de todos los roles con los conteos de los permisos que posee
+Route::get('roles','RolesController@index')->name("roles.index")->middleware('auth','adroles');
+#Obtiene la lista de permisos relacionadas al rol solicitado 
+Route::get('roles/{id}','RolesController@show')->name("roles.show")->middleware('auth','adroles');
+//Actualiza, asocia o desvincula un permiso dentro del rol 
+Route::put('roles/{id}','RolesController@update')->name("roles.update")->middleware('auth','adroles');
+
 #Actualiza una etiqueta 
 Route::put('tags/{id}','TagsController@update')->name("tag.update")->middleware('auth','adroles');
 Route::post('tags','TagsController@store')->name('tags.store')->middleware('auth','adroles');
@@ -88,8 +100,12 @@ Route::post('user/uploadImgProfile','UsersController@uploadProfileImg')->middlew
 Route::get('/notifiers','DashboardController@notifiers')->name("notifiers");
 #Almacena un elemento, publicacion o evento con sus medios digitales 
 Route::post('postevent','PostEventController@store')->name('postevent.store')->middleware('auth');
+#Obtiene la informacion de un elemento/ evento/publicacion 
+Route::get('postevent/{id}','PostEventController@show')->name('post.show');
 #Actualiza un elemento, publicacion o evento con sus medios digitales 
 Route::put('postevent/{id}','PostEventController@update')->name('postevent.update')->middleware('auth');
+#AJAX 1 Elimina un recurso de tipo publicacion o evento con todos sus medios(files,video.image) asociados 
+Route::delete('postevent/{id}','PostEventController@destroy')->name("postevent.destroy")->middleware('auth');
 
 
 //Middleware que necesitan que el usuario este logeado 

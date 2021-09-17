@@ -23,10 +23,18 @@
                                 <button @click="flag_create.type = 'post'; flag_create.creating = true;"   class="makePosting"><img class="makeItemPosting" src="{{asset('images/create_post.svg')}}" alt=""> CREAR POST</button>
                         </div>                                    
                     </div>
-                    <content-create v-if="flag_create.creating == true" :user-info="current_user" :post-type="flag_create.type"></content-create>
+                    <content-create @post-created="PostEventCreated" v-if="flag_create.creating == true" :user-info="current_user" :post-type="flag_create.type"></content-create>
                 @endauth
-                <post-general @edit-item="onItemEdit" @delete-item="onItemDelete" @source-files="onSources" v-for="e of items_postevents"  :model="e"></post-general>            
-                <pagination-component  @source-items="itemLoaded" route="{{'/postsevents/'.Auth::user()->id}}" :per_page="15"></pagination-component>            
+                <post-general 
+                v-for="(e,index) of items_postevents"  
+                @edit-item="onItemEdit" 
+                @delete-item="onDeletePost(index)" 
+                @source-files="onSources" 
+                :model="e"></post-general>  
+
+                <pagination-component  
+                v-if="!no_data_postevents"
+                @source-items="itemLoaded" route="{{'/postsevents/'.Auth::user()->id}}" :per_page="15"></pagination-component>            
 
             </div>            
         </div>
