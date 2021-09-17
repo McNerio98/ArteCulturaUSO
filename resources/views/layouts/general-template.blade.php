@@ -65,8 +65,8 @@
         return status_cap;
     }
     </script>    
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">    
-    <link href="{{ asset('css/observatorio_styles.css') }}" rel="stylesheet">
+    <link href="{{ mix('css/app.css') }}" rel="stylesheet">    
+    <link href="{{ mix('css/observatorio_styles.css') }}" rel="stylesheet">
     <link href="{{ asset('css/general_styles.css')}}" rel="stylesheet">    
     @stack('styles')
 </head>
