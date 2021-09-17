@@ -14,17 +14,13 @@ use Illuminate\Support\Facades\Auth;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Validation\Rule;
 use App\DtlEvent as Devs;
+use App\Popular;
+use App\User;
 
 class PostEventController extends Controller
 {
-    public function __construct(){
-		//$this->middleware('auth:api',['only'=>['store','findPostsPopular','switchStatePost','setPostPopular']]);
-    }
 
-    /**
-    * Display table events 
-    * @return \Illuminate\Http\Response
-    */
+    
     public function eventsTable(Request $request){
 
         $salida = [
@@ -142,9 +138,11 @@ class PostEventController extends Controller
 
         //min:0 make sure the minimum value is 0 and no negative values are allowed. 
         //not_in:0 make sure value cannot be 0. So, combination of both of these rules does the job. 
+        //required | numeric | min: 0 | not_in: 0
+
         if($request->post_type == "event"){
             $validator = Validator::make($request->all(),[
-                "event_price" => "required | numeric | min: 0 | not_in: 0",
+                "event_price" => "required | numeric | min: 0 ",
                 "event_has_price" => "required",
                 "frequency" => ["required",Rule::in(["unique","repeat"])],
                 "event_date"  => ["required","date"]
@@ -152,7 +150,7 @@ class PostEventController extends Controller
         }
 
         if($validator->fails()){
-            $salida["msg"] = "Campos de evento imcompletos";
+            $salida["msg"] = "Campos de evento no validos";
             return $salida;
         };
 
@@ -282,7 +280,7 @@ class PostEventController extends Controller
             $propietario["count_events"] = $user->count_events;
 
             DB::commit();
-
+            $postEvent->refresh();
             $salida = [
                 "code" => 1,
                 "data" =>  [
@@ -298,8 +296,8 @@ class PostEventController extends Controller
             }
         }catch(\Exception $e){
             DB::rollback();
-            //$salida["msg"] = "Error en la operación, consulte soporte técnico.";
-            $salida['msg'] = "Error: " . $e->getMessage(); //for debugin
+            $salida["msg"] = "Error en la operación, consulte soporte técnico.";
+            //$salida['msg'] = "Error: " . $e->getMessage(); //for debugin
         }
 
         return $salida;        
@@ -388,6 +386,7 @@ class PostEventController extends Controller
                                 case 'image': $aux_path = "files/images/".$drope->name;break;
                                 case 'docfile': $aux_path = "files/docs/pe".$postEvent->id."/".$drope->name;break; //aplicar filtro, solo agregar id de post 
                             }
+                            //para video se omite y solo se borra el modelo 
                             if(trim($aux_path) !== "" && Storage::disk('local')->exists($aux_path)){
                                 if(! Storage::disk('local')->delete($aux_path) ){
                                     throw new \Exception("No se logró eliminar algunos medios".$drope->name);
@@ -532,6 +531,76 @@ class PostEventController extends Controller
         return $salida;
     }
 
+    public function destroy($id){
+        $salida = [
+            "code" => 0,
+            "data" => null,
+            "msg" => ""
+        ];
+
+
+        $user = Auth::user();
+        $postEvent = PostEvent::find($id);
+        if(!$postEvent){
+            $salida["msg"] = "No existe el elemento";
+            return;
+        }
+
+        //Verificando permisos 
+        if(!$user->can('eliminar-publicaciones') && $postEvent->creator_id != $user->id){
+            $salida["msg"] = "Operación denegada";
+            return $salida;
+        }
+
+        $creator = User::find($postEvent->creator_id);
+        if(!$creator){
+            $salida["msg"] = "Inconsistencia de datos";
+            return;
+        }
+
+
+
+        try{
+            //eliminando archivos multimedia 
+            foreach($postEvent->media as $del){
+                $aux_path = "";
+                switch($del->type_file){
+                    case 'image': $aux_path = "files/images/".$del->name;break;
+                    case 'docfile': $aux_path = "files/docs/pe".$postEvent->id."/".$del->name;break; //aplicar filtro, solo agregar id de post 
+                }
+                //Si no esta es porque es video, solo se elimina mas abajo 
+                if(trim($aux_path) !== "" && Storage::disk('local')->exists($aux_path)){
+                    if(! Storage::disk('local')->delete($aux_path) ){
+                        throw new \Exception("No se logró eliminar algunos medios".$drope->name);
+                    }   
+                }                
+                //Por defecto retorna una exception 
+                $del->delete();
+            }
+            //Por defecto retorna una exception 
+            $postEvent->delete();
+            if($postEvent->post_type == "event"){
+                $global_items = intval($creator->count_events);
+                $global_items--;
+                $global_items = ($global_items < 0) ? 0 : $global_items;
+                $creator->count_events = $global_items;
+            }else{
+                $global_items = intval($creator->count_posts);
+                $global_items--;
+                $global_items = ($global_items < 0) ? 0 : $global_items;
+                $creator->count_posts = $global_items;
+            }            
+            $creator->save();
+            $salida["code"] = 1;
+            $salida["msg"] = "Deleted Successfully";
+        }catch(\Throwable $ex){
+            $salida["msg"] = "Error al eliminar publicacion";
+            //$salida["msg"] = "Error al actualizar publicacion ".$ex->getMessage(); //for debug
+        }
+
+        return $salida;
+    }
+
     public function popularPost(){
         $salida = [
             "code" => 0,
@@ -609,19 +678,33 @@ class PostEventController extends Controller
         // ->select("pe.id","pe.title","pe.content AS description","pe.type_post AS type","pe.creator_id","pe.is_popular",
         //     "pe.status","pe.created_at","u.name","u.artistic_name","mp.path_file AS img_owner")->where("pe.id",$id)->first();
 
+        //Mostrar solo si el usuario estado logeado, y si el usuario logeado es el creado 
+        //O si el usuario logeado es un administrador 
+
         if($post == null){
             $salida["msg"] = "El elemento no existe";
             return $salida;
         };
 
-        //$media = FilesPost::where('id_post_event',$id)->get();
-        //$meta = postsEventsMeta::where('post_event_id',$id)->get();
 
-        $salida = [
-            "code" => 1,
-            "data" => $post,
-            "msg" => "result ok"
-        ];
+
+        if($post->status == "review"){//mostrar solo para admin o propietario 
+            if(Auth::guard('web')->check()){//usuario logeado 
+                //Usuariologeado es un invitado que no es el creado del post 
+                if(Auth::user()->hasRole('Invitado') && Auth::user()->id != $post->creator_id){
+                    $salida["msg"] = "El elemento no ha sido aprobado";
+                    return $salida;                    
+                }
+            }else{ //Usuairo no logeado 
+                $salida["msg"] = "El elemento no ha sido aprobado no";
+                return $salida;
+            }
+        }
+
+        //Si el elemento esta aprovado enviar 
+        $salida["code"]         = 1;
+        $salida["data"]         = $post;
+        $salida["msg"]          = "Processed Successfully";
 
         return $salida;
     }
@@ -634,6 +717,11 @@ class PostEventController extends Controller
             "msg" => null
         ];
         
+        if(!Auth::user()->can('aprobar-publicaciones')){
+            $salida["msg"] = "Operación denegada";
+            return $salida;            
+        }
+
         if(! isset($request->id, $request->new_state)){
             $salida['msg'] = "Valores imcompletos, Recargue la pagina";
             return $salida;
@@ -648,10 +736,14 @@ class PostEventController extends Controller
             return $salida;        
         }
 
-        //updating 
-        $rows_affected = PostEvent::where('id',$id)->update(['status'=>$new_state]);
-        
-        if($rows_affected < 1){
+        $post = PostEvent::find($id);
+        if(!$post){
+            $salida["msg"] = "No existe el recurso";
+            return $salida;
+        }
+
+        $post->status = $new_state;
+        if(!$post->save()){
             $salida["msg"] = "Se produjo un error al cambiar el estado";
             return $salida;
         }
@@ -659,7 +751,7 @@ class PostEventController extends Controller
         $salida = [
             "code" => 1,
             "data" => ["new_state" => $new_state],
-            "msg" => "result Ok"
+            "msg" => "Operation Successfully"
         ];
 
         return $salida;
@@ -684,30 +776,55 @@ class PostEventController extends Controller
             return $salida;
         }
 
+        if(!Auth::user()->can('destacar-publicaciones')){
+            $salida["msg"] = "Operación denegada";
+            return $salida;            
+        }
+
+
         $id = $request->id;
         $new_state = $request->new_state;
-        
-        $count = PostEvent::where('is_popular','=',true)->count();
 
+        $count = Popular::count();
         if($count >= 6 && $new_state == true){
             $salida["msg"] = "No se pudo agregar: solo 6 Elementos destacados como maximo";
-            return $salida;
+            return $salida;            
         }
 
-        //actualizando 
-        $rows_affected = PostEvent::where('id',$id)->update(['is_popular'=>$new_state]);
-
-        if($rows_affected < 1){
-            $salida["msg"] = "Se produjo un error al establecer como contenido destacado";
-            return $salida;
+        $post = PostEvent::find($id);
+        if(!$post){
+            $salida["msg"] = "No existe el recurso";
+            return $salida;                     
         }
 
-        $salida = [
-            "code" => 1,
-            "data" => ["new_state" => $new_state],
-            "msg" => "result Ok"
-        ];
+        DB::beginTransaction();
+        try{
+            $post->is_popular = $new_state;
+            $top = Popular::where("post_event_id",$post->id)->first();
 
+            //Sino existe en la tabla de popular y la accion actual es agregarlo
+            if(!$top && $post->is_popular == true){ //Agregando 
+                    $top = new Popular();
+                    $top->post_event_id = $post->id;
+                    $top->save();
+            }
+
+            //Si existe en la tabla y la accion es quitar de destacados 
+            if($top && $post->is_popular == false){
+                $top->delete();
+            }     
+
+            //Para los otros dos casos, se omite porque en los dos casos restantes no se haria nada 
+            $post->save();
+            $salida["code"] = 1;
+            $salida["data"] =  ["new_state" => $new_state];
+            $salida["msg"] = "Process Successfully";            
+            DB::commit();
+        }catch(\Throwable $ex){
+            DB::rollback();
+            $salida["msg"] = "Error en la operación, consulte soporte técnico.";
+            //$salida['msg'] = "Error: " . $ex->getMessage(); //for debugin            
+        }
         return $salida;
     }
 }

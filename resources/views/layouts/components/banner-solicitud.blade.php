@@ -3,9 +3,9 @@
     <div id='show_bg_2'>
         <span class="title">Arte y Cultura en Sonsonate</span>
         <p class="parrafoInfo">
-            ¿Eres un artista? Crea una cuenta y obtén acceso a nuestra plataforma para que
-            puedas publicar tu contenido.
+        ¿Eres artista o posees un grupo artístico? ¿Coordinas un colectivo artístico o administras alguna institución que promueva la cultura y el arte? Crea una cuenta y obtén acceso a nuestra plataforma para que puedas publicar tu contenido.
         </p>
+        <br>
         <div class="text-center mt-2">
             <a  data-toggle="modal" data-target="#requestAccountModal" style="text-decoration:none; color:white" href="#" class="buttonSolicitud">
                 Llenar formulario

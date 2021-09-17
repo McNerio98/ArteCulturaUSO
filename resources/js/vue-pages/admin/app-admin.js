@@ -99,7 +99,7 @@ const appHome = new Vue({
         },
         getApprovalEl: function(emit_data){
             this.spinners.S1  = true;
-            axios(`/api/post/${emit_data.id}`).then(result=>{
+            axios(`/postevent/${emit_data.id}`).then(result=>{
                 let response = result.data;
                 if(response.code == 0){
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
@@ -114,8 +114,8 @@ const appHome = new Vue({
                         title: e.title,
                         description: e.content,
                         type: e.type_post,
-                        is_popular: false,
-                        status: 'review',
+                        is_popular: e.is_popular,
+                        status: e.status,
                         created_at: e.created_at,
                     },
                     dtl_event: {
@@ -128,7 +128,7 @@ const appHome = new Vue({
                         id: e.creator_id,
                         name: e.creator_name,
                         nickname: e.creator_nickname,
-                        profile_img:  window.obj_ac_app.base_url + "/files/profiles/" + e.creator_profile, 
+                        profile_img:  window.obj_ac_app.storage_url + "/files/profiles/" + e.creator_profile, 
                     },
                     media: e.media.map(ng => {//el formato para esto se filtra en el otro compnente
                         switch(ng.type_file){
@@ -166,6 +166,7 @@ const appHome = new Vue({
                         presentation_img: (e.presentation_img != undefined && e.presentation_type != "video") ? this.acAppData.storage_url + "/files/images/"+e.presentation_img : null,
                         presentation_type: e.presentation_type,
                         is_popular: e.is_popular,
+                        status: e.status,
                         dtl_event: {
                             event_date: e.event_date, //convertir a letras 
                             has_cost: e.has_cost,

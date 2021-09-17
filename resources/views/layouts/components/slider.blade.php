@@ -15,9 +15,9 @@
         @foreach($posts_popular as $e)
           <div class="carousel-item {{$loop->first ? 'active':''}}">
               <img src="{{asset('files/images/' . $e->name)}}" class="d-block w-100 sliderImage" style="object-fit: cover" height="450px" alt="...">
-              <div class="carousel-caption d-none d-md-block ">
+              <div class="carousel-caption d-none d-md-block ac-caption-carousel">
                 <h5>{{$e->title}}</h5>
-                <p>{{$e->content}}<a href="#">Ver mas</a></p>
+                <p>{{$e->content}}<a href="{{url('events').'?target='.$e->id}}">Ver mas</a></p>
               </div>
             </div>    
         @endforeach

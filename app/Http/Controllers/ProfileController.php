@@ -60,16 +60,28 @@ class ProfileController extends Controller
 			"data" => null,
 			'pagination' => null
 		];		
-
 		$per_page = ($request->per_page === null)?15:$request->per_page;
-		$result = PostEvent::where('creator_id',$id)->with('media')
-						->leftJoin('dtl_events','post_events.id','=', 'dtl_events.event_id')
-						->join('users','users.id','=','post_events.creator_id')
-						->leftJoin('media_profiles AS mp','mp.id','users.img_profile_id')
-						->select('post_events.*','dtl_events.event_date','dtl_events.frequency','dtl_events.has_cost','dtl_events.cost',
-						'mp.path_file AS creator_profile','users.name AS creator_name','users.artistic_name AS creator_nickname','users.id AS creator_id')
-						->orderBy('post_events.id','desc')->paginate($per_page);
-		//AGREGAR EL ACTIVE ARRIVA 
+
+		
+		if(Auth::check()){//Si es el administrador o es el propietario se muestran todo
+			$result = PostEvent::where('post_events.creator_id',$id)->where('users.active',true)->with('media')
+			->leftJoin('dtl_events','post_events.id','=', 'dtl_events.event_id')
+			->join('users','users.id','=','post_events.creator_id')
+			->leftJoin('media_profiles AS mp','mp.id','users.img_profile_id')
+			->select('post_events.*','dtl_events.event_date','dtl_events.frequency','dtl_events.has_cost','dtl_events.cost',
+			'mp.path_file AS creator_profile','users.name AS creator_name','users.artistic_name AS creator_nickname','users.id AS creator_id')
+			->orderBy('post_events.id','desc')->paginate($per_page);
+		}else{//Si es un visitante no se muestran 
+			$result = PostEvent::where('post_events.creator_id',$id)->where('users.active',true)->where('post_events.status','approved')->with('media')
+			->leftJoin('dtl_events','post_events.id','=', 'dtl_events.event_id')
+			->join('users','users.id','=','post_events.creator_id')
+			->leftJoin('media_profiles AS mp','mp.id','users.img_profile_id')
+			->select('post_events.*','dtl_events.event_date','dtl_events.frequency','dtl_events.has_cost','dtl_events.cost',
+			'mp.path_file AS creator_profile','users.name AS creator_name','users.artistic_name AS creator_nickname','users.id AS creator_id')
+			->orderBy('post_events.id','desc')->paginate($per_page);
+		}
+
+		
 		
         $salida["pagination"] = [
             'total' =>$result->total(),

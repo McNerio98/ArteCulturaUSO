@@ -33,12 +33,14 @@ export default class StatusHandler{
     }
 
     static Exception(target_msg,data_ex){
-        let msg = "El proceso ("+target_msg+")no se ha podido completar, póngase con soporte técnico."
-        this.ShowStatus(msg,null,StatusHandler.STATUS.FAIL);
         console.error(data_ex); 
-        if(data_ex.response.status == 401){//para volver al inicio/login 
-            window.location.reload();
-        }       
+        //HTTP 401 la petición (request) no ha sido ejecutada porque carece de credenciales
+        // if(data_ex?.response?.status == 401){//para volver al inicio/login 
+        //     window.location.reload();
+        // }else{
+        //     let msg = "El proceso ("+target_msg+")no se ha podido completar, póngase con soporte técnico."
+        //     this.ShowStatus(msg,null,StatusHandler.STATUS.FAIL);
+        // }       
     }
 
     static ValidationMsg(mensaje){

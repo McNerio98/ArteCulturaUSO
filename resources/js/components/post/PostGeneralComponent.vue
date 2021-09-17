@@ -9,11 +9,11 @@
             <!-- /.user-block -->
             <div class="card-tools">
 
-                <button @click="onClickEdit" v-if="has_cap('editar-publicaciones') || model.creator.id === authId" type="button" class="btn btn-tool" data-toggle="tooltip" data-placement="right"
+                <button @click="onClickEdit" :disabled="disabled_controls" v-if="has_cap('editar-publicaciones') || model.creator.id === authId" type="button" class="btn btn-tool" data-toggle="tooltip" data-placement="right"
                     title="Editar elemento">
                     <i class="fas fa-pen"></i> Editar
                 </button>
-                <button @click="onClickDelete" v-if="has_cap('eliminar-publicaciones') || model.creator.id === authId" type="button" class="btn btn-tool" data-toggle="tooltip" data-placement="right"
+                <button @click="onClickDelete" :disabled="disabled_controls" v-if="has_cap('eliminar-publicaciones') || model.creator.id === authId" type="button" class="btn btn-tool" data-toggle="tooltip" data-placement="right"
                     title="Eliminar elemento">
                     <i class="fas fa-trash-alt"></i> Eliminar
                 </button>
@@ -40,7 +40,7 @@
                 </div>
             </div>
 
-            <blockquote v-if="model.post.status == 'review' " class="quote-secondary m-0 p-0 pl-1">
+            <blockquote v-if="model.post.status == 'review' " class="quote-secondary mt-0 ml-0 mr-0 mb-1 p-1" style="border-bottom: 1px solid #bfbcbc !important;">
                 <small>El elemento actual se encuentra en <b>revisión.</b> Deberá ser aprobado por los administradores para ser
                     visible para todos los usuarios.</small>
             </blockquote>
@@ -72,7 +72,7 @@
                     <!-- /.description-block -->
                 </div>
             </div>
-            <p>{{model.post.description}}</p>
+            <p><span v-html="getHTMLContent"></span></p>
             <!--COMPONENTE GALLERY COMPONENTE (PREVIEW MEDIA)-->
             <preview-media @source-files="onSourceFiles" :media="media_visuals"></preview-media>
             <!--END COMPONENTE GALLERY COMPONENTE (PREVIEW MEDIA)-->
@@ -138,7 +138,8 @@
                 post_delete: false,
                 media_visuals: [], //para imagenes y videos 
                 media_docs: [], //van aparte 
-                id_img_selected: 0
+                id_img_selected: 0,
+                disabled_controls: false
             }
         },
         mounted: function(){
@@ -150,12 +151,52 @@
                 this.filterMedia(e.media);
             }
         },
+        computed: {
+            getHTMLContent: function(){
+                if(this.model.post.description == undefined || this.model.post.description.length == 0){return ``;}
+                //para enlaces
+                var url_regex = /(http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])?/g;
+                var formatted = this.model.post.description.replace(url_regex,function(str, p1, offset, s){return `<a href="${str}" target="_blank">${str}</a>`;})
+                //para espacios saltos de lineas
+                formatted = formatted.replace(/\n/g, "<br>");
+                return formatted;
+            }
+        },
         methods: {
+            regexLink: function(){
+
+            },
             onClickEdit: function(){
                 this.$emit('edit-item',this.model.post.id);
             },
             onClickDelete: function(){
-                this.$emit('delete-item',this.model.post.id);
+                var vm = this;
+                Swal.fire({
+                    title: '¿Está seguro de eliminar?',
+                    showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: 'Eliminar ',
+                    denyButtonText: `Cancelar`,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        vm.disabled_controls = true;
+                        axios.delete(`/postevent/${this.model.post.id}`).then(result=>{
+                            let response = result.data;
+                            if(response.code == 0){
+                                StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                                return;
+                            }  
+                            vm.$emit('delete-item',this.model.post.id);
+                             //Esto esta raro, porque guardaba el estado para el que quedaba en su posicion 
+                             vm.disabled_controls = false;
+                        }).catch(ex=>{
+                            StatusHandler.Exception("Eliminar elemento",ex);
+                        });
+                    }else{
+                        vm.disabled_controls = false;
+                    }
+                });
+
             },
             onSourceFiles: function(e){
                 this.$emit("source-files",e);
@@ -189,7 +230,7 @@
                     id: this.model.post.id,
                     new_state: current_sate
                 };
-                axios.post(`/api/post/setPopular`,data).then((result)=>{
+                axios.post(`/post/setPopular`,data).then((result)=>{
                     let response = result.data;
                     if(response.code == 0){
                         StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
@@ -201,10 +242,7 @@
                     this.$emit('change-popular',status);
                 }).catch((ex)=>{
                     let target_process = "Establecer Elemento como destacado"; 
-                    let msg = "El proceso ("+target_process+")no se ha podido completar, póngase con soporte técnico."
-                    StatusHandler.ShowStatus(msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
-                    console.error(ex.response);
-                    //rollback state 
+                    StatusHandler.Exception(target_process,ex);
                     this.model.post.is_popular = last_state;
                 });
             },
@@ -236,7 +274,7 @@
                 };
 
                 //Necesario estar logeado, y tener los permisos
-                axios.post(`/api/post/setState`,data).then((result)=>{
+                axios.post(`/post/setState`,data).then((result)=>{
                     let response = result.data;
                     if(response.code == 0){
                         StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
