@@ -14,8 +14,11 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use Storage;
 use App\MediaProfile;
+use App\EmailUserCheck;
 use App\Mail\CredentialsUpdated;
+use App\Mail\VerifyEmail;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class UsersController extends Controller
 {
@@ -80,6 +83,55 @@ class UsersController extends Controller
         return $salida;
     }
 
+    public function checkEmail($email){
+        $salida = [
+            "code" => 0,
+            "msg" => "",
+            "data" => null
+        ];
+
+        if(is_null($email)){
+            $salida["msg"] = "Parámetro no valido ";
+            return $salida;
+        }
+
+        if(strlen($email) == 0){
+            $salida["msg"] = "Parámetro no valido ";
+            return $salida;
+        }
+        
+        $call_sp = "call checkEmail('{$email}')";
+        $result_sp = DB::select($call_sp);
+        $status_email = intval($result_sp[0]->status);
+
+        if($status_email == 0){
+            $salida["msg"] = "Ocurrio un error en la verificacion";
+        }
+
+        /*
+            1 ---> Correo disponible 
+            2 ---> Correo no disponible 
+        */
+        $check_data = [
+            "code" => 2,
+            "msg"
+        ];
+
+        if($status_email == 1){
+            $check_data["code"] = 1;
+            $check_data["msg"] = "Correo electrónico disponible";
+        }else{
+            $check_data["code"] = 2;
+            $check_data["msg"] = "Correo electrónico no disponible";
+        }
+
+        $salida["code"] = 1;
+        $salida["data"] = $check_data;
+        $salida["msg"] = "Verificated Successfully";
+        return $salida;
+    }
+
+    /**Funcion obsoleta al completar basada en procedimiento */
     public function validateEmail($id,$email){
         $salida = [
             "code" => 0,
@@ -538,6 +590,8 @@ class UsersController extends Controller
             return $salida;
         }
 
+
+
         try{
             DB::beginTransaction();
             $new_user->name = $request->name;
@@ -562,6 +616,17 @@ class UsersController extends Controller
             $tag_profile->tag_id = $request->rubros;
             $tag_profile->save();
 
+            $tmp_data = new \stdClass();
+            $tmp_data->token = ((string) Str::uuid()).$new_user->artistic_name[0].$new_user->artistic_name[1];
+            $tmp_data->name = $new_user->name;
+
+            $echeck = EmailUserCheck::create([
+                'user_id' => $new_user->id,
+                'token' => $tmp_data->token
+            ]);
+
+            Mail::to($new_user->email)->send(new VerifyEmail($tmp_data));
+            
             DB::commit();
             $salida = [
                 'code' => 1,
@@ -569,9 +634,10 @@ class UsersController extends Controller
                 'msg' => 'Usuario registrado',
                 'errors' => null
             ];
-        }catch(\Exception $e){
+        }catch(\Exception $ex){
             DB::rollback();
-            $salida['msg'] = "Error de transacción Póngase en contacto con soporte técnico."  . $e->getMessage();
+            $salida["msg"] = $ex->getMessage();
+            //$salida['msg'] = "Error de transacción Póngase en contacto con soporte técnico.";
         }
         return $salida;
     }

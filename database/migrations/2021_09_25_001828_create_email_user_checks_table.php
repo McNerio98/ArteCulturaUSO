@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTagsOnProfilesTable extends Migration
+class CreateEmailUserChecksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,15 @@ class CreateTagsOnProfilesTable extends Migration
      */
     public function up()
     {
-        Schema::create('tags_on_profiles', function (Blueprint $table) {
+        Schema::create('email_user_checks', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('token');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('tag_id')->constrained();
+            $table->timestamps();
+            $table->index("token");
         });
     }
+
     /**
      * Reverse the migrations.
      *
@@ -27,6 +29,6 @@ class CreateTagsOnProfilesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tags_on_profiles');
+        Schema::dropIfExists('email_user_checks');
     }
 }

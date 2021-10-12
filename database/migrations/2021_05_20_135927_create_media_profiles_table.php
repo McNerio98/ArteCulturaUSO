@@ -15,7 +15,7 @@ class CreateMediaProfilesTable extends Migration
     {
         Schema::create('media_profiles', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string("path_file",500);
             $table->timestamps();
         });

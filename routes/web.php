@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//Verificacion de correo electronico
+Route::get('account/verify/{token}','Auth\LoginController@verifyAccount')->name('user.veriry');
+
 //Router Pagina principal 
 Route::get('/','WebsiteController@welcome')->name("inicio");
 Route::get('/events','WebsiteController@events')->name('events');
@@ -24,7 +28,8 @@ Route::get('/page5','WebsiteController@biografias')->name("biografias");
 Route::get('/page6','WebsiteController@homenajes')->name("homenajes");
 Route::get('/page7','WebsiteController@acercade')->name("acercade");
 
-Route::get('/request/status/{name}','WebsiteController@accountRequest')->name("request_status");
+Route::get('/request/status/{name}/{status}','WebsiteController@accountRequest')->name("request.status");
+Route::get('/email/status/{email}','WebsiteController@checkEmail')->name('email.status');
 
 
 
