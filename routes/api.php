@@ -63,6 +63,8 @@ Route::get('profile/aboutUser/{id}','ProfileController@aboutInfo')->name('profil
 Route::get('user/existTelephone/{id}/{target}','UsersController@validateTelephone');
 #Verifica si ya existe un usuario con el email  especifico
 Route::get('user/existEmail/{id}/{mail}','UsersController@validateEmail');
+#Verifica disponibilidad de email para la parte del registro 
+Route::get('user/checkEmail/{mail}','UsersController@checkEmail');
 #Verifica si ya existe un usuario con el nombre de usuario especifico
 Route::get('user/existUsername/{id}/{username}','UsersController@validateUsername');
 #Envia datos para su almacenaje como nueva solicitud de cuenta 

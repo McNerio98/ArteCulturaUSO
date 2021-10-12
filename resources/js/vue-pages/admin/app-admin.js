@@ -143,13 +143,14 @@ const appHome = new Vue({
                 }
 
                 this.postevent_selected = current;
+                document.getElementById("ctrlAnchor1").click();
             }).catch(ex=>{
                 StatusHandler.Exception("Recuperar PostEvent ", ex);
             }).finally(e => {
                 this.spinners.S1 = false;
             });
         },
-        approval: function(page = 1, per_page = 5){            
+        approval: function(page = 1, per_page = 15){            
             this.spinners.S1 = true;
             axios(`/approval?page=${page}&per_page=${per_page}`).then(result=>{
                 let response = result.data;

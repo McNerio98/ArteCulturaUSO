@@ -22,12 +22,28 @@
 <main role="main" class="flex-shrink-0 msg-status-request">
         <!--::::::::::::::::::::::::::::::::::::::START CONTENT::::::::::::::::::::::::::::::::::::::-->
         <section class="pnl-info">
-            <h1 style="font-size: 500%; color: #00cd6a;"><i class="fas fa-thumbs-up"></i></h1>
-            <h1>¡Tu cuenta ha sido creada! </h1>
-            <p class="lead">Felicidades, <code>{{$user_name}}</code> se ha creado tu cuenta, nos pondremos en contacto <span>vía
+            @if($code_status != 404)
+                <h1 style="font-size: 500%; color: #00cd6a;"><i class="fas fa-thumbs-up"></i></h1>
+            @endif
+
+            @switch($code_status)
+                @case(1)
+                    <h2>¡Tu cuenta ha sido verificada! </h2>
+                @break
+                @case(2)
+                    <h2>¡El correo ya se ha verificado anteriormente!</h2>
+                @break
+                @case(404)
+                    <h2>¡El correo electrónico no se ha podido identificar!</h2>
+                @break                                
+            @endswitch
+            @if($code_status == 1)
+            <p class="lead">Felicidades, <code>{{$user_name}}</code>  tu cuenta ha sido verificada exitosamente , nos pondremos en contacto <span>vía
                     email o
-                    número telefónico</span> lo más pronto posible y te brindaremos tus <span
-                    class=" font-weight-bold">credenciales de acceso.</span></p>
+                    número telefónico</span> lo más pronto posible y te brindaremos tus <span class=" font-weight-bold">credenciales de acceso.</span>
+            </p>            
+            @endif
+
             <p class="lead">
                 <a href="{{route('inicio')}}" class="btn btn-lg btn-secondary">Ir a inicio</a>
             </p>

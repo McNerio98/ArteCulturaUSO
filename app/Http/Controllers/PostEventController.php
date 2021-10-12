@@ -53,7 +53,7 @@ class PostEventController extends Controller
 
         date_default_timezone_set('America/El_Salvador');
         $range_init = date("Y-m-d")." 00:00:00"; //today
-        $range_init = "2021-07-23 00:00:00"; //quitar este, es solo para pruebas 
+        //$range_init = "2021-07-23 00:00:00"; //quitar este, es solo para pruebas 
         $range_end = date('Y-m-d', strtotime("+3 months", strtotime($range_init)))." 00:00:00";
         $items      = null;
         $offset     = $paginate["from"] - 1;
@@ -90,7 +90,7 @@ class PostEventController extends Controller
 
 
         $per_page = ($request->per_page == null)?15:$request->per_page;
-        $salida["extra"] = $per_page;
+        //$salida["extra"] = $per_page;
         //$result = PostEvent::where("status","review")->paginate($per_page);
 
         $result = DB::table("post_events AS e")
@@ -359,6 +359,8 @@ class PostEventController extends Controller
             $postEvent->title = $request->title;
             $postEvent->content = $request->description;
             $postEvent->type_post = $request->post_type;
+            //Siempre que edite es necesario pasar por revision 
+            $postEvent->status = "review";
             $postEvent->save();
 
             if($postEvent->type_post == "event"){
