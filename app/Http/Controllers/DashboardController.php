@@ -19,7 +19,10 @@ class DashboardController extends Controller
 	}
 
 	private function userRequest(){
-		return User::join("media_profiles AS mp","mp.id","=","users.img_profile_id")->select("users.*","mp.path_file")->where("users.status","request")->get();
+		return User::join("media_profiles AS mp","mp.id","=","users.img_profile_id")
+		->select("users.*","mp.path_file")
+		->where("users.status","request")
+		->where('email_verified_at','<>',null)->get();
 	}
 
     public function index(){

@@ -256,6 +256,7 @@ export default {
           StatusHandler.StatusToast(StatusHandler.TOAST_STATUS.FAIL,"Debe seleccionar un rol");
           return;
         }
+        this.sending_data = true;
         //Verificate if email or telephone already exist
         var response = await this.checkExistData();
         if(response.code == 0){
@@ -268,6 +269,8 @@ export default {
 
         if(!this.flags.email_exists && !this.flags.telephone_exist){
           this.SolicitarCuenta();
+        }else{
+           this.sending_data = false;
         }
       }else{
         this.$refs.frmRequestAccount.classList.add('was-validated');
@@ -281,7 +284,7 @@ export default {
         rubros: this.rubro,
         artistic_name: this.artistic.trim(),
       };
-      this.sending_data = true;
+      
       axios.post(`/api/requestaccounts`,data).then(result=>{
         let response = result.data;
         if(response.code ==0){
@@ -300,14 +303,16 @@ export default {
           StatusHandler.StatusToast(StatusHandler.TOAST_STATUS.FAIL,response.msg);
           return;
         }
-        let name_new_user = this.artistic;
+        //Clean and redirect
+        let email_new_user = this.correo;
         this.rubro = 0;
         this.fullname = "";
         this.correo = "";
         this.tel = "";
         this.artistic = "";        
         this.email_exists = false;
-        window.location.href = obj_ac_app.base_url + `/email/status/${this.artistic.trim()}/${this.correo.trim()}`;        
+
+        window.location.href = obj_ac_app.base_url + `/email/status/${email_new_user.trim()}`;
       }).catch(ex =>{
          $("#requestAccountModal").modal("hide");
         StatusHandler.Exception("Solicitar cuenta de usuario",ex);

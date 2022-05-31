@@ -227,6 +227,7 @@ class RolesPermissionSeeder extends Seeder
 			'artistic_name' => 'Rene Lara',
 			'email' => 'rene.lara@usonsonate.edu.sv',
 			'username' => 'social2020',
+			'email_verified_at' => '2020-05-31 17:26:21',
 			'password'	=> Hash::make('s4FFDEvYwbixn'),
 			'is_admin' => true,
 			'telephone' => '2222-2222',
