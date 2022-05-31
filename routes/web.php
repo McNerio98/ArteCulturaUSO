@@ -29,6 +29,7 @@ Route::get('/page6','WebsiteController@homenajes')->name("homenajes");
 Route::get('/page7','WebsiteController@acercade')->name("acercade");
 
 Route::get('/request/status/{name}/{status}','WebsiteController@accountRequest')->name("request.status");
+#Muestra vista notificando se requiere verificacion de correo 
 Route::get('/email/status/{email}','WebsiteController@checkEmail')->name('email.status');
 
 
@@ -70,7 +71,9 @@ Route::get('/search','SearchController@index')->name('search');
 //Middleware addroles filtra que el usuario sea un administrador y no un invitado, si es invitado lo redirecciona 
 //Routes para petticiones ajax
 Route::get('/approval','PostEventController@approval')->name('items.approval')->middleware('auth','adroles');
+
 Route::get('/users/dataConfig/{id}','UsersController@configUserData')->name("user.dataconf")->middleware('auth','adroles');
+
 Route::put('/user/updateConfig/{id}','UsersController@updateConfigUser')->name("user.updateconf")->middleware('auth','adroles');
 
 # Crea un nuevo recurso del tipo reseña, [Homenaje o Biografias]
