@@ -43,8 +43,10 @@ Route::get('/login','Auth\LoginController@showLoginForm')->middleware('guest');
 Route::post('/login','Auth\LoginController@login')->name('login');
 Route::post('/logout','Auth\LoginController@logout')->name('logout');
 
-
+# Carga el perfil de un usuario invitado
 Route::get('/perfil/{id}','ProfileController@index')->name('profile.show');
+# Carga la informacion completa para el usuario 
+Route::get('/profile/information/{id}','ProfileController@information')->name('profile.information');
 #Muestra la vista para editar un post 
 Route::get('/perfil/{idUser}/post/edit/{idPost}','ProfileController@editElement')->name('profile.edit.item')->middleware('auth');
 

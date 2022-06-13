@@ -17,16 +17,20 @@ Vue.component('pagination-component',require('../../components/pagination/Pagina
 //Registro de componentes locales 
 import Component1 from '../../components/profile/GeneralInfoComponent.vue';
 import Component2 from '../../components/profile/AboutComponent.vue';
+import {getUserProfileInformation} from '../../service';
+import {formatter87,formatter88} from '../../formatters';
 
 const appProfileVue = new Vue({
     el: "#appProfile",
     components: {
         //Registro de componentes locales 
-        "general-info-profile": Component1,
-        "about-profile": Component2
+        "profile-summary": Component1,
+        "profile-about": Component2
     },
     data: function(){
         return{
+            profileSummary: [],
+            profileAbout: [],
             flags: {
                 show_pg1: true, //Show pagination 1, profiles 
             },
@@ -60,6 +64,38 @@ const appProfileVue = new Vue({
         }
     },
     mounted: function(){
+        //Cargar toda la informacion y distribuirla a los subcomponentes 
+        getUserProfileInformation(this.current_user_id).then(result => {
+            let response = result.data;
+            if(response.code == 0){
+                StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                return;
+            }; 
+
+            this.profileSummary.push({
+                current_mediaprofile: response.data.user.profile_img || {},
+                nickname: response.data.user.artistic_name,
+                fullname: response.data.user.name,
+                media_profile: response.data.media_profile || [],
+                tags: response.data.tags,
+                cout_postevents: response.data.user.count_posts + response.data.user.count_events
+            });
+
+            this.profileAbout.push({
+                email: response.data.user.email,
+                username: response.data.user.username,
+                phone: response.data.user.telephone,
+                owner_account: response.data.user.name,
+                address:  response.data.metas.find(e => e.key === 'user_profile_address')?.value,
+                notes: response.data.metas.find(e => e.key === 'user_profile_notes')?.value
+            });
+
+            //Data for PostEventComponent 
+            this.current_user = formatter87(response.data.user,this.acAppData.storage_url);
+        }).catch(ex => {
+            let target_process = "Guardar la informacion";
+            StatusHandler.Exception(target_process,ex);  
+        });
         
     },
     created: function(){
@@ -69,53 +105,9 @@ const appProfileVue = new Vue({
     methods: {
         itemLoaded: function(fulldata){
             this.items_postevents = fulldata.map(e=>{
-                return {
-                    post: {
-                        id: e.id,
-                        title: e.title,
-                        description: e.content,
-                        type: e.type_post,
-                        is_popular: e.is_popular,
-                        status: e.status,
-                        created_at: e.created_at,
-                    },
-                    dtl_event: {
-                        event_date: e.event_date,
-                        has_cost: e.has_cost,
-                        cost: e.cost,
-                        frequency: e.frequency
-                    },                    
-                    creator: {
-                        id: e.creator_id,
-                        name: e.creator_name,
-                        nickname: e.creator_nickname,
-                        profile_img:  this.acAppData.storage_url + "/files/profiles/" + e.creator_profile, 
-                    },
-                    media: e.media.map(ng => {//el formato para esto se filtra en el otro compnente
-                        switch(ng.type_file){
-                            case "image": {ng.url = this.acAppData.storage_url +"/files/images/"  + ng.name;break;}
-                            case "docfile": {ng.url = this.acAppData.storage_url + "/files/docs/pe" + e.id + "/" + ng.name;break;}
-                            case "video": {ng.url = this.acAppData.storage_url + "/images/youtube_item.jpg";break;}
-                        }
-                        ng.owner = e.creator_id;
-                        return ng;
-                    }),
-                    meta: []                      
-                }
+                return formatter88(e,this.acAppData.storage_url);
             });
-
             this.flags.show_pg1 = this.items_postevents.length == 0 ? false: true;
-        },
-        loadInfoUser: function(e){//From emmited event node 
-            //console.log("FULLDARA CARGADA");
-            this.current_user = {
-                id                          :e.user.id,
-                nickname            :e.user.artistic_name,
-                fullname              :e.user.name,
-                profile_path         :this.acAppData.storage_url + "/files/profiles/" + e.user.profile_img.path_file
-            };
-            
-            this.data_config.description = e.metas.description;
         },
         saveDataConfig: function(key){
             const data_info = {
@@ -171,40 +163,8 @@ const appProfileVue = new Vue({
             $('#modaPreviewMedia').modal('show');            
         },
         PostEventCreated: function(e){
-            this.$refs.vmInfoGeneral.setCounts(e.creator.count_posts,e.creator.count_events);
-            var post = {
-                post: {
-                    id: e.post.id,
-                    title: e.post.title,
-                    description: e.post.content,
-                    type: e.post.type_post,
-                    is_popular: e.post.is_popular,
-                    status: e.post.status,
-                    created_at: e.post.created_at,
-                },
-                dtl_event: {
-                    event_date: e.dtl_event.event_date,
-                    has_cost: e.dtl_event.has_cost,
-                    cost: e.dtl_event.cost,
-                    frequency: e.dtl_event.frequency,
-                },                
-                creator: {
-                    id: e.creator.id,
-                    name: e.creator.name,
-                    nickname: e.creator.nickname,
-                    profile_img: e.creator.profile_img != undefined ? this.acAppData.base_url + "/files/profiles/" + e.creator.profile_img.path_file : null, 
-                },
-                media: e.post.media.map(ng => {//el formato para esto se filtra en el otro compnente
-                    switch(ng.type_file){
-                        case "image": {ng.url = this.acAppData.base_url +"/files/images/"  + ng.name;break;}
-                        case "docfile": {ng.url = this.acAppData.base_url + "/files/docs/pe" + e.post.id + "/" + ng.name;break;}
-                        case "video": {ng.url = this.acAppData.base_url + "/images/youtube_item.jpg";break;}
-                    }
-                    return ng;
-                }),
-                meta: []                        
-            }
-            this.items_postevents.unshift(post);
+            this.profileSummary[0].cout_postevents = parseInt(e.owner.count_posts + e.owner.count_events);
+            this.items_postevents.unshift(formatter88(e,this.acAppData.storage_url));
             this.flag_create.creating = false;        
         },
         onItemEdit: function(id){
