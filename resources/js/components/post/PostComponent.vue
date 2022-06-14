@@ -5,12 +5,6 @@
         </div>
         <div class="card-body">
 
-            <!-- <div class="frontPanelSending">
-              <div>
-                  contenido
-              </div>
-            </div> -->
-
             <post-form-component  
                 :ac-app-data="acAppData"
                 :edit-mode="editMode" 

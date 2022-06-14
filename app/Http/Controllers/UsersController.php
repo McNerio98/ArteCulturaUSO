@@ -277,7 +277,6 @@ class UsersController extends Controller
 
                     //ya estan validado que no se repita nombre de usuario y email 
                     $user->username = trim($request->username);
-                    $user->email = trim($request->email);
                     $user->password =  Hash::make($request->raw_pass);
                     
                     //Solo los usuarios con el permiso pueden asignar roles.
@@ -296,6 +295,7 @@ class UsersController extends Controller
                         $user->status = trim($request->status);
                     }
                     $user->saveOrFail();
+                    $user->refresh();
                     if($request->send_email == true){
                         $tmp_mail = trim($user->email);
                         $uitem = new \stdClass();
@@ -388,7 +388,8 @@ class UsersController extends Controller
         ->join("roles","roles.id","=","model_has_roles.role_id")
         ->leftJoin('media_profiles','media_profiles.id','=','users.img_profile_id')
         ->select("users.id","roles.name as role","users.name","users.img_profile_id","users.email",
-            "users.username","users.telephone","users.rubros","users.status","media_profiles.path_file AS img_profile");
+            "users.username","users.telephone","users.rubros","users.status","media_profiles.path_file AS img_profile")
+        ->where('email_verified_at','<>',null); //only verified users
 
         switch($filter){
             case "enabled": {

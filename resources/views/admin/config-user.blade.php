@@ -32,17 +32,13 @@
                                             El nombre de usuario ya existe 
                                         </div>                                              
                                     </div>
+
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Correo electrónico</label>
                                         <input type="email" class="form-control" id="raUserEmail" v-model="credentials.email"
-                                            placeholder="Ingrese un correo" :disabled="!is_edit_credential" required>
-                                        <div class="invalid-feedback">
-                                            Correo electronico obligatorio
-                                        </div>
-                                        <div v-if="email_exist" style="width: 100%;margin-top: 0.25rem;font-size: 80%;color: #dc3545;font-weight: bold;">
-                                            El correo electronico ya existe
-                                        </div>                                             
+                                            placeholder="Ingrese un correo" disabled="true" required>
                                     </div>
+
                                     @can('configurar-usuarios')                                    
                                     <div class="form-group">
                                         <label for="exampleInputPassword1">Contraseña</label>
