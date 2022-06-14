@@ -22,14 +22,14 @@
                     <h4 class="hSectionW text-center">¿Qué buscas? ¿Algún artista o grupo?</h4>
                     <div class="row featurette">
                         <div style="display: flex; justify-content: center;" class="col-12">
-                            <p class="lead" style="text-align: center; font-size: 18px; color:#212529;width: 700px">En Sonsonate hay diversidad de artistas, grupo y promotores artísticos y culturales; puedes conocerlos a través de su perfil</p>
+                            <p class="lead" style="text-align: center; font-size: 18px;width: 700px">En Sonsonate hay diversidad de artistas, grupo y promotores artísticos y culturales; puedes conocerlos a través de su perfil</p>
                         </div>
                     </div>               
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-12">
+            <div class="col-12 ">
                 <search-component @generated-filter="exeSeach"></search-component>
             </div>
         </div>
@@ -59,7 +59,7 @@
                     <h4 class="hSectionW text-center">TABLERO DE EVENTOS</h4>
                     <div class="row featurette">
                         <div style="display: flex; justify-content: center;" class="col-12">
-                            <p class="lead" style="text-align: center; font-size: 18px; color:#212529;width: 700px">
+                            <p class="lead" style="text-align: center; font-size: 18px; width: 700px">
                                 Descubre todos los eventos a los que puedes asistir en los próximos días.
                             </p>
                         </div>
@@ -82,7 +82,7 @@
                     <h4 class="hSectionW text-center">CENTROS DE ENSEÑANZAS Y ACADEMIAS</h4>
                     <div class="row featurette">
                         <div style="display: flex; justify-content: center;" class="col-12">
-                            <p class="lead" style="text-align: center; font-size: 18px; color:#212529;width: 700px">
+                            <p class="lead  " style="text-align: center; font-size: 18px; width: 700px">
                                 Encuentra lugares que te ofrecer la oportunidad en el maravilloso mundo al arte y cultura.
                             </p>
                         </div>
@@ -99,7 +99,7 @@
         </div>
         <div class="row">
             <div style="display: flex; justify-content: center;" class="col-12">
-                <p class="lead" style="text-align: center; font-size: 18px; color:#212529; margin-top: 30px;width: 700px">
+                <p class="lead" style="text-align: center; font-size: 18px;  margin-top: 30px;width: 700px">
                     Descubre nuestra biblioteca virtual, donde puedes encontrar recursos informativos,
                     revistas, libros, audios y videos.
                 </p>
@@ -109,7 +109,9 @@
             <div style="display: flex; justify-content: center;" class="col-12">
                 <a class="btn btn-primary " href="{{route('recursos')}}" role="button">Ver todos los recursos</a>
             </div>
+           
         </div>    
+        <br>
         <!-- ::::::::::::::::::::::::::::::::::::::END CONTENT::::::::::::::::::::::::::::::::::::::-->
     </div>
 </main>

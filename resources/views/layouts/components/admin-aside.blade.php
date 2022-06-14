@@ -109,7 +109,12 @@
                 </li>
                 @endcan
 
-               
+               <li>
+               <label class="switch">
+                  <input type="checkbox" id="slider" checked>
+                  <span class="slider"></span>
+              </label>
+               </li>
 
                 <li class="nav-item">
                     <a href="#" class="nav-link text-hpolis" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

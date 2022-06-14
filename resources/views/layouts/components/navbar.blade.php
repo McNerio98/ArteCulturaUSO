@@ -76,6 +76,10 @@
                 </li>
                 @endguest
             </ul>
+              <label class="switch">
+                  <input type="checkbox" id="slider" checked>
+                  <span class="slider"></span>
+              </label>
         </div>
     </nav>   
 </header>

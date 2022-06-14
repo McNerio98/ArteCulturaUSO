@@ -21,7 +21,7 @@ export function getTags() {
 }
 
 
-export function createPostEvent(token, data){
+export function createPostEvent(token, data) {
     return new Promise((resolve, reject) => {
         axios.post(`/api/post?api_token=${token}`, data).then(response => {
             resolve(response);

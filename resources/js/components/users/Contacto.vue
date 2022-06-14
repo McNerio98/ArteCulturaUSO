@@ -7,7 +7,7 @@
             <div class="card-body pt-0">
                 <div class="row">
                     <div class="col-7">
-                        <h2 class="lead"><b>{{contact.nombre_artistico}}</b></h2>
+                        <h2 class="lead "><b>{{contact.nombre_artistico}}</b></h2>
                         <p class="text-muted text-sm"><b>Rubro Artistico: </b>
                             <template v-for="(e,index) in contact.rubros">
                                 <span v-bind:key="index">{{e}}</span> <template v-if="index < (contact.rubros.length - 1)"> / </template>

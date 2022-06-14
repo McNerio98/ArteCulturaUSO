@@ -3,7 +3,8 @@
 
 @section('content')
 <main role="main" class="flex-shrink-0" id="app-search">
-    <div class="container bg-white">
+    <br>
+    <div class="container bg-tenue-ac">
         <!--::::::::::::::::::::::::::::::::::::::START CONTENT::::::::::::::::::::::::::::::::::::::-->
         <div class="_acScrollmenu mb-1 mb-md-2">
             @foreach($cats as $c)
@@ -45,7 +46,7 @@
          <div class="row">
          <div style="width: 100%;max-width: 600px;margin: auto;">
 
-            <div class="card" v-if="!spinners.S1">
+            <div class="card tenue-card" v-if="!spinners.S1">
                 <div class="card-header">
                     <h3 class="card-title">Artistas / Talentos</h3>
                 </div>

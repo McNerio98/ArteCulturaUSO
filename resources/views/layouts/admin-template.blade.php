@@ -9,6 +9,7 @@
     <link href="{{ mix('css/observatorio_styles.css') }}" rel="stylesheet">
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+   
     <script>
 
         @auth //Usuario logeado

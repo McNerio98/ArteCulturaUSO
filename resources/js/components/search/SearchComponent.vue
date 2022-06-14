@@ -9,9 +9,9 @@
                 @keyup.esc="onEscape"
                 @keyup.enter="onClickSearchBtn" 
                 v-model="target_match"
-                class="form-control form-control-lg" placeholder="Ejem. Grupo de música, payasos, casa de la cultura, etc.">
-                <div class="input-group-append">
-                    <button class="btn btn-lg btn-default" @click="onClickSearchBtn">
+                class="form-control form-control-lg bg-tenue-ac" placeholder="Ejem. Grupo de música, payasos, casa de la cultura, etc.">
+                <div class="input-group-append bg-tenue-ac">
+                    <button class="btn btn-lg btn-default  bg-tenue-ac" @click="onClickSearchBtn">
                         <i class="fa fa-search"></i>
                     </button>
                 </div>
