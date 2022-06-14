@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//Verificacion de correo electronico
+Route::get('account/verify/{token}','Auth\LoginController@verifyAccount')->name('user.veriry');
+
 //Router Pagina principal 
 Route::get('/','WebsiteController@welcome')->name("inicio");
 Route::get('/events','WebsiteController@events')->name('events');
@@ -24,7 +28,9 @@ Route::get('/page5','WebsiteController@biografias')->name("biografias");
 Route::get('/page6','WebsiteController@homenajes')->name("homenajes");
 Route::get('/page7','WebsiteController@acercade')->name("acercade");
 
-Route::get('/request/status/{name}','WebsiteController@accountRequest')->name("request_status");
+Route::get('/request/status/{name}/{status}','WebsiteController@accountRequest')->name("request.status");
+#Muestra vista notificando se requiere verificacion de correo 
+Route::get('/email/status/{email}','WebsiteController@checkEmail')->name('email.status');
 
 
 
@@ -37,8 +43,10 @@ Route::get('/login','Auth\LoginController@showLoginForm')->middleware('guest');
 Route::post('/login','Auth\LoginController@login')->name('login');
 Route::post('/logout','Auth\LoginController@logout')->name('logout');
 
-
+# Carga el perfil de un usuario invitado
 Route::get('/perfil/{id}','ProfileController@index')->name('profile.show');
+# Carga la informacion completa para el usuario 
+Route::get('/profile/information/{id}','ProfileController@information')->name('profile.information');
 #Muestra la vista para editar un post 
 Route::get('/perfil/{idUser}/post/edit/{idPost}','ProfileController@editElement')->name('profile.edit.item')->middleware('auth');
 
@@ -65,7 +73,9 @@ Route::get('/search','SearchController@index')->name('search');
 //Middleware addroles filtra que el usuario sea un administrador y no un invitado, si es invitado lo redirecciona 
 //Routes para petticiones ajax
 Route::get('/approval','PostEventController@approval')->name('items.approval')->middleware('auth','adroles');
+
 Route::get('/users/dataConfig/{id}','UsersController@configUserData')->name("user.dataconf")->middleware('auth','adroles');
+
 Route::put('/user/updateConfig/{id}','UsersController@updateConfigUser')->name("user.updateconf")->middleware('auth','adroles');
 
 # Crea un nuevo recurso del tipo reseña, [Homenaje o Biografias]

@@ -39,7 +39,7 @@
                                     <spinner1 v-if="spinners.S1" label="Cargando elemento …"></spinner1>
 
                                     <content-create @post-created="PostEventCreated" v-if="buffer.edit_mode && !flags.show_edited" :edit-mode="buffer.edit_mode" :source-edit="buffer.source"></content-create>
-                                    <post-general v-if="flags.show_edited" @source-files="onSources" v-for="e of pe_items"  :model="e"></post-general>
+                                    <post-general  :auth-id="{{Auth::user() == null ? 0 : Auth::user()->id}}" v-if="flags.show_edited" @source-files="onSources" v-for="e of pe_items"  :model="e"></post-general>
                                 </div>
                                 <!--END START CONTENT, EVENTS AND POST-->
                             </div>

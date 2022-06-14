@@ -4,23 +4,15 @@
             <h3 class="card-title">Acerca de</h3>
         </div>
         <!-- /.card-header -->
-        <div class="card-body">
-            <strong><i class="far fa-envelope"></i> Correo Contacto</strong>
-            <p v-if="data_config.email.edit_mode == false" class="text-muted val-about">{{data_config.email.value}} 
-                    <i  v-if="authId === targetId" @click="data_config.email.edit_mode = true;data_config.email.bk = data_config.email.value" class="fas fa-pen ac-edit-about"></i>
-            </p>
+         <div class="card-body">
+            <strong><i class="far fa-envelope"></i> Correo electrónico</strong>
+            <p class="text-muted val-about">{{data_config.email.value}} </p>
+            <hr>        
+            
+            <strong><i class="far fa-envelope"></i> Nombre de usuario</strong>
+            <p class="text-muted val-about">{{data_config.username.value}} </p>
+            <hr>
 
-            <input class="form-control form-control-sm" v-model="data_config.email.value" type="text" placeholder="example@example.com" v-if="data_config.email.edit_mode == true">
-            <div class="btn-group w-100" v-if="data_config.email.edit_mode == true">
-                <button class="btn btn-success col btn-xs" @click="saveDataConfig('email')">
-                    <i class="fas fa-plus"></i> <span>Guardar</span>
-                </button>
-                <button class="btn btn-warning col btn-xs" @click="data_config.email.edit_mode = false; data_config.email.value = data_config.email.bk">
-                    <i class="fas fa-times"></i> <span>Cancelar</span>
-                </button>
-            </div>                          
-
-            <hr>            
             <strong><i class="fas fa-phone-alt"></i> Numero Contacto</strong>
             <p v-if="data_config.phone.edit_mode == false" class="text-muted val-about">{{data_config.phone.value}} 
                 <i v-if="authId === targetId" @click="data_config.phone.edit_mode = true; data_config.phone.bk = data_config.phone.value;" class="fas fa-pen ac-edit-about"></i>
@@ -33,24 +25,23 @@
                 <button class="btn btn-warning col btn-xs" @click="data_config.phone.edit_mode = false; data_config.phone.value = data_config.phone.bk;">
                     <i class="fas fa-times"></i> <span>Cancelar</span>
                 </button>
-            </div>   
+            </div>  
 
             <hr>                
-            <strong><i class="far fa-address-book"></i> Otros nombres</strong>
-            <p v-if="data_config.other_name.edit_mode == false" class="text-muted val-about">{{data_config.other_name.value}} 
-                <i v-if="targetId === authId" @click="data_config.other_name.edit_mode = true; data_config.other_name.bk = data_config.other_name.value;" class="fas fa-pen ac-edit-about"></i>
+            <strong><i class="far fa-address-book"></i> Propietario de cuenta</strong>
+            <p v-if="data_config.owner_account.edit_mode == false" class="text-muted val-about">{{data_config.owner_account.value}} 
+                <i v-if="targetId === authId" @click="data_config.owner_account.edit_mode = true; data_config.owner_account.bk = data_config.owner_account.value;" class="fas fa-pen ac-edit-about"></i>
             </p>
-            <input class="form-control form-control-sm" type="text" v-model="data_config.other_name.value" placeholder="#" v-if="data_config.other_name.edit_mode == true">
-            <div class="btn-group w-100" v-if="data_config.other_name.edit_mode == true">
-                <button class="btn btn-success col btn-xs" @click="saveDataConfig('other_name')">
+            <input class="form-control form-control-sm" type="text" v-model="data_config.owner_account.value" placeholder="#" v-if="data_config.owner_account.edit_mode == true">
+            <div class="btn-group w-100" v-if="data_config.owner_account.edit_mode == true">
+                <button class="btn btn-success col btn-xs" @click="saveDataConfig('owner_account')">
                     <i class="fas fa-plus"></i> <span>Guardar</span>
                 </button>
-                <button class="btn btn-warning col btn-xs" @click="data_config.other_name.edit_mode = false; data_config.other_name.value = data_config.other_name.bk">
+                <button class="btn btn-warning col btn-xs" @click="data_config.owner_account.edit_mode = false; data_config.owner_account.value = data_config.owner_account.bk">
                     <i class="fas fa-times"></i> <span>Cancelar</span>
                 </button>
             </div>  
-
-            <hr>
+            <hr>            
             <!--METADATOS-->
             <!--Se podrian agregar mas-->
             <strong><i class="fas fa-map-marker-alt"></i> Dirección</strong>
@@ -80,7 +71,7 @@
                 <button class="btn btn-warning col btn-xs" @click="data_config.notes.edit_mode = false">
                     <i class="fas fa-times"></i> <span>Cancelar</span>
                 </button>
-            </div>                  
+            </div>             
         </div>
         <!-- /.card-body -->
     </div>
@@ -89,59 +80,50 @@
 <script>
     export default {
         props: {
+            itemData: {type: Object,required:true},
             targetId: {type: Number, default: -1},
             authId: {type: Number, default :0},
-            itemConfig: {type: Object, default: function(){
-                return undefined;
-            }},
         },        
         data: function(){
             return {
                 data_config: {
-                    email: {value: undefined, bk: undefined, edit_mode: false},
-                    phone: {value: undefined, bk: undefined, edit_mode: false},
-                    other_name: {value: undefined, bk: undefined, edit_mode: false},
-                    address: {value: undefined, bk: undefined, edit_mode: false},
-                    notes: {value: undefined, bk: undefined, edit_mode: false},
-                    description: {value: undefined, bk: undefined, edit_mode: false},
+                    email: {
+                        value: this.itemData.email, 
+                        bk: undefined, 
+                        edit_mode: false
+                    },
+                    username: {
+                        value: this.itemData.username, 
+                        bk: undefined, 
+                        edit_mode: false
+                    },
+                    phone: {
+                        value: this.itemData.phone, 
+                        bk: undefined, 
+                        edit_mode: false
+                    },
+                    owner_account: {
+                        value: this.itemData.owner_account, 
+                        bk: undefined, 
+                        edit_mode: false
+                    },
+                    address: {
+                        value: this.itemData.address, 
+                        bk: undefined, 
+                        edit_mode: false
+                    },
+                    notes: {
+                        value: this.itemData.notes, 
+                        bk: undefined, 
+                        edit_mode: false
+                    }
                 }
             }
         },
         created: function(){
-            if(this.itemConfig === undefined){
-                this.loadData();
-            }else{
-                this.data_config = this.itemConfig;
-            }
+
         },
         methods: {
-            loadData: function(){
-                //# get user model and metadata
-                axios(`/api/profile/aboutUser/${this.targetId}`).then(result=>{
-                    let response = result.data;
-                    if(response.code == 0){
-                        StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
-                        return;
-                    }
-                this.data_config.email.value = response.data.user.email;
-                this.data_config.phone.value = response.data.user.telephone;
-                this.data_config.other_name.value = response.data.user.name;
-                this.data_config.address.value = response.data.metas.find(e => e.key === 'user_profile_address')?.value;
-                this.data_config.notes.value = response.data.metas.find(e => e.key === 'user_profile_notes')?.value;                  
-                this.data_config.description.value = response.data.metas.find(e => e.key === 'user_profile_description')?.value;  
-
-                var data_temp = {
-                    user: response.data.user,
-                    metas: this.data_config
-                };
-                //# Emitir la informacion del usuario y el modelo usuario como tal 
-                this.$emit('info-user',data_temp); 
-
-                }).catch(ex=>{
-                    let target_process = "Recuperar informacion";
-                    StatusHandler.Exception(target_process,ex);                    
-                })
-            },
             saveDataConfig: function(key){
                 const data_info = {
                     user_id: this.authId,//id de usuario logeado 

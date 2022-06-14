@@ -53,7 +53,7 @@ class PostEventController extends Controller
 
         date_default_timezone_set('America/El_Salvador');
         $range_init = date("Y-m-d")." 00:00:00"; //today
-        $range_init = "2021-07-23 00:00:00"; //quitar este, es solo para pruebas 
+        //$range_init = "2021-07-23 00:00:00"; //quitar este, es solo para pruebas 
         $range_end = date('Y-m-d', strtotime("+3 months", strtotime($range_init)))." 00:00:00";
         $items      = null;
         $offset     = $paginate["from"] - 1;
@@ -90,7 +90,7 @@ class PostEventController extends Controller
 
 
         $per_page = ($request->per_page == null)?15:$request->per_page;
-        $salida["extra"] = $per_page;
+        //$salida["extra"] = $per_page;
         //$result = PostEvent::where("status","review")->paginate($per_page);
 
         $result = DB::table("post_events AS e")
@@ -159,14 +159,15 @@ class PostEventController extends Controller
         $postEvent = new PostEvent();
         $id_img_presentation = 0;
         try{
+            $postEvent->status = 'approved';
             $postEvent->title = $request->title;
             $postEvent->content = $request->description;
             $postEvent->type_post = $request->post_type;
             $postEvent->creator_id = $user->id;
             $postEvent->save();
 
-            $dtlEvent = new DtlEvent();
             if($request->post_type == "event"){
+                $dtlEvent                               = new DtlEvent();
                 $dtlEvent->event_date        = $request->event_date;
                 $dtlEvent->frequency          = $request->frequency;
                 $dtlEvent->has_cost             = $request->event_has_price;
@@ -185,6 +186,7 @@ class PostEventController extends Controller
                 $global_items++;
                 $user->count_posts = $global_items;
             }
+            
             $user->save();
             
             //Realizar validacion de, tipo de archivos permitidos (por extension)
@@ -270,30 +272,22 @@ class PostEventController extends Controller
                 $postEvent->presentation_img = $id_img_presentation;
                 $postEvent->save();
             }
-
-            $propietario = [];
-            $propietario["id"] = $user->id;
-            $propietario["name"] = $user->name;
-            $propietario["nickname"] = $user->artistic_name;            
-            $propietario["profile_img"] = $user->profile_img;
-            $propietario["count_posts"] = $user->count_posts;
-            $propietario["count_events"] = $user->count_events;
-
+            
             DB::commit();
+            #El detalle de evento siempre se carga aunq sea solo post (lo carga como null)
             $postEvent->refresh();
+            $postEvent->load('owner');
+            $postEvent->owner->load('profile_img');
+            $postEvent->load('media');
+            $postEvent->load('event_detail');
+
+            
             $salida = [
                 "code" => 1,
-                "data" =>  [
-                    "post" => $postEvent->load("media"),
-                    "creator" => $propietario,
-                    'dtl_event' => []
-                ],
-                "msg" => "Request Complete"
+                "data" => $postEvent,
+                "msg" => "Elemento creado"
             ];
-            //Agregar el detalle del evento 
-            if($request->post_type == "event"){
-                $salida["data"]["dtl_event"] = $dtlEvent;
-            }
+
         }catch(\Exception $e){
             DB::rollback();
             $salida["msg"] = "Error en la operación, consulte soporte técnico.";
@@ -359,6 +353,8 @@ class PostEventController extends Controller
             $postEvent->title = $request->title;
             $postEvent->content = $request->description;
             $postEvent->type_post = $request->post_type;
+            //Siempre que edite es necesario pasar por revision 
+            $postEvent->status = "review";
             $postEvent->save();
 
             if($postEvent->type_post == "event"){

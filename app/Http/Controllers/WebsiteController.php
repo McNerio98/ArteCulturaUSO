@@ -56,7 +56,11 @@ class WebsiteController extends Controller
         return view("events");
     }
 
-    public function accountRequest($user_name){
-        return view('request-status',['user_name'=>$user_name]);
+    public function accountRequest($user_name,$code){
+        return view('request-status',['user_name'=>$user_name,'code_status' => $code]);
+    }
+
+    public function checkEmail($email){
+        return view('verify-email-pending',['user_email' => $email]);
     }
 }
