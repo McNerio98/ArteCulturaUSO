@@ -42,15 +42,6 @@ class DashboardController extends Controller
     	return view('admin.search' , ['ac_option' =>'search' , 'request_users' => $request_users]);
 	}	
 	
-	//MEMORIES OPTION 
-    public function memories(){
-		if( ! Auth::user()->can('ver-reseñas')){ //poner esto en los de arriba 
-            return redirect()->route('dashboard');
-        };		
-		$request_users = $this->userRequest();
-    	return view('admin.memories' , ['ac_option' =>'memories' , 'request_users' => $request_users]);
-	}
-
 	//POPULAR OPTIONS 
     public function populars(){
 		if( ! Auth::user()->can('ver-destacados')){ //poner esto en los de arriba 

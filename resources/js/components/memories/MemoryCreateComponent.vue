@@ -4,11 +4,11 @@
             <div class="row">
                 <div class="col-12 col-md-7">
                     <div class="custom-control custom-radio">
-                        <input class="custom-control-input"  v-model="type" value="biography" type="radio" id="customRadio1" name="typeMemories">
+                        <input class="custom-control-input"  v-model="itemData.memory.type" value="biography" type="radio" id="customRadio1" name="typeMemories">
                         <label for="customRadio1" class="custom-control-label">Crear biografía</label>
                     </div>
                     <div class="custom-control custom-radio">
-                        <input class="custom-control-input"  v-model="type" value="memory" type="radio" id="customRadio2" name="typeMemories">
+                        <input class="custom-control-input"  v-model="itemData.memory.type" value="memory" type="radio" id="customRadio2" name="typeMemories">
                         <label for="customRadio2" class="custom-control-label">Crear homenaje</label>
                     </div>                    
                     <h5>Talento/rubro</h5>                    
@@ -16,7 +16,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="nav-icon fas fa-star-half-alt"></i></span>
                         </div>
-                        <input v-model="area" type="text" class="form-control" placeholder="Músico, escritor, pintor …" minlength="2" maxlength="150" required>
+                        <input v-model="itemData.memory.area" type="text" class="form-control" placeholder="Músico, escritor, pintor …" minlength="2" maxlength="150" required>
                         <div class="invalid-feedback">
                             Ingrese un valor valido
                         </div>                          
@@ -27,7 +27,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="nav-icon fas fa-star-half-alt"></i></span>
                         </div>
-                        <input v-model="name" type="text" class="form-control" placeholder="Nombre completo" minlength="2" maxlength="100" required>
+                        <input v-model="itemData.memory.name" type="text" class="form-control" placeholder="Nombre completo" minlength="2" maxlength="100" required>
                         <div class="invalid-feedback">
                             Ingrese un valor valido
                         </div>                        
@@ -37,7 +37,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="nav-icon fas fa-star-half-alt"></i></span>
                         </div>
-                        <input v-model="other_name" type="text" class="form-control" minlength="2" maxlength="150" placeholder="Otros nombres">
+                        <input v-model="itemData.memory.other_name" type="text" class="form-control" minlength="2" maxlength="150" placeholder="Otros nombres">
                     </div>                       
                     <h5>Fecha nacimiento</h5>                    
                     <div class="input-group mb-3">
@@ -45,19 +45,19 @@
                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                         </div>
                         <date-picker
-                            v-model="birth_date"
+                            v-model="itemData.memory.birth_date"
                             format="DD-MM-YYYY"
                             type="date"
                             placeholder="Ejem. 01/07/1990"
                         ></date-picker>                        
                     </div>                                           
-                    <h5 v-if="type == 'memory'">Fecha de fallecimiento </h5>                    
-                    <div v-if="type == 'memory'" class="input-group mb-3">
+                    <h5 v-if="itemData.memory.type == 'memory'">Fecha de fallecimiento </h5>                    
+                    <div v-if="itemData.memory.type == 'memory'" class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                         </div>
                         <date-picker
-                            v-model="death_date"
+                            v-model="itemData.memory.death_date"
                             format="DD-MM-YYYY"
                             type="date"
                             placeholder="Ejem. 01/11/2000"
@@ -74,14 +74,25 @@
             </div>
             <div class="row mb-1 mt-1">
                 <div class="col-12">
-                    <textarea v-model="content" class="form-control" name="" id="" rows="10" required></textarea>
+                    <VueEditor
+                    v-model="itemData.memory.content"
+                    :placeholder="editor_params.placeholder"
+                    :editorToolbar="editor_params.customToolbar"
+                    >
+                    </VueEditor>
                     <div class="invalid-feedback">
                         Ingrese un valor valido
                     </div>                     
                 </div>
             </div>
+            
+            <!--Se podria agregar otros nodos de ineteres-->
+            <MediaComponent 
+                :item-data="{media: itemData.media}">
+            </MediaComponent>
+            
             <div>
-                <a class="btn btn-app">
+                <a class="btn btn-app" @click="onSave">
                     <i class="fas fa-save"></i> Guardar
                 </a>                    
                 <a class="btn btn-app" @click="onCancel">
@@ -127,24 +138,40 @@
     import DatePicker from 'vue2-datepicker';
     import 'vue2-datepicker/index.css';
     import 'vue2-datepicker/locale/es';
+    import { VueEditor } from "vue2-editor";
+    import {upsertMemory} from '../../service';
+    import MediaComponent from './MediaMemory.vue';
+    
+
     export default {
+        components: { VueEditor,MediaComponent},
         props: {
-            editMode: {type: Boolean, default: false},
+            itemData: {type: Object, required: true}
         },
         data(){
             return{
-                area: "",
-                name: "",
-                other_name: "",
-                content: "",
-                birth_date: new Date("2000-01-02"),
-                death_date: new Date(),
-                type: "biography",
-                multimedia: [],
-                spinners: {S1: false},
-                presentation_img_preview: null
+                acAppData: {},
+                flags: {
+                    F1: false
+                },
+                presentation_img_preview: null,
+
+                editor_params: {
+                    placeholder: "Ingrese contenido ...",
+                    customToolbar: [
+                        [{ header: [false, 1, 2, 3, 4, 5, 6] }],
+                        ["bold", "italic", "underline"],
+                        [{ list: "ordered" }, { list: "bullet" }],
+                        [{ align: '' }, { align: 'center' }, { align: 'right' }, { align: 'justify' }],
+                         ['link'],
+                    ]                    
+                }
             }
         },
+        mounted: function(){
+            this.acAppData = window.obj_ac_app;
+        },
+
         methods: {
             setPresentationImg: function(base64_img){
                 let index = -1;
@@ -176,24 +203,35 @@
                 //Realizar validaciones 
                 if(!this.$refs.acFrmMemoryItem.checkValidity()){
                     this.$refs.acFrmMemoryItem.classList.add('was-validated');
+                    StatusHandler.ValidationMsg("Ingrese todos los campos requeridos");
                     return;
                 }
 
-                if(this.area.length < 2 || this.area.length > 150){
-                    StatusHandler.ValidationMsg("Rubro,Talento / Longitud no valida (mayor a 1 y menor a 150)");
-                    return;
-                }
+                //mas validaciones aqui
 
-                if(this.area.name < 2 || this.area.name > 100){
-                    StatusHandler.ValidationMsg("Nombre / Longitud no valida (mayor a 1 y menor a 100)");
-                    return;
-                }
+                this.upsert()
+            },
+            upsert: function(){
+                //Realizar cambios pertinentes 
+                if(this.itemData.id == 0){
 
-                if(this.editMode){
-                    this.updateMemory();
                 }else{
-                    this.createMemory();
-                }                 
+
+                }
+
+                upsertMemory(this.itemData).then(result =>{
+                    let response = result.data;
+                    if(response.code == 0){
+                        StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                        return;
+                    }
+
+                    window.location.replace(this.acAppData.base_url + "/admin/memories/"+response.data.id);
+                }).catch(ex=>{
+                    let target_process = "Guarda informacion de elemento"; 
+                    StatusHandler.Exception(target_process,ex);
+                });
+
             },
             createMemory: function(){
                 var data_send = {
