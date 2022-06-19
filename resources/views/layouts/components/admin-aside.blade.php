@@ -46,7 +46,7 @@
                 </li>                
                 @can('ver-reseñas')
                 <li class="nav-item">
-                    <a href="{{route('memories')}}" class="nav-link text-hpolis  {{ $ac_option == 'memories' ? 'active' : ''}} ">
+                    <a href="{{route('memories.index.admin')}}" class="nav-link text-hpolis  {{ $ac_option == 'memories' ? 'active' : ''}} ">
                         <i class="nav-icon fas fa-star-half-alt"></i>
                         <p>Homenajes</p>
                     </a>

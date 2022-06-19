@@ -75,3 +75,29 @@
         meta: [] //no se usa por ahora
     }
 }
+
+
+/**
+ * Formateado: JSON
+ * Orgien: Tabla memories con todas sus relaciones  
+ * Destino: Arbol JSON para componentes: MemoryCreateComponent and MemoryPreviewComponent 
+ */
+export function formatter89(item,storage_base_url){
+    return {
+        memory: {
+            id: item.id,
+            name: item.name,
+            other_name: item.other_name,
+            type: item.type,
+            area: item.area,
+            birth_date: item.birth_date,
+            death_date: item.death_date,
+            content: item.content,
+            presentation_img: item.presentation_img,
+            creator_id: item.creator_id,
+            status: item.creator_id
+        },
+        files: item.media //hacer map
+    }
+
+}

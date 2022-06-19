@@ -649,60 +649,47 @@ class PostEventController extends Controller
      */
     public function show($id)
     {
-        $salida = [
+        $output = [
             "code" => 0,
             "data" => null,
             "msg" => null
         ];
 
         if(! isset($id)){
-            $salida['msg'] = "Valores imcompletos, Recargue la pagina";
-            return $salida;
+            $output['msg'] = "Valores imcompletos, Recargue la pagina";
+            return $output;
         }
 
-		$post = PostEvent::with('media')
-						->leftJoin('dtl_events','post_events.id','=', 'dtl_events.event_id')
-						->join('users','users.id','=','post_events.creator_id')
-						->leftJoin('media_profiles AS mp','mp.id','users.img_profile_id')
-						->select('post_events.*','dtl_events.event_date','dtl_events.frequency','dtl_events.has_cost','dtl_events.cost',
-						'dtl_events.frequency','mp.path_file AS creator_profile','users.name AS creator_name','users.artistic_name AS creator_nickname','users.id AS creator_id')
-                        ->where("post_events.id",$id)->first();
-
-        // $post = DB::table("post_events AS pe")
-        // ->join("users AS u", "u.id","=","pe.creator_id")
-        // ->leftJoin("media_profiles AS mp","u.img_profile_id","=","mp.id")
-        // ->select("pe.id","pe.title","pe.content AS description","pe.type_post AS type","pe.creator_id","pe.is_popular",
-        //     "pe.status","pe.created_at","u.name","u.artistic_name","mp.path_file AS img_owner")->where("pe.id",$id)->first();
-
-        //Mostrar solo si el usuario estado logeado, y si el usuario logeado es el creado 
-        //O si el usuario logeado es un administrador 
-
-        if($post == null){
-            $salida["msg"] = "El elemento no existe";
-            return $salida;
-        };
+        $postEvent = PostEvent::find($id);
+        if(is_null($postEvent)){
+            $output['msg'] = "Elemento no encontrado";
+            return $output;            
+        }
+        
+        $postEvent->load('owner');
+        $postEvent->owner->load('profile_img');
+        $postEvent->load('media');
+        $postEvent->load('event_detail');
 
 
-
-        if($post->status == "review"){//mostrar solo para admin o propietario 
+        if($postEvent->status == "review"){//mostrar solo para admin o propietario 
             if(Auth::guard('web')->check()){//usuario logeado 
                 //Usuariologeado es un invitado que no es el creado del post 
-                if(Auth::user()->hasRole('Invitado') && Auth::user()->id != $post->creator_id){
-                    $salida["msg"] = "El elemento no ha sido aprobado";
-                    return $salida;                    
+                if(Auth::user()->hasRole('Invitado') && Auth::user()->id != $postEvent->creator_id){
+                    $output["msg"] = "El elemento no ha sido aprobado";
+                    return $output;                    
                 }
             }else{ //Usuairo no logeado 
-                $salida["msg"] = "El elemento no ha sido aprobado no";
-                return $salida;
+                $output["msg"] = "El elemento no ha sido aprobado no";
+                return $output;
             }
         }
 
-        //Si el elemento esta aprovado enviar 
-        $salida["code"]         = 1;
-        $salida["data"]         = $post;
-        $salida["msg"]          = "Processed Successfully";
+        $output["code"] = 1;
+        $output["data"] = $postEvent;
+        $output["msg"] = "Elemento recuperado";
 
-        return $salida;
+        return $output;
     }
 
 
