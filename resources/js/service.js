@@ -41,5 +41,15 @@ export function getMemory(id){
     });
 }
 
+export function getAdminMemories(i){
+    return new Promise((resolve,reject) =>{
+        axios.get(`/admin/memories/all`).then(response => {
+            resolve(response);
+        }).catch(ex => {
+            reject(ex);
+        });
+    });
+}
+
 
 

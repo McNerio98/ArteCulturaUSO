@@ -48,7 +48,7 @@
         </div>
         <!--SECCION PARA MOSTRAR SOLO LOS DOCUMENTOS-->
         <ul class="list-unstyled">
-            <li v-for="(m, key) of ListDocs" v-bind:key="key" class="docfile mb-2" :title="m.filename">
+            <li v-for="(m, key) of ListDocs" v-bind:key="key" class="docfile mb-2" :title="m.name">
                 <a target="_blank" class="btn-link text-secondary"><i class="far fa-file-pdf"></i> {{m.name}}</a>
                 <a class="remove-image alter-remove"
                     href="javascript:void(0);"
@@ -59,7 +59,7 @@
             </li>
         </ul>    
 
-        <!--ARCHIVOS MULTIMEDIA-->
+        <!--OPCIONES PARA CARGAR ARCHIVOS MULTIMEDIA-->
         <div class="row">
             <div class="col-4">
                 <label for="imageInput"
@@ -209,7 +209,7 @@
         },
         computed: {
             ListImagesOrVideos: function(){
-                return this.itemData.files.filter((e,index) => {
+                return this.itemData.media.filter((e,index) => {
                     if(e.type_file == "image" || e.type_file == "video"){
                         e.index_parent = index;
                         return e;
@@ -218,7 +218,7 @@
             },
 
             ListDocs: function(){
-                return this.itemData.files.filter((e,index) => {
+                return this.itemData.media.filter((e,index) => {
                     if(e.type_file == "docfile"){
                         e.index_parent = index;
                         return e;
@@ -234,7 +234,7 @@
                 this.$refs.inputfordocs.click();
             },
             addVideo: function(video_uri){
-                if((this.itemData.files.length + 1) >= this.limitefiles){
+                if((this.itemData.media.length + 1) >= this.limitefiles){
                     StatusHandler.ValidationMsg("Límite de carga de archivos superado, elimine algunos elementos.")
                     return;
                 }
@@ -261,16 +261,16 @@
                     data: id_video,//vendria siendo el path completo 
                 };        
 
-                this.itemData.files.push(newVideoMedia);
+                this.itemData.media.push(newVideoMedia);
             },
             removeFile: function(indexParent,id){
-                this.itemData.files.splice(indexParent,1);
+                this.itemData.media.splice(indexParent,1);
             },
             removeDocs: function(indexParent,id){
-                this.itemData.files.splice(indexParent,1);
+                this.itemData.media.splice(indexParent,1);
             },
             addFile: function(e){
-                if((this.itemData.files.length + e.target.files.length) >= this.limitefiles){
+                if((this.itemData.media.length + e.target.files.length) >= this.limitefiles){
                     StatusHandler.ValidationMsg("Límite de carga de archivos superado, elimine algunos elementos.")
                     return;
                 }
@@ -297,7 +297,7 @@
                         data: e.target.result,
                     };
 
-                    this.itemData.files.push(newFileMedia);                    
+                    this.itemData.media.push(newFileMedia);                    
                 }
             }            
         }

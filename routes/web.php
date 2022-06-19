@@ -61,10 +61,15 @@ Route::get('/admin/search','DashboardController@search')->name('admin.search'); 
 Route::get('/admin/memories','MemoriesController@index')->name('memories.index.admin');
 #Muestra un formulario limpio o muestra para actualiza para el administrador
 Route::get('/admin/memories/create','MemoriesController@create')->name('memories.create.admin');
+#Recupera lista de homenajes/biografias para el administrador 
+Route::get('/admin/memories/all','MemoriesController@getAllAdmin')->name('memories.all.admin');
 #Muestra un Elemento especifico para el administrador 
 Route::get('/admin/memories/{id}','MemoriesController@showadmin')->name('memories.show.admin');
 #Recupera un elemento con peticion ajax 
 Route::get('/memories/find/{id}','MemoriesController@find')->name('memories.find');
+#Recupera lista de homenajes/biografias para el apartado public 
+Route::get('/memories/all','MemoriesController@getAllPublic')->name('memories.all');
+
 
 
 

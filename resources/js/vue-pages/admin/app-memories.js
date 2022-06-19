@@ -7,25 +7,49 @@
 Vue.component('building-page',require('../../components/BuildingPageComponent.vue').default);
 
 Vue.component('memory-create',require('../../components/memories/MemoryCreateComponent').default);
-Vue.component('memory-summary',require('../../components/memories/MemoryMiniViewComponent').default);
 
 
 Vue.component('control-trim', require('../../components/trim/TrimComponentv2.vue').default);
-import {formatter89} from '../../formatters';
-import {getMemory} from '../../service';
+import {formatter89,formatter90} from '../../formatters';
+import {getMemory,getAdminMemories} from '../../service';
 import Memory from '../../components/memories/MemoryShowComponent.vue';
+import MemorySummary from '../../components/memories/MemoryMiniViewComponent.vue';
 
 //Show all items 
 if(document.getElementById("appMemories") != undefined){
     const appMemories = new Vue({
+        components: {MemorySummary},
         el: "#appMemories",
         data: {
-    
+            acAppData: {},
+            items: [],
+        },
+        created: function(){
+            this.acAppData = window.obj_ac_app;
+        },
+        mounted: function(){
+            this.loadData();
+        },
+        methods: {
+            //Implementar paginacion
+            loadData: function(){
+                getAdminMemories().then(result =>{
+                    let response = result.data;
+                    if(response.code == 0){
+                        StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                        return;
+                    }                  
+
+                    this.items = response.data.map(e => formatter90(e,this.acAppData.storage_url));
+                }).catch(ex =>{
+
+                });
+            }
         }
     });
 }
 
-//
+//Show item 
 if(document.getElementById("appMemoryShow") != undefined){
     const appMemoryShow = new Vue({
         el: "#appMemoryShow",
@@ -119,7 +143,7 @@ if(document.getElementById("appMemoryCreateUpdate") != undefined){
                     presentation_img: null,
                     creator_id: 0,
                     status:"approved",//preapproved, approved, decline
-                    files: []
+                    media: []
                 },this.acAppData.storage_url));
             },
             getMemory: function(){

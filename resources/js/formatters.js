@@ -79,7 +79,7 @@
 
 /**
  * Formateado: JSON
- * Orgien: Tabla memories con todas sus relaciones  
+ * Orgien: Tabla (memories) con todas sus relaciones  
  * Destino: Arbol JSON para componentes: MemoryCreateComponent and MemoryPreviewComponent 
  */
 export function formatter89(item,storage_base_url){
@@ -90,14 +90,44 @@ export function formatter89(item,storage_base_url){
             other_name: item.other_name,
             type: item.type,
             area: item.area,
-            birth_date: item.birth_date,
-            death_date: item.death_date,
+            birth_date: new Date(item.birth_date),
+            death_date: item.death_date != null ? new Date(item.death_date) : null,
             content: item.content,
             presentation_img: item.presentation_img,
             creator_id: item.creator_id,
             status: item.creator_id
         },
-        files: item.media //hacer map
+        media: item.media.map(e=>{
+            switch(e.type_file){
+                case "image": {e.url = storage_base_url +"/files/images/"  + e.name;break;}
+                case "docfile": {e.url = storage_base_url + "/files/docs/me" + item.id + "/" + e.name;break;}
+                case "video": {e.url = storage_base_url + "/images/youtube_item.jpg";break;}
+            }
+            return e;            
+        })
     }
+}
 
+/**
+ * Formateado: JSON
+ * Orgien: Tabla (memories) con todas relacion imagen de presentacion 
+ * Destino: Arbol JSON para componentes: MemoryMiniComponent
+ */
+
+export function formatter90(item,storage_base_url){
+    return {
+        memory: {
+            id: item.id,
+            name: item.name,
+            other_name: item.other_name,
+            type: item.type,
+            area: item.area,
+            birth_date: new Date(item.birth_date),
+            death_date: item.death_date != null && item.death_date != "0000-00-00" ? new Date(item.death_date) : null,
+            content: item.content,
+            presentation_img: item.presentation_img,
+            creator_id: item.creator_id,
+            status: item.creator_id
+        }        
+    }
 }

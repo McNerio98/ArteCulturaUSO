@@ -88,7 +88,7 @@
             
             <!--Se podria agregar otros nodos de ineteres-->
             <MediaComponent 
-                :item-data="{files: itemData.files}">
+                :item-data="{media: itemData.media}">
             </MediaComponent>
             
             <div>
@@ -203,6 +203,7 @@
                 //Realizar validaciones 
                 if(!this.$refs.acFrmMemoryItem.checkValidity()){
                     this.$refs.acFrmMemoryItem.classList.add('was-validated');
+                    StatusHandler.ValidationMsg("Ingrese todos los campos requeridos");
                     return;
                 }
 
