@@ -159,7 +159,6 @@ const appConfigUser = new Vue({
             
             let params = {
                 operation: 'update-credentials',
-                email: this.credentials.email,
                 username: this.credentials.username,
                 raw_pass: this.credentials.pass,
                 role: this.role_selected,

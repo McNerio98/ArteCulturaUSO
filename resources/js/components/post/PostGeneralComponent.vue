@@ -23,6 +23,7 @@
         </div>
         <!-- /.card-header -->
         <div class="card-body p-2">
+            <!--
             <div v-if="has_cap('aprobar-publicaciones')" class="form-group  m-0">
                 <div  class="custom-control custom-switch custom-switch-on-success">
                     <input type="checkbox"  class="custom-control-input" :id="'switchApprovedPost'+model.post.id" :checked="validate_approved(model.post.status)" @change="switchStatePost"/>
@@ -44,6 +45,8 @@
                 <small>El elemento actual se encuentra en <b>revisión.</b> Deberá ser aprobado por los administradores para ser
                     visible para todos los usuarios.</small>
             </blockquote>
+             -->
+
             <div class="row" v-if="model.post.type == 'event' ">
                 <div class="col-sm-4 col-12">
                     <div class="description-block border-right">
@@ -99,36 +102,7 @@
 <script>
     export default {
         props: {
-            model: {
-                type: Object,
-                default: function(){
-                    return {
-                        post: {
-                            id: 0,
-                            title: "",
-                            description: "",
-                            type: "post",
-                            is_popular: 0,
-                            status: "review",
-                            created_at: "",               
-                        },
-                        dtl_event: {
-                            event_date: 0,
-                            has_cost: false,
-                            cost: 0,
-                            frequency: "unique"
-                        },                        
-                        creator: {
-                            id: 0,
-                            name: "",
-                            profile_img: "",
-                            nickame: ""                            
-                        },
-                        media: [],
-                        meta: []
-                    }
-                }
-            },
+            model: {type: Object,required:true},
             authId: {type: Number, default: 0}//Current user id 
         },      
         data: function(){

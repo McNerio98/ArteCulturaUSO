@@ -34,12 +34,9 @@
     export default {
         props: {
             logged: {type: Number,default: 0}, //id del usuario logeado 
-            mediaProfile: {type: Boolean, default: false}, //deprecated, se sustituye por type-media
             typeMedia: {type: String}, // MEDIA_PROFILES (Images de perfiles)
             target: {type: Object,required:true}, //elemento actual objecto completo()
-            loadedMedia: {type: Boolean,default: true},
             items: {type: Array, default: []}, //los items se deben pasar formateados 
-            owner: {type:Number,default:0} //el id del usuario al que le pertenece el fichero actual 
         },
         data: function(){
             return {

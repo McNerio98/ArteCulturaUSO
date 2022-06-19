@@ -50,7 +50,9 @@ class User extends Authenticatable
     ];
 
     public function profile_img(){
-        return $this->hasOne("App\MediaProfile","id","img_profile_id");
+        //Al final genera la misma query estos dos 
+        //return $this->hasOne("App\MediaProfile","id2","img_profile_id");
+        return $this->belongsTo("App\MediaProfile","img_profile_id","id");
     }
 
     //Get Only names from permissions 

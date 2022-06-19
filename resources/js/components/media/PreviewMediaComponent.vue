@@ -31,6 +31,7 @@
 </template>
 
 <script>
+
 export default {
   props: {
     media: { type: Array, default: [] }
@@ -47,7 +48,7 @@ export default {
       }
   },
   mounted() {
-    console.log("Ciclo de vida del componente.");
+    
   },
   methods: {
 

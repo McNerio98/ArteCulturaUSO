@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//Verificacion de correo electronico
+Route::get('account/verify/{token}','Auth\LoginController@verifyAccount')->name('user.veriry');
+
 //Router Pagina principal 
 Route::get('/','WebsiteController@welcome')->name("inicio");
 Route::get('/events','WebsiteController@events')->name('events');
@@ -24,7 +28,9 @@ Route::get('/page5','WebsiteController@biografias')->name("biografias");
 Route::get('/page6','WebsiteController@homenajes')->name("homenajes");
 Route::get('/page7','WebsiteController@acercade')->name("acercade");
 
-Route::get('/request/status/{name}','WebsiteController@accountRequest')->name("request_status");
+Route::get('/request/status/{name}/{status}','WebsiteController@accountRequest')->name("request.status");
+#Muestra vista notificando se requiere verificacion de correo 
+Route::get('/email/status/{email}','WebsiteController@checkEmail')->name('email.status');
 
 
 
@@ -37,8 +43,10 @@ Route::get('/login','Auth\LoginController@showLoginForm')->middleware('guest');
 Route::post('/login','Auth\LoginController@login')->name('login');
 Route::post('/logout','Auth\LoginController@logout')->name('logout');
 
-
+# Carga el perfil de un usuario invitado
 Route::get('/perfil/{id}','ProfileController@index')->name('profile.show');
+# Carga la informacion completa para el usuario 
+Route::get('/profile/information/{id}','ProfileController@information')->name('profile.information');
 #Muestra la vista para editar un post 
 Route::get('/perfil/{idUser}/post/edit/{idPost}','ProfileController@editElement')->name('profile.edit.item')->middleware('auth');
 
@@ -48,7 +56,24 @@ Route::get('/perfil/{idUser}/post/edit/{idPost}','ProfileController@editElement'
 Route::get('/admin/home','DashboardController@index')->name('dashboard');
 Route::get('/admin/content','DashboardController@content')->name('content');
 Route::get('/admin/search','DashboardController@search')->name('admin.search'); //dado que hay otra para el cliente 
-Route::get('/admin/memories','DashboardController@memories')->name('memories');
+
+#Muestra pantalla con items reseñas, con opcion de crear nuevo para el administrador
+Route::get('/admin/memories','MemoriesController@index')->name('memories.index.admin');
+#Muestra un formulario limpio o muestra para actualiza para el administrador
+Route::get('/admin/memories/create','MemoriesController@create')->name('memories.create.admin');
+#Recupera lista de homenajes/biografias para el administrador 
+Route::get('/admin/memories/all','MemoriesController@getAllAdmin')->name('memories.all.admin');
+#Muestra un Elemento especifico para el administrador 
+Route::get('/admin/memories/{id}','MemoriesController@showadmin')->name('memories.show.admin');
+#Recupera un elemento con peticion ajax 
+Route::get('/memories/find/{id}','MemoriesController@find')->name('memories.find');
+#Recupera lista de homenajes/biografias para el apartado public 
+Route::get('/memories/all','MemoriesController@getAllPublic')->name('memories.all');
+
+
+
+
+
 Route::get('/admin/populars','DashboardController@populars')->name('populars');
 Route::get('/admin/users','DashboardController@users')->name('users');
 Route::get('/admin/categories','DashboardController@rubros')->name('rubros'); //categories and tags 
@@ -65,7 +90,9 @@ Route::get('/search','SearchController@index')->name('search');
 //Middleware addroles filtra que el usuario sea un administrador y no un invitado, si es invitado lo redirecciona 
 //Routes para petticiones ajax
 Route::get('/approval','PostEventController@approval')->name('items.approval')->middleware('auth','adroles');
+
 Route::get('/users/dataConfig/{id}','UsersController@configUserData')->name("user.dataconf")->middleware('auth','adroles');
+
 Route::put('/user/updateConfig/{id}','UsersController@updateConfigUser')->name("user.updateconf")->middleware('auth','adroles');
 
 # Crea un nuevo recurso del tipo reseña, [Homenaje o Biografias]

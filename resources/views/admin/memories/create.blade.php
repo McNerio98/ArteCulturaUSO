@@ -4,16 +4,19 @@
 
 
 @section('content')
-<div class="container-fluid" id="appMemories">        
+<div class="container-fluid" id="appMemoryCreateUpdate">        
+        <input type="hidden" id="idmemory" value="{{app('request')->input('idm')}}">
         <div class="container">
            <div>
           
-           <memory-create
-                ref="acVmCompMemory"
+        <memory-create
+                v-for="(e,index) of modelo"
+                :item-data="e"
                 :main-img-change="main_img_buffer.change"
                 :main-Img="main_img_buffer.base64"
                 @trim-principal-img="openTrimPrincipalPic"
-           ></memory-create>
+                >
+        </memory-create>
            </div>
         </div>
 

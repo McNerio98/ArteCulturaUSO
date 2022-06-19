@@ -55,14 +55,14 @@ Route::get('categories','CategoriesController@index');
 # falta terminarla, pero inicialmente realiza las busquedas a traves de ajax 
 Route::get('exeSearch','SearchController@execSearch')->name("search.exec");
 
-#Obtiene la informacion basica y las fotografias de perfiles de un usuario 
-Route::get('profile/gnInfo/{id}','ProfileController@summaryInfo')->name('profile.general.info');
-# Ontiene el modelo del usuario y los metadatos 
-Route::get('profile/aboutUser/{id}','ProfileController@aboutInfo')->name('profile.about.info');
+
+
 #Verifica si ya existe un usuario con el numero de telefono especifico
 Route::get('user/existTelephone/{id}/{target}','UsersController@validateTelephone');
 #Verifica si ya existe un usuario con el email  especifico
 Route::get('user/existEmail/{id}/{mail}','UsersController@validateEmail');
+#Verifica disponibilidad de email para la parte del registro 
+Route::get('user/checkEmail/{mail}','UsersController@checkEmail');
 #Verifica si ya existe un usuario con el nombre de usuario especifico
 Route::get('user/existUsername/{id}/{username}','UsersController@validateUsername');
 #Envia datos para su almacenaje como nueva solicitud de cuenta 

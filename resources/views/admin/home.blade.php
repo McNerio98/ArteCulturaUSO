@@ -78,7 +78,7 @@
 
     <!--HERE ALL CONTENT-->
     <!--///////////////////////////////////////////////////////////////////////////////-->
-    <h5>ELEMENTOS POR APROBAR</h5>
+    <h5 id="ancla-title1">ELEMENTOS POR APROBAR</h5>
 
     <!--NO CONTENT-->
     <div class="flex-shrink text-center p-md-3" style="max-width: 42em; margin:auto;" v-if="approval_items.length === 0 && !spinners.S1">
@@ -104,10 +104,11 @@
         <post-general @source-files="onSources" v-if="postevent_selected != undefined" v-bind:model="postevent_selected"></post-general>                                
     </div>
 
+    
     <div class="row">
         <summary-item @selected-item="getApprovalEl" v-for="app of approval_items" :model="app"></summary-item>        
     </div>
-
+    <a href="#ancla-title1" id="ctrlAnchor1" class="ancla"></a>
     <!--PAGINATION-->
     <div v-if="approval_items.length > 0">
         <nav aria-label="Navegacion elementos en aprobación">

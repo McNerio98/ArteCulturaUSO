@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Auth;
 use Illuminate\Support\Str;
 use App\MediaProfile;
+use App\EmailUserCheck;
 
 class LoginController extends Controller
 {
@@ -14,6 +15,25 @@ class LoginController extends Controller
 		$this->middleware('guest',['only' =>'showLoginForm']);
         $this->middleware('auth',['only'=>'waiting']);
 	}
+
+    public function verifyAccount($token){
+        $check = EmailUserCheck::where('token',$token)->first();
+        $code =  404; //El correo no se ha podido identificar 
+        if(! is_null($check)){
+            $user = $check->user;
+            if(is_null($user->email_verified_at)){
+                $user->email_verified_at = date('Y-m-d H:i:s');
+                $user->save();
+                $code = 1;
+            }else{
+                $code = 2;
+                $msg = "Tu correo electrónico ya está verificado. Ahora puede iniciar sesión.";
+            }
+            
+        }
+
+        return redirect()->route("request.status",[$user->name,$code]);
+    }
 
 	public function showLoginForm(){
 		return view('auth.login');

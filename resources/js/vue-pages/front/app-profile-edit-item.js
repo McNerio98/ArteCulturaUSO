@@ -14,11 +14,13 @@ Vue.component('spinner1',require('../../components/spinners/Spinner1Component.vu
 Vue.component('post-general',require('../../components/post/PostGeneralComponent.vue').default);
 Vue.component('preview-media',require('../../components/media/PreviewMediaComponent.vue').default);
 
+
 const appProfileItemEditVue = new Vue({
     el: "#appProfileItemEdit",
     data:{
         acAppData: {},
         is_mdprofiles: false, // is media profiles 
+        type_media: "", // PROFILE_MEDIAS        
         media_view: {
             owner: 0,
             target: {},
@@ -58,7 +60,7 @@ const appProfileItemEditVue = new Vue({
     methods: {
         loadData: function(){
             this.spinners.S1 = true;
-            axios(`/api/post/${this.target_id}`).then(result=>{
+            axios(`/postevent/${this.target_id}`).then(result=>{
                 let response = result.data;
                 if(response.code == 0){ //sino existe lo detiene aqui 
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
@@ -72,8 +74,8 @@ const appProfileItemEditVue = new Vue({
                         title: e.title,
                         description: e.content,
                         type: e.type_post,
-                        is_popular: false,
-                        status: 'review',
+                        is_popular: e.is_popular,
+                        status: e.status,
                         created_at: e.created_at,
                     },
                     dtl_event: {
@@ -118,8 +120,8 @@ const appProfileItemEditVue = new Vue({
                     title: e.post.title,
                     description: e.post.content,
                     type: e.post.type_post,
-                    is_popular: false,
-                    status: 'review',
+                    is_popular: e.post.is_popular,
+                    status: e.post.status,
                     created_at: e.post.created_at,
                 },
                 dtl_event: {
@@ -148,8 +150,23 @@ const appProfileItemEditVue = new Vue({
             this.pe_items.push(post);
             this.flags.show_edited = true;
         },
-        onSources: function(){
+        onSources: function(sources){
+            var aux = sources.map((e)=>{
+                return {
+                    id: e.id,
+                    type: e.type_file,
+                    name: e.name,
+                    url: e.url,
+                    owner: {
+                        id: e.owner
+                    }
+                }
+            });
 
+            this.media_view.items = aux;
+            this.media_view.target = aux[0];
+            this.type_media = 'POST_EVENTS';
+            $('#modaPreviewMedia').modal('show');       
         },        
         onPhotosProfiles: function(object_media){
             this.media_view = object_media;
