@@ -2,8 +2,8 @@
     <div class="card card-primary card-outline">
         <div class="card-body box-profile">
             <div class="text-center">
-                <div v-if="current_profile_media.url != undefined" v-bind:style="{ 'background-image': 'url(' + current_profile_media.url + ')' }"
-                    class="profile-pic profile-user-img img-fluid img-circle" @click="showProfilesMedia(current_profile_media)">
+                <div v-if="itemData.current_mediaprofile.path_file != undefined" v-bind:style="{ 'background-image': 'url(' + this.acAppData.storage_url + '/files/profiles/' + itemData.current_mediaprofile.path_file + ')' }"
+                    class="profile-pic profile-user-img img-fluid img-circle" @click="showProfilesMedia(itemData.current_mediaprofile)">
                     <i class="fas fa-camera"></i>
                 </div>
             </div>
@@ -13,14 +13,12 @@
                     <i  v-if="authId === targetId" @click="data_config.nickname.edit_mode = true;data_config.nickname.bk = data_config.nickname.value;" class="fas fa-pen ac-edit-about"></i>
             </h3>
 
-           
-
             <input class="form-control" type="text" v-model="data_config.nickname.value" placeholder="Nombre artístico o entidad" v-if="data_config.nickname.edit_mode">
             <div class="btn-group w-100" v-if="data_config.nickname.edit_mode == true">
                 <button class="btn btn-success col btn-xs" @click="saveDataConfig('nickname')">
                     <i class="fas fa-plus"></i> <span>Guardar</span>
                 </button>
-                <button class="btn btn-warning col btn-xs" @click="data_config.nickname.edit_mode = false;data_config.nickname.value = data_config.nickname.bk;">
+                <button class="btn btn-warning col btn-xs" @click="data_config.nickname.edit_mode = false;itemData.nickname = data_config.nickname.bk;">
                     <i class="fas fa-times"></i> <span>Cancelar</span>
                 </button>
             </div>  
@@ -56,10 +54,7 @@
 
             <ul class="list-group list-group-unbordered mb-3">
                 <li class="list-group-item">
-                    <b>Publicaciones</b> <a class="float-right">{{user.count_posts}}</a>
-                </li>
-                <li class="list-group-item">
-                    <b>Proximos Eventos</b> <a class="float-right">{{user.count_events}}</a>
+                    <b>Publicaciones</b> <a class="float-right">{{itemData.cout_postevents}}</a>
                 </li>
             </ul>
 
@@ -70,24 +65,25 @@
 
 <script>
     const {getTags} = require("../../api/api.service");
+    import {formatter86} from '../../formatters';
+
     export default {
         props: {
             targetId: {type: Number, default: -1},
             authId: {type: Number, default :0},
-            itemConfig: {type: Object, default: function(){
-                return undefined;
-            }}
+            itemData: {type: Object,required: true},
         },
         data: function(){
             return {
                 acAppData: {},
                 current_profile_media: {},
                 data_config: {
-                    nickname:  {value: undefined, bk: undefined, edit_mode: false},
+                    nickname:  {value: this.itemData.nickname, bk: undefined, edit_mode: false},
                 },
+                rubros: this.itemData.tags,
+                
                 user: {},
                 media_profile: [],
-                rubros: [],
                 flags: {
                     edit_tags: false
                 },
@@ -101,11 +97,6 @@
             }
         } ,
         created: function(){
-            if(this.itemConfig === undefined){
-                this.loadData();
-            }else{
-                this.data_config = this.itemConfig;
-            }
             this.acAppData = window.obj_ac_app;        
         },
         methods: {
@@ -114,44 +105,14 @@
                 this.user.count_events = events;
             },
             setProfileImg: function(url){
+                /**Estabele la imgane de pefil */
                 this.current_profile_media.url = url;
-            },
-            loadData: function(){
-                //# get User model and tags relacionated 
-                axios(`/api/profile/gnInfo/${this.targetId}`).then(result=>{
-                    let response = result.data;
-                    if(response.code == 0){
-                        StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
-                        return;
-                    }
-                    this.user =  response.data.user;
-                    this.rubros = response.data.tags;
-
-                    this.media_profile =  response.data.media_profile.map(e=>{
-                        return {
-                            id: e.id,
-                            type: 'image',//only image for profiles images 
-                            name: e.path_file,
-                            url: this.acAppData.storage_url + "/files/profiles/" + e.path_file,
-                            owner: {
-                                id: e.user_id
-                            }
-                        }
-                    });
-
-                    let aux_media  = this.media_profile.filter(e => e.id === this.user.img_profile_id);//BUSCAR UNA OPCION OPTIMA 
-                    this.current_profile_media = aux_media.length > 0 ? aux_media[0]: {};                    
-                    this.data_config.nickname.value = this.user.artistic_name;
-                }).catch(ex=>{
-                    let target_process = "Recuperar informacion general";
-                    StatusHandler.Exception(target_process,ex);
-                })
             },
             saveDataConfig: function(key){
                 const data_info = {
                     user_id: this.authId,//id de usuario logeado 
                     info_key: key,
-                    info_value: this.data_config[key].value,
+                    info_value: this.itemData.nickname,
                 };             
 
                 var path_uri = "";
@@ -177,10 +138,13 @@
                 });
 
             },
-            showProfilesMedia: function(target_media){
-                this.media_view.items = this.media_profile;
-                this.media_view.target = target_media;
+            showProfilesMedia: function(target_current){
+                this.media_view.items = this.itemData.media_profile.map((el,index)=>{
+                    return formatter86(el,this.acAppData.storage_url);
+                });
+                this.media_view.target = formatter86(target_current,this.acAppData.storage_url);
                 this.$emit("medias-view",this.media_view);
+
             },
             deleteTagUser: function(id_tag,index){
                 axios.delete(`/profile/deltag/${this.authId}/${id_tag}`).then(result=>{

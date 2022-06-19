@@ -229,7 +229,7 @@ li.docfile i{
   border: 5px solid rgb(235, 230, 230);
   height: 115px;
   border-radius: 50%;
-}
+  }
 </style>
 
 <script>

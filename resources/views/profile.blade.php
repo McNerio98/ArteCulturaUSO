@@ -10,18 +10,22 @@
         <div class="row">
             <div class="col-md-3">
                 <!-- Profile Image -->
-                <general-info-profile
-                ref="vmInfoGeneral" 
+                <profile-summary
+                v-for="(s,index) of profileSummary"
+                :item-data="s"
                 @medias-view="onPhotosProfiles"
                 :auth-id="{{Auth::user() == null ? 0 : Auth::user()->id}}" 
-                :target-id="{{$id_user_cur}}"></general-info-profile>
+                :target-id="{{$id_user_cur}}">
+                </profile-summary>
 
                 <!-- /.card -->
                 <!-- About Me Box -->
-                <about-profile 
-                @info-user="loadInfoUser"
+                <profile-about
+                v-for="(p,index) of profileAbout"
+                :item-data="p"
                 :auth-id="{{Auth::user() == null ? 0 : Auth::user()->id}}" 
-                :target-id="{{$id_user_cur}}"></about-profile>
+                :target-id="{{$id_user_cur}}">
+                </profile-about>
                 <!-- /.card -->
             </div>
             <!-- /.col -->

@@ -13,9 +13,17 @@ window.Vue.filter('DateFormatES1',function(value){
     }    
 });
 
+//dddd ? 
+//	Sunday Monday ... Friday Saturday
 window.Vue.filter('DateFormatES2',function(value){
     if (value) {
         return moment(String(value)).format('dddd , DD/MM/YYYY hh:mm a');
+    }    
+});
+
+window.Vue.filter('DateFormatES3',function(value){
+    if (value) {
+        return moment(String(value)).format('DD/MM/YYYY');
     }    
 });
 
