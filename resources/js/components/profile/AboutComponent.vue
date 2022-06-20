@@ -4,7 +4,7 @@
             <h3 class="card-title">Acerca de</h3>
         </div>
         <!-- /.card-header -->
-         <div class="card-body">
+         <div class="card-body text-muted " style="background-color: rgb(235, 239, 243) !important;">
             <strong><i class="far fa-envelope"></i> Correo electrónico</strong>
             <p class="text-muted val-about">{{data_config.email.value}} </p>
             <hr>        

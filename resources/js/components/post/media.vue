@@ -75,7 +75,7 @@
 
     <!--SECCION PARA MOSTRAR SOLO LOS DOCUMENTOS-->
     <ul class="list-unstyled">
-        <li v-for="(m, key) in media_docs" v-bind:key="key" class="docfile mb-2" :title="m.filename">
+        <li v-for="(m, key) in media_docs" v-bind:key="key" class="docfile tenue-card mb-2" :title="m.filename">
           <a :href="buffer.edit_mode ? m.data : 'javascript:void(0);'" target="_blank" class="btn-link text-secondary"><i class="far fa-file-pdf"></i> {{m.filename}}</a>
           <a
             @click="removeDocs(key,m.id)"

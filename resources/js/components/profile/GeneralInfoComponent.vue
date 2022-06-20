@@ -1,6 +1,6 @@
 <template>
     <div class="card card-primary card-outline">
-        <div class="card-body box-profile">
+        <div class="card-body box-profile" style="background-color: rgb(235, 239, 243) !important;">
             <div class="text-center">
                 <div v-if="itemData.current_mediaprofile.path_file != undefined" v-bind:style="{ 'background-image': 'url(' + this.acAppData.storage_url + '/files/profiles/' + itemData.current_mediaprofile.path_file + ')' }"
                     class="profile-pic profile-user-img img-fluid img-circle" @click="showProfilesMedia(itemData.current_mediaprofile)">
@@ -53,7 +53,7 @@
             </div>
 
             <ul class="list-group list-group-unbordered mb-3">
-                <li class="list-group-item">
+                <li class="list-group-item text-muted " style="background-color: rgb(235, 239, 243) !important;">
                     <b>Publicaciones</b> <a class="float-right">{{itemData.cout_postevents}}</a>
                 </li>
             </ul>

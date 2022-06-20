@@ -70,7 +70,7 @@
     <link href="{{ asset('css/general_styles.css')}}" rel="stylesheet">    
     @stack('styles')
 </head>
-<body class="d-flex flex-column h-100  wrapper dark-mode">
+<body class="d-flex flex-column h-100  wrapper ">
     @include('layouts.components.navbar')
     <!-- <main role="main" class="flex-shrink-0"> -->
         @yield('content')

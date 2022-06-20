@@ -10,6 +10,7 @@
     --footer: #202020;
     --tenue: #202020;
     --tenue_card: #606060;
+    --headerEventos: #000;
 }
 
 [data-theme='ligth'] {
@@ -17,6 +18,7 @@
     --text: #000;
     --footer: #f5f5f5;
     --tenue: #fbfbfb;
+    --headerEventos: #fff;
 }
 
 body {
@@ -25,8 +27,18 @@ body {
     background-color: var(--background);
 }
 
+.text-muted {
+    color: #6c757d !important;
+}
+
 .bg-tenue-ac {
     background-color: var(--tenue);
+    color: var(--text);
+}
+
+.eventHeaders {
+    background-color: var(--headerEventos);
+    color: var(--text);
 }
 
 .tenue-card {

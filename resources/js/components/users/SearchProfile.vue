@@ -1,5 +1,5 @@
 <template>
-    <li class="item">
+    <li class="item" style="background-color: rgb(215, 215,215) !important;">
         <div class="product-img"><img :src="user.path_media" alt="User Image" class="img-size-50"></div>
         <div class="product-info">
             <a :href="pathRedirect" class="product-title">{{user.artistic_name == undefined || (user.artistic_name.trim().length == 0) ? '(No Especificado)' : user.artistic_name }}

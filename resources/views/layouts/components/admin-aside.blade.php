@@ -22,7 +22,13 @@
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-
+            <li class="nav-item">
+                <label class="switch nav-link">
+                        <input type="checkbox" id="slider" checked>
+                        <span class="slider"></span>
+                    </label>
+                </li>
+               <li>
                 <li class="nav-item">
                     <a href="{{route('dashboard')}}" class="nav-link text-hpolis {{ $ac_option == 'home' ? 'active' : ''}}">
                         <i class="nav-icon fas fa-circle-notch"></i>
@@ -108,13 +114,7 @@
                     </a>
                 </li>
                 @endcan
-
-               <li>
-               <label class="switch">
-                  <input type="checkbox" id="slider" checked>
-                  <span class="slider"></span>
-              </label>
-               </li>
+             
 
                 <li class="nav-item">
                     <a href="#" class="nav-link text-hpolis" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

@@ -9,8 +9,10 @@
     <!--End Tag Hidden Token-->
 
     <!-- Small boxes (Stat box) -->
-    <div class="row">
-        <div class="col-12 col-sm-6 col-md-3">
+    <div class="row ">
+
+        <div class="col-12 col-sm-6 col-md-3 tB">
+
             <div class="info-box">
                 <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
 
@@ -26,6 +28,7 @@
         </div>
         <!-- /.col -->
         <div class="col-12 col-sm-6 col-md-3">
+
             <div class="info-box mb-3">
                 <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-thumbs-up"></i></span>
 

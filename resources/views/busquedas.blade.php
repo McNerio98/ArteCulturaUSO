@@ -9,7 +9,7 @@
         <div class="_acScrollmenu mb-1 mb-md-2">
             @foreach($cats as $c)
             <div class="_acCatItem m-1 m-md-2">
-                    <a class="_uniqueSection" style="padding: 10px;" @click="exeSeach({id_filter: {{$c->id}}, label: '{{$c->name}}', type_search:'cat'})"> 
+                    <a class="_uniqueSection " style="padding: 10px;" @click="exeSeach({id_filter: {{$c->id}}, label: '{{$c->name}}', type_search:'cat'})"> 
                         <img  src="{{asset('/files/categories/'.$c->img_presentation)}}" alt="" class="avatarArt">
                         <span class="text-section">{{$c->name}}</span>
                     </a>
@@ -51,11 +51,11 @@
                     <h3 class="card-title">Artistas / Talentos</h3>
                 </div>
                 <!-- /.card-header -->
-                <div class="card-body p-0">
+                <div class="card-body  tenue-card p-0" style="background-color: rgb(235, 239, 243) !important;">
                     <empty1 v-if="profiles.length == 0 && !spinners.S1" 
                     path-register="{{url('/').'?register=true'}}" 
                     img-path="{{asset('images/icons/box.svg')}}"></empty1>
-                    <ul class="products-list product-list-in-card pl-2 pr-2">
+                    <ul class="products-list product-list-in-card tenue-card pl-2 pr-2" style="background-color: rgb(215, 215,215) !important;">
                         <profile v-for="e of profiles" :user="e" :path-redirect=" '../perfil/'+e.id"></profile>
                     </ul>
                 </div>

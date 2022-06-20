@@ -370,6 +370,9 @@ div._acScrollmenu ._acCatItem ._uniqueSection {
         height: 120px;
         object-fit: cover;
         border-radius: 50%;
+        &::after {
+            border: 3px solid red;
+        }
     }
     .text-section {
         margin-top: 10px;

@@ -1,6 +1,6 @@
 <template>
     <div class="card card-widget mb-1 mb-md-3" style="width: 100%;max-width: 600px;margin: auto;">
-        <div class="card-header p-2">
+        <div class="card-header p-2 ">
             <div class="user-block">
                 <img class="img-circle" :src="model.creator.profile_img" alt="User Image">
                 <span class="username"><a href="#">{{model.creator.nickname == null?model.creator.name:model.creator.nickname}}</a></span>
@@ -22,7 +22,7 @@
             <!-- /.card-tools -->
         </div>
         <!-- /.card-header -->
-        <div class="card-body p-2">
+        <div class="card-body p-2 tenue-card">
             <div v-if="has_cap('aprobar-publicaciones')" class="form-group  m-0">
                 <div  class="custom-control custom-switch custom-switch-on-success">
                     <input type="checkbox"  class="custom-control-input" :id="'switchApprovedPost'+model.post.id" :checked="validate_approved(model.post.status)" @change="switchStatePost"/>
@@ -85,7 +85,13 @@
             </ul>
 
         </div>
+        <div >
+            <button onclick="ir();">pulsa aqui</button>
+     
+        </div>
+ 
     </div>
+    
 </template>
 <style scoped>
     li.docfile{
@@ -97,6 +103,18 @@
 </style>
 
 <script>
+    var URLactual = "https://www.google.com/";
+function ir(){
+                    const urlConst = "https://www.facebook.com/sharer.php?u=https%3A%2F%2F";
+                    var local = window.location;
+                    var SLocal = local;
+                    const nuevaURL = urlConst+local;
+                    alert(nuevaURL);
+            }
+
+   
+
+
     export default {
         props: {
             model: {
@@ -163,9 +181,11 @@
             }
         },
         methods: {
+            
             regexLink: function(){
 
             },
+
             onClickEdit: function(){
                 this.$emit('edit-item',this.model.post.id);
             },

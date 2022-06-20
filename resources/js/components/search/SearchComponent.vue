@@ -16,9 +16,8 @@
                     </button>
                 </div>
             </div>
-            <div class="autocomplete-items">
-                 
-                <div v-for="(e,index) in matchs" 
+            <div class="autocomplete-items bg-tenue-ac text-muted">                 
+                <div  v-for="(e,index) in matchs" 
                 :class="{active : index_navi == index}"
                 v-bind:key="index" 
                 @click="setectMatch(e)"><b>{{e.label.substr(0, target_match.length)}}</b>{{e.label.substr(target_match.length)}}</div>

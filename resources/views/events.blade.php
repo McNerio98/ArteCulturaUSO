@@ -17,18 +17,19 @@
     }
 </style>
 <main role="main" class="flex-shrink-0" id="app_events">
+    <br>
     <input type="hidden" id="targetOpenItem" value="{{app('request')->input('target')}}">
 
-    <section v-if="postevent_selected == undefined" class="jumbotron text-center" style="background-color: rgb(233, 236, 239);">
+    <section v-if="postevent_selected == undefined" class="jumbotron text-center eventHeaders" >
         <div class="container">
             <h1>Tablero de Eventos</h1>
-            <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it entirely.</p>
+            <p class="lead text-muted">Conoce todo los eventos programados.</p>
         </div>
     </section>
 
-    <div class="container bg-white">
+    <div class="container bg-tenue-ac">
         <!--::::::::::::::::::::::::::::::::::::::START CONTENT::::::::::::::::::::::::::::::::::::::-->
-        <div class="container pt-2">
+        <div class="container pt-2 bg-tenue-ac">
             <div class="row" v-if="spinners.S1">
                 <div class="col-12 text-center">
                     <spinner1 label="Cargando eventos …"></spinner1>

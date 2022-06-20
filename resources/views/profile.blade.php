@@ -4,8 +4,9 @@
 
 @section('content')
 <main role="main" class="flex-shrink-0" id="appProfile">
+    <br>
     <input type="hidden" value="{{$id_user_cur}}" id="current_user_id_request" />
-    <div class="container bg-white">
+    <div class="container eventHeaders">
         <!--::::::::::::::::::::::::::::::::::::::START CONTENT::::::::::::::::::::::::::::::::::::::-->
         <div class="row">
             <div class="col-md-3">
@@ -31,7 +32,7 @@
             <!-- /.col -->
             <div class="col-md-9">
                 <div class="card">
-                    <div class="card-header p-2">
+                    <div class="card-header p-2" style="background-color: rgb(235, 239, 243) !important;">
                         <ul class="nav nav-pills">
                             <li class="nav-item"><a class="nav-link active rd-none" href="#content" data-toggle="tab">Contenido</a></li>
                             <li class="nav-item"><a class="nav-link rd-none" href="#abaout_extra" data-toggle="tab">Descripcion</a></li>

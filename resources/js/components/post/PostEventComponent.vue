@@ -1,4 +1,5 @@
 <template>
+
     <div class="col-md-4" style="padding-left:15px !important;padding-right: 15px !important;">
         <div class="card mb-4 shadow-sm">
             <div class="card-header border p-1">
@@ -6,7 +7,7 @@
             </div>
                 <!--IF THE PRESENTATION IMG IS PDF OR UNDEFINED-->
                 <div v-if="model.presentation_type == undefined || model.presentation_type == 'docfile'" class="bg-dark" style="height: 200px; display: flex;flex-direction: column;justify-content: center;align-items: center;">
-                    <i class="fas fa-image text-muted" style="font-size: 2rem;"></i>
+                    <i class="fas fa-image text-muted " style="font-size: 2rem;"></i>
                     <span class="text-muted">Sin Imagen</span>
                 </div>
                 <!--IF THE PRESENTATION IMG IS IMAGE OR VIDEO-->
@@ -50,6 +51,7 @@
             </div>
         </div>
     </div>
+  
 </template>
 
 <style scoped>
