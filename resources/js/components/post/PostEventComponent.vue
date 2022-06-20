@@ -1,23 +1,22 @@
 <template>
-
-    <div class="col-md-4" style="padding-left:15px !important;padding-right: 15px !important;">
-        <div class="card mb-4 shadow-sm">
+    <div class="col-md-4 tenue-card" style="padding-left:15px !important;padding-right: 15px !important;">
+        <div class="card mb-4 shadow-sm ">
             <div class="card-header border p-1">
-                <h5 class="m-0 p-0 _noWrp"><i class="fas fa-bell"></i><span> {{model.creator.nickname}}</span></h5>
+                <h5 class="m-0 p-0 _noWrp text-muted "><i class="fas fa-bell"></i><span> {{model.creator.nickname}}</span></h5>
             </div>
                 <!--IF THE PRESENTATION IMG IS PDF OR UNDEFINED-->
-                <div v-if="model.presentation_type == undefined || model.presentation_type == 'docfile'" class="bg-dark" style="height: 200px; display: flex;flex-direction: column;justify-content: center;align-items: center;">
-                    <i class="fas fa-image text-muted " style="font-size: 2rem;"></i>
+                <div v-if="model.presentation_type == undefined || model.presentation_type == 'docfile'"  style="height: 200px; display: flex;flex-direction: column;justify-content: center;align-items: center;">
+                    <i class="fas fa-image" style="font-size: 2rem;"></i>
                     <span class="text-muted">Sin Imagen</span>
                 </div>
                 <!--IF THE PRESENTATION IMG IS IMAGE OR VIDEO-->
-                <div v-if="model.presentation_type == 'image' || model.presentation_type == 'video'" class="bg-dark" style="height: 200px;">                    
+                <div v-if="model.presentation_type == 'image' || model.presentation_type == 'video'"  style="height: 200px;">                    
                     <img style="object-fit: contain; padding-top: 3px; width: 100%;height: 100%;" alt="" :src="model.presentation_img">
                 </div>
             <div class="card-body p-1">
                 <!-- <a class="text-muted" @click="emitSelectedItem" href="javascript:void(0);">{{model.title}}</a> -->
-                <p class="card-text"> {{ (model.title.length >= 70) ? model.title.substring(0,70) + " ... " : model.title }} <a href="javascript:void(0);" @click="emitSelectedItem"> <u> Ver mas</u></a> </p>
-                <ul class="nav flex-column" v-if="model.type === 'event'">
+                <p class="card-text text-muted "> {{ (model.title.length >= 70) ? model.title.substring(0,70) + " ... " : model.title }} <a href="javascript:void(0);" @click="emitSelectedItem"> <u> Ver mas</u></a> </p>
+                <ul class="nav flex-column " v-if="model.type === 'event'">
                     <li class="nav-item">
                         <a href="javascript:void(0);" class="nav-link p-0">
                             Fecha <span class="float-right badge  bg-success">{{model.dtl_event.event_date | DateFormatES2}}</span>

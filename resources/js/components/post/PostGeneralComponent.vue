@@ -86,7 +86,7 @@
 
         </div>
         <div >
-            <button onclick="ir();">pulsa aqui</button>
+            <a href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Fec2-44-203-144-205.compute-1.amazonaws.com"  target="_blank">Facebook</a>
      
         </div>
  
@@ -103,19 +103,7 @@
 </style>
 
 <script>
-    var URLactual = "https://www.google.com/";
-function ir(){
-                    const urlConst = "https://www.facebook.com/sharer.php?u=https%3A%2F%2F";
-                    var local = window.location;
-                    var SLocal = local;
-                    const nuevaURL = urlConst+local;
-                    alert(nuevaURL);
-            }
-
-   
-
-
-    export default {
+   export default {
         props: {
             model: {
                 type: Object,
