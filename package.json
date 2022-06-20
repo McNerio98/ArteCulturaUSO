@@ -26,9 +26,6 @@
     "vue-template-compiler": "^2.6.10"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.8.0",
-    "@fortawesome/free-regular-svg-icons": "^6.1.1",
-    "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "admin-lte": "^3.0.5",
     "vue2-datepicker": "^3.8.2"
   },
