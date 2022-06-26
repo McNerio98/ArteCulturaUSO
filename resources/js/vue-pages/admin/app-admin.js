@@ -1,9 +1,9 @@
 
 //Se queda 
 Vue.component('preview-media',require('../../components/media/PreviewMediaComponent.vue').default);
-Vue.component('post-general',require('../../components/post/PostGeneralComponent.vue').default);
+Vue.component('post-general',require('../../components/post/PostEventShowComponent.vue').default);
 Vue.component('media-viewer', require('../../components/media/ViewMediaComponent.vue').default);
-Vue.component('summary-item',require('../../components/post/PostEventComponent.vue').default);
+Vue.component('summary-item',require('../../components/post/PostEventCardComponent.vue').default);
 
 const STATE_SEARCH= {
     DEFAULT: 1,

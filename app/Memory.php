@@ -11,7 +11,7 @@ class Memory extends Model
         return $this->hasMany('App\FilesOnMemory');
     }
 
-    public function img_presentation(){
+    public function presentation_model(){
         return $this->belongsTo("App\FilesOnMemory","presentation_img","id");
     }
 

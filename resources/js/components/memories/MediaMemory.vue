@@ -10,7 +10,7 @@
                         <img style="object-fit: contain; padding-top: 3px"
                             width="100%"
                             height="100px"
-                            :src="m.data != null ? m.data : m.name"
+                            :src="m.data != null ? m.data : m.url"
                         alt="Preview"/>
                         <a @click="removeFile(m.index_parent,m.id)"
                             class="remove-image"
@@ -199,6 +199,7 @@
             return {
                 acAppData: {},
                 limitefiles: 10,
+                mediadrop_ids: [],
                 flags: {
                     modal_video_youtube: false
                 }
@@ -210,7 +211,7 @@
         computed: {
             ListImagesOrVideos: function(){
                 return this.itemData.media.filter((e,index) => {
-                    if(e.type_file == "image" || e.type_file == "video"){
+                    if((e.type_file == "image" || e.type_file == "video") && !e.presentation){
                         e.index_parent = index;
                         return e;
                     }
@@ -265,6 +266,9 @@
             },
             removeFile: function(indexParent,id){
                 this.itemData.media.splice(indexParent,1);
+                //For edit mode 
+                if(id != 0){this.mediadrop_ids.push(id);}
+                this.$emit("drop-ids",this.mediadrop_ids);
             },
             removeDocs: function(indexParent,id){
                 this.itemData.media.splice(indexParent,1);

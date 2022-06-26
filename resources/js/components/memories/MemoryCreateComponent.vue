@@ -44,31 +44,34 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                         </div>
-                        <date-picker
-                            v-model="itemData.memory.birth_date"
-                            format="DD-MM-YYYY"
-                            type="date"
-                            placeholder="Ejem. 01/07/1990"
-                        ></date-picker>                        
+                        
+                        <DatePicker v-model="itemData.memory.birth_dateparse" 
+                            type="date" 
+                            confirm  
+                            format="DD/MM/YYYY" 
+                            :clearable="false"
+                            :editable="false">
+                        </DatePicker>
+                                                         
                     </div>                                           
                     <h5 v-if="itemData.memory.type == 'memory'">Fecha de fallecimiento </h5>                    
                     <div v-if="itemData.memory.type == 'memory'" class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                         </div>
-                        <date-picker
+                        <DatePicker
                             v-model="itemData.memory.death_date"
                             format="DD-MM-YYYY"
                             type="date"
-                            placeholder="Ejem. 01/11/2000"
-                        ></date-picker>                                           
+                            placeholder="Ejem. 01/11/2000">
+                        </DatePicker>                                           
                     </div>                        
                 </div>
                 <div class="col-12 col-md-5">
-                    <div class="wrpp-img-presentation" :style="[presentation_img_preview != null ? { backgroundImage: 'url(' +  presentation_img_preview + ')' }:'']" >
+                    <div class="wrpp-img-presentation" :style="[{ backgroundImage: 'url(' +  srcPresentationImg + ')' }]" >
                         
                     </div>
-                    <button  @click="$refs.filePrincipalPic.click()" class="btn btn-block btn-secondary btn-flat">Subir</button>
+                    <button  @click.self.prevent="$refs.filePrincipalPic.click()" class="btn btn-block btn-secondary btn-flat">Subir</button>
                     <input type="file" hidden="true" ref="filePrincipalPic" @change="this.setPrincipalPic"  id="inputFileImgPrincipalPic">
                 </div>                
             </div>
@@ -88,7 +91,8 @@
             
             <!--Se podria agregar otros nodos de ineteres-->
             <MediaComponent 
-                :item-data="{media: itemData.media}">
+                :item-data="{media: itemData.media}"
+                @drop-ids="setMediaDrops">
             </MediaComponent>
             
             <div>
@@ -135,26 +139,28 @@
 
 </style>
 <script>
-    import DatePicker from 'vue2-datepicker';
-    import 'vue2-datepicker/index.css';
-    import 'vue2-datepicker/locale/es';
+  import DatePicker from 'vue2-datepicker';
+  import 'vue2-datepicker/index.css';
+  import 'vue2-datepicker/locale/es';
+
     import { VueEditor } from "vue2-editor";
     import {upsertMemory} from '../../service';
     import MediaComponent from './MediaMemory.vue';
     
 
     export default {
-        components: { VueEditor,MediaComponent},
+        components: { VueEditor,MediaComponent,DatePicker},
         props: {
-            itemData: {type: Object, required: true}
+            pdata: {type: Object, required: true}
         },
         data(){
             return{
+                itemData: JSON.parse(JSON.stringify(this.pdata)),
+                update_mode: this.pdata.memory.id != 0 ? true: false,
                 acAppData: {},
                 flags: {
                     F1: false
                 },
-                presentation_img_preview: null,
 
                 editor_params: {
                     placeholder: "Ingrese contenido ...",
@@ -168,32 +174,68 @@
                 }
             }
         },
+        created: function(){
+            this.loadLocalValues();
+        },
         mounted: function(){
             this.acAppData = window.obj_ac_app;
         },
+        computed: {
+            srcPresentationImg: function(){
+                //Buscar reciente 
+                var img = this.itemData.media.filter(e => e.presentation == true && e.id == 0);
 
+                if(img.length > 0){
+                    return img[0].data;
+                }
+                //Buscar en las precargadas para caso actualizacion 
+                var img = this.itemData.media.filter(e => e.presentation == true);
+
+                if(img.length  > 0){
+                    return img[0].url;
+                }else{
+                    return this.acAppData.base_url + "/images/no_image_found.png";
+                }
+            }
+        },
         methods: {
+            loadLocalValues: function(){
+                //Los parseos de fechas van aca, debido a que el parse en el formateo se convierne nuevamente 
+                //a tipo string en el parseo local de prop a valor local 
+                this.itemData.memory.birth_dateparse = 
+                    this.update_mode ? new Date(this.itemData.memory.birth_date) : new Date("2000-01-02");
+
+                this.itemData.memory.death_dateparse = 
+                    this.update_mode && this.itemData.memory.death_date ? (new Date(this.itemData.memory.death_date)) : new Date();
+            },
+            setMediaDrops: function(arr){
+                this.itemData.mediadrop_ids = JSON.parse(JSON.stringify(arr));
+            },
             setPresentationImg: function(base64_img){
                 let index = -1;
-                for(let e in this.media){
-                    if(this.media[e].type == "image" && this.media[e].presentation == true){
+                //Si ya cargo una pero vuelve a cargar otra se hace replace 
+                for(let e in this.itemData.media){
+                    if(this.itemData.media[e].type_file == "image" && this.itemData.media[e].presentation == true && this.itemData.media[e].id == 0){
                         index = e
+                        console.log("La imagen ya existe, se va a cargar en " + index);
                         break;
                     }
                 }
+
+                //Aqui me quede, se esta pasando la misma imagen
                 //Objeto con datos de imagenes 
                 var img_add = {
-                    id: null,
-                    type: "image",
-                    filename: "generated.jpg",
+                    id: 0,
+                    type_file: "image",
+                    name: "generated.jpg",
                     data: base64_img,
                     presentation: true
                 }
-                this.presentation_img_preview = img_add.data;
+
                 if(index === -1){//Si no se encontro se agrega 
-                    this.multimedia.push(img_add);
+                    this.itemData.media.push(img_add);
                 }else{//Si se encontro se remplaza 
-                    this.multimedia[index] = img_add;
+                    this.itemData.media[index] = img_add;
                 }                
             },
             onCancel: function(){
@@ -232,40 +274,6 @@
                     StatusHandler.Exception(target_process,ex);
                 });
 
-            },
-            createMemory: function(){
-                var data_send = {
-                    area: this.area,
-                    name: this.name,
-                    other_name: this.other_name,
-                    birth_date: this.birth_date,
-                    content: this.content,
-                    type: this.type,
-                     media: [...this.multimedia] 
-                }
-
-                if(this.type == "memory"){
-                    data_send.death_date = this.death_date;
-                }
-
-                axios.post("/memories",data_send).then(result=>{
-                    let response = result.data;
-                    if(response.code == 0){
-                        StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
-                        return;
-                    }    
-                    alert("SE guardo");
-                }).catch(ex=>{
-                    StatusHandler.Exception("Crear elemento",ex);
-                }).finally(e=>{
-                    this.spinners.S1 = false;
-                });
-            },
-            updateMemory: function(){
-
-            },
-            addMedia: function(media){
-                
             },
             setPrincipalPic: function(event){
                 this.$emit("trim-principal-img",event.target.files[0]);

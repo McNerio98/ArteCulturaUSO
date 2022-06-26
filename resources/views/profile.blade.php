@@ -12,7 +12,7 @@
                 <!-- Profile Image -->
                 <profile-summary
                 v-for="(s,index) of profileSummary"
-                :item-data="s"
+                :pdata="s"
                 @medias-view="onPhotosProfiles"
                 :auth-id="{{Auth::user() == null ? 0 : Auth::user()->id}}" 
                 :target-id="{{$id_user_cur}}">
@@ -22,7 +22,7 @@
                 <!-- About Me Box -->
                 <profile-about
                 v-for="(p,index) of profileAbout"
-                :item-data="p"
+                :pdata="p"
                 :auth-id="{{Auth::user() == null ? 0 : Auth::user()->id}}" 
                 :target-id="{{$id_user_cur}}">
                 </profile-about>
@@ -61,15 +61,16 @@
                                             <content-create @post-created="PostEventCreated" v-if="flag_create.creating == true" :user-info="current_user" :post-type="flag_create.type"></content-create>
                                         @endif
                                     @endauth
-                                    <post-general 
+
+                                    <post-show 
                                     v-for="(e,index) of items_postevents"  
                                     @source-files="onSources" 
                                     @edit-item="onItemEdit" 
                                     @delete-item="onDelete(index)"
                                     v-bind:key="index"
-                                    :model="e" 
+                                    :item-data="e" 
                                     :auth-id="{{Auth::user() == null ? 0 : Auth::user()->id}}">
-                                    </post-general>
+                                    </post-show>
 
                                     <pagination-component  v-if="flags.show_pg1" @source-items="itemLoaded" route="{{'/postsevents/'.$id_user_cur}}" :per_page="15"></pagination-component>            
                                 </div>

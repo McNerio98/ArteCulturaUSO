@@ -71,16 +71,17 @@
         props: {
             targetId: {type: Number, default: -1},
             authId: {type: Number, default :0},
-            itemData: {type: Object,required: true},
+            pdata: {type: Object,required: true},
         },
         data: function(){
             return {
+                itemData: JSON.parse(JSON.stringify(this.pdata)),
                 acAppData: {},
                 current_profile_media: {},
                 data_config: {
-                    nickname:  {value: this.itemData.nickname, bk: undefined, edit_mode: false},
+                    nickname:  {value: null, bk: undefined, edit_mode: false},
                 },
-                rubros: this.itemData.tags,
+                rubros: [],
                 
                 user: {},
                 media_profile: [],
@@ -98,8 +99,13 @@
         } ,
         created: function(){
             this.acAppData = window.obj_ac_app;        
+            this.loadLocalValues();
         },
         methods: {
+            loadLocalValues: function(){
+                this.data_config.nickname.value = this.itemData.nickname;
+                this.rubros = this.itemData.tags;
+            },
             setCounts: function(posts,events){
                 this.user.count_posts = posts;
                 this.user.count_events = events;

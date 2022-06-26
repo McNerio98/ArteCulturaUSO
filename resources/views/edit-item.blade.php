@@ -12,15 +12,22 @@
         <div class="row">
             <div class="col-md-3">
                 <!-- Profile Image -->
-                <general-info-profile 
+                <profile-summary
+                v-for="(s,index) of profileSummary"
+                :pdata="s"
                 @medias-view="onPhotosProfiles"
                 :auth-id="{{Auth::user() == null ? 0 : Auth::user()->id}}" 
-                :target-id="{{$id_user_cur}}"></general-info-profile>
+                :target-id="{{$id_user_cur}}">
+                </profile-summary>
+
                 <!-- /.card -->
                 <!-- About Me Box -->
-                <about-profile 
+                <profile-about
+                v-for="(p,index) of profileAbout"
+                :pdata="p"
                 :auth-id="{{Auth::user() == null ? 0 : Auth::user()->id}}" 
-                :target-id="{{$id_user_cur}}"></about-profile>
+                :target-id="{{$id_user_cur}}">
+                </profile-about>
                 <!-- /.card -->
             </div>
             <!-- /.col -->
@@ -38,8 +45,9 @@
                                 <div id="event-cp" style="width: 100%;max-width: 600px;margin: auto;background-color: #fff;padding: 10px;border-left: 1px solid #d8d5d5;border-right: 1px solid #d8d5d5;">
                                     <spinner1 v-if="spinners.S1" label="Cargando elemento …"></spinner1>
 
-                                    <content-create @post-created="PostEventCreated" v-if="buffer.edit_mode && !flags.show_edited" :edit-mode="buffer.edit_mode" :source-edit="buffer.source"></content-create>
-                                    <post-general  :auth-id="{{Auth::user() == null ? 0 : Auth::user()->id}}" v-if="flags.show_edited" @source-files="onSources" v-for="e of pe_items"  :model="e"></post-general>
+                                    <post-create @post-created="PostEventCreated"  :edit-mode="true"  v-for="e of modelo" :source-edit="e"></post-create>
+                                    
+                                    <post-show  :auth-id="{{Auth::user() == null ? 0 : Auth::user()->id}}" v-if="flags.show_edited" @source-files="onSources" v-for="e of modelo"  :pdata="e"></post-show>
                                 </div>
                                 <!--END START CONTENT, EVENTS AND POST-->
                             </div>

@@ -1,6 +1,6 @@
 Vue.component('request-component', require('../../components/RequestAccount.vue').default);
 Vue.component('search-component', require('../../components/search/SearchComponent.vue').default);
-Vue.component('summary-item',require('../../components/post/PostEventComponent.vue').default);
+Vue.component('summary-item',require('../../components/post/PostEventCardComponent.vue').default);
 
 const app_inicio = new Vue({
     el: '#app_inicio',

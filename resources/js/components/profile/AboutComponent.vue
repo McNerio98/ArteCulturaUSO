@@ -80,40 +80,41 @@
 <script>
     export default {
         props: {
-            itemData: {type: Object,required:true},
+            pdata: {type: Object,required:true},
             targetId: {type: Number, default: -1},
             authId: {type: Number, default :0},
         },        
         data: function(){
             return {
+                itemData: JSON.parse(JSON.stringify(this.pdata)),
                 data_config: {
                     email: {
-                        value: this.itemData.email, 
+                        value: null, 
                         bk: undefined, 
                         edit_mode: false
                     },
                     username: {
-                        value: this.itemData.username, 
+                        value: null, 
                         bk: undefined, 
                         edit_mode: false
                     },
                     phone: {
-                        value: this.itemData.phone, 
+                        value: null, 
                         bk: undefined, 
                         edit_mode: false
                     },
                     owner_account: {
-                        value: this.itemData.owner_account, 
+                        value: null, 
                         bk: undefined, 
                         edit_mode: false
                     },
                     address: {
-                        value: this.itemData.address, 
+                        value: null, 
                         bk: undefined, 
                         edit_mode: false
                     },
                     notes: {
-                        value: this.itemData.notes, 
+                        value: null, 
                         bk: undefined, 
                         edit_mode: false
                     }
@@ -121,9 +122,17 @@
             }
         },
         created: function(){
-
+            this.loadLocalValues();
         },
         methods: {
+            loadLocalValues: function(){
+                this.data_config.email.value= this.itemData.email;
+                this.data_config.username.value= this.itemData.username;
+                this.data_config.phone.value= this.itemData.phone;
+                this.data_config.owner_account.value= this.itemData.owner_account;
+                this.data_config.address.value= this.itemData.address;
+                this.data_config.notes.value= this.itemData.notes;
+            },
             saveDataConfig: function(key){
                 const data_info = {
                     user_id: this.authId,//id de usuario logeado 

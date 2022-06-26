@@ -2,23 +2,31 @@
 Vue.component('media-viewer', require('../../components/media/ViewMediaComponent.vue').default);
 Vue.component('modal-trim-img', require('../../components/trim/TrimComponent.vue').default);
 
-Vue.component('general-info-profile',require('../../components/profile/GeneralInfoComponent.vue').default);
-Vue.component('about-profile',require('../../components/profile/AboutComponent.vue').default);
-
-Vue.component('content-create', require('../../components/post/PostComponent.vue').default);
-Vue.component('post-form-component', require('../../components/post/Formulario.vue').default);
-Vue.component('post-media-component', require('../../components/post/Media.vue').default);
+Vue.component('post-create', require('../../components/post/PostEventCreateComponent.vue').default);
+Vue.component('post-form-component', require('../../components/post/FormularioComponent.vue').default);
+Vue.component('post-media-component', require('../../components/post/MediaComponent.vue').default);
 Vue.component('post-modal-component', require('../../components/post/ModalVideo.vue').default);
 
 Vue.component('spinner1',require('../../components/spinners/Spinner1Component.vue').default);
-Vue.component('post-general',require('../../components/post/PostGeneralComponent.vue').default);
+Vue.component('post-show',require('../../components/post/PostEventShowComponent.vue').default);
 Vue.component('preview-media',require('../../components/media/PreviewMediaComponent.vue').default);
 
+//Para el registro de componentes locales 
+import ProfileSummary from '../../components/profile/GeneralInfoComponent.vue';
+import ProfileAbout from '../../components/profile/AboutComponent.vue';
+import {getUserProfileInformation,getPostEvent} from '../../service';
+import {formatter87,formatter88} from '../../formatters';
 
 const appProfileItemEditVue = new Vue({
     el: "#appProfileItemEdit",
+    components: {ProfileSummary,ProfileAbout},    
     data:{
         acAppData: {},
+        modelo: [],
+        profileSummary: [],
+        profileAbout: [],
+
+
         is_mdprofiles: false, // is media profiles 
         type_media: "", // PROFILE_MEDIAS        
         media_view: {
@@ -56,62 +64,58 @@ const appProfileItemEditVue = new Vue({
         if(!isNaN(this.target_id)){
             this.loadData();
         }
+
+        //Cargar toda la informacion y distribuirla a los subcomponentes 
+        getUserProfileInformation(this.current_user_id).then(result => {
+            let response = result.data;
+            if(response.code == 0){
+                StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                return;
+            }; 
+
+            this.profileSummary.push({
+                current_mediaprofile: response.data.user.profile_img || {},
+                nickname: response.data.user.artistic_name,
+                fullname: response.data.user.name,
+                media_profile: response.data.media_profile || [],
+                tags: response.data.tags,
+                cout_postevents: response.data.user.count_posts + response.data.user.count_events
+            });
+
+            this.profileAbout.push({
+                email: response.data.user.email,
+                username: response.data.user.username,
+                phone: response.data.user.telephone,
+                owner_account: response.data.user.name,
+                address:  response.data.metas.find(e => e.key === 'user_profile_address')?.value,
+                notes: response.data.metas.find(e => e.key === 'user_profile_notes')?.value
+            });
+
+            //Data for PostEventComponent 
+            this.current_user = formatter87(response.data.user,this.acAppData.storage_url);
+        }).catch(ex => {
+            let target_process = "Guardar la informacion";
+            StatusHandler.Exception(target_process,ex);  
+        });        
     },
     methods: {
         loadData: function(){
             this.spinners.S1 = true;
-            axios(`/postevent/${this.target_id}`).then(result=>{
+
+            getPostEvent(this.target_id).then(result =>{
                 let response = result.data;
                 if(response.code == 0){ //sino existe lo detiene aqui 
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
                     return;
                 }  
-                
-                var e = response.data;
-                this.buffer.source =  {
-                    post: {
-                        id: e.id,
-                        title: e.title,
-                        description: e.content,
-                        type: e.type_post,
-                        is_popular: e.is_popular,
-                        status: e.status,
-                        created_at: e.created_at,
-                    },
-                    dtl_event: {
-                        event_date: e.event_date,
-                        has_cost: e.has_cost,
-                        cost: e.cost,
-                        frequency: e.frequency
-                    },                    
-                    creator: {
-                        id: e.creator_id,
-                        name: e.creator_name,
-                        nickname: e.creator_nickname,
-                        profile_img:  this.acAppData.storage_url + "/files/profiles/" + e.creator_profile, 
-                    },
-                    media: e.media.map(ng => {//el formato para esto se filtra en el otro compnente
-                        switch(ng.type_file){//IMPORTANT FOR EDIT MODE PASS URL FOR ALL ITEMS 
-                            case "image": {ng.url = this.acAppData.storage_url +"/files/images/"  + ng.name;break;}
-                            case "docfile": {ng.url = this.acAppData.storage_url + "/files/docs/pe" + e.id + "/" + ng.name;break;}
-                            case "video": {ng.url = this.acAppData.storage_url + "/images/youtube_item.jpg";break;}
-                        }
-                        return ng;
-                    })
-                }                
-
-                //Dejar esto asi ya que esto ayuda a sincronizar los datos del componente 
-                //con los pasados como parametros 
-                //Es decirt, se debe colocar una flag en el componente para indicar que se mostrara si esta en modo edicion,
-                //pero antes de mostrar la flag se pasan los daots 
-                this.buffer.edit_mode = true;
-
+                this.modelo.push(formatter88(response.data));
             }).catch(ex=>{
                 let target_process = "Recuperar elemento";
                 StatusHandler.Exception(target_process,ex);                
             }).finally(e=>{
                 this.spinners.S1 = false;
             });
+
         },
         PostEventCreated: function(e){
             var post = {

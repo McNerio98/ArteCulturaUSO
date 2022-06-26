@@ -1,10 +1,10 @@
-Vue.component('content-create', require('../../components/post/PostComponent.vue').default);
-Vue.component('post-form-component', require('../../components/post/Formulario.vue').default);
-Vue.component('post-media-component', require('../../components/post/Media.vue').default);
+Vue.component('content-create', require('../../components/post/PostEventCreateComponent.vue').default);
+Vue.component('post-form-component', require('../../components/post/FormularioComponent.vue').default);
+Vue.component('post-media-component', require('../../components/post/MediaComponent.vue').default);
 Vue.component('post-modal-component', require('../../components/post/ModalVideo.vue').default);
 
 Vue.component('spinner1',require('../../components/spinners/Spinner1Component.vue').default);
-Vue.component('post-general',require('../../components/post/PostGeneralComponent.vue').default);
+Vue.component('post-general',require('../../components/post/PostEventShowComponent.vue').default);
 Vue.component('preview-media',require('../../components/media/PreviewMediaComponent.vue').default);
 
 import {formatter88} from '../../formatters';
