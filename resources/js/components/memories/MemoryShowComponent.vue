@@ -1,5 +1,18 @@
 <template>
     <div class="pnl-memory card">
+            <div class="card-header">
+                <div class="card-tools p-2">
+                    <button @click="onClickEdit" type="button" class="btn btn-tool" data-toggle="tooltip" data-placement="right"
+                        title="Editar elemento">
+                        <i class="fas fa-pen"></i> Editar
+                    </button>
+                    
+                    <button @click="onClickDelete" type="button" class="btn btn-tool" data-toggle="tooltip" data-placement="right"
+                        title="Eliminar elemento">
+                        <i class="fas fa-trash-alt"></i> Eliminar
+                    </button>
+                </div>
+            </div>
         <div class="card-body">
             <div class="row">
                     <div class="col-12 col-md-7">
@@ -48,7 +61,7 @@
                     </div>
 
                     <div class="col-12 col-md-5">
-                        <div class="wrpp-img-presentation" :style="[itemData.memory.img_presentation != null ? { backgroundImage: 'url(' +  itemData.memory.img_presentation.name + ')' }:'']" >
+                        <div class="wrpp-img-presentation" :style="[{ backgroundImage: 'url(' +  srcPresentationImg + ')' }]" >
                         </div>
                     </div>                          
               </div>
@@ -66,7 +79,7 @@
                     :key="index"
                     class="col-6 col-md-4">
 
-                    <div v-if="m.type_file === 'image'">
+                    <div v-if="m.type_file === 'image' && !m.presentation">
                         <div class="image-area"
                             data-toggle="tooltip"
                             data-placement="top"
@@ -79,13 +92,13 @@
                         </div>
                     </div>
 
-                    <div v-if="m.type_file === 'video'">
+                    <div v-if="m.type_file === 'video' && !m.presentation">
                         <div class="image-area"
                             data-toggle="tooltip"
                             data-placement="top"
                             :title="m.name">
                             <a :href="'https://youtu.be/'+m.name" target="_blank">
-                            <img :ref="'image' + key"
+                            <img :ref="'image' + index"
                                 style="object-fit: contain; padding-top: 3px"
                                 width="100%"
                                 height="100px"
@@ -145,17 +158,25 @@
 <script>
     export default {
         props: {
-            itemData: {type: Object,required:true}
+            pdata: {type: Object,required:true}
         },
         data: function(){
             return {
+                itemData: JSON.parse(JSON.stringify(this.pdata)),
                 acAppData: {}
             }
         },
         computed: {
+            srcPresentationImg: function(){
+                if(this.itemData.presentation_model == null){
+                    return this.acAppData.base_url + "/images/no_image_found.png";
+                }else{
+                    return this.itemData.presentation_model.url;
+                }
+            },            
             ListImagesOrVideos: function(){
                 return this.itemData.media.filter((e,index) => {
-                    if(e.type_file == "image" || e.type_file == "video"){
+                    if((e.type_file == "image" || e.type_file == "video") && !e.presentation){
                         e.index_parent = index;
                         return e;
                     }
@@ -173,6 +194,14 @@
         },     
         mounted() {
             this.acAppData = window.obj_ac_app;
+        },
+        methods: {
+            onClickEdit: function(){
+                window.location.replace(this.acAppData.base_url + "/admin/memories/create?idm="+this.itemData.memory.id);
+            },
+            onClickDelete: function(){
+
+            }
         }
     }
 </script>

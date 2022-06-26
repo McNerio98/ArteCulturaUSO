@@ -127,8 +127,8 @@ Route::post('user/uploadImgProfile','UsersController@uploadProfileImg')->middlew
 Route::get('/notifiers','DashboardController@notifiers')->name("notifiers");
 #Almacena un elemento, publicacion o evento con sus medios digitales 
 Route::post('postevent','PostEventController@store')->name('postevent.store')->middleware('auth');
-#Obtiene la informacion de un elemento/ evento/publicacion 
-Route::get('postevent/{id}','PostEventController@show')->name('post.show');
+#Obtiene la informacion de un elemento/ evento/publicacion con todas sus relaciones 
+Route::get('postevent/{id}','PostEventController@find')->name('post.show');
 #Actualiza un elemento, publicacion o evento con sus medios digitales 
 Route::put('postevent/{id}','PostEventController@update')->name('postevent.update')->middleware('auth');
 #AJAX 1 Elimina un recurso de tipo publicacion o evento con todos sus medios(files,video.image) asociados 

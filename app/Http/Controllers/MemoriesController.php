@@ -57,7 +57,7 @@ class MemoriesController extends Controller
         #Actualmente no pasa ningun filtrado asi que se recuperan todos 
         #Usar paginacion 
 
-        $list = Memory::with('img_presentation')->get();
+        $list = Memory::with('presentation_model')->get();
 
         $output["code"] = 1;
         $output["data"] = $list;
@@ -76,7 +76,7 @@ class MemoriesController extends Controller
         #Actualmente no pasa ningun filtrado asi que se recuperan todos 
         #Usar paginacion 
 
-        $list = Memory::with('img_presentation')->get();
+        $list = Memory::with('presentation_model')->get();
 
         $output["code"] = 1;
         $output["data"] = $list;
@@ -100,7 +100,7 @@ class MemoriesController extends Controller
         }
 
         $memory->load("media");
-        $memory->load("img_presentation");
+        $memory->load("presentation_model");
         
         $output["code"] = 1;
         $output["data"] = $memory;
@@ -201,57 +201,119 @@ class MemoriesController extends Controller
                 throw new \Exception("Límite de carga superado, máximo ".$limite_carga." archivos");
             }            
 
+
+            #Agregar contenido nuevo (toso los que tengan id = 0)
             while($index < count($files)){
-                if($files[$index]["type_file"] == "image" || $files[$index]["type_file"] == "docfile"){
-                    $dataFile = substr($files[$index]['data'], strpos($files[$index]['data'], ',') + 1);
-                    $dataFile = base64_decode($dataFile);            
-                    $extensionFile = explode(".",$files[$index]['name']);               
-                    $extensionFile = $extensionFile[count($extensionFile)-1];     
-
-                    if($files[$index]['type_file'] == "image"){ //is a img
-                        $filename = "me".uniqid()."_".time().".".$extensionFile;
-                        $pathname = "files/images/";
-                    }else if($files[$index]['type_file'] == "docfile"){ //is a document
-                        $filename = $files[$index]['name'];
-                        //Crear folder especifico para no remplazar de otra publicacion 
-                        $pathname = "files/docs/me".$memory->id."/";
-                    }
-
+                if($files[$index]["id"] == 0){
                     $FileMemory = new FilesOnMemory();
-                    $FileMemory->memory_id      = $memory->id;
-                    $FileMemory->name               = $filename;
-                    $FileMemory->type_file          = $files[$index]["type_file"];
-                    $FileMemory->save();
 
-                    $path_store = $pathname.$filename;
-                    Storage::disk('local')->put($path_store, $dataFile);                                            
-
-                    if($idImgPresentation == 0 && $FileMemory->type_file === "image" && isset($files[$index]["presentation"])){
-                        $idImgPresentation = $FileMemory->id;
+                    if($files[$index]["type_file"] == "image" || $files[$index]["type_file"] == "docfile"){
+                        $dataFile = substr($files[$index]['data'], strpos($files[$index]['data'], ',') + 1);
+                        $dataFile = base64_decode($dataFile);            
+                        $extensionFile = explode(".",$files[$index]['name']);               
+                        $extensionFile = $extensionFile[count($extensionFile)-1];     
+    
+                        if($files[$index]['type_file'] == "image"){ //is a img
+                            $filename = "me".uniqid()."_".time().".".$extensionFile;
+                            $pathname = "files/images/";
+                        }else if($files[$index]['type_file'] == "docfile"){ //is a document
+                            $filename = $files[$index]['name'];
+                            //Crear folder especifico para no remplazar de otra publicacion 
+                            $pathname = "files/docs/me".$memory->id."/";
+                        }
+    
+                        $FileMemory->memory_id      = $memory->id;
+                        $FileMemory->name               = $filename;
+                        $FileMemory->type_file          = $files[$index]["type_file"];
+                        $FileMemory->save();
+    
+                        $path_store = $pathname.$filename;
+                        Storage::disk('local')->put($path_store, $dataFile);                                            
+                        
+                        //Nueva imagen de presentacion 
+                        if($FileMemory->type_file === "image" && isset($files[$index]["presentation"]) && $files[$index]["id"] == 0){
+                            $idImgPresentation = $FileMemory->id;
+                        }
+    
                     }
-
+    
+                    if($files[$index]["type_file"] == "video"){
+                        $FileMemory->memory_id      = $memory->id;
+                        $FileMemory->name               = $files[$index]['name'];
+                        $FileMemory->type_file          = $files[$index]["type_file"];
+                        $FileMemory->save();                    
+                    }
+                    /**Cualquier otro tipo se omite **/
                 }
+
+                #siemprese aumenta para llegar al final de los archivos
                 $index++;
             }
             
+            #Creando auxiliar porque el de la solicitud no es modificable (Da error)
+            #Eliminacion de multimedias existentes para caso de actualización
+            #En la eliminacion se puede incluir eliminacion de imagen de presentacion por nueva actualización             
+            $mediadrop_ids = $request->mediadrop_ids;
             #Si cargo imagen de presentacion entonces se asocia 
             if($idImgPresentation !== 0){
+                /**Verificando si tenia una anteriormente en caso de actualizacion, se agrega para eliminar */
+                if(!is_null($memory->presentation_img) && $memory->presentation_img != 0){
+                    array_push($mediadrop_ids,$memory->presentation_img);
+                }
+
                 $memory->presentation_img = $idImgPresentation;
                 $memory->save();
-            }      
+            }
+        
+
+            $count_drop = 0;
+            if($request->memory["id"] != 0 && count($mediadrop_ids) > 0){
+                foreach($memory->media as $candidato){
+                    foreach($mediadrop_ids as $dropid){
+                        if($candidato->id === intval($dropid)){
+                            $aux_path = "";
+                            #Para video se omite eliminacion de storage y se borra el modelo solamente 
+                            switch($candidato->type_file){
+                                case 'image': {$aux_path = "files/images/".$candidato->name;break;}
+                                case 'docfile': {$aux_path = "files/docs/me".$candidato->id."/".$candidato->name;break;}
+                            }
+
+                            if(trim($aux_path) !== "" && Storage::disk('local')->exists($aux_path)){
+                                if(! Storage::disk('local')->delete($aux_path) ){
+                                    throw new \Exception("No se logró eliminar algunos medios".$candidato->name);
+                                }                                   
+                            }
+
+                            if(!$candidato->delete()){
+                                throw new \Exception("No se logró eliminar el registro");
+                            }
+                            $count_drop++;                            
+                            #Romper primer bucle 
+                            break;
+                        }
+                    }
+
+                    if($count_drop == count($mediadrop_ids)){
+                        $salida["extra"] = "Se eliminaron " .$count_drop . " Elementos";
+                        break; //break 2 for, all element was deleted 
+                    }
+                }              
+            }
+
 
             #End / Carga de archivos multimedias 
             DB::commit();
             $memory->refresh();
 
-            $output["code"] = 1;
-            $output["data"] = $memory;
-            if($request->memory->id == 0){
+
+            if($request->memory["id"] == 0){
                 $output["msg"] = "Elemento creado";
             }else{
                 $output["msg"] = "Elemento actualizado";
             }
-            
+
+            $output["code"] = 1;
+            $output["data"] = $memory;            
         }catch(\Throwable $ex){
             DB::rollback();
             //$output["msg"] = "Error en la operación, consulte soporte técnico.";

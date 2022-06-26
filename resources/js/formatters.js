@@ -38,7 +38,7 @@
 /**
  * Formateado: JSON
  * Orgien: Tabla post_events con todas sus relaciones 
- * Destino: Arbol JSON para componente muestra postEvent (PostGeneralComponent)
+ * Destino: Arbol JSON para componente muestra PostEventShowComponent
  */
 
  export function formatter88(item,storage_base_url){
@@ -80,9 +80,14 @@
 /**
  * Formateado: JSON
  * Orgien: Tabla (memories) con todas sus relaciones  
- * Destino: Arbol JSON para componentes: MemoryCreateComponent and MemoryPreviewComponent 
+ * Destino: Arbol JSON para componentes: MemoryCreateComponent and MemoryShowComponent 
  */
 export function formatter89(item,storage_base_url){
+    var id_presentation = -1;
+    if(item.presentation_model != null){
+        item.presentation_model.url = storage_base_url +"/files/images/" + item.presentation_model.name; 
+        id_presentation = item.presentation_model.id;
+    }
     return {
         memory: {
             id: item.id,
@@ -90,21 +95,25 @@ export function formatter89(item,storage_base_url){
             other_name: item.other_name,
             type: item.type,
             area: item.area,
-            birth_date: new Date(item.birth_date),
-            death_date: item.death_date != null ? new Date(item.death_date) : null,
+            birth_date: item.birth_date,
+            birth_dateparse: null,
+            death_date: item.death_date,
             content: item.content,
             presentation_img: item.presentation_img,
             creator_id: item.creator_id,
             status: item.creator_id
         },
+        presentation_model: item.presentation_model,
         media: item.media.map(e=>{
+            e.presentation = (e.id == id_presentation) ? true:false;
             switch(e.type_file){
                 case "image": {e.url = storage_base_url +"/files/images/"  + e.name;break;}
                 case "docfile": {e.url = storage_base_url + "/files/docs/me" + item.id + "/" + e.name;break;}
                 case "video": {e.url = storage_base_url + "/images/youtube_item.jpg";break;}
             }
             return e;            
-        })
+        }),
+        mediadrop_ids: []
     }
 }
 
@@ -115,6 +124,9 @@ export function formatter89(item,storage_base_url){
  */
 
 export function formatter90(item,storage_base_url){
+    if(item.presentation_model != null){
+        item.presentation_model.url = storage_base_url +"/files/images/" + item.presentation_model.name; 
+    }    
     return {
         memory: {
             id: item.id,
@@ -128,6 +140,7 @@ export function formatter90(item,storage_base_url){
             presentation_img: item.presentation_img,
             creator_id: item.creator_id,
             status: item.creator_id
-        }        
+        },
+        presentation_model: item.presentation_model,
     }
 }

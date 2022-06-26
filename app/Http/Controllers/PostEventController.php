@@ -641,13 +641,8 @@ class PostEventController extends Controller
     }
 
     
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+
+    public function find($id)
     {
         $output = [
             "code" => 0,

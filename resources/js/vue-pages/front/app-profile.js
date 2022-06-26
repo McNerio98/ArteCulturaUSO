@@ -1,13 +1,13 @@
 
 /*Registro de componentes globales */
-Vue.component('content-create', require('../../components/post/PostComponent.vue').default);
-Vue.component('post-form-component', require('../../components/post/Formulario.vue').default);
-Vue.component('post-media-component', require('../../components/post/Media.vue').default);
+Vue.component('content-create', require('../../components/post/PostEventCreateComponent.vue').default);
+Vue.component('post-form-component', require('../../components/post/FormularioComponent.vue').default);
+Vue.component('post-media-component', require('../../components/post/MediaComponent.vue').default);
 Vue.component('post-modal-component', require('../../components/post/ModalVideo.vue').default);
 
 Vue.component('media-viewer', require('../../components/media/ViewMediaComponent.vue').default);
 Vue.component('control-trim', require('../../components/trim/TrimComponentv2.vue').default);
-Vue.component('post-general',require('../../components/post/PostGeneralComponent.vue').default);
+Vue.component('post-show',require('../../components/post/PostEventShowComponent.vue').default);
 Vue.component('preview-media',require('../../components/media/PreviewMediaComponent.vue').default);
 
 Vue.component('pagination-component',require('../../components/pagination/PaginationComponent.vue').default);
@@ -29,6 +29,7 @@ const appProfileVue = new Vue({
     },
     data: function(){
         return{
+            
             profileSummary: [],
             profileAbout: [],
             flags: {

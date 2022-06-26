@@ -102,13 +102,14 @@
 <script>
     export default {
         props: {
-            model: {type: Object,required:true},
+            pdata: {type: Object,required:true},
             authId: {type: Number, default: 0}//Current user id 
         },      
         data: function(){
             return {       
+                model: JSON.parse(JSON.stringify(this.pdata)),
                 acAppData: {},   
-                post_approved: this.model.post.status == "review"?false:true,
+                post_approved: false,
                 post_delete: false,
                 media_visuals: [], //para imagenes y videos 
                 media_docs: [], //van aparte 
