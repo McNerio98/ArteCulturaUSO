@@ -1,31 +1,33 @@
-Vue.component('content-create', require('../../components/post/PostEventCreateComponent.vue').default);
-Vue.component('post-form-component', require('../../components/post/FormularioComponent.vue').default);
-Vue.component('post-media-component', require('../../components/post/MediaComponent.vue').default);
-Vue.component('post-modal-component', require('../../components/post/ModalVideo.vue').default);
 
 Vue.component('pagination-component',require('../../components/pagination/PaginationComponent.vue').default);
 Vue.component('media-viewer', require('../../components/media/ViewMediaComponent.vue').default);
-// #Estos dos van unidos 
-Vue.component('post-general',require('../../components/post/PostEventShowComponent.vue').default);
 Vue.component('preview-media',require('../../components/media/PreviewMediaComponent.vue').default);
 
 
-import {formatter88} from '../../formatters';
+import {formatter88,getModel88} from '../../formatters';
+import PostEventCreate from '../../components/post/PostEventCreateComponent.vue';
+import PostEventShowComponent from '../../components/post/PostEventShowComponent.vue';
 
 const appContent = new Vue({
     el: "#appContent",
+    components:{
+        "postevent-create": PostEventCreate,
+        "postevent-show": PostEventShowComponent
+    },
     data: {
+        modelo_create: [],
+        flags: {
+            creating: false
+        },
+        create_type: "post",
         spinners: {
             S1: false,//load post and events 
         },
+
         no_data_postevents: false,
         items_postevents: [],
         acAppData: {},
         current_user: {},
-        flag_create: {
-            type: "post",
-            creating: false
-        },
         is_mdprofiles: false, // is media profiles 
         media_view: {
             owner: 0,
@@ -43,10 +45,27 @@ const appContent = new Vue({
                 profile_path    : window.obj_ac_app.base_url + "/files/profiles/" + this.acAppData.current_user.presentation_img.name,
             }
         }
-
     },
     methods: {
-        onItemEdit: function(id){
+        onCreate: function(tipo){
+            //this.create_type = tipo;
+            this.flags.creating = true;
+            this.modelo_create.splice(0);
+
+            var nuevo = getModel88();
+            nuevo.type_post = tipo;
+            if(this.modelo_create.length > 0){
+                this.$set(this.modelo_create.array, 0, formatter88(nuevo,this.acAppData.storage_url));
+                
+            }else{
+                this.modelo_create.push(formatter88(nuevo,this.acAppData.storage_url));
+            }
+            //this.modelo_create.push();
+
+            
+
+        },
+        onUpdatePostEvent: function(id){
             //console.log("Editando este id " + id);
             window.location.href = this.acAppData.base_url + '/admin/post/edit/' + id;
         },
@@ -77,7 +96,8 @@ const appContent = new Vue({
             $('#modaPreviewMedia').modal('show');         
         },        
         PostEventCreated: function(e){
-            this.items_postevents.unshift(formatter88(e,this.acAppData.storage_url));            
+            this.items_postevents.unshift(formatter88(e,this.acAppData.storage_url));     
+            //Limpiar para nuevo 
         }
     }
 });

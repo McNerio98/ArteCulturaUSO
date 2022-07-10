@@ -21,7 +21,7 @@
 /**
  * Formateado: JSON
  * Orgien: Tabla users
- * Destino: Arbol JSON para usuario Componente PostEvent
+ * Destino: Arbol JSON para usuario PostEventCreateComponent
  */
 
  export function formatter87(user,storage_base_url){
@@ -34,11 +34,47 @@
 }
 
 
+export function getModel88(){
+    return {
+        id: 0,
+        title: '',
+        content: '',
+        type_post: "event",
+        is_popular: false,
+        status: 'approved',
+        created_at: new Date(),
+        event_detail: {
+            id: 0,
+            event_date: new Date(),
+            has_cost: false,
+            cost: 0,
+            frequency: 'unique',
+            municipio_id: 0,
+            address: "",
+            geo_lat: null,
+            get_lng: null                    
+        },
+        owner: {
+            id: window.obj_ac_app.current_user.id,
+            artistic_name: window.obj_ac_app.current_user.nickname,
+            name: window.obj_ac_app.current_user.fullname,
+            profile_img: {
+                path_file: window.obj_ac_app.current_user.presentation_img.name
+            }
+        },
+        media: []        
+    }    
+}
+
+
+
+
+ 
 
 /**
  * Formateado: JSON
  * Orgien: Tabla post_events con todas sus relaciones 
- * Destino: Arbol JSON para componente muestra PostEventShowComponent
+ * Destino: Arbol JSON para componente muestra PostEventShowComponent y PostEventCreateComponent
  */
 
  export function formatter88(item,storage_base_url){
@@ -53,10 +89,20 @@
             created_at: item.created_at,               
         },
         dtl_event: {
-            event_date: item.event_detail?.event_date,
+            id: item.event_detail?.id,
+            event_date: item.event_detail?.event_date != undefined ? (new Date(item.event_detail?.event_date)): undefined,
             has_cost: item.event_detail?.has_cost,
             cost: item.event_detail?.cost,
-            frequency: item.event_detail?.frequency
+            frequency: item.event_detail?.frequency,
+            address: {
+                details: item.event_detail?.address,
+                depto: 0, //Usar para futuras versiones 
+                municipio_id: item.event_detail?.municipio_id
+            },
+            geo: {
+                lat: item.event_detail?.geo_lat,
+                lng: item.event_detail?.geo_lat,
+            }
         },                        
         creator: {
             id: item.owner.id,
@@ -72,7 +118,8 @@
             }
             return e;
         }),
-        meta: [] //no se usa por ahora
+        meta: [],
+        mediadrop_ids: []
     }
 }
 

@@ -2,18 +2,18 @@
     <div class="card card-widget mb-1 mb-md-3" style="width: 100%;max-width: 600px;margin: auto;">
         <div class="card-header p-2">
             <div class="user-block">
-                <img class="img-circle" :src="model.creator.profile_img" alt="User Image">
-                <span class="username"><a href="#">{{model.creator.nickname == null?model.creator.name:model.creator.nickname}}</a></span>
-                <span class="description">{{model.post.title}}</span>
+                <img class="img-circle" :src="itemData.creator.profile_img" alt="User Image">
+                <span class="username"><a href="#">{{itemData.creator.nickname == null?itemData.creator.name:itemData.creator.nickname}}</a></span>
+                <span class="description">{{itemData.post.title}}</span>
             </div>
             <!-- /.user-block -->
             <div class="card-tools">
 
-                <button @click="onClickEdit" :disabled="disabled_controls" v-if="has_cap('editar-publicaciones') || model.creator.id === authId" type="button" class="btn btn-tool" data-toggle="tooltip" data-placement="right"
+                <button @click="onClickEdit" :disabled="disabled_controls" v-if="has_cap('editar-publicaciones') || itemData.creator.id === authId" type="button" class="btn btn-tool" data-toggle="tooltip" data-placement="right"
                     title="Editar elemento">
                     <i class="fas fa-pen"></i> Editar
                 </button>
-                <button @click="onClickDelete" :disabled="disabled_controls" v-if="has_cap('eliminar-publicaciones') || model.creator.id === authId" type="button" class="btn btn-tool" data-toggle="tooltip" data-placement="right"
+                <button @click="onClickDelete" :disabled="disabled_controls" v-if="has_cap('eliminar-publicaciones') || itemData.creator.id === authId" type="button" class="btn btn-tool" data-toggle="tooltip" data-placement="right"
                     title="Eliminar elemento">
                     <i class="fas fa-trash-alt"></i> Eliminar
                 </button>
@@ -26,33 +26,40 @@
             <!--
             <div v-if="has_cap('aprobar-publicaciones')" class="form-group  m-0">
                 <div  class="custom-control custom-switch custom-switch-on-success">
-                    <input type="checkbox"  class="custom-control-input" :id="'switchApprovedPost'+model.post.id" :checked="validate_approved(model.post.status)" @change="switchStatePost"/>
-                    <label v-if="model.post.status == 'review' " class="custom-control-label" :for="'switchApprovedPost'+model.post.id">Aprueba este elemento para que sea visible
+                    <input type="checkbox"  class="custom-control-input" :id="'switchApprovedPost'+itemData.post.id" :checked="validate_approved(itemData.post.status)" @change="switchStatePost"/>
+                    <label v-if="itemData.post.status == 'review' " class="custom-control-label" :for="'switchApprovedPost'+itemData.post.id">Aprueba este elemento para que sea visible
                         para todos</label>
-                    <label v-if="model.post.status == 'approved' " class="custom-control-label" :for="'switchApprovedPost'+model.post.id">El elemento ha sido aprobado</label>                        
+                    <label v-if="itemData.post.status == 'approved' " class="custom-control-label" :for="'switchApprovedPost'+itemData.post.id">El elemento ha sido aprobado</label>                        
                 </div>
             </div>            
 
             <div v-if="has_cap('destacar-publicaciones')" class="form-group">
                 <div class="custom-control custom-switch custom-switch-on-success">
-                    <input type="checkbox" v-model="model.post.is_popular" class="custom-control-input" :id="'switchPopularPost'+model.post.id" @change="setPostPopular" />
-                    <label v-if="! model.post.is_popular" class="custom-control-label" :for="'switchPopularPost'+model.post.id">Marcar elemento como destacado </label>
-                    <label v-else class="custom-control-label" :for="'switchPopularPost' + model.post.id">Marcado como elemento destacado</label>
+                    <input type="checkbox" v-itemData="itemData.post.is_popular" class="custom-control-input" :id="'switchPopularPost'+itemData.post.id" @change="setPostPopular" />
+                    <label v-if="! itemData.post.is_popular" class="custom-control-label" :for="'switchPopularPost'+itemData.post.id">Marcar elemento como destacado </label>
+                    <label v-else class="custom-control-label" :for="'switchPopularPost' + itemData.post.id">Marcado como elemento destacado</label>
                 </div>
             </div>
 
-            <blockquote v-if="model.post.status == 'review' " class="quote-secondary mt-0 ml-0 mr-0 mb-1 p-1" style="border-bottom: 1px solid #bfbcbc !important;">
+            <blockquote v-if="itemData.post.status == 'review' " class="quote-secondary mt-0 ml-0 mr-0 mb-1 p-1" style="border-bottom: 1px solid #bfbcbc !important;">
                 <small>El elemento actual se encuentra en <b>revisión.</b> Deberá ser aprobado por los administradores para ser
                     visible para todos los usuarios.</small>
             </blockquote>
              -->
-
-            <div class="row" v-if="model.post.type == 'event' ">
+            <div  class="row" v-if="itemData.post.type == 'event' ">
+                <div class="col-12">
+                    <p>
+                        <i class="fas fa-map-marker-alt"></i> Lugar :
+                        {{getDirection}}
+                    </p>
+                </div>
+            </div>
+            <div class="row" v-if="itemData.post.type == 'event' ">
                 <div class="col-sm-4 col-12">
                     <div class="description-block border-right">
                         <span class="text-success h4"><i class="fas fa-dollar-sign"></i></span>
                         <h5 class="description-header">Costo de Entrada</h5>
-                        <span class="description-text">{{model.dtl_event.has_cost ? model.dtl_event.cost : "GRATIS"}}</span>
+                        <span class="description-text">{{itemData.dtl_event.has_cost ? itemData.dtl_event.cost : "GRATIS"}}</span>
                     </div>
                     <!-- /.description-block -->
                 </div>
@@ -61,7 +68,7 @@
                     <div class="description-block border-right">
                         <span class="text-warning h4"><i class="fas fa-calendar-alt"></i></span>
                         <h5 class="description-header">Fecha a realizarse</h5>
-                        <span class="description-text">{{model.dtl_event.event_date | DateFormatES1}}</span>
+                        <span class="description-text">{{itemData.dtl_event.event_date | DateFormatES1}}</span>
                     </div>
                     <!-- /.description-block -->
                 </div>
@@ -70,7 +77,7 @@
                     <div class="description-block border-right">
                         <span class="text-success h4"><i class="fas fa-redo-alt"></i></span>
                         <h5 class="description-header">Se repite</h5>
-                        <span class="description-text">{{model.dtl_event.frequency == "unique" ? 'FECHA ÚNICA ' : 'CADA AÑO'}}</span>
+                        <span class="description-text">{{itemData.dtl_event.frequency == "unique" ? 'FECHA ÚNICA ' : 'CADA AÑO'}}</span>
                     </div>
                     <!-- /.description-block -->
                 </div>
@@ -100,6 +107,8 @@
 </style>
 
 <script>
+    import {municipiosItems} from '../../utils';
+
     export default {
         props: {
             pdata: {type: Object,required:true},
@@ -107,34 +116,37 @@
         },      
         data: function(){
             return {       
-                model: JSON.parse(JSON.stringify(this.pdata)),
+                itemData: JSON.parse(JSON.stringify(this.pdata)),
                 acAppData: {},   
                 post_approved: false,
                 post_delete: false,
                 media_visuals: [], //para imagenes y videos 
                 media_docs: [], //van aparte 
                 id_img_selected: 0,
-                disabled_controls: false
+                disabled_controls: false,
+                municipios: []                
             }
+        },
+        created: function(){
+            this.municipios = municipiosItems();
         },
         mounted: function(){
-            this.filterMedia(this.model.media);
+            this.filterMedia(this.itemData.media);
             this.acAppData = window.obj_ac_app;
-        },
-        watch: {
-            model: function(e){
-                this.filterMedia(e.media);
-            }
         },
         computed: {
             getHTMLContent: function(){
-                if(this.model.post.description == undefined || this.model.post.description.length == 0){return ``;}
+                if(this.itemData.post.description == undefined || this.itemData.post.description.length == 0){return ``;}
                 //para enlaces
                 var url_regex = /(http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])?/g;
-                var formatted = this.model.post.description.replace(url_regex,function(str, p1, offset, s){return `<a href="${str}" target="_blank">${str}</a>`;})
+                var formatted = this.itemData.post.description.replace(url_regex,function(str, p1, offset, s){return `<a href="${str}" target="_blank">${str}</a>`;})
                 //para espacios saltos de lineas
                 formatted = formatted.replace(/\n/g, "<br>");
                 return formatted;
+            },
+            getDirection: function(){
+                let municipioName = this.municipios[this.itemData.dtl_event.address.municipio_id].municipio;
+                return this.itemData.dtl_event.address.details + " " + municipioName + " Sonsonate";
             }
         },
         methods: {
@@ -142,7 +154,7 @@
 
             },
             onClickEdit: function(){
-                this.$emit('edit-item',this.model.post.id);
+                this.$emit('edit-item',this.itemData.post.id);
             },
             onClickDelete: function(){
                 var vm = this;
@@ -155,13 +167,13 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         vm.disabled_controls = true;
-                        axios.delete(`/postevent/${this.model.post.id}`).then(result=>{
+                        axios.delete(`/postevent/${this.itemData.post.id}`).then(result=>{
                             let response = result.data;
                             if(response.code == 0){
                                 StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
                                 return;
                             }  
-                            vm.$emit('delete-item',this.model.post.id);
+                            vm.$emit('delete-item',this.itemData.post.id);
                              //Esto esta raro, porque guardaba el estado para el que quedaba en su posicion 
                              vm.disabled_controls = false;
                         }).catch(ex=>{
@@ -193,16 +205,16 @@
 
             },
             setPostPopular: function(){
-                let current_sate = this.model.post.is_popular;
+                let current_sate = this.itemData.post.is_popular;
                 let last_state = current_sate == true?false:true;
-                if(this.model.post.status === 'review' && current_sate == true){
+                if(this.itemData.post.status === 'review' && current_sate == true){
                     //rollback state 
-                    this.model.post.is_popular = last_state;
+                    this.itemData.post.is_popular = last_state;
                     StatusHandler.ValidationMsg("El elemento debe ser aprobado primero");
                     return;
                 }
                 let data = {
-                    id: this.model.post.id,
+                    id: this.itemData.post.id,
                     new_state: current_sate
                 };
                 axios.post(`/post/setPopular`,data).then((result)=>{
@@ -210,15 +222,15 @@
                     if(response.code == 0){
                         StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
                         //rollback state 
-                        this.model.post.is_popular = last_state;                        
+                        this.itemData.post.is_popular = last_state;                        
                         return;
                     }
-                    let status = {id: this.model.post.id,is_popular:current_sate};
+                    let status = {id: this.itemData.post.id,is_popular:current_sate};
                     this.$emit('change-popular',status);
                 }).catch((ex)=>{
                     let target_process = "Establecer Elemento como destacado"; 
                     StatusHandler.Exception(target_process,ex);
-                    this.model.post.is_popular = last_state;
+                    this.itemData.post.is_popular = last_state;
                 });
             },
             validate_approved: function(state){
@@ -229,10 +241,10 @@
                 return bool;
             },
             switchStatePost: function(event, state = null){
-                let last_state = this.model.post.status; 
+                let last_state = this.itemData.post.status; 
                 let new_state = "";
                 if(state === null){    
-                    new_state = this.model.post.status === 'approved' ? 'review':'approved';            
+                    new_state = this.itemData.post.status === 'approved' ? 'review':'approved';            
                 }
                 
                 let valid_values = ['review','approved'];
@@ -241,10 +253,10 @@
                     return;
                 };
                 
-                this.model.post.status = new_state;
+                this.itemData.post.status = new_state;
 
                 let data = {
-                    id: this.model.post.id,
+                    id: this.itemData.post.id,
                     new_state: new_state
                 };
 
@@ -253,13 +265,13 @@
                     let response = result.data;
                     if(response.code == 0){
                         StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
-                        this.model.post.status = last_state;//rollback state                
+                        this.itemData.post.status = last_state;//rollback state                
                         return;
                     }                    
                 }).catch(ex=>{
                     let target_process = "Establecer estado del elemento"; 
                     StatusHandler.Exception(target_process,ex);
-                    this.model.post.status = last_state;  //rollback state
+                    this.itemData.post.status = last_state;  //rollback state
                 });
 
             },

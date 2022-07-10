@@ -1,13 +1,6 @@
 
-/*Registro de componentes globales */
-Vue.component('content-create', require('../../components/post/PostEventCreateComponent.vue').default);
-Vue.component('post-form-component', require('../../components/post/FormularioComponent.vue').default);
-Vue.component('post-media-component', require('../../components/post/MediaComponent.vue').default);
-Vue.component('post-modal-component', require('../../components/post/ModalVideo.vue').default);
-
 Vue.component('media-viewer', require('../../components/media/ViewMediaComponent.vue').default);
 Vue.component('control-trim', require('../../components/trim/TrimComponentv2.vue').default);
-Vue.component('post-show',require('../../components/post/PostEventShowComponent.vue').default);
 Vue.component('preview-media',require('../../components/media/PreviewMediaComponent.vue').default);
 
 Vue.component('pagination-component',require('../../components/pagination/PaginationComponent.vue').default);
@@ -19,13 +12,17 @@ import Component1 from '../../components/profile/GeneralInfoComponent.vue';
 import Component2 from '../../components/profile/AboutComponent.vue';
 import {getUserProfileInformation} from '../../service';
 import {formatter87,formatter88} from '../../formatters';
+import PostEventCreateComponent from '../../components/post/PostEventCreateComponent.vue';
+import PostEventShowComponent from '../../components/post/PostEventShowComponent.vue';
 
 const appProfileVue = new Vue({
     el: "#appProfile",
     components: {
         //Registro de componentes locales 
         "profile-summary": Component1,
-        "profile-about": Component2
+        "profile-about": Component2,
+        "postevent-create": PostEventCreateComponent,
+        "postevent-show": PostEventShowComponent
     },
     data: function(){
         return{

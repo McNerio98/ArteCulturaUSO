@@ -1,31 +1,25 @@
-Vue.component('content-create', require('../../components/post/PostEventCreateComponent.vue').default);
-Vue.component('post-form-component', require('../../components/post/FormularioComponent.vue').default);
-Vue.component('post-media-component', require('../../components/post/MediaComponent.vue').default);
-Vue.component('post-modal-component', require('../../components/post/ModalVideo.vue').default);
-
 Vue.component('spinner1',require('../../components/spinners/Spinner1Component.vue').default);
-Vue.component('post-general',require('../../components/post/PostEventShowComponent.vue').default);
 Vue.component('preview-media',require('../../components/media/PreviewMediaComponent.vue').default);
 
 import {formatter88} from '../../formatters';
 import {getPostEvent} from '../../service';
+import PostEventCreate from '../../components/post/PostEventCreateComponent.vue';
+import PostEventShowComponent from '../../components/post/PostEventShowComponent.vue';
 
 const appUpdateItem = new Vue({
     el: "#appUpdateItem",
+    components:{
+        "postevent-create": PostEventCreate,
+        "postevent-show": PostEventShowComponent
+    },    
     data: {
         acAppData: {},
-        spinners: {
-            S1:false //for loading info post
-        },
         flags: {
-            show_edited: false,
+            load_postevent:false, //for loading info post
+            edit_mode: true,
         },
-        target_id: 0,
-        pe_items: [], //post and events 
-        buffer: { //buffer para edicion
-            edit_mode: false, 
-            source: {}
-        }
+        modelo_create: [],
+        items_postevents: [],
     },
     created: function(){
         this.acAppData = window.obj_ac_app;
@@ -39,57 +33,28 @@ const appUpdateItem = new Vue({
     },
     methods: {
         loadData: function(){
-            this.spinners.S1 = true;
+            this.flags.load_postevent = true;
             getPostEvent(this.target_id).then(result =>{
                 let response = result.data;
                 if(response.code == 0){ //sino existe lo detiene aqui 
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
                     return;
                 }  
-                
-                this.buffer.source=  formatter88(response.data,this.acAppData.storage_url);
-                this.buffer.edit_mode = true;
+
+                this.modelo_create.push(formatter88(response.data,this.acAppData.storage_url));
             }).catch(ex =>{
                 let target_process = "Recuperar elemento";
                 StatusHandler.Exception(target_process,ex);       
-            });
+            }).finally(e =>{
+                this.flags.load_postevent  = false;
+            })
         },
-        PostEventCreated: function(e){
-            var post = {
-                post: {
-                    id: e.post.id,
-                    title: e.post.title,
-                    description: e.post.content,
-                    type: e.post.type_post,
-                    is_popular: false,
-                    status: 'review',
-                    created_at: e.post.created_at,
-                },
-                dtl_event: {
-                    event_date: e.dtl_event.event_date,
-                    has_cost: e.dtl_event.has_cost,
-                    cost: e.dtl_event.cost,
-                    frequency: e.dtl_event.frequency,
-                },                   
-                creator: {
-                    id: e.creator.id,
-                    name: e.creator.name,
-                    nickname: e.creator.nickname,
-                    profile_img: e.creator.profile_img != undefined ? this.acAppData.storage_url + "/files/profiles/" + e.creator.profile_img.path_file : null, 
-                },
-                media: e.post.media.map(ng => {//el formato para esto se filtra en el otro compnente
-                    switch(ng.type_file){
-                        case "image": {ng.url = this.acAppData.storage_url +"/files/images/"  + ng.name;break;}
-                        case "docfile": {ng.url = this.acAppData.storage_url + "/files/docs/pe" + e.post.id + "/" + ng.name;break;}
-                        case "video": {ng.url = this.acAppData.storage_url + "/images/youtube_item.jpg";break;}
-                    }
-                    return ng;
-                }),
-                meta: []                        
-            }
+        postEventCreated: function(e){
+            this.items_postevents.push(formatter88(e,this.acAppData.storage_url));
+            this.flags.edit_mode = false;
+        },
+        onUpdatePostEvent: function(postevent_id){
 
-            this.pe_items.push(post);
-            this.flags.show_edited = true;
         },
         onSources: function(){
 

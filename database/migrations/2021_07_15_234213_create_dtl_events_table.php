@@ -18,7 +18,11 @@ class CreateDtlEventsTable extends Migration
             $table->dateTime('event_date',0);
             $table->enum('frequency',['unique','repeat']);
             $table->boolean('has_cost')->default(false);
-            $table->decimal('cost',8,2);            
+            $table->decimal('cost',8,2);           
+            $table->unsignedBigInteger("municipio_id")->nullable();
+            $table->string("address",100);
+            $table->string("geo_lat",50)->nullable();
+            $table->string("get_lng",50)->nullable();
             $table->foreignId('event_id')->constrained("post_events")->onDelete('cascade');
             $table->timestamps();
         });

@@ -45,9 +45,9 @@
                                 <div id="event-cp" style="width: 100%;max-width: 600px;margin: auto;background-color: #fff;padding: 10px;border-left: 1px solid #d8d5d5;border-right: 1px solid #d8d5d5;">
                                     <spinner1 v-if="spinners.S1" label="Cargando elemento …"></spinner1>
 
-                                    <post-create @post-created="PostEventCreated"  :edit-mode="true"  v-for="e of modelo" :source-edit="e"></post-create>
+                                    <postevent-create @post-created="PostEventCreated"  :edit-mode="true"  v-for="e of modelo" :source-edit="e"></postevent-create>
                                     
-                                    <post-show  :auth-id="{{Auth::user() == null ? 0 : Auth::user()->id}}" v-if="flags.show_edited" @source-files="onSources" v-for="e of modelo"  :pdata="e"></post-show>
+                                    <postevent-show  :auth-id="{{Auth::user() == null ? 0 : Auth::user()->id}}" v-if="flags.show_edited" @source-files="onSources" v-for="e of modelo"  :pdata="e"></postevent-show>
                                 </div>
                                 <!--END START CONTENT, EVENTS AND POST-->
                             </div>

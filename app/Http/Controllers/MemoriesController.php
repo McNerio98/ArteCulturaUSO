@@ -127,7 +127,7 @@ class MemoriesController extends Controller
     }
 
     #Create or update
-    public function store(Request $request){
+    public function upsert(Request $request){
         $output = [
             "code" => 0,
             "data" => null,
@@ -161,9 +161,6 @@ class MemoriesController extends Controller
             $output["msg"] = "Campos imcompletos";
             return $output;
         }
-
-
-
 
         if($request->memory["id"] == 0){
             $memory = new Memory();
@@ -202,7 +199,7 @@ class MemoriesController extends Controller
             }            
 
 
-            #Agregar contenido nuevo (toso los que tengan id = 0)
+            #Agregar contenido nuevo (todo los que tengan id = 0)
             while($index < count($files)){
                 if($files[$index]["id"] == 0){
                     $FileMemory = new FilesOnMemory();

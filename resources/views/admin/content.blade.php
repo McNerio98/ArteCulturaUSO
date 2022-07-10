@@ -17,20 +17,29 @@
                 @auth
                     <div class="row pb-1 pb-md-3">
                         <div class="col-6">
-                            <button @click="flag_create.type = 'event'; flag_create.creating = true;" class="makePosting"> <img class="makeItemPosting" src="{{asset('images/create_event.svg')}}" alt=""> CREAR EVENTO</button>
+                            <button @click="onCreate('event')" class="makePosting"> <img class="makeItemPosting" src="{{asset('images/create_event.svg')}}" alt=""> CREAR EVENTO</button>
                         </div>
                         <div class="col-6">
-                                <button @click="flag_create.type = 'post'; flag_create.creating = true;"   class="makePosting"><img class="makeItemPosting" src="{{asset('images/create_post.svg')}}" alt=""> CREAR POST</button>
+                                <button @click="onCreate('post')"   class="makePosting"><img class="makeItemPosting" src="{{asset('images/create_post.svg')}}" alt=""> CREAR POST</button>
                         </div>                                    
                     </div>
-                    <content-create @post-created="PostEventCreated" v-if="flag_create.creating == true" :user-info="current_user" :post-type="flag_create.type"></content-create>
+
+                    <postevent-create v-for="e of modelo_create" 
+                        :pdata="e"
+                        :key="'id' + (new Date()).getTime()"
+                        @saved="PostEventCreated" 
+                        v-if="flags.creating == true">
+                    </postevent-create>
+
                 @endauth
-                <post-general 
-                v-for="(e,index) of items_postevents"  
-                @edit-item="onItemEdit" 
-                @delete-item="onDeletePost(index)" 
-                @source-files="onSources" 
-                :model="e"></post-general>  
+                <postevent-show
+                    v-for="(e,index) of items_postevents"  
+                    @edit-item="onUpdatePostEvent" 
+                    @delete-item="onDeletePost(index)" 
+                    @source-files="onSources" 
+                    :key="'pes'+e.post.id"
+                    :pdata="e" >
+                </postevent-show>  
 
                 <pagination-component  
                 v-if="!no_data_postevents"
