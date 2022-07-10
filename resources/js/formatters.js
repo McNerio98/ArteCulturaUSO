@@ -123,7 +123,6 @@ export function getModel88(){
     }
 }
 
-
 /**
  * Formateado: JSON
  * Orgien: Tabla (memories) con todas sus relaciones  

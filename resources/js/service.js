@@ -127,6 +127,3 @@ export function getPlaces(address){
         });
     });    
 }
-
-
-
