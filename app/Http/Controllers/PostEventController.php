@@ -115,8 +115,8 @@ class PostEventController extends Controller
     }
 
 
-    public function store(Request $request){
-        $salida = [
+    public function upsert(Request $request){
+        $output = [
             "code" => 0,
             "data" => null,
             "msg" => null
@@ -124,60 +124,70 @@ class PostEventController extends Controller
 
         $user = Auth::user();
 
-        //validaciones de campos
-        $validator = Validator::make($request->all(),[
-            "post_type" => "required",
-            "title" => "required",
-            "description" => "required"
-        ]);
-
-        if($validator->fails()){
-            $salida["msg"] = "Valores imcompletos";
-            return $salida;
-        };
+        $params = [
+            "post.title" => "required",
+            "post.description" => "required",
+            "post.type" => "required",
+            "post.is_popular" => "required",
+            "post.status" => "required",
+        ];
 
         //min:0 make sure the minimum value is 0 and no negative values are allowed. 
         //not_in:0 make sure value cannot be 0. So, combination of both of these rules does the job. 
         //required | numeric | min: 0 | not_in: 0
-
-        if($request->post_type == "event"){
-            $validator = Validator::make($request->all(),[
-                "event_price" => "required | numeric | min: 0 ",
-                "event_has_price" => "required",
-                "frequency" => ["required",Rule::in(["unique","repeat"])],
-                "event_date"  => ["required","date"]
-            ]);
+        if($request->post["type"] == "event"){
+            $params["dtl_event.event_date"] = "required | date";
+            $params["dtl_event.has_cost"] = "required";
+            $params["dtl_event.cost"] = "required | numeric | min: 0 ";
+            $params["dtl_event.frequency"] = ["required",Rule::in(["unique","repeat"])];
         }
 
+        $validator = Validator::make($request->all(),$params);
         if($validator->fails()){
-            $salida["msg"] = "Campos de evento no validos";
-            return $salida;
+            $output["msg"] = "Valores imcompletos";
+            return $output;
         };
 
+        if($request->post["id"] == 0){
+            $postEvent = new PostEvent();
+        }else{
+            $postEvent = PostEvent::find($request->post["id"]);
+        }
+
+        //For update only 
+        if(!$postEvent){
+            $output["msg"] = "Ítem no encontrado";
+            return $output;            
+        }        
+
+
         DB::beginTransaction();
+        $idImgPresentation = 0;
 
-        $postEvent = new PostEvent();
-        $id_img_presentation = 0;
         try{
-            $postEvent->status = 'approved';
-            $postEvent->title = $request->title;
-            $postEvent->content = $request->description;
-            $postEvent->type_post = $request->post_type;
-            $postEvent->creator_id = $user->id;
+            $postEvent->title                  = $request->post["title"];
+            $postEvent->content          = $request->post["description"];
+            $postEvent->status              = 'approved';
+            $postEvent->type_post       = $request->post["type"];
+            $postEvent->creator_id      = $user->id;
             $postEvent->save();
-
-            if($request->post_type == "event"){
+            //aqui si es update deberia recuperar la relacion 
+            if($request->post["type"] == "event"){
                 $dtlEvent                               = new DtlEvent();
-                $dtlEvent->event_date        = $request->event_date;
-                $dtlEvent->frequency          = $request->frequency;
-                $dtlEvent->has_cost             = $request->event_has_price;
-                $dtlEvent->cost                     = $request->event_has_price == true ? $request->event_price : 0;
+                $dtlEvent->event_date        = $request->dtl_event["event_date"];
+                $dtlEvent->frequency          = $request->dtl_event["frequency"];
+                $dtlEvent->has_cost             = $request->dtl_event["has_cost"];
+                $dtlEvent->cost                     = $request->dtl_event["has_cost"] == true ? $request->dtl_event["cost"] : 0;
+                $dtlEvent->municipio_id     = $request->dtl_event["address"]["municipio_id"];
+                $dtlEvent->address              = $request->dtl_event["address"]["details"];
+                $dtlEvent->geo_lat              = $request->dtl_event["geo"]["lat"];
+                $dtlEvent->get_lng              = $request->dtl_event["geo"]["lng"];
                 $dtlEvent->event_id             = $postEvent->id;
                 $dtlEvent->save();
             }
 
             //Guardando contador global de eventos o post para el usuario
-            if($request->post_type == "event"){
+            if($request->post["type"] == "event"){
                 $global_items = intval($user->count_events);
                 $global_items++;
                 $user->count_events = $global_items;
@@ -188,59 +198,56 @@ class PostEventController extends Controller
             }
             
             $user->save();
-            
-            //Realizar validacion de, tipo de archivos permitidos (por extension)
-            
-            //Si el usuario sube contenido
-            if(isset($request->media)){
 
-                $limite_carga = 70; //dejar a 70, agregar esto en la vista
-                $files = $request->media;
-                if(count($files) >= $limite_carga){
-                    throw new \Exception("Límite de carga superado, máximo ".$limite_carga." archivos");
-                }
+            #Carga de archivos 
+            $limite_carga = 10;
+            $index = 0;
+            $files = $request->media;
+            $mediadrop_ids = $request->mediadrop_ids;
+            if(count($files) >= ($limite_carga - count($mediadrop_ids))){
+                throw new \Exception("Límite de carga superado, máximo ".$limite_carga." archivos");
+            }            
 
-                $numberfiles = 0;                
-                while($numberfiles < count($files)){
+            #Agregar contenido nuevo (todo los que tengan id = 0)
+            while($index < count($files)){
+                if($files[$index]["id"] == 0){
                     $filesOnPostEvents = new FilesPost();
-                    if (preg_match('/^data:image\/(\w+);base64,/', $files[$numberfiles]['data'])
-                        ||
-                        preg_match('/^data:application\/(\w+);base64,/', $files[$numberfiles]['data'])
-                    ) {
-                        $data = substr($files[$numberfiles]['data'], strpos($files[$numberfiles]['data'], ',') + 1);
-                        $data = base64_decode($data);
+                    if($files[$index]["type_file"] == "image" || $files[$index]["type_file"] == "docfile"){
+                        $dataFile = substr($files[$index]['data'], strpos($files[$index]['data'], ',') + 1);
+                        $dataFile = base64_decode($dataFile);                       
+                        $extensionFile = explode(".",$files[$index]['name']);               
+                        $extensionFile = $extensionFile[count($extensionFile)-1];             
                         
-                        $extension = explode(".",$files[$numberfiles]['filename']);
-                        //obtener el ultimo elemento del array creado (explode)
-                        $extension = $extension[count($extension)-1];
-
-                        if($files[$numberfiles]['type'] == "image"){ //is a img
-                            $filename = uniqid()."_".time().".".$extension;
+                        if($files[$index]['type_file'] == "image"){ //is a img
+                            $filename = "pe".uniqid()."_".time().".".$extensionFile;
                             $pathname = "files/images/";
-                        }else if($files[$numberfiles]['type'] == "docfile"){ //is a document
-                            $filename = $files[$numberfiles]['filename'];
+                        }else if($files[$index]['type_file'] == "docfile"){ //is a document
+                            $filename = $files[$index]['name'];
+                            //Crear folder especifico para no remplazar de otra publicacion 
                             $pathname = "files/docs/pe".$postEvent->id."/";
-                        }
-
+                        }                 
+                        
                         $filesOnPostEvents->id_post_event      = $postEvent->id;
                         $filesOnPostEvents->name                   = $filename;
-                        $filesOnPostEvents->type_file               = $files[$numberfiles]['type'];
-                        $filesOnPostEvents->save();
-
-                        if($id_img_presentation === 0 && $filesOnPostEvents->type_file === "image"){
-                            $id_img_presentation = $filesOnPostEvents->id;
-                        }
+                        $filesOnPostEvents->type_file               = $files[$index]['type_file'];
+                        $filesOnPostEvents->save();            
 
                         $path_store = $pathname.$filename;
-                        Storage::disk('local')->put($path_store, $data);
+                        Storage::disk('local')->put($path_store, $dataFile);                                            
+                        
+                        //Nueva imagen de presentacion 
+                        /**Aqui hacer validacion para verificar que imagen de presentacion no balla dentro de los eliminados */
+                        if($filesOnPostEvents->type_file === "image" && $idImgPresentation == 0){
+                            $idImgPresentation = $filesOnPostEvents->id;
+                        }
 
                         //compresor de imagenes only image type 
                         if($filesOnPostEvents->type_file === "image"){
-                        // resize the image to a width of 1000 and constrain aspect ratio (auto height)
+                            // resize the image to a width of 1000 and constrain aspect ratio (auto height)
                             $compress = Image::make(storage_path('app/' . $path_store));
                             $width      = $compress->width();
                             $height    = $compress->height();
-
+    
                             if($width > 1500 || $height > 1500){
                                 $compress->resize(1000, null,function($constraint) {
                                     $constraint->aspectRatio();
@@ -252,26 +259,76 @@ class PostEventController extends Controller
                             }
                             $compress->destroy();
                         }
-
-                    }else{
-                        //Es un video
-                        $filesOnPostEvents->id_post_event = $postEvent->id;
-                        $filesOnPostEvents->name = $files[$numberfiles]['data'];
-                        $filesOnPostEvents->type_file = $files[$numberfiles]['type'];
-                        $filesOnPostEvents->save();
-                        //Es un video
-                        if($id_img_presentation === 0){
-                            $id_img_presentation = $filesOnPostEvents->id;
-                        }                        
                     }
-                    $numberfiles++;
+
+                    if($files[$index]["type_file"] == "video"){
+                        $filesOnPostEvents->id_post_event      = $postEvent->id;
+                        $filesOnPostEvents->name               = $files[$index]['name'];
+                        $filesOnPostEvents->type_file          = $files[$index]["type_file"];
+                        $filesOnPostEvents->save();                    
+                    }                    
+                }
+
+                $index++;
+            }
+
+            //Aqui deveria continuar
+
+            #Creando auxiliar porque el de la solicitud no es modificable (Da error)
+            #Eliminacion de multimedias existentes para caso de actualización
+            #En la eliminacion se puede incluir eliminacion de imagen de presentacion por nueva actualización             
+            $mediadrop_ids = $request->mediadrop_ids;
+            #Se actualiza por una nueva imagen
+            if($idImgPresentation !== 0){
+                /**Verificando si tenia una anteriormente en caso de actualizacion, se agrega para eliminar */
+                if(!is_null($postEvent->presentation_img) && $postEvent->presentation_img != 0){
+                    array_push($mediadrop_ids,$postEvent->presentation_img);
+                }
+                $postEvent->presentation_img = $idImgPresentation;
+                $postEvent->save();
+            }else{
+                #/Si no se cargo nueva imagen de presentacion, se verifica si dentro de las eliminaciones esta la 
+                #imagen de presentacion, si es asi se setea a nula el post actual 
+                if(in_array($postEvent->presentation_img,$mediadrop_ids)){
+                    $postEvent->presentation_img = null;
+                    $postEvent->save();
                 }
             }
+        
 
-            if($id_img_presentation !== 0){
-                $postEvent->presentation_img = $id_img_presentation;
-                $postEvent->save();
-            }
+            $count_drop = 0;
+            if($request->post["id"] != 0 && count($mediadrop_ids) > 0){
+                foreach($postEvent->media as $candidato){
+                    foreach($mediadrop_ids as $dropid){
+                        if($candidato->id === intval($dropid)){
+                            $aux_path = "";
+                            #Para video se omite eliminacion de storage y se borra el modelo solamente 
+                            switch($candidato->type_file){
+                                case 'image': {$aux_path = "files/images/".$candidato->name;break;}
+                                case 'docfile': {$aux_path = "files/docs/pe".$candidato->id."/".$candidato->name;break;}
+                            }
+
+                            if(trim($aux_path) !== "" && Storage::disk('local')->exists($aux_path)){
+                                if(! Storage::disk('local')->delete($aux_path) ){
+                                    throw new \Exception("No se logró eliminar algunos medios".$candidato->name);
+                                }                                   
+                            }
+
+                            if(!$candidato->delete()){
+                                throw new \Exception("No se logró eliminar el registro");
+                            }
+                            $count_drop++;                            
+                            #Romper primer bucle 
+                            break;
+                        }
+                    }
+
+                    if($count_drop == count($mediadrop_ids)){
+                        $salida["extra"] = "Se eliminaron " .$count_drop . " Elementos";
+                        break; //break 2 for, all element was deleted 
+                    }
+                }              
+            }                        
             
             DB::commit();
             #El detalle de evento siempre se carga aunq sea solo post (lo carga como null)
@@ -281,254 +338,25 @@ class PostEventController extends Controller
             $postEvent->load('media');
             $postEvent->load('event_detail');
 
-            
-            $salida = [
-                "code" => 1,
-                "data" => $postEvent,
-                "msg" => "Elemento creado"
-            ];
+            if($request->post["id"] == 0){
+                $output["msg"] = "Elemento creado";
+            }else{
+                $output["msg"] = "Elemento actualizado";
+            }
 
+            $output["code"] = 1;
+            $output["data"] = $postEvent;            
         }catch(\Exception $e){
             DB::rollback();
-            $salida["msg"] = "Error en la operación, consulte soporte técnico.";
-            //$salida['msg'] = "Error: " . $e->getMessage(); //for debugin
+            //$output["msg"] = "Error en la operación, consulte soporte técnico.";
+            $output['msg'] = "Error: " . $e->getMessage(); //for debugin
         }
 
-        return $salida;        
-    }
-
-    public function update(Request $request, $id){
-        $salida = [
-            "code" => 0,
-            "data" => null,
-            "msg" => null,
-            "extra" => ""
-        ];
-
-
-        $user = Auth::user();
-        
-        $postEvent = PostEvent::find($id);
-        if(!$postEvent){
-            $salida["msg"] = "No existe el elemento";
-            return;
-        }
-
-        //Verificando permisos 
-        if(!$user->can('editar-publicaciones') && $postEvent->creator_id != $user->id){
-            $salida["msg"] = "Operación denegada";
-            return $salida;
-        }
-
-        //validaciones de campos
-        $validator = Validator::make($request->all(),[
-            "post_type" => "required",
-            "title" => "required",
-            "description" => "required"
-        ]);
-
-        if($validator->fails()){
-            $salida["msg"] = "Valores imcompletos";
-            return $salida;
-        };
-
-        if($request->post_type == "event"){
-            $validator = Validator::make($request->all(),[
-                "event_price" => "required",
-                "event_has_price" => "required",
-                "frequency" => ["required",Rule::in(["unique","repeat"])],
-                "event_date"  => ["required","date"]
-            ]);
-        }
-
-        if($validator->fails()){
-            $salida["msg"] = "Campos de evento imcompletos";
-            return $salida;
-        };
-
-
-        DB::beginTransaction();
-        $id_img_presentation = 0;
-        try{
-            $postEvent->title = $request->title;
-            $postEvent->content = $request->description;
-            $postEvent->type_post = $request->post_type;
-            //Siempre que edite es necesario pasar por revision 
-            $postEvent->status = "review";
-            $postEvent->save();
-
-            if($postEvent->type_post == "event"){
-                $dtlEvent = DtlEvent::where("event_id","=",$postEvent->id)->first();
-                if(!$dtlEvent){
-                    throw new \Exception("Detalle de evento no encontrado");
-                }
-                $dtlEvent->event_date        = $request->event_date;
-                $dtlEvent->frequency          = $request->frequency;
-                $dtlEvent->has_cost             = $request->event_has_price;
-                $dtlEvent->cost                     = $request->event_has_price == true ? $request->event_price : 0;
-                $dtlEvent->event_id             = $postEvent->id;
-                $dtlEvent->save();                
-            }
-            
-            //ELIMINACION DE CONTENIDO EXISTENTE 
-            $count_drop = 0;
-            if($request->mediadrop_ids){
-                foreach($postEvent->media as $drope){//por cada medio dentro de la publicacion 
-                    foreach($request->mediadrop_ids as $dropid){
-                        //aqui aplicacar una verificacion para los pdf ya que se guardan dentro de folders 
-                        if($drope->id === $dropid ){
-                            $aux_path = "";
-                            switch($drope->type_file){
-                                case 'image': $aux_path = "files/images/".$drope->name;break;
-                                case 'docfile': $aux_path = "files/docs/pe".$postEvent->id."/".$drope->name;break; //aplicar filtro, solo agregar id de post 
-                            }
-                            //para video se omite y solo se borra el modelo 
-                            if(trim($aux_path) !== "" && Storage::disk('local')->exists($aux_path)){
-                                if(! Storage::disk('local')->delete($aux_path) ){
-                                    throw new \Exception("No se logró eliminar algunos medios".$drope->name);
-                                }   
-                            }
-                            if(!$drope->delete()){
-                                throw new \Exception("No se logró eliminar el registro");
-                            }
-                            $count_drop++;
-                            break;//primer form 
-                        }
-                    }
-
-                    if($count_drop == count($request->mediadrop_ids)){
-                        $salida["extra"] = "Se eliminaron " .$count_drop . " Elementos";
-                        break; //break 2 for, all element was deleted 
-                    }
-                }
-            }
-
-            //$salida["extra"] = "Tipos: ";
-            //CARGA DE CONTENIDO NUEVO 
-            if(isset($request->media)){
-
-                $limite_carga = 70; //dejar a 70, agregar esto en la vista
-                $files = $request->media;
-                if(count($files) >= $limite_carga){
-                    throw new \Exception("Límite de carga superado, máximo ".$limite_carga." archivos");
-                }
-
-                $numberfiles = 0;                
-                while($numberfiles < count($files)){
-                    $filesOnPostEvents = new FilesPost();
-                    if (preg_match('/^data:image\/(\w+);base64,/', $files[$numberfiles]['data'])
-                        ||
-                        preg_match('/^data:application\/(\w+);base64,/', $files[$numberfiles]['data'])
-                    ) {
-                        $data = substr($files[$numberfiles]['data'], strpos($files[$numberfiles]['data'], ',') + 1);
-                        $data = base64_decode($data);
-
-
-                        
-                        $extension = explode(".",$files[$numberfiles]['filename']);
-                        //obtener el ultimo elemento del array creado (explode)
-                        $extension = $extension[count($extension)-1];
-
-                        $salida["extra"] .= $files[$numberfiles]['type'] . " / ";
-                        //al parecer no es necesario 
-                        date_default_timezone_set('America/El_Salvador');
-                        if($files[$numberfiles]['type'] == "image"){ //is a img
-                            $filename = uniqid()."_".time().".".$extension;
-                            $pathname = "files/images/";
-                        }else if($files[$numberfiles]['type'] == "docfile"){ //is a document 
-                            $filename = $files[$numberfiles]['filename'];
-                            $pathname = "files/docs/pe".$postEvent->id."/";
-                        }
-
-
-                        $filesOnPostEvents->id_post_event      = $postEvent->id;
-                        $filesOnPostEvents->name                   = $filename;
-                        $filesOnPostEvents->type_file               = $files[$numberfiles]['type'];
-                        $filesOnPostEvents->save();
-
-                        if($id_img_presentation === 0 && $filesOnPostEvents->type_file === "image"){
-                            $id_img_presentation = $filesOnPostEvents->id;
-                        }
-
-                        $path_store = $pathname.$filename;
-                        Storage::disk('local')->put($path_store, $data);
-
-                        //compresor de imagenes only image type 
-                        if($filesOnPostEvents->type_file === "image"){
-                        // resize the image to a width of 1000 and constrain aspect ratio (auto height)
-                            $compress = Image::make(storage_path('app/' . $path_store));
-                            $width      = $compress->width();
-                            $height    = $compress->height();
-
-                            if($width > 1500 || $height > 1500){
-                                $compress->resize(1000, null,function($constraint) {
-                                    $constraint->aspectRatio();
-                                    // prevent possible upsizing
-                                    $constraint->upsize();
-                                    //en las pruebas upsize no evitaba por completo el incremento de peso para archivos pequeños
-                                });
-                                $compress->save(null,100);
-                            }
-                            $compress->destroy();
-                        }
-
-                    }else{
-                        //Es un video
-                        $filesOnPostEvents->id_post_event = $postEvent->id;
-                        $filesOnPostEvents->name = $files[$numberfiles]['data'];
-                        $filesOnPostEvents->type_file = $files[$numberfiles]['type'];
-                        $filesOnPostEvents->save();
-                        //Es un video
-                        if($id_img_presentation === 0){
-                            $id_img_presentation = $filesOnPostEvents->id;
-                        }                        
-                    }
-                    $numberfiles++;
-                }
-            }
-
-            //Si se elimino la imagen de presentacion que hacer ? 
-            if($id_img_presentation !== 0){
-                $postEvent->presentation_img = $id_img_presentation;
-                $postEvent->save();
-            }            
-
-            $postEvent->owner->id;
-            $propietario = [];
-            $propietario["id"] = $postEvent->owner->id;
-            $propietario["name"] = $postEvent->owner->name;
-            $propietario["nickname"] = $postEvent->owner->artistic_name;
-            $propietario["profile_img"] = $postEvent->owner->profile_img;
-
-            DB::commit();
-            //Importante dejar en esta posicion, dato que en las lineas de arriba se carga el owner, se debe ocultar antes de 
-            //enviar, solo se debe enviar los medios/archivos ( load('media') )
-            $postEvent->makeHidden('owner');
-            $salida = [
-                "code" => 1,
-                "data" =>  [
-                    "post" => $postEvent->load("media"),
-                    "creator" => $propietario,
-                    'dtl_event' => []
-                ],
-                "msg" => "Request Complete"
-            ];
-
-            //Agregar el detalle del evento 
-            if($request->post_type == "event"){
-                $salida["data"]["dtl_event"] = $dtlEvent;
-            }            
-        }catch(\Throwable $ex){
-            DB::rollback();
-            $salida["msg"] = "Error al actualizar publicacion";
-            //$salida["msg"] = "Error al actualizar publicacion ".$ex->getMessage(); //for debug
-        }
-
-        return $salida;
+        return $output;        
     }
 
     public function destroy($id){
-        $salida = [
+        $output = [
             "code" => 0,
             "data" => null,
             "msg" => ""
@@ -538,19 +366,19 @@ class PostEventController extends Controller
         $user = Auth::user();
         $postEvent = PostEvent::find($id);
         if(!$postEvent){
-            $salida["msg"] = "No existe el elemento";
+            $output["msg"] = "No existe el elemento";
             return;
         }
 
         //Verificando permisos 
         if(!$user->can('eliminar-publicaciones') && $postEvent->creator_id != $user->id){
-            $salida["msg"] = "Operación denegada";
-            return $salida;
+            $output["msg"] = "Operación denegada";
+            return $output;
         }
 
         $creator = User::find($postEvent->creator_id);
         if(!$creator){
-            $salida["msg"] = "Inconsistencia de datos";
+            $output["msg"] = "Inconsistencia de datos";
             return;
         }
 

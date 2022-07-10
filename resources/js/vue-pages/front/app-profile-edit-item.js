@@ -2,13 +2,8 @@
 Vue.component('media-viewer', require('../../components/media/ViewMediaComponent.vue').default);
 Vue.component('modal-trim-img', require('../../components/trim/TrimComponent.vue').default);
 
-Vue.component('post-create', require('../../components/post/PostEventCreateComponent.vue').default);
-Vue.component('post-form-component', require('../../components/post/FormularioComponent.vue').default);
-Vue.component('post-media-component', require('../../components/post/MediaComponent.vue').default);
-Vue.component('post-modal-component', require('../../components/post/ModalVideo.vue').default);
 
 Vue.component('spinner1',require('../../components/spinners/Spinner1Component.vue').default);
-Vue.component('post-show',require('../../components/post/PostEventShowComponent.vue').default);
 Vue.component('preview-media',require('../../components/media/PreviewMediaComponent.vue').default);
 
 //Para el registro de componentes locales 
@@ -16,10 +11,16 @@ import ProfileSummary from '../../components/profile/GeneralInfoComponent.vue';
 import ProfileAbout from '../../components/profile/AboutComponent.vue';
 import {getUserProfileInformation,getPostEvent} from '../../service';
 import {formatter87,formatter88} from '../../formatters';
+import PostEventCreateComponent from '../../components/post/PostEventCreateComponent.vue';
+import PostEventShowComponent from '../../components/post/PostEventShowComponent.vue';
 
 const appProfileItemEditVue = new Vue({
     el: "#appProfileItemEdit",
-    components: {ProfileSummary,ProfileAbout},    
+    components: {
+        "postevent-create": PostEventCreateComponent,
+        "postevent-show": PostEventShowComponent,
+        "profile-summary": ProfileSummary,
+        "profile-about": ProfileAbout},    
     data:{
         acAppData: {},
         modelo: [],

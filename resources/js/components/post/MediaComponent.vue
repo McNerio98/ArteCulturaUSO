@@ -2,23 +2,23 @@
   <div>
     <div style="margin-bottom: 15px; max-height: 200px" class="row overflow-auto">
       <!--LISTA PRINCIPAL DE IMAGENES O VIDEOS-->
-      <div v-for="(m, key) in media" v-bind:key="key" class="col-6 col-lg-3 col-md-3">
+      <div v-for="(m, key) in ListImagesOrVideos" v-bind:key="key" class="col-6 col-lg-3 col-md-3">
         
-        <div v-if="m.type === 'image'">
+        <div v-if="m.type_file === 'image'">
           <div class="image-area"
             data-toggle="tooltip"
             data-placement="top"
-            :title="m.filename">
+            :title="m.name">
             <img
               :ref="'image' + key"
               style="object-fit: contain; padding-top: 3px"
               width="100%"
               height="100px"
-              :src="m.data"
+              :src="m.data != null ? m.data : m.url"
               alt="Preview"
             />
             <a
-              @click="remove(key,m.id)"
+              @click="removeFile(m.index_parent,m.id)"
               class="remove-image"
               href="javascript:void(0);"
               style="display: inline"
@@ -27,14 +27,14 @@
           </div>
         </div>
 
-        <div v-if="m.type === 'video'">
+        <div v-if="m.type_file === 'video'">
           <div
             class="image-area"
             data-toggle="tooltip"
             data-placement="top"
-            :title="m.filename"
+            :title="m.name"
           >
-            <a :href="'https://youtu.be/'+m.filename" target="_blank">
+            <a :href="'https://youtu.be/'+m.name" target="_blank">
             <img
               :ref="'image' + key"
               style="object-fit: contain; padding-top: 3px"
@@ -46,7 +46,7 @@
             </a>
 
             <a
-              @click="remove(key,m.id)"
+              @click="removeFile(m.index_parent,m.id)"
               class="remove-image"
               href="javascript:void(0);"
               style="display: inline"
@@ -56,7 +56,7 @@
         </div>
       </div>
       <!--BOTON 0 PARA AGREGAR IMAGENES-->
-      <div v-if="media.length > 0" class="col-6 col-lg-3 col-md-3">
+      <div v-if="itemData.media.length > 0" class="col-6 col-lg-3 col-md-3">
         <label for="imageInput" @click="this.triggerInputForImages">
           <div id="content">
             <div class="image-area2">
@@ -75,7 +75,7 @@
 
     <!--SECCION PARA MOSTRAR SOLO LOS DOCUMENTOS-->
     <ul class="list-unstyled">
-        <li v-for="(m, key) in media_docs" v-bind:key="key" class="docfile mb-2" :title="m.filename">
+        <li v-for="(m, key) in ListDocs" v-bind:key="key" class="docfile mb-2" :title="m.filename">
           <a :href="buffer.edit_mode ? m.data : 'javascript:void(0);'" target="_blank" class="btn-link text-secondary"><i class="far fa-file-pdf"></i> {{m.filename}}</a>
           <a
             @click="removeDocs(key,m.id)"
@@ -110,7 +110,7 @@
           hidden="true"
           type="file"
           ref="inputforimgs"
-          @change="this.previewFiles"
+          @change="addFile"
           multiple
         />
       </div>
@@ -119,7 +119,7 @@
           style="cursor: pointer"
           id="btn-video-media"
           class="btn btn-light btn-block"
-          @click="show_modal = true"
+          @click="flags.modal_video_youtube = true"
         >
           <img
             :src="acAppData.base_url + '/images/iconBtnAddVideo.png'"
@@ -134,7 +134,7 @@
       <div class="col-4">
         <label
           for="contenidoInput"
-          @click="this.triggerInputForDocs"
+          @click="triggerInputForDocs"
           style="cursor: pointer"
           class="btn btn-light btn-block text-break"
         >
@@ -151,17 +151,16 @@
           accept="application/pdf"
           ref="inputfordocs"
           type="file"
-          @change="previewFiles"
+          @change="addFile"
           multiple
         />
       </div>
     </div>
     <!--VIDEO MODAL COMPONENT-->
-    <post-modal-component
-      @add="addVideo"
-      v-if="show_modal"
-      @close="show_modal = false"
-    ></post-modal-component>
+    <ModalVideo @add="addVideo"
+      v-if="flags.modal_video_youtube"
+      @close="flags.modal_video_youtube = false">        
+      </ModalVideo>
   </div>
 </template>
 
@@ -233,45 +232,47 @@ li.docfile i{
 </style>
 
 <script>
+import ModalVideo from './ModalVideo.vue';
+
 export default {
+  components: {ModalVideo},
     props: {
-        buffer: {type: Object,default: function(){
-          return {
-            edit_mode: false,
-            medias: [] //all video, docs and files 
-          }
-        }}                
+      itemData: {type: Object, required:true}
     },  
   data: function () {
     return {
       acAppData: {},
-      media: [],
-      media_docs: [],
-      link_youtube: "",
-      show_modal: false,
-      limite: 70, //limite de archivos,
-      media_del: [] //Ids de elementos a eliminar en modo edicion 
+      limitefiles: 10,
+      mediadrop_ids: [],
+      flags: {
+          modal_video_youtube: false
+      }      
     };
   },
   created: function () {
     //Cuando el padre emita el evento update se limpian lo medios
-    this.$parent.$on("post-chiild-created", this.setMediaNull);
+    //this.$parent.$on("post-chiild-created", this.setMediaNull);
   },
   mounted: function(){
     this.acAppData = window.obj_ac_app;
     
-    if(this.buffer.edit_mode){
-      this.buffer.medias.map(e=>{
-          var temp = {
-              id: e.id,
-              type: e.type_file,
-              filename: e.name,
-              data: e.url
-            };
-
-          if(e.type_file=="image" || e.type_file == "video")this.media.push(temp);
-          if(e.type_file =="docfile")this.media_docs.push(temp);     
-      })
+  },
+  computed: {
+    ListImagesOrVideos: function(){
+      return this.itemData.media.filter((e,index) => {
+        if((e.type_file == "image" || e.type_file == "video") && !e.presentation){
+          e.index_parent = index;
+          return e;
+        }
+      });;
+    },
+    ListDocs: function(){
+      return this.itemData.media.filter((e,index) => {
+        if(e.type_file == "docfile"){
+          e.index_parent = index;
+          return e;
+        }
+      });;
     }
   },
   methods: {
@@ -281,68 +282,8 @@ export default {
     triggerInputForDocs: function () {
       this.$refs.inputfordocs.click();
     },
-    previewFiles: function (e) {
-
-      if((this.media.length + this.media_docs.length + e.target.files.length) >= this.limite){
-        StatusHandler.ValidationMsg("Límite de carga de archivos superado, elimine algunos elementos.")
-        return;
-      }
-
-      for(let ng = 0 ; ng < e.target.files.length; ng++){
-        this.addFileToMultimedia(e.target.files[ng]);
-      }
-
-    },
-    addFileToMultimedia: function (file) {
-      let reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = (e) => {
-        if (e.target.result.substring(0, 10) != "data:image" && e.target.result.substring(0, 20) != "data:application/pdf") {
-          StatusHandler.ValidationMsg("Archivos no soportados");
-          return;
-        }
-
-        //console.log(e.target.result.substring(0, 10));
-        //console.log(e.target.result.substring(0, 20));
-
-        var data = {
-          id: null,
-          type: e.target.result.substring(0, 10) == "data:image" ? "image" : "docfile",
-          filename: file.name,
-          data: e.target.result,
-        };
-
-        if(data.type === "docfile"){
-          this.media_docs.push(data);
-        }else{
-          this.media.push(data);
-        }
-
-        this.$emit("media", this.media.concat(this.media_docs));
-      };
-    },
-    remove: function (key,id = null) {
-      this.media.splice(key, 1);
-      //Si esta en modo edicion y el id pasado es de un archivo existente (ya almacenado)
-      //entonces agregar el id a los medios a eliminar y emitir evento con lista de identificadores 
-      if(id != null && id != 0 && this.buffer.edit_mode){
-          this.media_del.push(id);
-          this.$emit("media-del",this.media_del);
-      }      
-    },
-    removeDocs: function(key,id=null){
-      this.media_docs.splice(key,1);
-      if(id != null && id != 0 && this.buffer.edit_mode){
-          this.media_del.push(id);
-          this.$emit("media-del",this.media_del);
-      }
-    },
-    setMediaNull: function () {
-      this.media = [];
-      this.media_docs = [];
-    },
-    addVideo: function (video_uri) {
-      if((this.media.length + this.media_docs.length + 1) >= this.limite){
+    addVideo: function(video_uri){
+      if((this.itemData.media.length + 1) >= this.limitefiles){
         StatusHandler.ValidationMsg("Límite de carga de archivos superado, elimine algunos elementos.")
         return;
       }
@@ -361,15 +302,63 @@ export default {
         id_video = target.split('=')[1].split('&')[0];
       }
 
-      const data = {
-        id: null,
-        type: "video",
-        filename: id_video,
+      const newVideoMedia = {
+        id: 0,
+        type_file: "video",
+        name: id_video,
+        id_post_event: null,
         data: id_video,//vendria siendo el path completo 
-      };
-      this.media.push(data);
-      this.$emit("media", this.media.concat(this.media_docs));
+      };        
+
+      this.itemData.media.push(newVideoMedia);
     },
+    addFile: function(e){
+      if((this.itemData.media.length + e.target.files.length) >= this.limitefiles){
+        StatusHandler.ValidationMsg("Límite de carga de archivos superado, elimine algunos elementos.")
+        return;
+      }
+
+      for(let ng = 0 ; ng < e.target.files.length; ng++){
+        this.addFileToMultimedia(e.target.files[ng]);
+      }                
+    },    
+    addFileToMultimedia: function (file) {
+      let reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (e) => {
+        if (e.target.result.substring(0, 10) != "data:image" && e.target.result.substring(0, 20) != "data:application/pdf") {
+          StatusHandler.ValidationMsg("Archivos no soportados");
+          return;
+        }
+
+        //console.log(e.target.result.substring(0, 10));
+        //console.log(e.target.result.substring(0, 20));
+        var newFileMedia = {
+            id: 0,
+            type_file: e.target.result.substring(0, 10) == "data:image" ? "image" : "docfile",
+            name: file.name,
+            id_post_event: null, //se establece en el padre
+            data: e.target.result,
+        };
+
+        this.itemData.media.push(newFileMedia);    
+      };
+    },
+    removeFile: function (indexParent,id) {
+      this.itemData.media.splice(indexParent,1);
+      //For edit mode 
+      if(id != 0){this.mediadrop_ids.push(id);}
+      this.$emit("drop-ids",this.mediadrop_ids);
+    },
+    removeDocs: function(indexParent,id){
+      this.itemData.media.splice(indexParent,1);
+      if(id != 0){this.mediadrop_ids.push(id);}
+      this.$emit("drop-ids",this.mediadrop_ids);
+    },
+    setMediaNull: function () {
+      this.media = [];
+      this.media_docs = [];
+    }
   },
 };
 </script>

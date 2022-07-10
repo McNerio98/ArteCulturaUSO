@@ -255,7 +255,7 @@
             },
             upsert: function(){
                 //Realizar cambios pertinentes 
-                if(this.itemData.id == 0){
+                if(this.itemData.memory.id == 0){
 
                 }else{
 

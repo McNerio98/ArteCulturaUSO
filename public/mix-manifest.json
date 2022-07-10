@@ -21,6 +21,5 @@
     "/js/front/app-profile.js": "/js/front/app-profile.js",
     "/js/front/app-profile-edit-item.js": "/js/front/app-profile-edit-item.js",
     "/js/front/app-resources.js": "/js/front/app-resources.js",
-    "/js/front/app-search.js": "/js/front/app-search.js",
-    "/js/specific-post.js": "/js/specific-post.js"
+    "/js/front/app-search.js": "/js/front/app-search.js"
 }

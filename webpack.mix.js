@@ -43,10 +43,7 @@ mix.js('resources/js/app.js', 'public/js')
     .js('resources/js/vue-pages/front/app-events-table.js','public/js/front')//TABLE EVENTS PUBLIC 
     .js('resources/js/vue-pages/front/app-profile-edit-item.js','public/js/front')//TABLE EVENTS PUBLIC 
 
-    
-    
     //other 
-    .js('resources/js/vue-pages/specific-post.js','public/js')
     .js('resources/js/api/api.service.js','public/js')
     .sass('resources/sass/app.scss', 'public/css')
     .sass('resources/sass/observatorio_styles.scss','public/css');

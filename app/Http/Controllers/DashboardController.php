@@ -7,6 +7,7 @@ use App\User;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use App\PostEvent;
+use App\Helper\UsersHelper;
 
 class DashboardController extends Controller
 {
@@ -26,13 +27,13 @@ class DashboardController extends Controller
 	}
 
     public function index(){
-		$request_users = $this->userRequest();
+		$request_users = UsersHelper::usersRequest();
     	return view('admin.home' , ['ac_option' =>'home' , 'request_users' => $request_users]);
 	}
 
 	//MY CONTENT OPTION 
     public function content(){
-		$request_users = $this->userRequest();
+		$request_users = UsersHelper::usersRequest();
     	return view('admin.content' , ['ac_option' =>'content' , 'request_users' => $request_users]);
 	}
 

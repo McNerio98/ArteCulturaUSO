@@ -95,8 +95,8 @@ Route::get('/users/dataConfig/{id}','UsersController@configUserData')->name("use
 
 Route::put('/user/updateConfig/{id}','UsersController@updateConfigUser')->name("user.updateconf")->middleware('auth','adroles');
 
-# Crea un nuevo recurso del tipo reseña, [Homenaje o Biografias]
-Route::post('memories','MemoriesController@store')->name("memory.store")->middleware('auth','adroles');
+# Crea o actualiza  recurso del tipo reseña, [Homenaje o Biografias]
+Route::post('memories','MemoriesController@upsert')->name("memory.store")->middleware('auth','adroles');
 #Obtiene los usuarios dentro de la plataforma, con filtros para todos los usuarios, solicitudes, habilitados, no activos 
 Route::get('users','UsersController@index')->name('users.fetch')->middleware('auth','adroles');
 # Guarda la fotografia de presentacion de la categoria que se esta editando 
@@ -125,12 +125,10 @@ Route::post('user/uploadImgProfile','UsersController@uploadProfileImg')->middlew
 #Obtiene los notificadores, usuario, eventos, events para los paneles notificaciones en la pagina principal del admin 
 #Esta ruta ya tiene los middleware adroles desde el constructor 
 Route::get('/notifiers','DashboardController@notifiers')->name("notifiers");
-#Almacena un elemento, publicacion o evento con sus medios digitales 
-Route::post('postevent','PostEventController@store')->name('postevent.store')->middleware('auth');
+#Crea o actualiza  un elemento, publicacion o evento con sus medios digitales (UPSERT)
+Route::post('postevent','PostEventController@upsert')->name('postevent.store')->middleware('auth');
 #Obtiene la informacion de un elemento/ evento/publicacion con todas sus relaciones 
 Route::get('postevent/{id}','PostEventController@find')->name('post.show');
-#Actualiza un elemento, publicacion o evento con sus medios digitales 
-Route::put('postevent/{id}','PostEventController@update')->name('postevent.update')->middleware('auth');
 #AJAX 1 Elimina un recurso de tipo publicacion o evento con todos sus medios(files,video.image) asociados 
 Route::delete('postevent/{id}','PostEventController@destroy')->name("postevent.destroy")->middleware('auth');
 

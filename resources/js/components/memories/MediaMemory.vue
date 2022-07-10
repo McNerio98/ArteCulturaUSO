@@ -255,7 +255,7 @@
                 }
 
                 const newVideoMedia = {
-                    id: null,
+                    id: null, //VALIDAR AQUI 
                     type_file: "video",
                     name: id_video,
                     memory_id: null,
