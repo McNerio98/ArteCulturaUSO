@@ -42,7 +42,7 @@ mix.js('resources/js/app.js', 'public/js')
     .js('resources/js/vue-pages/front/app-biographies.js','public/js/front') //BIOGRAPHIES PUBLIC 
     .js('resources/js/vue-pages/front/app-events-table.js','public/js/front')//TABLE EVENTS PUBLIC 
     .js('resources/js/vue-pages/front/app-profile-edit-item.js','public/js/front')//TABLE EVENTS PUBLIC 
-
+    .js('resources/js/vue-pages/front/app-nearby.js','public/js/front')
     //other 
     .js('resources/js/api/api.service.js','public/js')
     .sass('resources/sass/app.scss', 'public/css')

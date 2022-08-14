@@ -18,6 +18,7 @@
     "/js/front/app-events-table.js": "/js/front/app-events-table.js",
     "/js/front/app-inicio.js": "/js/front/app-inicio.js",
     "/js/front/app-memories.js": "/js/front/app-memories.js",
+    "/js/front/app-nearby.js": "/js/front/app-nearby.js",
     "/js/front/app-profile.js": "/js/front/app-profile.js",
     "/js/front/app-profile-edit-item.js": "/js/front/app-profile-edit-item.js",
     "/js/front/app-resources.js": "/js/front/app-resources.js",

@@ -97,12 +97,9 @@ export function getMunicipios(){
  * Using Geodecoding API 
  */
 export function getGeo(address){
-    var API_KEY = "AIzaSyAzDI1Ey1kZJHyTgPXymVWc95nP8tYWnOk";
-    var ADDR = encodeURIComponent(address);
-    var ENDPOINT = `https://maps.googleapis.com/maps/api/geocode/json?address=${ADDR}&key=${API_KEY}`;
-    
+    const ADDR = encodeURIComponent(address);
     return new Promise((resolve,reject) =>{
-        axios.get(ENDPOINT).then(result =>{
+        axios.get(`/post/geoquery?direction_search=${ADDR}`).then(result =>{
             resolve(result);
         }).catch(ex =>{
             reject(ex);
@@ -114,19 +111,21 @@ export function getGeo(address){
  * Using Places API 
  */
 export function getPlaces(address){
-    var API_KEY = "AIzaSyAzDI1Ey1kZJHyTgPXymVWc95nP8tYWnOk";
-    var ADDR = encodeURIComponent(address);
-    var FIELDS = encodeURIComponent("formatted_address,name,geometry");
-    var ENDPOINT = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?fields=${FIELDS}&input=${ADDR}&inputtype=textquery&key=${API_KEY}`;
-    //var ENDPOINT = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${ADDR}&key=${API_KEY}`;
+    const ADDR = encodeURIComponent(address);
     return new Promise((resolve,reject) =>{
-        axios.get(ENDPOINT).then(result =>{
+        axios.get(`/post/placesquery?place_search=${ADDR}`).then(result =>{
             resolve(result);
         }).catch(ex =>{
             reject(ex);
         });
     });    
 }
+
+export function getNearbyPostEvents(){
+    return axios.get('/post/nearby');
+}
+
+
 
 
 

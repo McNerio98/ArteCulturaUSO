@@ -24,6 +24,10 @@ class WebsiteController extends Controller
         return view("welcome",['posts_popular'=>$data,'some_categories'=>$cats]);
     }
 
+    public function nearby(){
+        return view("nearby");
+    }
+
     public function artistas(){
         return view("talents");
     }

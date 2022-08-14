@@ -16,9 +16,60 @@ use Illuminate\Validation\Rule;
 use App\DtlEvent as Devs;
 use App\Popular;
 use App\User;
+use Illuminate\Support\Facades\Http;
+use App\ConfigOption;
 
 class PostEventController extends Controller
 {
+
+
+    public function geodecoding(){
+        $output = [
+            "code" => 0,
+            "msg" => "",
+            "data" => null
+        ];
+
+        $API_KEY = ConfigOption::getOption("API_KEY_GEODEC");
+        if(is_null($KEY_API)){
+            $output["msg"] = "Ups! Hemos tenido un problema, inténtalo más tarde";
+            return $output;
+        }
+        $directionSearch = $request->direction_search;
+        $url = "https://maps.googleapis.com/maps/api/geocode/json?address=${directionSearch}&key=${API_KEY}";    
+
+        $response = Http::get($url);
+        $output["code"] = 1;
+        $output["data"] = $response->json();
+        $output["msg"] = "Consulta completada!";
+        return $output;
+    }
+    
+    /**
+     * La llamada al API se creo aqui porque en el JS no es soportado, solo desde su misma libreria
+     */
+    public function places(Request $request){
+        $output = [
+            "code" => 0,
+            "msg" => "",
+            "data" => null
+        ];
+
+        $API_KEY = ConfigOption::getOption("API_KEY_PLACES");
+        if(is_null($API_KEY)){
+            $output["msg"] = "Ups! Hemos tenido un problema, inténtalo más tarde";
+            return $output;
+        }        
+        $placeSearch = $request->place_search;
+        $url = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json";
+        $url .= "?fields=formatted_address%2Cname%2Cgeometry&input=$placeSearch&inputtype=textquery&key=$API_KEY";
+
+        $response = Http::get($url);
+        $output["code"] = 1;
+        $output["data"] = $response->json();
+        $output["msg"] = "Consulta completada!";
+        return $output;
+    }
 
     
     public function eventsTable(Request $request){
@@ -115,6 +166,34 @@ class PostEventController extends Controller
     }
 
 
+    public function nearby(Request $request){
+        $output = [
+            "code" => 0,
+            "data" => null,
+            "msg" => null
+        ];
+
+		$result = PostEvent::where('dtl.event_date','>=',date('Y-m-d h:i:s'))
+            ->where('dtl.is_geo',true)
+            ->join('dtl_events AS dtl','dtl.event_id','post_events.id')
+			->with('media')
+			->with('owner')
+			->with('event_detail')
+            ->get();
+		$items = [];
+		foreach($result as $el){
+			$el->owner->load('profile_img');
+			$items[] = $el;
+		}        
+
+        $output["code"] = 1;
+        $output["data"] = $items;
+        $output["msg"] = "Elementos recuperados";
+        
+        return $output;
+    }
+
+
     public function upsert(Request $request){
         $output = [
             "code" => 0,
@@ -171,9 +250,18 @@ class PostEventController extends Controller
             $postEvent->type_post       = $request->post["type"];
             $postEvent->creator_id      = $user->id;
             $postEvent->save();
-            //aqui si es update deberia recuperar la relacion 
+
             if($request->post["type"] == "event"){
-                $dtlEvent                               = new DtlEvent();
+                if($request->post["id"] != 0){
+                    $dtlEvent   = $postEvent->event_detail;
+                }else{
+                    $dtlEvent = new DtlEvent();
+                }
+
+                if(is_null($dtlEvent)){
+                    throw new \Exception("Error al verificar detalle de evento, reporte error.");
+                }
+               
                 $dtlEvent->event_date        = $request->dtl_event["event_date"];
                 $dtlEvent->frequency          = $request->dtl_event["frequency"];
                 $dtlEvent->has_cost             = $request->dtl_event["has_cost"];
@@ -182,6 +270,7 @@ class PostEventController extends Controller
                 $dtlEvent->address              = $request->dtl_event["address"]["details"];
                 $dtlEvent->geo_lat              = $request->dtl_event["geo"]["lat"];
                 $dtlEvent->get_lng              = $request->dtl_event["geo"]["lng"];
+                $dtlEvent->is_geo                = $request->dtl_event["is_geo"];
                 $dtlEvent->event_id             = $postEvent->id;
                 $dtlEvent->save();
             }
