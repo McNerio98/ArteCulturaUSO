@@ -121,11 +121,10 @@ export function getPlaces(address){
     });    
 }
 
+
 export function getNearbyPostEvents(){
     return axios.get('/post/nearby');
 }
-
-
 
 
 
