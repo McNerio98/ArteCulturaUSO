@@ -23,8 +23,10 @@ class CreateDtlEventsTable extends Migration
             $table->string("address",100);
             $table->string("geo_lat",50)->nullable();
             $table->string("get_lng",50)->nullable();
+            $table->boolean('is_geo')->default(false);
             $table->foreignId('event_id')->constrained("post_events")->onDelete('cascade');
             $table->timestamps();
+            $table->index('is_geo');
         });
     }
 

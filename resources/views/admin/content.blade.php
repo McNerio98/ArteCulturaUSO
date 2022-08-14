@@ -8,27 +8,29 @@
         <div class="col-12">
             <div id="event-cp" style="width: 100%;max-width: 600px;margin: auto;padding: 10px;">
             
-                <div class="text-center _acNoCnt" v-if="items_postevents.length == 0">
+                <div class="text-center _acNoCnt" v-if="items_postevents.length == 0 && !isCreating">
                     <img src="{{asset('images/no-task.svg')}}" alt="" style="width: 80%;max-width: 100px;">
                     <h2>No hay contenido que mostrar</h2>
                     <p class="lead">crea contenido de forma fácil y rápida.</p>
                 </div>            
                 <!--SOLO SI EL USUARIO ESTA LOGEADO-->
                 @auth
-                    <div class="row pb-1 pb-md-3">
-                        <div class="col-6">
+                    <div class="row pb-1 pb-md-3" v-if="!isCreating && items_postevents.length == 0">
+                        <div class="col-6 m-auto">
                             <button @click="onCreate('event')" class="makePosting"> <img class="makeItemPosting" src="{{asset('images/create_event.svg')}}" alt=""> CREAR EVENTO</button>
                         </div>
+                        <!--
                         <div class="col-6">
                                 <button @click="onCreate('post')"   class="makePosting"><img class="makeItemPosting" src="{{asset('images/create_post.svg')}}" alt=""> CREAR POST</button>
-                        </div>                                    
+                        </div>    
+                        -->                                
                     </div>
 
                     <postevent-create v-for="e of modelo_create" 
                         :pdata="e"
                         :key="'id' + (new Date()).getTime()"
                         @saved="PostEventCreated" 
-                        v-if="flags.creating == true">
+                        v-if="isCreating">
                     </postevent-create>
 
                 @endauth

@@ -109,9 +109,18 @@ class DashboardController extends Controller
 		if(!Auth::user()->can('editar-publicaciones') &&  intval($e->creator_id) !==  intval(Auth::user()->id)){
 			return redirect()->route('dashboard');
 		}
+		$request_users = $this->userRequest();
+		return view("admin.postevents.edit-item",['request_users' => $request_users,'id_elem_edit' => $id,'ac_option' =>'null']);
+	}
+
+	public function showElement($id){
+		$e = PostEvent::find($id);
+		if(!$e){
+			return redirect()->route('dashboard');
+		}		
 
 		$request_users = $this->userRequest();
-		return view("admin.edit-item",['request_users' => $request_users,'id_elem_edit' => $id,'ac_option' =>'null']);
+		return view("admin.postevents.show-item",['request_users' => $request_users,'id_elem_edit' => $id,'ac_option' =>'null']);
 	}
 	
 	//Access via AJAX 

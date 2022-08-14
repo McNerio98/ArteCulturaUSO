@@ -3,7 +3,7 @@
  * Orgien: Tabla medias_profiles
  * Destino: Arbol JSON para Componente Visualizador de medios 
  */
-
+ import moment from 'moment';
 
  export function formatter86(source,storage_base_url){
     return {
@@ -45,7 +45,7 @@ export function getModel88(){
         created_at: new Date(),
         event_detail: {
             id: 0,
-            event_date: new Date(),
+            event_date: moment().add(2, 'days').toDate(),
             has_cost: false,
             cost: 0,
             frequency: 'unique',
@@ -90,10 +90,11 @@ export function getModel88(){
         },
         dtl_event: {
             id: item.event_detail?.id,
-            event_date: item.event_detail?.event_date != undefined ? (new Date(item.event_detail?.event_date)): undefined,
-            has_cost: item.event_detail?.has_cost,
+            event_date: item.event_detail?.event_date,
+            has_cost: item.event_detail?.has_cost == 1 ? true: false,
             cost: item.event_detail?.cost,
             frequency: item.event_detail?.frequency,
+            is_geo: item.event_detail?.is_geo,
             address: {
                 details: item.event_detail?.address,
                 depto: 0, //Usar para futuras versiones 

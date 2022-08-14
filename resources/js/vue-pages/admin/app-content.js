@@ -16,9 +16,7 @@ const appContent = new Vue({
     },
     data: {
         modelo_create: [],
-        flags: {
-            creating: false
-        },
+        isCreating: false,
         create_type: "post",
         spinners: {
             S1: false,//load post and events 
@@ -48,22 +46,16 @@ const appContent = new Vue({
     },
     methods: {
         onCreate: function(tipo){
-            //this.create_type = tipo;
-            this.flags.creating = true;
+            this.isCreating= true;
             this.modelo_create.splice(0);
 
             var nuevo = getModel88();
             nuevo.type_post = tipo;
             if(this.modelo_create.length > 0){
                 this.$set(this.modelo_create.array, 0, formatter88(nuevo,this.acAppData.storage_url));
-                
             }else{
                 this.modelo_create.push(formatter88(nuevo,this.acAppData.storage_url));
             }
-            //this.modelo_create.push();
-
-            
-
         },
         onUpdatePostEvent: function(id){
             //console.log("Editando este id " + id);
@@ -77,6 +69,10 @@ const appContent = new Vue({
             this.items_postevents = fulldata.map(e=>{
                 return formatter88(e,this.acAppData.storage_url);
             });
+
+            if(fulldata.length != 0){
+                this.onCreate('event');
+            }
         },
         onSources: function(sources){
             //Formateando segun el formato esperado por el preview 

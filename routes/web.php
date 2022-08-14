@@ -20,9 +20,7 @@ Route::get('account/verify/{token}','Auth\LoginController@verifyAccount')->name(
 //Router Pagina principal 
 Route::get('/','WebsiteController@welcome')->name("inicio");
 Route::get('/events','WebsiteController@events')->name('events');
-//Route::get('/page1','WebsiteController@artitas')->name("artistas");
-//Route::get('/page2','WebsiteController@promotores')->name("promotores");
-//Route::get('/page3','WebsiteController@escuelas')->name("escuelas");
+Route::get('/cercanos','WebsiteController@nearby')->name('nearby');
 Route::get('/page4','WebsiteController@recursos')->name("recursos");
 Route::get('/page5','WebsiteController@biografias')->name("biografias");
 Route::get('/page6','WebsiteController@homenajes')->name("homenajes");
@@ -81,6 +79,7 @@ Route::get('/admin/resources','DashboardController@resources')->name('resources'
 Route::get('/admin/roles','DashboardController@roles')->name('roles');
 Route::get('/admin/users/config/{id}','DashboardController@infoUser')->name('user.info');
 Route::get('/admin/post/edit/{id}','DashboardController@editElement')->name('admin.edit.item');
+Route::get('/admin/post/show/{id}','DashboardController@showElement')->name('admin.edit.item');
 
 //Routes para busquedas 
 Route::get('/search','SearchController@index')->name('search');
@@ -102,9 +101,11 @@ Route::get('users','UsersController@index')->name('users.fetch')->middleware('au
 # Guarda la fotografia de presentacion de la categoria que se esta editando 
 Route::post('/categories/saveImgPresentation','CategoriesController@changeImgPresentation')->middleware('auth','adroles');
 # Establece un recurso de tipo publicacion como popular o no popular 
-Route::post('post/setPopular','PostEventController@setPostPopular')->name('post.set.popular')->middleware('auth','adroles');
+#Route::post('post/setPopular','PostEventController@setPostPopular')->name('post.set.popular')->middleware('auth','adroles');
 # Establece el estado de un recurso de tipo publicacion, con estados de approval, review. deleted
-Route::post('post/setState','PostEventController@switchStatePost')->name('post.set.state')->middleware('auth','adroles');
+#Route::post('post/setState','PostEventController@switchStatePost')->name('post.set.state')->middleware('auth','adroles');
+
+
 # Almacena una nueva categoria 
 Route::post('categories','CategoriesController@store')->name('cat.store')->middleware('auth','adroles');
 
@@ -131,7 +132,8 @@ Route::post('postevent','PostEventController@upsert')->name('postevent.store')->
 Route::get('postevent/{id}','PostEventController@find')->name('post.show');
 #AJAX 1 Elimina un recurso de tipo publicacion o evento con todos sus medios(files,video.image) asociados 
 Route::delete('postevent/{id}','PostEventController@destroy')->name("postevent.destroy")->middleware('auth');
-
+#Obtiene los items cercanos a una coordenda 
+Route::get('/post/nearby','PostEventController@nearby')->name('post.nearby');
 
 //Middleware que necesitan que el usuario este logeado 
 #Guardar nueva etiqueta dentro del perfil 
@@ -155,3 +157,8 @@ Route::get('/postsevents/{id}','ProfileController@elements');
 
 
 Route::get('res/send', 'RequestAcountController@index');
+
+
+#Rutas para API Google
+Route::get('/post/placesquery','PostEventController@places')->middleware('auth');
+Route::get('/post/geoquery','PostEventController@geodecoding')->middleware('auth');

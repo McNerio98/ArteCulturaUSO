@@ -48,10 +48,10 @@
              -->
             <div  class="row" v-if="itemData.post.type == 'event' ">
                 <div class="col-12">
-                    <p>
-                        <i class="fas fa-map-marker-alt"></i> Lugar :
-                        {{getDirection}}
-                    </p>
+                    <div class="callout callout-info p-1 rounded-0 shadow-none">
+                        <h5 class="p-0 m-0 text-success"><i class="fas fa-map-marker-alt"></i> Lugar</h5>
+                         {{getDirection}}
+                    </div>
                 </div>
             </div>
             <div class="row" v-if="itemData.post.type == 'event' ">
@@ -145,7 +145,7 @@
                 return formatted;
             },
             getDirection: function(){
-                let municipioName = this.municipios[this.itemData.dtl_event.address.municipio_id].municipio;
+                let municipioName = this.municipios[this.itemData.dtl_event.address.municipio_id - 1].municipio;
                 return this.itemData.dtl_event.address.details + " " + municipioName + " Sonsonate";
             }
         },

@@ -1,7 +1,8 @@
 <template>
     <div class="text-center">
             <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>         
-            <p style="font-style: italic;color: #0bbb0b;">{{label}}</p>
+            <!--<h3 style="font-style: italic;color: #0bbb0b;">{{label}}</h3>-->
+            <h4 class="text-dark">{{label}}</h4>
     </div>
 </template>
 
@@ -11,7 +12,7 @@
         display: inline-block;
         position: relative;
         width: 80px;
-        height: 80px;
+        height: 65px;
     }
     .lds-ellipsis div {
         position: absolute;

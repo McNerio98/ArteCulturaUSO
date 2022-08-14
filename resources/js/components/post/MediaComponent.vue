@@ -10,7 +10,6 @@
             data-placement="top"
             :title="m.name">
             <img
-              :ref="'image' + key"
               style="object-fit: contain; padding-top: 3px"
               width="100%"
               height="100px"
@@ -56,7 +55,7 @@
         </div>
       </div>
       <!--BOTON 0 PARA AGREGAR IMAGENES-->
-      <div v-if="itemData.media.length > 0" class="col-6 col-lg-3 col-md-3">
+      <div v-if="ListImagesOrVideos.length > 0" class="col-6 col-lg-3 col-md-3">
         <label for="imageInput" @click="this.triggerInputForImages">
           <div id="content">
             <div class="image-area2">
@@ -76,9 +75,9 @@
     <!--SECCION PARA MOSTRAR SOLO LOS DOCUMENTOS-->
     <ul class="list-unstyled">
         <li v-for="(m, key) in ListDocs" v-bind:key="key" class="docfile mb-2" :title="m.filename">
-          <a :href="buffer.edit_mode ? m.data : 'javascript:void(0);'" target="_blank" class="btn-link text-secondary"><i class="far fa-file-pdf"></i> {{m.filename}}</a>
+          <a :href="m.url != null ? m.url : 'javascript:void(0);'" :target="m.url != null ? '_blank':false" class="btn-link text-secondary"><i class="far fa-file-pdf"></i> {{m.name}}</a>
           <a
-            @click="removeDocs(key,m.id)"
+            @click="removeDocs(m.index_parent,m.id)"
             class="remove-image alter-remove"
             href="javascript:void(0);"
             style="display: inline">
@@ -337,7 +336,7 @@ export default {
             id: 0,
             type_file: e.target.result.substring(0, 10) == "data:image" ? "image" : "docfile",
             name: file.name,
-            id_post_event: null, //se establece en el padre
+            id_post_event: null, //se establece en el backend
             data: e.target.result,
         };
 
@@ -354,10 +353,6 @@ export default {
       this.itemData.media.splice(indexParent,1);
       if(id != 0){this.mediadrop_ids.push(id);}
       this.$emit("drop-ids",this.mediadrop_ids);
-    },
-    setMediaNull: function () {
-      this.media = [];
-      this.media_docs = [];
     }
   },
 };
