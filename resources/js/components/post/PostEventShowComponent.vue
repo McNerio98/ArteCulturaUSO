@@ -145,8 +145,12 @@
                 return formatted;
             },
             getDirection: function(){
-                let municipioName = this.municipios[this.itemData.dtl_event.address.municipio_id - 1].municipio;
-                return this.itemData.dtl_event.address.details + " " + municipioName + " Sonsonate";
+                if(this.municipios.length > 0){
+                    let municipioName = this.municipios[this.itemData.dtl_event.address.municipio_id - 1].municipio;
+                    return this.itemData.dtl_event.address.details + " " + municipioName + " Sonsonate";
+                }else{
+                    return "(No Especificado)";
+                }
             }
         },
         methods: {

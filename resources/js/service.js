@@ -94,6 +94,41 @@ export function getMunicipios(){
 }
 
 /**
+ * Description: Para futuras versiones, guardar estos valores en tablas de base de datos con los mismo Id que aqui se especifican 
+ * @returns {Object} Response 
+ */
+export function getTiposRecursos(){
+    return new Promise((resolve,reject) => {
+        resolve({
+            code: 1,
+            msg: "Datos recuperados",
+            data: [
+                {id: 1, option: "Libro"},
+                {id: 2, option: "Tesis"},
+                {id: 3, option: "Informe"},
+                {id: 4, option: "Obra"},
+                {id: 5, option: "Otros"},
+            ]
+        });
+    })
+}
+
+
+export function upsertResource(data){
+    return axios.post(`/resource`,data);
+}
+
+//Obtiene todos los recursos 
+export function getAllResources(){
+    return axios.get(`/resources`);
+}
+
+//Obtiene un recurso especifico 
+export function getResource(id){
+    return axios.get(`/resource/${id}`);
+}
+
+/**
  * Using Geodecoding API 
  */
 export function getGeo(address){

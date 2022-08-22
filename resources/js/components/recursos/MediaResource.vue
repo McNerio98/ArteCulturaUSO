@@ -73,26 +73,32 @@
                 style="object-fit: cover"/>
                 Fotos
                 </label>
-                <input hidden="true"
-                    accept="image/png, image/jpg, image/jpeg"
+                <input accept="image/*"
+                    hidden="true"
                     type="file"
                     ref="inputforimgs"
                     @change="addFile"
                 multiple/>
             </div>
+
             <div class="col-4">
-                <label style="cursor: pointer"
-                    id="btn-video-media"
-                    class="btn btn-light btn-block"
-                @click="flags.modal_video_youtube = true">
-                <img :src="acAppData.base_url + '/images/iconBtnAddVideo.png'"
-                    class="img-fluid"
+                <label for="contenidoInput"
+                    @click="triggerInputForMSWord"
+                    style="cursor: pointer"
+                class="btn btn-light btn-block text-break">
+                <img :src="acAppData.base_url + '/images/icons/wordfile.png'"
                     width="20px"
                     height="20px"
                 style="object-fit: cover"/>
-                Videos
+               Document Word
                 </label>
-            </div>
+                <input hidden="true"
+                    accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    ref="inputforword"
+                    type="file"
+                    @change="addFile"
+                multiple />
+            </div>              
 
             <div class="col-4">
                 <label for="contenidoInput"
@@ -103,7 +109,7 @@
                     width="20px"
                     height="20px"
                 style="object-fit: cover"/>
-                Archivos
+                Documento PDF
                 </label>
                 <input hidden="true"
                     accept="application/pdf"
@@ -111,7 +117,9 @@
                     type="file"
                     @change="addFile"
                 multiple />
-            </div>                      
+            </div>  
+
+
         </div>        
         <ModalVideo @add="addVideo"
             v-if="flags.modal_video_youtube"
@@ -189,6 +197,11 @@
 </style>
 
 <script>
+/**
+ * mario.nerio
+ * Este componente fue copiado desde el mismo componente de Biografias
+ * sew realizaron leves cambios 
+ */
     import ModalVideo from '../post/ModalVideo.vue';
     export default {
         components: {ModalVideo},
@@ -197,7 +210,7 @@
         },
         data: function(){
             return {
-                acAppData: {},
+                acAppData: window.obj_ac_app,
                 limitefiles: 10,
                 mediadrop_ids: [],
                 flags: {
@@ -206,7 +219,7 @@
             }
         },
         mounted: function(){
-            this.acAppData =  window.obj_ac_app
+            
         },
         computed: {
             ListImagesOrVideos: function(){
@@ -231,39 +244,13 @@
             triggerInputForImages: function(){
                 this.$refs.inputforimgs.click();
             },
+            triggerInputForMSWord: function(){
+                this.$refs.inputforword.click();
+            },
             triggerInputForDocs: function(){
                 this.$refs.inputfordocs.click();
             },
-            addVideo: function(video_uri){
-                if((this.itemData.media.length + 1) >= this.limitefiles){
-                    StatusHandler.ValidationMsg("Límite de carga de archivos superado, elimine algunos elementos.")
-                    return;
-                }
 
-                if(!video_uri.includes('youtu')){
-                    StatusHandler.ValidationMsg("Debe cargar un video desde YOUTUBE.")
-                    return;        
-                }
-
-                var mtx = video_uri.split('/');
-                var target = mtx[mtx.length -1 ];
-                var id_video = "";
-
-                //Aplicar algoritmo de extraccion de id para url full 
-                if(video_uri.includes('watch')){
-                    id_video = target.split('=')[1].split('&')[0];
-                }
-
-                const newVideoMedia = {
-                    id: null, //VALIDAR AQUI 
-                    type_file: "video",
-                    name: id_video,
-                    memory_id: null,
-                    data: id_video,//vendria siendo el path completo 
-                };        
-
-                this.itemData.media.push(newVideoMedia);
-            },
             removeFile: function(indexParent,id){
                 this.itemData.media.splice(indexParent,1);
                 //For edit mode 
@@ -288,9 +275,12 @@
                 let reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onload = (e) => {
-                    if (e.target.result.substring(0, 10) != "data:image" && e.target.result.substring(0, 20) != "data:application/pdf") {
-                        StatusHandler.ValidationMsg("Archivos no soportados");
-                        return;
+                    const validExten = ["pdf","doc","docx","jpeg","jpg","png"];
+                    let extenstion = file.name.substring(file.name.lastIndexOf('.')+1, file.name.length) || null;
+
+                    if(extenstion == null || !validExten.includes(extenstion.toLowerCase().trim())){
+                         StatusHandler.ValidationMsg("Archivos no soportados");
+                         return;
                     }
 
                     var newFileMedia = {

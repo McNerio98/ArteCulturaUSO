@@ -281,7 +281,7 @@ export default {
             },
             itemData: JSON.parse(JSON.stringify(this.pdata)),
             municipios: [],
-            acAppData: {},
+            acAppData: window.obj_ac_app,
             eventDate: null
         };
     },
@@ -289,7 +289,6 @@ export default {
         getMunicipios().then((response) => {
             this.municipios = response.data;
         });
-        this.acAppData = window.obj_ac_app;
     },
     mounted: function () {
         this.loadLocalValues();

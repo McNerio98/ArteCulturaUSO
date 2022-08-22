@@ -71,14 +71,6 @@ class DashboardController extends Controller
 	}
 
 
-	public function resources(){
-		if( ! Auth::user()->can('ver-recursos')){ 
-            return redirect()->route('dashboard');
-        };
-		$request_users = $this->userRequest();
-		return view("admin.resources", ['ac_option' =>'resources' , 'request_users' => $request_users]); 
-	}
-
 	
 	public function roles(){
 		if( ! Auth::user()->can('ver-roles')){ //poner esto en los de arriba 

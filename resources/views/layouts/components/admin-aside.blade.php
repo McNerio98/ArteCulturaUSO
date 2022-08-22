@@ -38,26 +38,19 @@
                         <p>Mi contenido</p>
                     </a>
                 </li>
-                <li class="nav-item">
+
+                <!-- <li class="nav-item">
                     <a href="{{route('admin.search')}}" class="nav-link text-hpolis  {{ $ac_option == 'search' ? 'active' : ''}} ">
                         <i class="nav-icon fas fa-search"></i>
                         <p>Buscador</p>
                     </a>
-                </li>                
+                </li>-->         
+
                 @can('ver-reseñas')
                 <li class="nav-item">
                     <a href="{{route('memories.index.admin')}}" class="nav-link text-hpolis  {{ $ac_option == 'memories' ? 'active' : ''}} ">
                         <i class="nav-icon fas fa-star-half-alt"></i>
                         <p>Homenajes</p>
-                    </a>
-                </li>
-                @endcan
-
-                @can('ver-destacados')
-                <li class="nav-item">
-                    <a href="{{route('populars')}}" class="nav-link text-hpolis  {{ $ac_option == 'populars' ? 'active' : ''}}">
-                        <i class="nav-icon fas fa-cubes"></i>
-                        <p>Destacados</p>
                     </a>
                 </li>
                 @endcan
@@ -93,7 +86,7 @@
 
                 @can('ver-recursos')                
                 <li class="nav-item">
-                    <a href="{{route('resources')}}" class="nav-link text-hpolis  {{ $ac_option == 'resources' ? 'active' : ''}}">
+                    <a href="{{route('recursos.index.admin')}}" class="nav-link text-hpolis  {{ $ac_option == 'resources' ? 'active' : ''}}">
                         <i class="nav-icon fas fa-book"></i>
                         <p>Recursos</p>
                     </a>

@@ -138,7 +138,7 @@
           class="btn btn-light btn-block text-break"
         >
           <img
-           :src="acAppData.base_url + '/images/iconBtnAddDoc.png'"
+           :src="acAppData.base_url + '/images/icons/pdffile.png'"
             width="20px"
             height="20px"
             style="object-fit: cover"
