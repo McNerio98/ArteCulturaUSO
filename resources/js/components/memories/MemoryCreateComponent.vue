@@ -80,9 +80,7 @@
                     <VueEditor
                     v-model="itemData.memory.content"
                     :placeholder="editor_params.placeholder"
-                    :editorToolbar="editor_params.customToolbar"
-                    >
-                    </VueEditor>
+                    :editorToolbar="editor_params.customToolbar"/>
                     <div class="invalid-feedback">
                         Ingrese un valor valido
                     </div>                     
@@ -92,8 +90,7 @@
             <!--Se podria agregar otros nodos de ineteres-->
             <MediaComponent 
                 :item-data="{media: itemData.media}"
-                @drop-ids="setMediaDrops">
-            </MediaComponent>
+            @drop-ids="setMediaDrops"/>
             
             <div>
                 <a class="btn btn-app" @click="onSave">

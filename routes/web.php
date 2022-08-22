@@ -55,6 +55,8 @@ Route::get('/admin/home','DashboardController@index')->name('dashboard');
 Route::get('/admin/content','DashboardController@content')->name('content');
 Route::get('/admin/search','DashboardController@search')->name('admin.search'); //dado que hay otra para el cliente 
 
+# Crea o actualiza  recurso del tipo reseña, [Homenaje o Biografias]
+Route::post('/memories','MemoriesController@upsert')->name("memory.store")->middleware('auth','adroles');
 #Muestra pantalla con items reseñas, con opcion de crear nuevo para el administrador
 Route::get('/admin/memories','MemoriesController@index')->name('memories.index.admin');
 #Muestra un formulario limpio o muestra para actualiza para el administrador
@@ -69,13 +71,23 @@ Route::get('/memories/find/{id}','MemoriesController@find')->name('memories.find
 Route::get('/memories/all','MemoriesController@getAllPublic')->name('memories.all');
 
 
+# view | admin -  
+Route::get('/admin/recursos','RecursosController@indexadmin')->name('recursos.index.admin')->middleware('auth','adroles');
+# view | admin -  
+Route::get('/admin/recursos/create','RecursosController@createadmin')->name('recursos.create.admin')->middleware('auth');
+# view | admin -  
+Route::get('/admin/recursos/{id}','RecursosController@showadmin')->name('recursos.show.admin')->middleware('auth');
+# endpoint - save or update Recurso 
+Route::post('/resource','RecursosController@upsert')->name("resource.store")->middleware('auth','adroles');
+# endpoint - get all items Recursos 
+Route::get('/resources','RecursosController@getall')->name('resources.all');
+Route::get('/resource/{id}','RecursosController@find')->name('resources.find');
 
 
 
 Route::get('/admin/populars','DashboardController@populars')->name('populars');
 Route::get('/admin/users','DashboardController@users')->name('users');
 Route::get('/admin/categories','DashboardController@rubros')->name('rubros'); //categories and tags 
-Route::get('/admin/resources','DashboardController@resources')->name('resources');
 Route::get('/admin/roles','DashboardController@roles')->name('roles');
 Route::get('/admin/users/config/{id}','DashboardController@infoUser')->name('user.info');
 Route::get('/admin/post/edit/{id}','DashboardController@editElement')->name('admin.edit.item');
@@ -94,8 +106,7 @@ Route::get('/users/dataConfig/{id}','UsersController@configUserData')->name("use
 
 Route::put('/user/updateConfig/{id}','UsersController@updateConfigUser')->name("user.updateconf")->middleware('auth','adroles');
 
-# Crea o actualiza  recurso del tipo reseña, [Homenaje o Biografias]
-Route::post('memories','MemoriesController@upsert')->name("memory.store")->middleware('auth','adroles');
+
 #Obtiene los usuarios dentro de la plataforma, con filtros para todos los usuarios, solicitudes, habilitados, no activos 
 Route::get('users','UsersController@index')->name('users.fetch')->middleware('auth','adroles');
 # Guarda la fotografia de presentacion de la categoria que se esta editando 

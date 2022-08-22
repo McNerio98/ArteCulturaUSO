@@ -124,6 +124,8 @@ export function getModel88(){
     }
 }
 
+
+
 /**
  * Formateado: JSON
  * Orgien: Tabla (memories) con todas sus relaciones  
@@ -147,8 +149,7 @@ export function formatter89(item,storage_base_url){
             death_date: item.death_date,
             content: item.content,
             presentation_img: item.presentation_img,
-            creator_id: item.creator_id,
-            status: item.creator_id
+            creator_id: item.creator_id
         },
         presentation_model: item.presentation_model,
         media: item.media.map(e=>{
@@ -189,5 +190,55 @@ export function formatter90(item,storage_base_url){
             status: item.creator_id
         },
         presentation_model: item.presentation_model,
+    }
+}
+
+/**
+ * Mapeo de Modelo  para Registros de Recursos 
+ * @returns Mapeo de Modelo 
+ */
+export function getModel91(){
+    return {
+        id: 0,
+        name: "",
+        content: "",
+        tipo_id: 1, //Por defecto libro 
+        presentation_img: 0,
+        presentation_model: {},
+        media: []
+    }
+
+}
+
+/**
+ * Formateado: JSON
+ * Orgien: Tabla (recursos) con todas relacion: media y modelo de imagen de presentacion 
+ * Destino: Arbol JSON para componentes: ResourceShowCardComponent, ResourceShowComponent 
+ */
+export function formatter91(item,storage_base_url){
+    var id_presentation = -1;
+    if(item.presentation_model != null){
+        item.presentation_model.url = storage_base_url +"/files/images/" + item.presentation_model.name; 
+        id_presentation = item.presentation_model.id;
+    }
+
+    return {
+        resource: {
+            id: item.id,
+            name: item.name,
+            description: item.content,
+            tipo_id: item.tipo_id,
+            presentation_img: item.presentation_img
+        },
+        presentation_model: item.presentation_model,
+        media: item.media.map(e=>{
+            e.presentation = (e.id == id_presentation) ? true:false;
+            switch(e.type_file){
+                case "image": {e.url = storage_base_url +"/files/images/"  + e.name;break;}
+                case "docfile": {e.url = storage_base_url + "/files/docs/me" + item.id + "/" + e.name;break;}
+                case "video": {e.url = storage_base_url + "/images/youtube_item.jpg";break;}
+            }
+            return e;            
+        })
     }
 }

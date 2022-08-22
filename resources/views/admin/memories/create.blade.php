@@ -13,8 +13,6 @@
                 v-for="(e,index) of modelo"
                 ref="acVmCompMemory"
                 :pdata="e"
-                :main-img-change="main_img_buffer.change"
-                :main-Img="main_img_buffer.base64"
                 @trim-principal-img="openTrimPrincipalPic"
                 >
         </memory-create>

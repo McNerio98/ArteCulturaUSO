@@ -38,11 +38,14 @@ if(document.getElementById("appMemories") != undefined){
                     if(response.code == 0){
                         StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
                         return;
-                    }                  
+                    }     
+                    
+                    
 
                     this.items = response.data.map(e => formatter90(e,this.acAppData.storage_url));
                 }).catch(ex =>{
-
+                    const target_process = "Recuperar elementos"; 
+                    StatusHandler.Exception(target_process,ex);
                 });
             }
         }
@@ -72,9 +75,10 @@ if(document.getElementById("appMemoryShow") != undefined){
         methods: {
             getData: function(){
                 if(this.idmemory == 0){
-                    window.location.replace(this.acAppData +"/" + "memories");
+                    window.location.replace(this.acAppData.base_url  + "/admin/memories");
                     return;
                 }
+
                 getMemory(this.idmemory).then(result=>{
                     let response = result.data;
                     if(response.code == 0){
@@ -83,7 +87,7 @@ if(document.getElementById("appMemoryShow") != undefined){
                     }
                     this.modelo.push(formatter89(response.data,this.acAppData.storage_url));
                 }).catch(ex=>{
-                    let target_process = "Establecer Elemento como destacado"; 
+                    let target_process = "Recuperar elemento especificado"; 
                     StatusHandler.Exception(target_process,ex);
                 });            
             }

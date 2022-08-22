@@ -94,7 +94,7 @@ class MemoriesController extends Controller
 
         $memory = Memory::find($id);
         if(!$memory){
-            $output["code"] = 404;
+            $output["code"] = 0;
             $output["msg"] = "No encontrado";
             return $output;
         }
@@ -193,7 +193,7 @@ class MemoriesController extends Controller
             #Carga de archivos multimedias 
             $limite_carga = 70;
             $index = 0;
-            $files = $request["media"];
+            $files = $request->media;
             if(count($files) >= $limite_carga){
                 throw new \Exception("Límite de carga superado, máximo ".$limite_carga." archivos");
             }            
@@ -291,7 +291,7 @@ class MemoriesController extends Controller
                     }
 
                     if($count_drop == count($mediadrop_ids)){
-                        $salida["extra"] = "Se eliminaron " .$count_drop . " Elementos";
+                        $output["extra"] = "Se eliminaron " .$count_drop . " Elementos";
                         break; //break 2 for, all element was deleted 
                     }
                 }              
@@ -313,8 +313,8 @@ class MemoriesController extends Controller
             $output["data"] = $memory;            
         }catch(\Throwable $ex){
             DB::rollback();
-            //$output["msg"] = "Error en la operación, consulte soporte técnico.";
-            $output['msg'] = "Error: " . $ex->getLine() . " - " . $ex->getMessage(); //for debugin            
+            $output["msg"] = "Error en la operación, consulte soporte técnico.";
+            //$output['msg'] = "Error: " . $ex->getLine() . " - " . $ex->getMessage(); //for debugin            
         }
 
         return $output;
