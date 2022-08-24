@@ -21,8 +21,13 @@ Route::get('account/verify/{token}','Auth\LoginController@verifyAccount')->name(
 Route::get('/','WebsiteController@welcome')->name("inicio");
 Route::get('/events','WebsiteController@events')->name('events');
 Route::get('/cercanos','WebsiteController@nearby')->name('nearby');
-Route::get('/page4','WebsiteController@recursos')->name("recursos");
-Route::get('/page5','WebsiteController@biografias')->name("biografias");
+//Recursos 
+Route::get('/site/recursos','WebsiteController@recursos')->name("recursos");
+Route::get('/site/recursos/{id}','RecursosController@show')->name("recursos.show");
+#Biosgrafias 
+Route::get('/site/biografias','WebsiteController@biografias')->name("biografias");
+Route::get('/site/biografias/{id}','MemoriesController@show')->name("recursos.show");
+
 Route::get('/page6','WebsiteController@homenajes')->name("homenajes");
 Route::get('/page7','WebsiteController@acercade')->name("acercade");
 
@@ -58,7 +63,7 @@ Route::get('/admin/search','DashboardController@search')->name('admin.search'); 
 # Crea o actualiza  recurso del tipo reseña, [Homenaje o Biografias]
 Route::post('/memories','MemoriesController@upsert')->name("memory.store")->middleware('auth','adroles');
 #Muestra pantalla con items reseñas, con opcion de crear nuevo para el administrador
-Route::get('/admin/memories','MemoriesController@index')->name('memories.index.admin');
+Route::get('/admin/memories','MemoriesController@indexadmin')->name('memories.index.admin');
 #Muestra un formulario limpio o muestra para actualiza para el administrador
 Route::get('/admin/memories/create','MemoriesController@create')->name('memories.create.admin');
 #Recupera lista de homenajes/biografias para el administrador 

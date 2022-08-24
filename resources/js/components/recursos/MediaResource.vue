@@ -61,7 +61,8 @@
 
         <!--OPCIONES PARA CARGAR ARCHIVOS MULTIMEDIA-->
         <div class="row">
-            <div class="col-4">
+            
+            <!-- <div class="col-4">
                 <label for="imageInput"
                     style="cursor: pointer"
                     class="btn btn-light btn-block"
@@ -80,8 +81,9 @@
                     @change="addFile"
                 multiple/>
             </div>
+            -->
 
-            <div class="col-4">
+            <div class="col-6">
                 <label for="contenidoInput"
                     @click="triggerInputForMSWord"
                     style="cursor: pointer"
@@ -100,7 +102,7 @@
                 multiple />
             </div>              
 
-            <div class="col-4">
+            <div class="col-6">
                 <label for="contenidoInput"
                     @click="triggerInputForDocs"
                     style="cursor: pointer"

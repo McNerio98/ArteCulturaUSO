@@ -1,22 +1,65 @@
 <template>
     <div>
-        <div class="row">
-            <div class="col">
-
-            </div>
-            <div class="col-9">
-                <div>
-                        <p>Tipo de recurso: {{getTipo}}</p>
-                        <h3>{{itemData.resource.name}}</h3>
-                        <p>Contiene: 7 Documentos, 2 Imagenes</p>
+        <div class="bg1rc p-0 p-md-3">
+            <div class="row ">
+                <div class="col">
+                    <div class="acm-img border1rc" :style="[{ backgroundImage: 'url(' +  srcPresentationImg + ')' }]">
+                    </div>
+                </div>
+                <div class="col-8">
+                    <div>
+                            <p>Tipo de recurso: {{getTipo}}</p>
+                            <h3>{{itemData.resource.name}}</h3>
+                            <p>Contiene: {{itemData.media.length}} archivos adjuntos</p>
+                    </div>
+                    <div>
+                        <button href="#" class="btn btn-default btn-sm float-right mr-2" @click="onEdit">
+                            <i class="fas fa-pen"></i> 
+                            Editar
+                        </button>
+                        <button href="#" class="btn btn-default btn-sm float-right mr-2" @click="onDelete">
+                            <i class="fas fa-trash-alt"></i>
+                            Eliminar
+                        </button>                        
+                    </div>
                 </div>
             </div>
         </div>
+
+
         <div class="row">
-            <p v-html="itemData.resource.description"></p>
+            <div class="col-12">
+                <p v-html="itemData.resource.description"></p>
+            </div>
         </div>
         <div>
-            documentos adjuntos
+
+        <div class="card-footer bg-white">
+
+            <ul class="mailbox-attachments d-flex align-items-stretch clearfix">
+                <li v-for="(e) in ListDocs" :key="e.id">
+                    <span class="mailbox-attachment-icon">
+                        <i v-if="isPDF(e.name)" class="far fa-file-pdf"></i>
+                        <i v-else class="far fa-file-word"></i>
+                    </span>
+                    <div class="mailbox-attachment-info">
+                        <a href="#" class="mailbox-attachment-name"><i class="fas fa-paperclip"></i> {{getShortName(e.name)}}</a>
+                        <span class="mailbox-attachment-size clearfix mt-1">
+                            
+                            <button class="btn btn-default btn-sm float-right" v-if="isPDF(e.name)">
+                                <i class="fas fa-book"></i>
+                                Ver
+                            </button>                            
+                            <button href="#" class="btn btn-default btn-sm float-right mr-2">
+                                <i class="fas fa-cloud-download-alt"></i>
+                                Descargar
+                            </button>
+                        </span>
+                    </div>
+                </li>
+            </ul>
+
+        </div>
         </div>
         <!--Preview Component-->
         <div>
@@ -33,6 +76,7 @@ export default {
     },  
     data: function(){
         return {
+            isDeleting: false,
             tiposRecursos: [],
             acAppData: window.obj_ac_app,
             itemData: JSON.parse(JSON.stringify(this.pdata))            
@@ -57,11 +101,71 @@ export default {
             }else{
                 return "No Especificado";
             }
-        }           
+        },
+        ListDocs: function(){
+            return this.itemData.media.filter((e,index) => {
+                if(e.type_file == "docfile"){
+                    e.index_parent = index;
+                    return e;
+                }
+            });;
+        }        
     },
     methods: {
+        isPDF: function(namefile){
+             const extension = namefile.substring(namefile.lastIndexOf('.')+1, namefile.length);
+             return  extension.toLowerCase().trim() == "pdf" ? true : false;
+        },
+        getShortName: function(namefile){
+            const maxlength = 25;
+            const extension = namefile.substring(namefile.lastIndexOf('.')+1, namefile.length);
+            if(namefile.length > maxlength){
+                return namefile.substring(0,maxlength) + "."+extension
+            }
+            return namefile;
+        },
+        onEdit: function(){
+            this.$emit('on-edit',this.itemData.resource.id);
+        },
+        onDelete: function(){
+            var vm = this;
+            Swal.fire({
+                title: '¿Está seguro de eliminar?',
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Eliminar ',
+                denyButtonText: `Cancelar`,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                        vm.isDeleting = true;
 
+                    }else{
+                        vm.isDeleting = false;
+                    }
+                });            
+        }
     }
-    
 }
 </script>
+
+
+<style scoped>
+    .acm-img{
+        background-color: gray;
+        width: 100%;
+        margin: auto;
+        max-width: 100px;
+        aspect-ratio: 2/3;
+        background-position: center; /* Center the image */
+        background-repeat: no-repeat; /* Do not repeat the image */
+        background-size: cover; /* Resize the background image to cover the entire container */        
+    }
+
+    .bg1rc{
+        background-color: #d2d6de;
+    }
+
+    .border1rc{
+        border: 4px solid #363333
+    }    
+</style>

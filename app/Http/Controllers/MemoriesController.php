@@ -16,9 +16,9 @@ class MemoriesController extends Controller
 {
     public function __construct(){
 		//Todos requieren estar logeados 
-		$this->middleware('auth',['except' => ['']]);
+		$this->middleware('auth',['except' => ['getAllPublic','show','find']]);
 		//adroles verifica que no sea un invitado el que esta intentado ver la dashboard 
-		$this->middleware('adroles',['except' => ['indexpublic','']]);
+		$this->middleware('adroles',['except' => ['indexpublic','getAllPublic','show','find']]);
         
         //Only for example 
         /**
@@ -29,7 +29,7 @@ class MemoriesController extends Controller
 
 
     #Muestra vista 
-    public function index(){
+    public function indexadmin(){
 		if( ! Auth::user()->can('ver-reseñas')){ //poner esto en los de arriba 
             return redirect()->route('dashboard');
         };		
@@ -37,8 +37,8 @@ class MemoriesController extends Controller
     	return view('admin.memories.index' , ['ac_option' =>'memories' , 'request_users' => $request_users]);        
     }
 
-    public function indexpublic(){
-
+    public function show(){
+        return view('memories.show');
     }
 
     public function getAllAdmin(){
@@ -65,6 +65,7 @@ class MemoriesController extends Controller
          
         return $output;
     }
+    
 
     #Si por ejemplo se implementa apartado de revision (solo verian los que estanb aprobador por ejemplo)
     public function getAllPublic(){

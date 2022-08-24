@@ -41,11 +41,11 @@ class WebsiteController extends Controller
     }
 
     public function recursos(){
-        return view("resources");
+        return view("recursos.index");
     }
 
     public function biografias(){
-        return view("biographies");
+        return view("memories.index");
     }
     
     public function homenajes(){

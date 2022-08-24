@@ -11,6 +11,7 @@
             :pdata="e"
             ref="acVmCompResource"
             @trim-principal-img="openTrimPrincipalPic"
+            @on-created="onCreateResource"
         />
     </div>
     <control-trim

@@ -20,6 +20,12 @@ class RecursosController extends Controller
     	return view('admin.recursos.index' , ['ac_option' =>'recursos' , 'request_users' => $request_users]);        
     }
 
+    public function show(){
+    	return view('recursos.show');        
+    }
+
+
+
     public function createadmin(){
 		$request_users = UsersHelper::usersRequest();
     	return view('admin.recursos.create' , ['ac_option' =>'recursos' , 'request_users' => $request_users]);        

@@ -4,18 +4,18 @@
  * Content file: list all, new, update memory item 
  */
 
-Vue.component('building-page',require('../../components/BuildingPageComponent.vue').default);
+
 
 Vue.component('memory-create',require('../../components/memories/MemoryCreateComponent').default);
 
 
 Vue.component('control-trim', require('../../components/trim/TrimComponentv2.vue').default);
-import {formatter89,formatter90} from '../../formatters';
+import {formatter89} from '../../formatters';
 import {getMemory,getAdminMemories} from '../../service';
 import Memory from '../../components/memories/MemoryShowComponent.vue';
 import MemorySummary from '../../components/memories/MemoryMiniViewComponent.vue';
 
-//Show all items (index)
+//Index,  all items (index)
 if(document.getElementById("appMemories") != undefined){
     const appMemories = new Vue({
         components: {MemorySummary},
@@ -42,12 +42,18 @@ if(document.getElementById("appMemories") != undefined){
                     
                     
 
-                    this.items = response.data.map(e => formatter90(e,this.acAppData.storage_url));
+                    this.items = response.data.map(e => {
+                        e.media = [];
+                        return formatter89(e,this.acAppData.storage_url);
+                    });
                 }).catch(ex =>{
                     const target_process = "Recuperar elementos"; 
                     StatusHandler.Exception(target_process,ex);
                 });
-            }
+            },
+            onReadMemory: function(id){
+                window.location.replace(this.acAppData.base_url + "/admin/memories/"+id);
+            }            
         }
     });
 }

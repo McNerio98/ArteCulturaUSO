@@ -2,9 +2,10 @@
 @section('title', 'Homenajes')
 
 @section('content')
-<main role="main" class="flex-shrink-0" id="app_memories_client">
+<main role="main" class="flex-shrink-0" id="appMemoryShow">
+    <input type="hidden" id="idmemory" value="{{request('id')}}">
     <div class="container">
-        <building-page page="Homenajes"></building-page>
+        <memory v-for="(e,index) of modelo" :pdata="e"/>
     </div>
 </main>
 @endsection

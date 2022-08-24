@@ -7,7 +7,7 @@
     <div class="container">
         <a href="{{route('recursos.create.admin')}}">+Nuevo</a>
         <div class="row mb-2">
-            <resouce-summary v-for="(e) in items" :pdata="e" :key="e.id"/>
+            <resouce-summary v-for="(e) in items" :pdata="e" :key="e.id" @on-read="onReadResource"/>
         </div>
     </div>
 </main>

@@ -61,6 +61,16 @@ export function getAdminMemories(){
     });
 }
 
+export function getAllMemories(){
+    return new Promise((resolve,reject) =>{
+        axios.get(`/memories/all`).then(response => {
+            resolve(response);
+        }).catch(ex => {
+            reject(ex);
+        });
+    });
+}
+
 
 /**
  * Description: Para futuras versiones, guardar estos valores en tablas de base de datos con los mismo Id que aqui se especifican 
