@@ -2,9 +2,10 @@
 @section('title', 'Homenajes')
 
 @section('content')
-<main role="main" class="flex-shrink-0" id="app_memories_client">
+<main role="main" class="flex-shrink-0" id="appResourcesShow">
+    <input type="hidden" id="idresource" value="{{request('id')}}">
     <div class="container">
-        <building-page page="Homenajes"></building-page>
+        <resource v-for="(e,index) in modelo" :pdata="e" :key="e.id" @on-edit="onEditResource"/> 
     </div>
 </main>
 @endsection

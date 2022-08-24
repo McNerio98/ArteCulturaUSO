@@ -16,7 +16,7 @@
         <div>
             <p>
                 {{itemData.resource.description}}
-                 <a :href="acAppData.base_url + '/' + 'admin/recursos/' +itemData.resource.id"> Seguir leyendo</a>
+                <a href="javascript:void;" @click.prevent="goRead"> Seguir leyendo</a>
             </p>
         </div>
     </div>
@@ -56,6 +56,11 @@ export default {
                 return "No Especificado";
             }
         }   
+    },
+    methods: {
+        goRead: function(){
+            this.$emit("on-read",this.itemData.resource.id);
+        }
     }
     
 }

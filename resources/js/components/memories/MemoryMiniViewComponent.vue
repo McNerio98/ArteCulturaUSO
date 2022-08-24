@@ -7,7 +7,7 @@
                     <h3 class="mb-0">{{itemData.memory.name}}</h3>
                     <div class="mb-1 text-muted">{{itemData.memory.birth_date | DateFormatES2}}</div>
                     <p style="word-break: break-all;" class="card-text mb-auto" v-html="contentShort"></p>
-                    <a :href="acAppData.base_url + '/' + 'admin/memories/' +itemData.memory.id" class="stretched-link">Seguir leyendo</a>
+                    <a href="javascript:void;" @click.prevent="onGoRead" class="stretched-link">Seguir leyendo</a>
                 </div>
             </div>
              <div class="col acm-img p-0" :style="[{ backgroundImage: 'url(' +  srcPresentationImg + ')' }]">
@@ -51,7 +51,7 @@
         data: function(){
             return {
                 itemData: JSON.parse(JSON.stringify(this.pdata)),
-                acAppData: {},
+                acAppData: window.obj_ac_app,
                 flags: {}
             }
         },
@@ -68,9 +68,10 @@
                 }
             }
         },
-
-        created: function(){
-            this.acAppData = window.obj_ac_app;
-        },
+        methods: {
+            onGoRead: function(){
+                this.$emit('on-read',this.itemData.memory.id);
+            }
+        }
     }
 </script>

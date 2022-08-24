@@ -169,9 +169,9 @@ export default {
                 if(response.code == 0){
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
                     return;
-                }                
-
-
+                }
+                
+                this.$emit('on-created',response.data.id);
             }).catch(ex => {
                 let target_process = "Guarda informacion de elemento"; 
                 StatusHandler.Exception(target_process,ex);

@@ -2,9 +2,11 @@
 @section('title', 'Homenajes')
 
 @section('content')
-<main role="main" class="flex-shrink-0" id="app_memories_client">
+<main role="main" class="flex-shrink-0" id="appMemoryIndex">
     <div class="container">
-        <building-page page="Homenajes"></building-page>
+        <div class="row">
+            <memory-summary v-for="(e,index) of items" :key="e.memory.id" :pdata="e" @on-read="onReadMemory"/>
+        </div>
     </div>
 </main>
 @endsection

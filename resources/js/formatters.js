@@ -171,7 +171,7 @@ export function formatter89(item,storage_base_url){
  * Destino: Arbol JSON para componentes: MemoryMiniComponent
  */
 
-export function formatter90(item,storage_base_url){
+/*export function formatter90(item,storage_base_url){
     if(item.presentation_model != null){
         item.presentation_model.url = storage_base_url +"/files/images/" + item.presentation_model.name; 
     }    
@@ -191,7 +191,7 @@ export function formatter90(item,storage_base_url){
         },
         presentation_model: item.presentation_model,
     }
-}
+}*/
 
 /**
  * Mapeo de Modelo  para Registros de Recursos 
@@ -239,6 +239,7 @@ export function formatter91(item,storage_base_url){
                 case "video": {e.url = storage_base_url + "/images/youtube_item.jpg";break;}
             }
             return e;            
-        })
+        }),
+        mediadrop_ids: []
     }
 }

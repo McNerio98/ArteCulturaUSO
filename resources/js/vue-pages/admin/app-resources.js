@@ -39,7 +39,10 @@ if(document.getElementById("appResourcesAdminIndex") != undefined){
                     const target_process = "Recuperar elementos"; 
                     StatusHandler.Exception(target_process,ex);
                 })
-            }
+            },
+            onReadResource: function(id){
+                window.location.replace(this.acAppData.base_url + '/admin/recursos/' + id);
+            }            
         }
     });
 }
@@ -72,7 +75,7 @@ if(document.getElementById("appResourcesAdminCreate") != undefined){
         },
         methods: {
             createResource: function(){
-                this.modelo.push(formatter91(getModel91()));
+                this.modelo.push(formatter91(getModel91(),this.acAppData.base_url));
             },            
             openTrimPrincipalPic: function(file){
                 this.$refs.acVmCompCropper.openTrim(file);
@@ -90,7 +93,20 @@ if(document.getElementById("appResourcesAdminCreate") != undefined){
                 this.trim_buffer.target = "";
             },
             getDataResource: function(){
-
+                getResource(this.idresource).then(result => {
+                    const response = result.data;
+                    if(response.code == 0){
+                        StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                        return;
+                    }
+                    this.modelo.push(formatter91(response.data,this.acAppData.base_url));
+                }).catch(ex => {
+                    let target_process = "Recuperar elemento especificado"; 
+                    StatusHandler.Exception(target_process,ex);
+                });
+            },
+            onCreateResource: function(id){
+                window.location.replace(this.acAppData.base_url + "/admin/recursos/"+id);
             }
         }
     });
@@ -131,7 +147,11 @@ if(document.getElementById("appResourcesAdminShow") != undefined){
                     let target_process = "Recuperar elemento especificado"; 
                     StatusHandler.Exception(target_process,ex);                
                 });
+            },
+            onEditResource: function(id){
+                window.location.replace(this.acAppData.base_url + "/admin/recursos/create?idr="+id);
             }
+            
         }
     });
 }

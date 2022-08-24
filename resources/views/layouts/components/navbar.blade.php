@@ -34,10 +34,12 @@
                     <a class="nav-link" style="color:#20B7EB" href="{{route('biografias')}}"> <i
                             class="fas fa-book-reader"></i> Biografías</a>
                 </li>
-                <li class="nav-item" style="margin-left:20px">
+
+                <!-- <li class="nav-item" style="margin-left:20px">
                     <a class="nav-link" style="color:#20B7EB" href="{{route('homenajes')}}"> <i
                             class="fas fa-hand-holding-heart"></i> Homenajes </a>
-                </li>
+                </li> -->
+
                 <li class="nav-item" style="margin-left:20px">
                     <a class="nav-link" style="color:#20B7EB" href="{{route('acercade')}}"> <i
                             class="fas fa-exclamation"></i> Acerca de</a>
