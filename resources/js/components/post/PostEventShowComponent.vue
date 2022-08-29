@@ -9,11 +9,11 @@
             <!-- /.user-block -->
             <div class="card-tools">
 
-                <button @click="onClickEdit" :disabled="disabled_controls" v-if="has_cap('editar-publicaciones') || itemData.creator.id === authId" type="button" class="btn btn-tool" data-toggle="tooltip" data-placement="right"
+                <button @click="onClickEdit" :disabled="disabled_controls" v-if="has_cap('editar-publicaciones') || itemData.creator.id === acAppData.current_user.id" type="button" class="btn btn-tool" data-toggle="tooltip" data-placement="right"
                     title="Editar elemento">
                     <i class="fas fa-pen"></i> Editar
                 </button>
-                <button @click="onClickDelete" :disabled="disabled_controls" v-if="has_cap('eliminar-publicaciones') || itemData.creator.id === authId" type="button" class="btn btn-tool" data-toggle="tooltip" data-placement="right"
+                <button @click="onClickDelete" :disabled="disabled_controls" v-if="has_cap('eliminar-publicaciones') || itemData.creator.id === acAppData.current_user.id" type="button" class="btn btn-tool" data-toggle="tooltip" data-placement="right"
                     title="Eliminar elemento">
                     <i class="fas fa-trash-alt"></i> Eliminar
                 </button>
@@ -117,7 +117,7 @@
         data: function(){
             return {       
                 itemData: JSON.parse(JSON.stringify(this.pdata)),
-                acAppData: {},   
+                acAppData: window.obj_ac_app,
                 post_approved: false,
                 post_delete: false,
                 media_visuals: [], //para imagenes y videos 
@@ -132,7 +132,6 @@
         },
         mounted: function(){
             this.filterMedia(this.itemData.media);
-            this.acAppData = window.obj_ac_app;
         },
         computed: {
             getHTMLContent: function(){
@@ -182,6 +181,7 @@
                              vm.disabled_controls = false;
                         }).catch(ex=>{
                             StatusHandler.Exception("Eliminar elemento",ex);
+                            vm.disabled_controls = false;
                         });
                     }else{
                         vm.disabled_controls = false;

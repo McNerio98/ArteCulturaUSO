@@ -8,10 +8,10 @@ Vue.component('pagination-component',require('../../components/pagination/Pagina
 
 
 //Registro de componentes locales 
-import Component1 from '../../components/profile/GeneralInfoComponent.vue';
-import Component2 from '../../components/profile/AboutComponent.vue';
+import GeneralInfoComponent from '../../components/profile/GeneralInfoComponent.vue';
+import AboutComponent from '../../components/profile/AboutComponent.vue';
 import {getUserProfileInformation} from '../../service';
-import {formatter87,formatter88} from '../../formatters';
+import {getModel88,formatter88} from '../../formatters';
 import PostEventCreateComponent from '../../components/post/PostEventCreateComponent.vue';
 import PostEventShowComponent from '../../components/post/PostEventShowComponent.vue';
 
@@ -19,14 +19,15 @@ const appProfileVue = new Vue({
     el: "#appProfile",
     components: {
         //Registro de componentes locales 
-        "profile-summary": Component1,
-        "profile-about": Component2,
+        "profile-summary": GeneralInfoComponent,
+        "profile-about": AboutComponent,
         "postevent-create": PostEventCreateComponent,
-        "postevent-show": PostEventShowComponent
+        "postevent": PostEventShowComponent
     },
     data: function(){
         return{
-            
+            isCreating: false,
+            modelo_create: [],
             profileSummary: [],
             profileAbout: [],
             flags: {
@@ -42,8 +43,7 @@ const appProfileVue = new Vue({
             modal_cropper: "DEFAULT",
             content_desc: "",
             desc_empty: false,
-            isEditStatus: false,
-            current_user: {},            
+            isEditStatus: false,    
             type_media: "", // PROFILE_MEDIAS
             media_view: {
                 owner: 0,
@@ -88,8 +88,6 @@ const appProfileVue = new Vue({
                 notes: response.data.metas.find(e => e.key === 'user_profile_notes')?.value
             });
 
-            //Data for PostEventComponent 
-            this.current_user = formatter87(response.data.user,this.acAppData.storage_url);
         }).catch(ex => {
             let target_process = "Guardar la informacion";
             StatusHandler.Exception(target_process,ex);  
@@ -97,15 +95,33 @@ const appProfileVue = new Vue({
         
     },
     created: function(){
-        this.current_user_id = $("#current_user_id_request").val();        
+        this.current_user_id = $("#currentUserIdRequest").val();        
         this.acAppData = window.obj_ac_app;
     },
     methods: {
+        onCreate: function(tipo){
+            this.isCreating= true;
+            this.modelo_create.splice(0);
+
+            var nuevo = getModel88();
+            nuevo.type_post = tipo;
+            if(this.modelo_create.length > 0){//Esto lo esta haciendo disparar cada que cambia
+                
+                this.$set(this.modelo_create.array, 0, formatter88(nuevo,this.acAppData.storage_url));
+            }else{
+                this.modelo_create.push(formatter88(nuevo,this.acAppData.storage_url));
+            }
+        },        
         itemLoaded: function(fulldata){
             this.items_postevents = fulldata.map(e=>{
                 return formatter88(e,this.acAppData.storage_url);
             });
+
             this.flags.show_pg1 = this.items_postevents.length == 0 ? false: true;
+
+            if(fulldata.length != 0){
+                this.onCreate('event');
+            }            
         },
         saveDataConfig: function(key){
             const data_info = {
@@ -163,12 +179,11 @@ const appProfileVue = new Vue({
         PostEventCreated: function(e){
             this.profileSummary[0].cout_postevents = parseInt(e.owner.count_posts + e.owner.count_events);
             this.items_postevents.unshift(formatter88(e,this.acAppData.storage_url));
-            this.flag_create.creating = false;        
         },
-        onItemEdit: function(id){
-            window.location.href = this.acAppData.base_url + '/perfil/' + this.current_user_id + '/post/edit/' + id;
+        onUpdatePostEvent: function(id){
+            window.location.href = this.acAppData.base_url + '/perfil/' + this.current_user_id + '/postedit/' + id;
         },
-        onDelete: function(index){
+        onDeletePostEvent: function(index){
             this.items_postevents.splice(index,1);
         },
         onChageImage: function(){
@@ -203,7 +218,6 @@ const appProfileVue = new Vue({
                 }
                 
                 var image_url = this.acAppData.storage_url + "/files/profiles/" +response.data.path_file;
-                this.current_user.profile_path = image_url;
                 this.$refs.vmInfoGeneral.setProfileImg(image_url);
                 this.items_postevents.map(e=>{
                     e.creator.profile_img = image_url;

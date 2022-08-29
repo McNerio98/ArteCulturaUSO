@@ -5,14 +5,15 @@ import ResouceShow from '../../components/recursos/ResourceShowComponent.vue';
 import {getModel91,formatter91} from '../../formatters';
 import Trimmer from '../../components/trim/TrimComponentv2.vue';
 import { getAllResources,getResource } from '../../service';
-
+import NoDataRegister from '../../components/NoDataRegister.vue';
 
 // index
 if(document.getElementById("appResourcesAdminIndex") != undefined){
     const appResourcesAdminIndex = new Vue({
         el: "#appResourcesAdminIndex",
         components: {
-            'resouce-summary' : ResouceSummary
+            'resouce-summary' : ResouceSummary,
+            'no-records' : NoDataRegister            
         },
         data: {
             acAppData: window.obj_ac_app,
@@ -150,7 +151,10 @@ if(document.getElementById("appResourcesAdminShow") != undefined){
             },
             onEditResource: function(id){
                 window.location.replace(this.acAppData.base_url + "/admin/recursos/create?idr="+id);
-            }
+            },
+            onDeletedResource: function(id){
+                window.location.replace(this.acAppData.base_url + "/admin/recursos");
+            }            
             
         }
     });

@@ -32,6 +32,6 @@ class PostEvent extends Model
     public function img_presentation(){
         //Esto esta mal porque devolveria la primera 
         //SOLUCIONAR
-        //return $this->hasOne('App\FilesOnPostEvents');
+        return $this->belongsTo('App\FilesOnPostEvents','presentation_img','id');
     }
 }

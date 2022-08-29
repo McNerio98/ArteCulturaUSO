@@ -24,14 +24,14 @@
  * Destino: Arbol JSON para usuario PostEventCreateComponent
  */
 
- export function formatter87(user,storage_base_url){
+ /*export function formatter87(user,storage_base_url){
     return {
         id: user.id,
         nickname:user.artistic_name, 
         fullname: user.name,
         profile_path: storage_base_url + "/files/profiles/" + user?.profile_img?.path_file
     }
-}
+}*/
 
 
 export function getModel88(){

@@ -25,8 +25,9 @@ class CreateMemoriesTable extends Migration
             $table->mediumText("content");
             $table->unsignedBigInteger('presentation_img')->nullable(); //sin restrincion 
             $table->unsignedBigInteger('creator_id');
-            $table->foreign('creator_id')->references('id')->on('users');
+            $table->foreign('creator_id')->references('id')->on('users')->onDelete('cascade');
             $table->enum('status',['review','approved','deleted'])->default('review');
+            
         });
     }
 

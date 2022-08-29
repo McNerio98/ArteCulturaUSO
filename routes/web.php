@@ -47,11 +47,12 @@ Route::post('/login','Auth\LoginController@login')->name('login');
 Route::post('/logout','Auth\LoginController@logout')->name('logout');
 
 # Carga el perfil de un usuario invitado
-Route::get('/perfil/{id}','ProfileController@index')->name('profile.show');
+Route::get('/perfil/{idUser}','ProfileController@index')->name('profile.show');
 # Carga la informacion completa para el usuario 
 Route::get('/profile/information/{id}','ProfileController@information')->name('profile.information');
 #Muestra la vista para editar un post 
-Route::get('/perfil/{idUser}/post/edit/{idPost}','ProfileController@editElement')->name('profile.edit.item')->middleware('auth');
+Route::get('/perfil/{idUser}/postedit/{idPost}','ProfileController@editPostEvent')->name('profile.edit.item')->middleware('auth');
+Route::get('/perfil/{idUser}/postshow/{idPost}','ProfileController@showPostEvent')->name('profile.show.item')->middleware('auth');
 
 
 
@@ -74,6 +75,8 @@ Route::get('/admin/memories/{id}','MemoriesController@showadmin')->name('memorie
 Route::get('/memories/find/{id}','MemoriesController@find')->name('memories.find');
 #Recupera lista de homenajes/biografias para el apartado public 
 Route::get('/memories/all','MemoriesController@getAllPublic')->name('memories.all');
+#AJAX 1 Elimina un elemento de  con todos sus medios(files,video.image) asociados 
+Route::delete('/memories/{id}','MemoriesController@destroy')->name("memories.destroy"); //middleware in controller
 
 
 # view | admin -  
@@ -87,7 +90,8 @@ Route::post('/resource','RecursosController@upsert')->name("resource.store")->mi
 # endpoint - get all items Recursos 
 Route::get('/resources','RecursosController@getall')->name('resources.all');
 Route::get('/resource/{id}','RecursosController@find')->name('resources.find');
-
+#AJAX 1 Elimina un elemento de  con todos sus medios(files,video.image) asociados 
+Route::delete('/resource/{id}','RecursosController@destroy')->name("resouce.destroy")->middleware('auth','adroles');
 
 
 Route::get('/admin/populars','DashboardController@populars')->name('populars');

@@ -4,14 +4,16 @@
 
 @section('content')
 <main role="main" class="flex-shrink-0" id="appProfile">
-    <input type="hidden" value="{{$id_user_cur}}" id="current_user_id_request" />
+    <input type="hidden" value="{{$id_user_cur}}" id="currentUserIdRequest" />
+    <input type="hidden" value="{{app('request')->input('idPost')}}"  id="postIdRequest">
+
     <div class="container bg-white">
         <!--::::::::::::::::::::::::::::::::::::::START CONTENT::::::::::::::::::::::::::::::::::::::-->
         <div class="row">
             <div class="col-md-3">
                 <!-- Profile Image -->
                 <profile-summary
-                v-for="(s,index) of profileSummary"
+                v-for="(s,index) in profileSummary"
                 :pdata="s"
                 @medias-view="onPhotosProfiles"
                 :auth-id="{{Auth::user() == null ? 0 : Auth::user()->id}}" 
@@ -20,8 +22,9 @@
 
                 <!-- /.card -->
                 <!-- About Me Box -->
+
                 <profile-about
-                v-for="(p,index) of profileAbout"
+                v-for="(p,index) in profileAbout"
                 :pdata="p"
                 :auth-id="{{Auth::user() == null ? 0 : Auth::user()->id}}" 
                 :target-id="{{$id_user_cur}}">
@@ -43,34 +46,42 @@
                                 <!--START CONTENT, EVENTS AND POST-->
                                 <div id="event-cp" style="width: 100%;max-width: 600px;margin: auto;padding: 10px;">
                                     <!--SOLO SI EL USUARIO ESTA LOGEADO-->
-                                <div class="text-center _acNoCnt pb-1 pb-md-3" v-if="items_postevents.length == 0">
+                                <div class="text-center _acNoCnt pb-1 pb-md-3" v-if="items_postevents.length == 0 && !isCreating">
                                     <img src="{{asset('images/no-task.svg')}}" alt="" style="width: 80%;max-width: 100px;">
                                     <h2>No hay contenido que mostrar</h2>
                                     <p class="lead">crea contenido de forma fácil y rápida.</p>
                                 </div>                                                
                                     @auth
                                         @if(Auth::user()->id == $id_user_cur)
-                                            <div class="row pb-1 pb-md-3">
-                                                <div class="col-6">
-                                                    <button @click="flag_create.type = 'event'; flag_create.creating = true;" class="makePosting"> <img class="makeItemPosting" src="{{asset('images/create_event.svg')}}" alt=""> CREAR EVENTO</button>
+                                            <div class="row pb-1 pb-md-3" v-if="!isCreating && items_postevents.length == 0">
+                                                <div class="col-6 m-auto">
+                                                    <button @click="onCreate('event')" class="makePosting"> <img class="makeItemPosting" src="{{asset('images/create_event.svg')}}" alt=""> CREAR EVENTO</button>
                                                 </div>
-                                                <div class="col-6">
+
+                                                <!-- <div class="col-6">
                                                     <button @click="flag_create.type = 'post'; flag_create.creating = true;"   class="makePosting"><img class="makeItemPosting" src="{{asset('images/create_post.svg')}}" alt=""> CREAR POST</button>
-                                                </div>                                    
+                                                </div>   
+                                                -->
                                             </div>
-                                            <content-create @post-created="PostEventCreated" v-if="flag_create.creating == true" :user-info="current_user" :post-type="flag_create.type"></content-create>
+                                            <postevent-create v-for="e of modelo_create" 
+                                                :pdata="e"
+                                                :key="'id' + (new Date()).getTime()"
+                                                @saved="PostEventCreated" 
+                                                v-if="isCreating">
+                                            </postevent-create>
+
                                         @endif
                                     @endauth
 
-                                    <post-show 
-                                    v-for="(e,index) of items_postevents"  
-                                    @source-files="onSources" 
-                                    @edit-item="onItemEdit" 
-                                    @delete-item="onDelete(index)"
-                                    v-bind:key="index"
-                                    :item-data="e" 
-                                    :auth-id="{{Auth::user() == null ? 0 : Auth::user()->id}}">
-                                    </post-show>
+                                    <postevent
+                                        v-for="(e,index) in items_postevents"  
+                                        @edit-item="onUpdatePostEvent" 
+                                        @delete-item="onDeletePostEvent(index)" 
+                                        @source-files="onSources" 
+                                        :key="'pes'+e.post.id"
+                                        :pdata="e" >
+                                    </postevent>                                      
+                                 
 
                                     <pagination-component  v-if="flags.show_pg1" @source-items="itemLoaded" route="{{'/postsevents/'.$id_user_cur}}" :per_page="15"></pagination-component>            
                                 </div>

@@ -31,10 +31,25 @@ class ProfileController extends Controller
 			return redirect()->route('inicio');
 		}
 		
-		return view("profile",['id_user_cur' => $id]);
+		return view("profile.index",['id_user_cur' => $id]);
 	}
 
-	public function editElement($id_user, $id_post){
+	public function showPostEvent($id_user, $id_post){
+		$e = PostEvent::find($id_post);
+		if(!$e){
+			return redirect()->route('inicio');
+		}		
+
+		//Inconsistencia visual 
+		if( intval($e->creator_id) !==  intval($id_user) ){
+			return redirect()->route('inicio');
+		}
+
+		return view("profile.showpost",['id_user_cur' => $id_user]);
+
+	}
+
+	public function editPostEvent($id_user, $id_post){
 		$e = PostEvent::find($id_post);
 		if(!$e){
 			return redirect()->route('inicio');
@@ -49,7 +64,7 @@ class ProfileController extends Controller
 			return redirect()->route('inicio');
 		}
 
-		return view("edit-item",['id_user_cur' =>  $id_user, 'id_elem_edit' => $id_post]);
+		return view("profile.editpost",['id_user_cur' => $id_user]);
 	}
 	
 

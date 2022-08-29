@@ -71,6 +71,10 @@ export function getAllMemories(){
     });
 }
 
+export function deleteMemory($id){
+    return axios.delete(`/memories/${$id}`);
+}
+
 
 /**
  * Description: Para futuras versiones, guardar estos valores en tablas de base de datos con los mismo Id que aqui se especifican 
@@ -136,6 +140,10 @@ export function getAllResources(){
 //Obtiene un recurso especifico 
 export function getResource(id){
     return axios.get(`/resource/${id}`);
+}
+
+export function deleteResource($id){
+    return axios.delete('/resource/'+$id);
 }
 
 /**

@@ -93,12 +93,12 @@
             @drop-ids="setMediaDrops"/>
             
             <div>
-                <a class="btn btn-app" @click="onSave">
+                <button class="btn btn-app" :disabled="isSaving" @click="onSave">
                     <i class="fas fa-save"></i> Guardar
-                </a>                    
-                <a class="btn btn-app" @click="onCancel">
+                </button>                    
+                <button class="btn btn-app" :disabled="isSaving" @click="onCancel">
                     <i class="fas fa-minus"></i> Cancelar
-                </a>                 
+                </button>                 
             </div>
         </form>
     </div>
@@ -155,6 +155,7 @@
                 itemData: JSON.parse(JSON.stringify(this.pdata)),
                 update_mode: this.pdata.memory.id != 0 ? true: false,
                 acAppData: {},
+                isSaving: false,
                 flags: {
                     F1: false
                 },
@@ -258,19 +259,21 @@
 
                 }
 
+                this.isSaving = true;
                 upsertMemory(this.itemData).then(result =>{
                     let response = result.data;
                     if(response.code == 0){
                         StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                        this.isSaving = false;
                         return;
                     }
 
                     window.location.replace(this.acAppData.base_url + "/admin/memories/"+response.data.id);
                 }).catch(ex=>{
+                    this.isSaving = false;
                     let target_process = "Guarda informacion de elemento"; 
                     StatusHandler.Exception(target_process,ex);
                 });
-
             },
             setPrincipalPic: function(event){
                 this.$emit("trim-principal-img",event.target.files[0]);
