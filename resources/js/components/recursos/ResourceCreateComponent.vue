@@ -51,12 +51,12 @@
                 @drop-ids="setMediaDrops">
             </MediaComponent>               
             <div>
-                <a class="btn btn-app" @click="onSave">
+                <button class="btn btn-app" :disabled="isSaving" @click="onSave">
                     <i class="fas fa-save"></i> Guardar
-                </a>                    
-                <a class="btn btn-app" @click="onCancel">
+                </button>                    
+                <button class="btn btn-app" :disabled="isSaving" @click="onCancel">
                     <i class="fas fa-minus"></i> Cancelar
-                </a>                 
+                </button>                 
             </div>
         </form>
     </div>
@@ -79,6 +79,7 @@ export default {
     },    
     data(){
         return {
+            isSaving: false,
             acAppData: window.obj_ac_app,
             itemData: JSON.parse(JSON.stringify(this.pdata)),
             editor_params: {
@@ -164,15 +165,18 @@ export default {
             this.upsert();
         },
         upsert: function(){
+            this.isSaving = true;
             upsertResource(this.itemData).then(result =>{
                 let response = result.data;
                 if(response.code == 0){
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                    this.isSaving = false;
                     return;
                 }
                 
                 this.$emit('on-created',response.data.id);
             }).catch(ex => {
+                this.isSaving = false;
                 let target_process = "Guarda informacion de elemento"; 
                 StatusHandler.Exception(target_process,ex);
             });

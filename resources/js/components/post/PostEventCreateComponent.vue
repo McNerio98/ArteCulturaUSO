@@ -376,23 +376,20 @@ export default {
             this.itemData.dtl_event.geo.lat = geoLat;
             this.itemData.dtl_event.geo.lng = geoLng;
 
-            upsertPostEvent(this.itemData)
-                .then((result) => {
-                    let response = result.data;
-                    if (response.code == 0) {
-                        StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
-                        return;
-                    }
+            upsertPostEvent(this.itemData).then((result) => {
+                let response = result.data;
+                if (response.code == 0) {
+                    StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                    return;
+                }
 
-                    this.$emit("saved", response.data);
-                })
-                .catch((ex) => {
+                this.$emit("saved", response.data);
+            }).catch((ex) => {
                     const target_process = "Guarda informacion de elemento";
                     StatusHandler.Exception(target_process, ex);
-                })
-                .finally(e=>{
+            }).finally(e=>{
                     this.flags.upsertContent = false;
-                })
+            })
         },
     },
 };

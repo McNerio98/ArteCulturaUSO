@@ -156,12 +156,15 @@
 </style>
 
 <script>
+
+    import {deleteMemory} from '../../service';
     export default {
         props: {
             pdata: {type: Object,required:true}
         },
         data: function(){
             return {
+                isDeleting: false,
                 itemData: JSON.parse(JSON.stringify(this.pdata)),
                 acAppData: {}
             }
@@ -197,10 +200,35 @@
         },
         methods: {
             onClickEdit: function(){
-                window.location.replace(this.acAppData.base_url + "/admin/memories/create?idm="+this.itemData.memory.id);
+                this.$emit('edit',this.itemData.memory.id);
             },
             onClickDelete: function(){
-
+                var vm = this;
+                Swal.fire({
+                    title: '¿Está seguro de eliminar?',
+                    showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: 'Eliminar ',
+                    denyButtonText: `Cancelar`,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                            vm.isDeleting = true;
+                            deleteMemory(vm.itemData.memory.id).then(result => {
+                                const response = result.data;
+                                if(response.code == 0){
+                                    StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                                    return;
+                                }                
+                                vm.isDeleting = false;
+                                vm.$emit('deleted',vm.itemData.memory.id);
+                            }).catch(ex => {
+                                StatusHandler.Exception("Eliminar elemento",ex);
+                                vm.isDeleting = false;
+                            });
+                        }else{
+                            vm.isDeleting = false;
+                        }
+                });   
             }
         }
     }

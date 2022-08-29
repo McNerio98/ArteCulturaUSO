@@ -177,14 +177,10 @@
                                         class="custom-select"
                                         id="raRubro"
                                     >
-                                        <option disabled value="">
-                                            Elegir
-                                        </option>
-                                        <optgroup
-                                            v-for="(main, key) in listTags"
+                                        <option disabled value="">Elegir</option>
+                                        <optgroup v-for="(main, key) in listTags"
                                             v-bind:key="key"
-                                            :label="key"
-                                        >
+                                            :label="key">
                                             <option
                                                 v-for="(item, i) in main"
                                                 v-bind:key="i"
@@ -212,17 +208,15 @@
                                 @click="onSubmit"
                                 class="btn btn-primary"
                                 type="button"
-                                :disabled="sending_data"
+                                :disabled="isSendData"
                             >
                                 <span
-                                    v-if="sending_data"
+                                    v-if="isSendData"
                                     class="spinner-border spinner-border-sm"
                                     role="status"
                                     aria-hidden="true"
                                 ></span>
-                                <template v-if="!sending_data"
-                                    >Enviar Solicitud</template
-                                >
+                                <template v-if="!isSendData">Enviar Solicitud</template>
                                 <template v-else>Enviando …</template>
                             </button>
                         </div>
@@ -237,7 +231,7 @@ const { util, getTags, requestAccount } = require("../api/api.service");
 export default {
     data() {
         return {
-            sending_data: false,
+            isSendData: false,
             flags: {
                 email_exists: false,
                 telephone_exist: false,
@@ -251,13 +245,11 @@ export default {
         };
     },
     beforeMount() {
-        getTags()
-            .then((tags) => {
-                this.listTags = tags.data;
-            })
-            .catch((e) => {
+        getTags().then((tags) => {
+            this.listTags = tags.data;
+        }).catch((e) => {
                 StatusHandler.Exception("Recuperar rubros", ex);
-            });
+        });
     },
     mounted: function () {
         if (document.getElementById("openRegister").value === "true") {
@@ -277,13 +269,10 @@ export default {
             };
 
             return new Promise((resolve, reject) => {
-                axios
-                    .get(`/api/user/checkEmail/${this.correo.trim()}`)
-                    .then((result) => {
+                axios.get(`/api/user/checkEmail/${this.correo.trim()}`).then((result) => {
                         let response = result.data;
                         if (response.code == 0) {
-                            temp.msg =
-                                "Ocurrio un error interno en la verificacion de correo, contacte Soporte Tecnico";
+                            temp.msg ="Ocurrio un error interno en la verificacion de correo, contacte Soporte Tecnico";
                             resolve(temp);
                         }
 
@@ -291,15 +280,11 @@ export default {
                         if (response.data.code == 2) {
                             temp.data.exist_email = true;
                         }
-                        return axios.get(
-                            `/api/user/existTelephone/${-1}/${this.tel.trim()}`
-                        );
-                    })
-                    .then((result) => {
+                        return axios.get(`/api/user/existTelephone/${-1}/${this.tel.trim()}`);
+                }).then((result) => {
                         let response2 = result.data;
                         if (response2.code == 0) {
-                            temp.msg =
-                                "Ocurrio un error interno en la verificacion de correo, contacte Soporte Tecnico";
+                            temp.msg ="Ocurrio un error interno en la verificacion de correo, contacte Soporte Tecnico";
                             resolve(temp);
                         }
                         //here code is 1
@@ -308,7 +293,7 @@ export default {
                         }
                         temp.code = 1;
                         resolve(temp);
-                    });
+                });
             });
         },
         validPatternTel: function () {
@@ -339,12 +324,11 @@ export default {
         },
         onSubmit: async function () {
             if (this.$refs.frmRequestAccount.checkValidity() !== false) {
-                //validate only for id tag, if equals 0 is unselected
-                if (this.rubro == 0 || this.rubro == "") {
-                    StatusHandler.StatusToast(StatusHandler.TOAST_STATUS.FAIL,"Debe seleccionar un rol");
+                if (this.rubro == undefined || this.rubro == 0 || this.rubro.trim().length == 0) {
+                    StatusHandler.StatusToast(StatusHandler.TOAST_STATUS.FAIL,"Debe seleccionar una espacialidad/rubro artístico");
                     return;
                 }
-                this.sending_data = true;
+                this.isSendData = true;
                 //Verificate if email or telephone already exist
                 var response = await this.checkExistData();
                 if (response.code == 0) {
@@ -362,7 +346,7 @@ export default {
                 if (!this.flags.email_exists && !this.flags.telephone_exist) {
                     this.SolicitarCuenta();
                 } else {
-                    this.sending_data = false;
+                    this.isSendData = false;
                 }
             } else {
                 this.$refs.frmRequestAccount.classList.add("was-validated");
@@ -377,9 +361,7 @@ export default {
                 artistic_name: this.artistic.trim(),
             };
 
-            axios
-                .post(`/api/requestaccounts`, data)
-                .then((result) => {
+            axios.post(`/api/requestaccounts`, data).then((result) => {
                     let response = result.data;
                     if (response.code == 0) {
                         if (response.errors.email != undefined) {
@@ -415,16 +397,14 @@ export default {
                     this.artistic = "";
                     this.email_exists = false;
 
-                    window.location.href =
-                        obj_ac_app.base_url +
-                        `/email/status/${email_new_user.trim()}`;
+                    window.location.href =obj_ac_app.base_url +`/email/status/${email_new_user.trim()}`;
                 })
                 .catch((ex) => {
                     $("#requestAccountModal").modal("hide");
                     StatusHandler.Exception("Solicitar cuenta de usuario", ex);
                 })
                 .finally(() => {
-                    this.sending_data = false;
+                    this.isSendData = false;
                 });
         },
     },

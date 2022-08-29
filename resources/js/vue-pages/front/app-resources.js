@@ -2,7 +2,7 @@ import ResourceSummary from '../../components/recursos/ResourceShowCardComponent
 import ResourceShow from '../../components/recursos/ResourceShowComponent.vue';
 import {formatter91} from '../../formatters';
 import { getAllResources,getResource } from '../../service';
-
+import NoDataRegister from '../../components/NoDataRegister.vue';
 
 //Show
 if(document.getElementById("appResourcesShow") != undefined){
@@ -52,7 +52,8 @@ if(document.getElementById("appResourcesIndex") != undefined){
     const appResourcesIndex = new Vue({
         el: "#appResourcesIndex",
         components: {
-            'resource-summary' : ResourceSummary
+            'resource-summary' : ResourceSummary,
+            'no-records' : NoDataRegister            
         },
         data: {
             acAppData: window.obj_ac_app,

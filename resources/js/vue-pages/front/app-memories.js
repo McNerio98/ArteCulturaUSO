@@ -3,13 +3,14 @@ import MemoryShow from '../../components/memories/MemoryShowComponent.vue';
 import MemorySummary from '../../components/memories/MemoryMiniViewComponent.vue';
 import {getMemory,getAllMemories} from '../../service';
 import {formatter89} from '../../formatters';
-
+import NoDataRegister from '../../components/NoDataRegister.vue';
 //Index
 if(document.getElementById("appMemoryIndex") != undefined){
     const appMemoryIndex = new Vue({
         el: "#appMemoryIndex",
         components: {
-            'memory-summary' : MemorySummary
+            'memory-summary' : MemorySummary,
+            'no-records' : NoDataRegister
         },
         data: {
             acAppData: window.obj_ac_app,

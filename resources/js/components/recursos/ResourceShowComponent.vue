@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import {getTiposRecursos} from '../../service';
+import {getTiposRecursos,deleteResource} from '../../service';
 export default {
     props: {
         pdata: {type: Object,required:true}
@@ -125,7 +125,7 @@ export default {
             return namefile;
         },
         onEdit: function(){
-            this.$emit('on-edit',this.itemData.resource.id);
+            this.$emit('edit',this.itemData.resource.id);
         },
         onDelete: function(){
             var vm = this;
@@ -138,7 +138,18 @@ export default {
             }).then((result) => {
                 if (result.isConfirmed) {
                         vm.isDeleting = true;
-
+                        deleteResource(vm.itemData.resource.id).then(result => {
+                                const response = result.data;
+                                if(response.code == 0){
+                                    StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                                    return;
+                                }                
+                                vm.isDeleting = false;
+                                vm.$emit('deleted',vm.itemData.resource.id);
+                        }).catch(ex => {
+                            StatusHandler.Exception("Eliminar elemento",ex);
+                            vm.isDeleting = false;
+                        });
                     }else{
                         vm.isDeleting = false;
                     }

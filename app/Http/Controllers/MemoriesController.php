@@ -10,6 +10,7 @@ use Illuminate\Validation\Rule;
 use App\Memory;
 use App\FilesOnMemory;
 use App\Helper\UsersHelper;
+use App\User;
 use Storage;
 
 class MemoriesController extends Controller
@@ -319,5 +320,61 @@ class MemoriesController extends Controller
         }
 
         return $output;
+    }
+
+    public function destroy($id){
+        $output = [
+            "code" => 0,
+            "data" => null,
+            "msg" => ""
+        ];
+
+        $user = Auth::user();
+        $memory = Memory::find($id);
+        if(!$memory){
+            $output["msg"] = "No existe el elemento";
+            return $output;
+        }
+
+        //Verificando permisos 
+        if(!$user->can('eliminar-reseñas') && $memory->creator_id != $user->id){
+            $output["msg"] = "Operación denegada";
+            return $output;
+        }
+
+        $creator = User::find($memory->creator_id);
+        if(!$creator){
+            $output["msg"] = "Inconsistencia de datos";
+            return $output;
+        }
+
+        try{
+            //Eliminacion de Archivos multimedia 
+            foreach($memory->media as $del){
+                $aux_path = "";
+                switch($del->type_file){
+                    case 'image': $aux_path = "files/images/".$del->name;break;
+                    case 'docfile': $aux_path = "files/docs/me".$memory->id."/".$del->name;break; //aplicar filtro, solo agregar id de post 
+                }            
+                //Si no esta es porque es video, solo se elimina mas abajo 
+                if(trim($aux_path) !== "" && Storage::disk('local')->exists($aux_path)){
+                    if(! Storage::disk('local')->delete($aux_path) ){
+                        throw new \Exception("No se logró eliminar algunos medios: ".$del->name);
+                    }   
+                } 
+                
+                //No seria necesario, porque se agrego la eliminacion en casada pero siempre se dejo 
+                $del->delete();            
+            }
+            $memory->delete();           
+            $output["code"] = 1;
+            $output["msg"] = "Deleted Successfully";             
+        }catch(\Throwable $ex){
+            $output["msg"] = "Error al eliminar biografia";
+            //$output["msg"] = "Error al actualizar publicacion ".$ex->getMessage(); //for debug            
+        }
+
+
+        return $output;        
     }
 }

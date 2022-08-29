@@ -14,11 +14,14 @@ import {formatter89} from '../../formatters';
 import {getMemory,getAdminMemories} from '../../service';
 import Memory from '../../components/memories/MemoryShowComponent.vue';
 import MemorySummary from '../../components/memories/MemoryMiniViewComponent.vue';
-
+import NoDataRegister from '../../components/NoDataRegister.vue';
 //Index,  all items (index)
 if(document.getElementById("appMemories") != undefined){
     const appMemories = new Vue({
-        components: {MemorySummary},
+        components: {
+            'memory-summary': MemorySummary,
+            'no-records' : NoDataRegister
+        },
         el: "#appMemories",
         data: {
             acAppData: {},
@@ -96,6 +99,12 @@ if(document.getElementById("appMemoryShow") != undefined){
                     let target_process = "Recuperar elemento especificado"; 
                     StatusHandler.Exception(target_process,ex);
                 });            
+            },
+            onDeletedMemory: function($id){
+                window.location.replace(this.acAppData.base_url + "/admin/memories");
+            },
+            onEditMemory: function($id){
+                window.location.replace(this.acAppData.base_url + "/admin/memories/create?idm="+$id);                
             }
         }
     });

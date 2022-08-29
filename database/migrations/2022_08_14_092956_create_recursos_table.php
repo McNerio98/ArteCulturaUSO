@@ -19,7 +19,8 @@ class CreateRecursosTable extends Migration
             $table->mediumText('content');
             $table->integer('tipo_id');
             $table->unsignedBigInteger('presentation_img')->nullable(); //sin restrincion 
-            $table->unsignedBigInteger('creator_id');        
+            $table->unsignedBigInteger('creator_id');
+            $table->foreign('creator_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

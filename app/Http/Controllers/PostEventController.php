@@ -172,11 +172,13 @@ class PostEventController extends Controller
             "data" => null,
             "msg" => null
         ];
-
-		$result = PostEvent::where('dtl.event_date','>=',date('Y-m-d h:i:s'))
+        $from = date('Y-m-d h:i:s');
+        //$to = date('Y-m-d') ." 23:59:59";
+        $to = '2022-12-04 00:00:00'; //solo para pruebas 
+		$result = PostEvent::whereBetween('dtl.event_date',[$from,$to])
             ->where('dtl.is_geo',true)
             ->join('dtl_events AS dtl','dtl.event_id','post_events.id')
-			->with('media')
+			->with('img_presentation')
 			->with('owner')
 			->with('event_detail')
             ->get();
@@ -456,7 +458,7 @@ class PostEventController extends Controller
         $postEvent = PostEvent::find($id);
         if(!$postEvent){
             $output["msg"] = "No existe el elemento";
-            return;
+            return $output;
         }
 
         //Verificando permisos 
@@ -468,7 +470,7 @@ class PostEventController extends Controller
         $creator = User::find($postEvent->creator_id);
         if(!$creator){
             $output["msg"] = "Inconsistencia de datos";
-            return;
+            return $output;
         }
 
 
@@ -484,13 +486,15 @@ class PostEventController extends Controller
                 //Si no esta es porque es video, solo se elimina mas abajo 
                 if(trim($aux_path) !== "" && Storage::disk('local')->exists($aux_path)){
                     if(! Storage::disk('local')->delete($aux_path) ){
-                        throw new \Exception("No se logró eliminar algunos medios".$drope->name);
+                        throw new \Exception("No se logró eliminar algunos medios".$del->name);
                     }   
                 }                
                 //Por defecto retorna una exception 
+                //No seria necesario, porque se agrego la eliminacion en casada pero siempre se dejo 
                 $del->delete();
             }
             //Por defecto retorna una exception 
+            //detalle de evento en cascada eliminado
             $postEvent->delete();
             if($postEvent->post_type == "event"){
                 $global_items = intval($creator->count_events);
@@ -504,14 +508,14 @@ class PostEventController extends Controller
                 $creator->count_posts = $global_items;
             }            
             $creator->save();
-            $salida["code"] = 1;
-            $salida["msg"] = "Deleted Successfully";
+            $output["code"] = 1;
+            $output["msg"] = "Deleted Successfully";
         }catch(\Throwable $ex){
-            $salida["msg"] = "Error al eliminar publicacion";
-            //$salida["msg"] = "Error al actualizar publicacion ".$ex->getMessage(); //for debug
+            $output["msg"] = "Error al eliminar publicacion";
+            //$output["msg"] = "Error al actualizar publicacion ".$ex->getMessage(); //for debug
         }
 
-        return $salida;
+        return $output;
     }
 
     public function popularPost(){

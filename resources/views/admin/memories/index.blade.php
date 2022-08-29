@@ -7,7 +7,8 @@
 <div class="container-fluid" id="appMemories">        
         <a href="{{route('memories.create.admin')}}">+ Nuevo</a>
         <div class="row mb-2">
-                <memory-summary v-for="(e,index) of items" :key="index" :pdata="e" @on-read="onReadMemory">
+                <no-records v-if="items.length == 0" icon="box.svg" page="Biografías/Homenajes"></no-records>
+                <memory-summary v-else v-for="(e,index) in items" :key="index" :pdata="e" @on-read="onReadMemory">
         </div>
 </div>
 <!--/. container-fluid -->               

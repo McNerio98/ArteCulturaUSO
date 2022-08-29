@@ -5,7 +5,8 @@
 <main role="main" class="flex-shrink-0" id="appMemoryIndex">
     <div class="container">
         <div class="row">
-            <memory-summary v-for="(e,index) of items" :key="e.memory.id" :pdata="e" @on-read="onReadMemory"/>
+            <no-records v-if="items.length == 0" icon="box.svg" page="Biografías/Homenajes"></no-records>
+            <memory-summary v-else v-for="(e,index) of items" :key="e.memory.id" :pdata="e" @on-read="onReadMemory"/>
         </div>
     </div>
 </main>
