@@ -68,6 +68,13 @@
                     </div>
                 </li>
                 @endauth
+                <li>
+                    <br>
+                <label class="switch">
+                  <input type="checkbox" id="slider" checked>
+                  <span class="slider"></span>
+              </label>
+                </li>
 
                 @guest
                 <li class="nav-item" style="margin-left:20px">
@@ -75,7 +82,11 @@
                             class="fas fa-sign-in-alt"></i> Ingresar</a>
                 </li>
                 @endguest
+        
             </ul>
+            
+
         </div>
+        
     </nav>   
 </header>
