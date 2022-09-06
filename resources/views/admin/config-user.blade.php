@@ -103,7 +103,6 @@
                                                 <div class="text-center">
                                                     <button v-if="user.status == 'disabled' " @click.prevent="changeStatus($event,'enable-user')"  class="btn btn-sm btn-primary">Activar cuenta</button>
                                                     <button v-if="user.status == 'enabled' "  @click.prevent="changeStatus($event,'disable-user')" class="btn btn-sm btn-warning">Desactivar cuenta</button>
-                                                    <button v-if="user.active == 1" @click.prevent="deleteAccount"class="btn btn-sm btn-danger">Eliminar cuenta</button>
                                                 </div>
                                                 @endcan
                                             </div>
@@ -174,5 +173,5 @@
 @endsection
 
 @Push('customScript')
-    <script src="{{ asset('js/app-config-user.js') }}"></script>
+    <script src="{{ asset('js/admin/app-config-user.js') }}"></script>
 @endpush

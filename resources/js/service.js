@@ -127,7 +127,6 @@ export function getTiposRecursos(){
     })
 }
 
-
 export function upsertResource(data){
     return axios.post(`/resource`,data);
 }
@@ -144,6 +143,18 @@ export function getResource(id){
 
 export function deleteResource($id){
     return axios.delete('/resource/'+$id);
+}
+
+export function uploadImgProfile($data){
+    return axios.post('/user/uploadprofileimg',$data);
+}
+
+export function deleteImgProfile($id){
+    return axios.delete(`/user/deleteprofileimg/${$id}`);
+}
+
+export function changeImgProfile($id){
+    return axios.put(`/user/selectimgperfil/${$id}`);
 }
 
 /**

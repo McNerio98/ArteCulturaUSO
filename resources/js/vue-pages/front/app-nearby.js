@@ -1,16 +1,21 @@
 
 import GpsComponent from '../../components/nearby/GpsComponent.vue';
 import Spinner1Component from '../../components/spinners/Spinner1Component.vue';
+import PostEventCard from '../../components/post/PostEventCardComponent.vue';
 import {getNearbyPostEvents} from '../../service';
+import {formatter88} from '../../formatters';
 import {municipiosItems} from '../../utils';
+
 
 const appNearbyFront = new Vue({
     el: "#appNearbyFront",
     components: {
         'gps-request': GpsComponent,
-        'spinner1': Spinner1Component
+        'spinner1': Spinner1Component,
+        'postevent-card' : PostEventCard
     },
     data: {
+        acAppData: window.obj_ac_app,
         currentGeo: {
             lat: 0,
             lng: 0
@@ -28,6 +33,9 @@ const appNearbyFront = new Vue({
         this.municipios = municipiosItems();
     },
     methods: {
+        onSelected: function(id){
+            window.location.replace(this.acAppData.base_url + `/postshow/${id}`);
+        },
         rad: function(x){
             return x * Math.PI / 180;
         },
@@ -63,17 +71,20 @@ const appNearbyFront = new Vue({
 
             //Ordenar de manor distancia a mayor distancia desde el origen 
             const ordenados = candidatos.sort((a,b) => (a.distancia > b.distancia) ? 1: -1);
+            //Aqui aplicar filtro de radio menor aceptado 
             this.mostrarNearby(ordenados);
         },
         mostrarNearby: function(ordenados){
             ordenados.forEach((item,index)=>{
-                const address = this.itemsNearby[item.indice].event_detail.address;
-                const municipio_id = this.itemsNearby[item.indice].event_detail.municipio_id;
-                const municipio = this.municipios[municipio_id-1].municipio;
-
-                console.log( municipio + "," + address + "-" + item.distancia);
+                //const municipio = this.municipios[municipio_id-1].municipio;
+                this.itemsNearby[item.indice].media = [];
+                this.finalNearby.push(
+                    formatter88(
+                        {...this.itemsNearby[item.indice]},
+                        this.acAppData.base_url
+                    ),
+                ); //rompiendo referencia
             });
-            //this.finalNearby.push(...) Quitar referencia antes de agregarlo 
         },
         getDataNearby: function(){
             this.isGettingItems = true;

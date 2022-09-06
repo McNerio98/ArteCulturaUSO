@@ -10,8 +10,8 @@ Vue.component('pagination-component',require('../../components/pagination/Pagina
 //Registro de componentes locales 
 import GeneralInfoComponent from '../../components/profile/GeneralInfoComponent.vue';
 import AboutComponent from '../../components/profile/AboutComponent.vue';
-import {getUserProfileInformation} from '../../service';
-import {getModel88,formatter88} from '../../formatters';
+import {getUserProfileInformation,uploadImgProfile,deleteImgProfile,changeImgProfile} from '../../service';
+import {getModel88,formatter88,formatter87} from '../../formatters';
 import PostEventCreateComponent from '../../components/post/PostEventCreateComponent.vue';
 import PostEventShowComponent from '../../components/post/PostEventShowComponent.vue';
 
@@ -44,12 +44,6 @@ const appProfileVue = new Vue({
             content_desc: "",
             desc_empty: false,
             isEditStatus: false,    
-            type_media: "", // PROFILE_MEDIAS
-            media_view: {
-                owner: 0,
-                target: {},
-                items: []
-            },
             data_config: {
                 description:  {value: undefined, bk: undefined, edit_mode: false},
             },
@@ -153,50 +147,79 @@ const appProfileVue = new Vue({
             });                
         },        
         onPhotosProfiles: function(object_media){
-            this.media_view = object_media; //Ya trae el target e items 
-            this.type_media = 'PROFILE_MEDIAS'; //para imagenes de perfiles
-            $('#modaPreviewMedia').modal('show');            
+            this.$refs.mediaviewer.builderAndShow(object_media.items,'PROFILE_MEDIAS',object_media.target);
         },
         onSources: function(sources){
             //Formateando segun el formato esperado por el preview 
-            var aux = sources.map((e)=>{
-                return {
-                    id: e.id,
-                    type: e.type_file,
-                    name: e.name,
-                    url: e.url,
-                    owner: {
-                        id: e.owner
-                    }
-                }
-            });
+            var  items = sources.map((e)=>{{
+                return formatter87(e,0);
+            }});
 
-            this.media_view.items = aux;
-            this.media_view.target = aux[0];
-            this.type_media = 'POST_EVENTS';
-            $('#modaPreviewMedia').modal('show');            
+            this.$refs.mediaviewer.builderAndShow(items,'POST_EVENTS',items[0]);
         },
         PostEventCreated: function(e){
             this.profileSummary[0].cout_postevents = parseInt(e.owner.count_posts + e.owner.count_events);
             this.items_postevents.unshift(formatter88(e,this.acAppData.storage_url));
         },
         onUpdatePostEvent: function(id){
-            window.location.href = this.acAppData.base_url + '/perfil/' + this.current_user_id + '/postedit/' + id;
+            window.location.href = this.acAppData.base_url + `/postedit/${id}`;
         },
         onDeletePostEvent: function(index){
             this.items_postevents.splice(index,1);
+        },
+        onSelectLikePerfil: function(id){
+            var vm = this;
+            vm.$refs.mediaviewer.onClose();
+
+            changeImgProfile(id).then(result => {
+                const response = result.data;
+                if(response.code == 0){
+                    StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                    return;
+                }
+                window.location.reload();           
+            }).catch(ex => {
+                StatusHandler.Exception("Cambiar imagen de perfil",ex);
+            });
+        },  
+        onDeleteProfileImg: function(id){
+            var vm = this;
+            vm.$refs.mediaviewer.onClose();
+            Swal.fire({
+                title: '¿Está seguro de eliminar?',
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Eliminar ',
+                denyButtonText: `Cancelar`,
+                allowOutsideClick: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    deleteImgProfile(id).then(result => {
+                        const response = result.data;
+                        if(response.code == 0){
+                            StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                            return;
+                        }
+                        window.location.reload();                
+                    }).catch(ex => {
+                        StatusHandler.Exception("Eliminar imagen de perfil",ex);
+                    });
+                }else{
+                    vm.disabled_controls = false;
+                }
+            });
         },
         onChageImage: function(){
             this.$refs.fileElementImage.click();
         },
         cropperImageProfile: function(event){
             $('#modaPreviewMedia').modal('hide');
+            this.trim_buffer.target = "PROFILE_MEDIAS"; 
             this.$refs.acVmCompCropper.openTrim( event.target.files[0]);
-            this.trim_buffer.target = "IMG_MEDIA_PROFILE"; 
         },
         filterModalCropper: function(base64){
             switch(this.trim_buffer.target){
-                case "IMG_MEDIA_PROFILE": {
+                case "PROFILE_MEDIAS": {
                     this.SendImgProfile(base64);
                     break;
                 }
@@ -210,21 +233,24 @@ const appProfileVue = new Vue({
                 img_profile_upload: base64
             };
 
-            axios.post(`/user/uploadImgProfile`,data).then((result)=>{
-                let response = result.data;
+            uploadImgProfile(data).then(result => {
+                const response = result.data;
                 if(response.code == 0){
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
                     return;
                 }
-                
-                var image_url = this.acAppData.storage_url + "/files/profiles/" +response.data.path_file;
-                this.$refs.vmInfoGeneral.setProfileImg(image_url);
-                this.items_postevents.map(e=>{
+
+                //Mejor recargamos todo para evitar actualizar entodo ()
+                window.location.reload();
+                /*const image_url = this.acAppData.storage_url + "/files/profiles/" +response.data.path_file;
+                const profile_nuevo = formatter86(response.data,this.acAppData.storage_url);
+                this.items_postevents.map(e => {
                     e.creator.profile_img = image_url;
-                });
-            }).catch((ex)=>{
+                });*/
+            }).catch(ex => {
                 StatusHandler.Exception("Establecer la nueva imagen",ex);
             });
+
         }                       
     }
 });

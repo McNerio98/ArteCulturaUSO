@@ -1,76 +1,26 @@
+
 Vue.component('spinner1',require('../../components/spinners/Spinner1Component.vue').default);
 Vue.component('preview-media',require('../../components/media/PreviewMediaComponent.vue').default);
+Vue.component('media-viewer', require('../../components/media/ViewMediaComponent.vue').default);
 
-import {formatter88} from '../../formatters';
+import {formatter88,formatter87} from '../../formatters';
 import {getPostEvent} from '../../service';
 import PostEventCreate from '../../components/post/PostEventCreateComponent.vue';
 import PostEventShowComponent from '../../components/post/PostEventShowComponent.vue';
 
-//Edit PostEvent Item 
-if(document.getElementById("appAdminUpdatePost") != undefined){
-    const appAdminUpdatePost = new Vue({
-        el: "#appAdminUpdatePost",
-        components:{
+if(document.getElementById('appEditPostFront') != undefined){
+    const appEditPostFront = new Vue({
+        el: "#appEditPostFront",
+        components: {
             "postevent-create": PostEventCreate,
-        },    
+        },
         data: {
             isLoading:false, //for loading info post
-            target_id: null,
-            acAppData: {},
+            acAppData: window.obj_ac_app,
             modelo_create: [],
         },
-        created: function(){
-            this.acAppData = window.obj_ac_app;
-        },
         mounted: function(){
-            this.target_id = parseInt(document.getElementById("temp_iden_edit").value);
-            
-            if(!isNaN(this.target_id)){
-                this.loadData();
-            }
-        },
-        methods: {
-            loadData: function(){
-                this.isLoading = true;
-                getPostEvent(this.target_id).then(result =>{
-                    let response = result.data;
-                    if(response.code == 0){ //sino existe lo detiene aqui 
-                        StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
-                        return;
-                    }  
-    
-                    this.modelo_create.push(formatter88(response.data,this.acAppData.storage_url));
-                }).catch(ex =>{
-                    let target_process = "Recuperar elemento";
-                    StatusHandler.Exception(target_process,ex);       
-                }).finally(e =>{
-                    this.isLoading = false;
-                })
-            },
-            postEventCreated: function(e){
-                window.location.href =  this.acAppData.base_url + "/admin/post/show/" + e.id;
-            }
-        }
-    
-    });
-}
-
-//Show PostEvent Imte 
-if(document.getElementById("appAdminShowPost") != undefined){
-    const appAdminShowPost = new Vue({
-        el: "#appAdminShowPost",
-        components: {
-            "postevent-show": PostEventShowComponent
-        },
-        data: {
-            isLoading: false,
-            acAppData: {},
-            target_id: 0,
-            items_postevents: []
-        },
-        created: function(){
-            this.acAppData = window.obj_ac_app;
-            this.target_id = parseInt(document.getElementById("temp_iden_edit").value);
+            this.target_id = parseInt(document.getElementById("idpostevent").value);
             if(!isNaN(this.target_id)){
                 this.loadData();
             }            
@@ -78,7 +28,51 @@ if(document.getElementById("appAdminShowPost") != undefined){
         methods: {
             loadData: function(){
                 this.isLoading = true;
-                getPostEvent(this.target_id).then(result =>{
+                getPostEvent(this.target_id).then(result => {
+                    let response = result.data;
+                    if(response.code == 0){
+                        StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                        return;
+                    }  
+    
+                    this.modelo_create.push(formatter88(response.data,this.acAppData.storage_url));
+                }).catch(ex => {
+                    const target_process = "Recuperar elemento";
+                    StatusHandler.Exception(target_process,ex);    
+                }).finally(e => {
+                    this.isLoading = false;
+                });
+            },
+            postEventCreated: function(e){
+                window.location.href =  this.acAppData.base_url + `/postshow/${e.id}`;
+            }            
+        }
+    });
+}
+
+//Show
+if(document.getElementById('appShowPostFront') != undefined){
+    const appShowPostFront = new Vue({
+        el: "#appShowPostFront",
+        components: {
+            "postevent-show": PostEventShowComponent
+        },
+        data: {
+            isLoading: false,
+            acAppData: window.obj_ac_app,
+            target_id: null,
+            items_postevents: [],        
+        },
+        mounted: function(){
+            this.target_id = parseInt(document.getElementById("idpostevent").value);
+            if(!isNaN(this.target_id)){
+                this.loadData();
+            }                 
+        },
+        methods: {
+            loadData: function(){
+                this.isLoading = true;
+                getPostEvent(this.target_id).then(result => {
                     let response = result.data;
                     if(response.code == 0){ //sino existe lo detiene aqui 
                         StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
@@ -86,24 +80,30 @@ if(document.getElementById("appAdminShowPost") != undefined){
                     }  
 
                     this.items_postevents.push(formatter88(response.data,this.acAppData.storage_url));
-                }).catch(ex =>{
+                }).catch(ex => {
                     let target_process = "Recuperar elemento";
-                    StatusHandler.Exception(target_process,ex);       
-                }).finally(e =>{
-                    this.isLoading  = false;
-                })                
+                    StatusHandler.Exception(target_process,ex);   
+                }).finally(e => {
+                    this.isLoading = false;
+                });
+
             },
             onUpdatePostEvent: function(){
 
             },
-            onDeletePost: function(post_id){
-                window.location.href = 
-                this.acAppData.base_url + "/admin/content";
-            },
-            onSources: function(){
+            onDeletePost: function(){
 
+            },
+            onSources: function(sources){
+                var items = sources.map((e)=>{{
+                    return formatter87(e,3);
+                }});
+
+                this.$refs.mediaviewer.builderAndShow(items,'POST_EVENTS',items[0]);
             }
         }
-
     });
 }
+
+
+

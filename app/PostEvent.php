@@ -26,12 +26,7 @@ class PostEvent extends Model
         return $this->belongsTo("App\User","creator_id");
     }
 
-    # Significa que el modelo tiene "un" registro en la tabla de archivos 
-    #pero en la tabla de archivos se debe encontrar una clave llamada id_post_event 
-    #con esa clave se hace math 
-    public function img_presentation(){
-        //Esto esta mal porque devolveria la primera 
-        //SOLUCIONAR
+    public function presentation_model(){
         return $this->belongsTo('App\FilesOnPostEvents','presentation_img','id');
     }
 }

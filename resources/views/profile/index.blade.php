@@ -13,7 +13,7 @@
                 <profile-summary
                 v-for="(s,index) in profileSummary"
                 :pdata="s"
-                @medias-view="onPhotosProfiles"
+                @imgs-perfil="onPhotosProfiles"
                 :auth-id="{{Auth::user() == null ? 0 : Auth::user()->id}}" 
                 :target-id="{{$id_user_cur}}">
                 </profile-summary>
@@ -123,14 +123,11 @@
         <input type="file" @change="cropperImageProfile" accept="image/png, image/jpeg" ref="fileElementImage" class="d-none">
         <!-- ::::::::::::::::::::::::::::::::::::::END CONTENT::::::::::::::::::::::::::::::::::::::-->
     </div>        
-    <media-viewer 
-    :type-media = "type_media"
-    :target="media_view.target"
-    :logged.number='{{Auth::user() == null ? 0 : Auth::user()->id}}'
-    :owner="media_view.owner"
-    @new-profile-media="onChageImage"
-     :items="media_view.items">
-    </media-viewer>    
+
+    <media-viewer @new-profileimg="onChageImage" 
+    @setlike-perfil="onSelectLikePerfil"
+    @delete="onDeleteProfileImg"
+    ref="mediaviewer"></media-viewer>    
 
 
     <control-trim
@@ -141,8 +138,7 @@
 @endsection
 
 @Push('customScript')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.9/cropper.min.js" integrity="sha512-9pGiHYK23sqK5Zm0oF45sNBAX/JqbZEP7bSDHyt+nT3GddF+VFIcYNqREt0GDpmFVZI3LZ17Zu9nMMc9iktkCw==" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.9/cropper.min.css" integrity="sha512-w+u2vZqMNUVngx+0GVZYM21Qm093kAexjueWOv9e9nIeYJb1iEfiHC7Y+VvmP/tviQyA5IR32mwN/5hTEJx6Ng==" crossorigin="anonymous" />
-
-<script src="{{ mix('js/front/app-profile.js') }}"></script>
+    <link href="{{ asset('css/cropper.min.css') }}" rel="stylesheet">
+    <script src="{{ asset('js/cropper.min.js') }}"></script>
+    <script src="{{ mix('js/front/app-profile.js') }}"></script>
 @endpush

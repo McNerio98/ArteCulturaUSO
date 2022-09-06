@@ -4,7 +4,7 @@ Vue.component('media-viewer', require('../../components/media/ViewMediaComponent
 Vue.component('preview-media',require('../../components/media/PreviewMediaComponent.vue').default);
 
 
-import {formatter88,getModel88} from '../../formatters';
+import {formatter88,getModel88,formatter87} from '../../formatters';
 import PostEventCreate from '../../components/post/PostEventCreateComponent.vue';
 import PostEventShowComponent from '../../components/post/PostEventShowComponent.vue';
 
@@ -75,21 +75,11 @@ const appContent = new Vue({
             }
         },
         onSources: function(sources){
-            //Formateando segun el formato esperado por el preview 
-            var aux = sources.map((e)=>{
-                return {
-                    id: e.id,
-                    type: e.type_file,
-                    name: e.name,
-                    url: e.url,
-                    owner: {
-                        id: e.owner
-                    }
-                }
-            });
-            this.media_view.items = aux;
-            this.media_view.target = aux[0];
-            $('#modaPreviewMedia').modal('show');         
+            var  items = sources.map((e)=>{{
+                return formatter87(e,0);
+            }});
+
+            this.$refs.mediaviewer.builderAndShow(items,'POST_EVENTS',items[0]);            
         },        
         PostEventCreated: function(e){
             this.items_postevents.unshift(formatter88(e,this.acAppData.storage_url));     

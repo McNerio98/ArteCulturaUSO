@@ -34,7 +34,7 @@ class DashboardController extends Controller
 	//MY CONTENT OPTION 
     public function content(){
 		$request_users = UsersHelper::usersRequest();
-    	return view('admin.content' , ['ac_option' =>'content' , 'request_users' => $request_users]);
+    	return view('admin.postevents.index' , ['ac_option' =>'content' , 'request_users' => $request_users]);
 	}
 
 	//SEARCH PAGE  

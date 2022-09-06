@@ -17,7 +17,7 @@ class CreateUserMetasTable extends Migration
             $table->id();
             $table->string('key',60);
             $table->longText('value');
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');;
             $table->timestamps();
             $table->index("key"); //plain index for search
         });

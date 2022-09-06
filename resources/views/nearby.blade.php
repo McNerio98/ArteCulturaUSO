@@ -11,12 +11,17 @@
             @on-active="onActive" 
             @on-denied="onDenied">
         </gps-request>
+
         <div v-if="isGettingItems">
             <spinner1 label="Consultando ..."/>
         </div>
+
         <div class="mt-3" v-else>
-            <div v-for="(e) in itemsNearby">
-                => @{{e.title}} (Componente)
+            <div class="row">
+                <postevent-card 
+                v-for="(e) in finalNearby" 
+                :pdata="e"
+                @selected="onSelected"></postevent-card>
             </div>
         </div>
         

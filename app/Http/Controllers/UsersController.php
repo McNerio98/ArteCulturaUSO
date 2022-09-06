@@ -83,6 +83,100 @@ class UsersController extends Controller
         return $salida;
     }
 
+	public function dropprofileimg($id){
+        $output = [
+            'code' => 0,
+            'data' => null,
+            'msg' => null
+        ];
+
+		$img = MediaProfile::find($id);
+		if(!$img){
+			$output["msg"] = "La imagen especificada no existe";
+			return $output;
+		}
+
+		$owner = User::find($img->user_id);
+		if(!$owner){
+            $output["msg"] = "Inconsistencia de datos";
+            return $output;			
+		}
+		
+		if(!Auth::user()->can('configurar-usuarios') && $img->user_id != Auth::user()->id){
+			$output["msg"] = "Operacion no permitida";
+			return $output;
+		}
+
+		if($img->path_file == "default_img_profile.png"){
+			$output["msg"] = "Operación no permitida";
+			return $output;
+		}
+
+		$auxPath = $this->path_store_profiles.$img->path_file;
+		DB::beginTransaction();
+		try{
+			if(!Storage::disk('local')->exists($auxPath)){
+				throw new \Exception("Archivo fisico no encontrado para " . $img->path_file);
+			}
+
+            //Si la imagen eliminada es la que tiene de perfil se setea a la por defecto 
+            if($owner->img_profile_id == $id){
+                $defecto = MediaProfile::where('user_id',$owner->id)->where('path_file','default_img_profile.png')->first();
+                if(!$defecto){
+                    throw new \Exception("Inconsistencia de usuario al cambiar a imagen por defecto");
+                }
+
+                $owner->img_profile_id = $defecto->id;
+                $owner->save();
+            }
+
+			if(!Storage::disk('local')->delete($auxPath)){
+				throw new \Exception("No se pudo eliminar el archivo " . $img->path_file);
+			}
+			$img->delete();
+
+            DB::commit();
+            $output["code"] = 1;
+            $output["msg"] = "Deleted Successfully";
+		}catch(\Throwable $ex){
+			DB::rollback();
+			$output["msg"] = $ex->getMessage();
+		}
+		
+		return $output;
+	}
+
+    public function selectimgperfil($id){
+        $output = [
+            'code' => 0,
+            'data' => null,
+            'msg' => null
+        ];
+
+		$img = MediaProfile::find($id);
+		if(!$img){
+			$output["msg"] = "La imagen especificada no existe";
+			return $output;
+		}
+
+		$user = User::find($img->user_id);
+		if(!$user){
+            $output["msg"] = "Inconsistencia de datos";
+            return $output;			
+		}
+		
+		if(!Auth::user()->can('configurar-usuarios') && $img->user_id != Auth::user()->id){
+			$output["msg"] = "Operacion no permitida";
+			return $output;
+		}
+
+        $user->img_profile_id = $id;
+        $user->save();
+
+        $output["code"] = 1;
+        $output["msg"] = "Imagen establecida";        
+        return $output;
+    }
     public function checkEmail($email){
         $salida = [
             "code" => 0,
@@ -550,16 +644,6 @@ class UsersController extends Controller
         return $salida;
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 
     public function requestAccount(Request $request)
     {
