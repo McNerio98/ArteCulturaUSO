@@ -1,4 +1,4 @@
-import StatusHandler from "../sw-status";
+import StatusHandler from "../../sw-status";
 
 
 const appConfigUser = new Vue({
@@ -113,9 +113,6 @@ const appConfigUser = new Vue({
             }).catch(ex=>{
                 StatusHandler.Exception("Establecer la descripción del usuario",ex);
             });
-        },
-        deleteAccount: function(){
-            console.log("Eliminando cuenta");
         },
         changeStatus: function(e,status){
             let params = {

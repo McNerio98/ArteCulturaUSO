@@ -210,6 +210,7 @@
                     showCancelButton: true,
                     confirmButtonText: 'Eliminar ',
                     denyButtonText: `Cancelar`,
+                    allowOutsideClick: false
                 }).then((result) => {
                     if (result.isConfirmed) {
                             vm.isDeleting = true;

@@ -94,7 +94,7 @@ class LoginController extends Controller
 
             $current_user->save();
             if($current_user->hasRole('Invitado')){
-                return redirect()->route('profile.show',['id'=>$current_user->id]); 
+                return redirect()->route('profile.show',['idUser'=>$current_user->id]); 
             }else{
                 //aqui tendria que extraerlos de la db, porq puede hallan registrado nuevos
                 //$user->hasRole(['editor', 'moderator'])

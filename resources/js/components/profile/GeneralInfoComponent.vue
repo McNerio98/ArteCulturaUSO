@@ -149,7 +149,7 @@
                     return formatter86(el,this.acAppData.storage_url);
                 });
                 this.media_view.target = formatter86(target_current,this.acAppData.storage_url);
-                this.$emit("medias-view",this.media_view);
+                this.$emit("imgs-perfil",this.media_view);
 
             },
             deleteTagUser: function(id_tag,index){

@@ -178,7 +178,7 @@ class PostEventController extends Controller
 		$result = PostEvent::whereBetween('dtl.event_date',[$from,$to])
             ->where('dtl.is_geo',true)
             ->join('dtl_events AS dtl','dtl.event_id','post_events.id')
-			->with('img_presentation')
+			->with('presentation_model')
 			->with('owner')
 			->with('event_detail')
             ->get();

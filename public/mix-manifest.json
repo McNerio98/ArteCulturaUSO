@@ -1,5 +1,6 @@
 {
     "/js/admin/app-admin.js": "/js/admin/app-admin.js",
+    "/js/admin/app-config-user.js": "/js/admin/app-config-user.js",
     "/js/admin/app-content.js": "/js/admin/app-content.js",
     "/js/admin/app-item-update.js": "/js/admin/app-item-update.js",
     "/js/admin/app-memories.js": "/js/admin/app-memories.js",
@@ -13,14 +14,13 @@
     "/js/app.js": "/js/app.js",
     "/css/app.css": "/css/app.css",
     "/css/observatorio_styles.css": "/css/observatorio_styles.css",
-    "/js/app-config-user.js": "/js/app-config-user.js",
     "/js/front/app-biographies.js": "/js/front/app-biographies.js",
     "/js/front/app-events-table.js": "/js/front/app-events-table.js",
     "/js/front/app-inicio.js": "/js/front/app-inicio.js",
     "/js/front/app-memories.js": "/js/front/app-memories.js",
     "/js/front/app-nearby.js": "/js/front/app-nearby.js",
     "/js/front/app-profile.js": "/js/front/app-profile.js",
-    "/js/front/app-profile-edit-item.js": "/js/front/app-profile-edit-item.js",
     "/js/front/app-resources.js": "/js/front/app-resources.js",
-    "/js/front/app-search.js": "/js/front/app-search.js"
+    "/js/front/app-search.js": "/js/front/app-search.js",
+    "/js/front/app-showedit.js": "/js/front/app-showedit.js"
 }

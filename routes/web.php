@@ -50,9 +50,10 @@ Route::post('/logout','Auth\LoginController@logout')->name('logout');
 Route::get('/perfil/{idUser}','ProfileController@index')->name('profile.show');
 # Carga la informacion completa para el usuario 
 Route::get('/profile/information/{id}','ProfileController@information')->name('profile.information');
-#Muestra la vista para editar un post 
-Route::get('/perfil/{idUser}/postedit/{idPost}','ProfileController@editPostEvent')->name('profile.edit.item')->middleware('auth');
-Route::get('/perfil/{idUser}/postshow/{idPost}','ProfileController@showPostEvent')->name('profile.show.item')->middleware('auth');
+#Muestra la vista para editar un postevent especifico en apartado publico  
+Route::get('/postedit/{postid}','ProfileController@editPostEvent')->name('profile.edit.item')->middleware('auth');
+#Muestra la vista para mostrar un postevent especifico en apartado publico 
+Route::get('/postshow/{postid}','ProfileController@showPostEvent')->name('profile.show.item');
 
 
 
@@ -142,7 +143,11 @@ Route::post('tags','TagsController@store')->name('tags.store')->middleware('auth
 #Obtiene todas las etiquetas mediante el paso de una categoria , solo es necesario que este logeado sea rol o podria ser un invitado 
 Route::get('tags/byCategory/{id}','TagsController@tagsByCategory')->name('tag.select')->middleware('auth');
 #Guarda una nueva imagen de perfil del usuario logeado 
-Route::post('user/uploadImgProfile','UsersController@uploadProfileImg')->middleware('auth');
+Route::post('user/uploadprofileimg','UsersController@uploadProfileImg')->middleware('auth');
+#Elimina unaimagen de perfil del usuario, si es la que actualmente tiene de perfil setea la por defecto 
+Route::delete('/user/deleteprofileimg/{id}','UsersController@dropprofileimg')->middleware('auth');
+#Establece una imagen de perfil ya existente para un usuario
+Route::put('/user/selectimgperfil/{id}','UsersController@selectimgperfil')->middleware('auth');
 #Obtiene los notificadores, usuario, eventos, events para los paneles notificaciones en la pagina principal del admin 
 #Esta ruta ya tiene los middleware adroles desde el constructor 
 Route::get('/notifiers','DashboardController@notifiers')->name("notifiers");

@@ -1,10 +1,10 @@
+import moment from 'moment';
+
 /**
  * Formateado: JSON
  * Orgien: Tabla medias_profiles
  * Destino: Arbol JSON para Componente Visualizador de medios 
  */
- import moment from 'moment';
-
  export function formatter86(source,storage_base_url){
     return {
         id: source.id,
@@ -17,21 +17,28 @@
     }
 }
 
+//POST_EVENTS
+//PROFILE_MEDIAS
 
 /**
+ * NOTA: el Arbol JSON debe tener los mismos nodos que el formateador 86
  * Formateado: JSON
- * Orgien: Tabla users
- * Destino: Arbol JSON para usuario PostEventCreateComponent
+ * Orgien: Tabla files_on_memories , files_on_post_events ,  files_on_resource
+ * Destino: Arbol JSON para Componente Visualizador de medios 
  */
-
- /*export function formatter87(user,storage_base_url){
+export function formatter87(source,owner_id){
     return {
-        id: user.id,
-        nickname:user.artistic_name, 
-        fullname: user.name,
-        profile_path: storage_base_url + "/files/profiles/" + user?.profile_img?.path_file
+        id: source.id,
+        type: source.type_file,
+        name: source.name,
+        url: source.url, //ya la tienen porque se crea en componente padre 
+        owner: {
+            id: owner_id
+        }        
     }
-}*/
+}
+
+
 
 
 export function getModel88(){
@@ -77,7 +84,11 @@ export function getModel88(){
  * Destino: Arbol JSON para componente muestra PostEventShowComponent y PostEventCreateComponent
  */
 
- export function formatter88(item,storage_base_url){
+export function formatter88(item,storage_base_url){
+    if(item.presentation_model != null){
+        item.presentation_model.url = storage_base_url +"/files/images/" + item.presentation_model.name; 
+    }        
+    
     return {
         post: {
             id: item.id,
@@ -104,7 +115,8 @@ export function getModel88(){
                 lat: item.event_detail?.geo_lat,
                 lng: item.event_detail?.geo_lat,
             }
-        },                        
+        },            
+        presentation_model: item.presentation_model,            
         creator: {
             id: item.owner.id,
             nickname: item.owner.artistic_name,
