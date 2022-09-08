@@ -14,10 +14,16 @@
             </div>    
         </div>    
         <div>
-            <p>
-                {{itemData.resource.description}}
-                <a href="javascript:void;" @click.prevent="goRead"> Seguir leyendo</a>
-            </p>
+        <div class="mlist_item-description">
+            <span v-html="itemData.resource.description"></span>
+            <div class="mlist_item-gradient">
+
+            </div>
+        </div>
+        <div class="text-right">
+            <a href="javascript:void;" @click.prevent="goRead"> Seguir leyendo</a>
+        </div>
+
         </div>
     </div>
 </template>
@@ -74,6 +80,22 @@ export default {
         background-position: center; /* Center the image */
         background-repeat: no-repeat; /* Do not repeat the image */
         background-size: cover; /* Resize the background image to cover the entire container */        
+    }
+
+    .mlist_item-description{
+        width: 100%;
+        height: 100px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .mlist_item-gradient{
+        position: absolute;
+        top: 0;
+        background-image: -prefix-linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4));
+        background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4));
+        width: 100%;
+        height: 100%;
     }
 
     .bg1rc{

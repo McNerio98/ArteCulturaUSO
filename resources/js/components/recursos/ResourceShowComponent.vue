@@ -44,26 +44,17 @@
                     </span>
                     <div class="mailbox-attachment-info">
                         <a href="#" class="mailbox-attachment-name"><i class="fas fa-paperclip"></i> {{getShortName(e.name)}}</a>
-                        <span class="mailbox-attachment-size clearfix mt-1">
-                            
-                            <button class="btn btn-default btn-sm float-right" v-if="isPDF(e.name)">
-                                <i class="fas fa-book"></i>
-                                Ver
-                            </button>                            
-                            <button href="#" class="btn btn-default btn-sm float-right mr-2">
+                        <span class="mailbox-attachment-size clearfix mt-1">                         
+                            <a :href="e.url" class="btn btn-default btn-sm float-right mr-2" download>
                                 <i class="fas fa-cloud-download-alt"></i>
                                 Descargar
-                            </button>
+                            </a>
                         </span>
                     </div>
                 </li>
             </ul>
 
         </div>
-        </div>
-        <!--Preview Component-->
-        <div>
-            previsualizador
         </div>
     </div>
 </template>
