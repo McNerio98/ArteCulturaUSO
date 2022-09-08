@@ -10,7 +10,7 @@
                         <img style="object-fit: contain; padding-top: 3px"
                             width="100%"
                             height="100px"
-                            :src="m.data != null ? m.data : m.name"
+                            :src="m.data != null ? m.data : m.url"
                         alt="Preview"/>
                         <a @click="removeFile(m.index_parent,m.id)"
                             class="remove-image"
@@ -73,8 +73,8 @@
                 style="object-fit: cover"/>
                 Fotos
                 </label>
-                <input accept="image/*"
-                    hidden="true"
+                <input hidden="true"
+                    accept="image/png, image/jpg, image/jpeg"
                     type="file"
                     ref="inputforimgs"
                     @change="addFile"
@@ -99,7 +99,7 @@
                     @click="triggerInputForDocs"
                     style="cursor: pointer"
                 class="btn btn-light btn-block text-break">
-                <img :src="acAppData.base_url + '/images/iconBtnAddDoc.png'"
+                <img :src="acAppData.base_url + '/images/icons/pdffile.png'"
                     width="20px"
                     height="20px"
                 style="object-fit: cover"/>
@@ -199,6 +199,7 @@
             return {
                 acAppData: {},
                 limitefiles: 10,
+                mediadrop_ids: [],
                 flags: {
                     modal_video_youtube: false
                 }
@@ -210,7 +211,7 @@
         computed: {
             ListImagesOrVideos: function(){
                 return this.itemData.media.filter((e,index) => {
-                    if(e.type_file == "image" || e.type_file == "video"){
+                    if((e.type_file == "image" || e.type_file == "video") && !e.presentation){
                         e.index_parent = index;
                         return e;
                     }
@@ -254,7 +255,7 @@
                 }
 
                 const newVideoMedia = {
-                    id: null,
+                    id: null, //VALIDAR AQUI 
                     type_file: "video",
                     name: id_video,
                     memory_id: null,
@@ -265,6 +266,9 @@
             },
             removeFile: function(indexParent,id){
                 this.itemData.media.splice(indexParent,1);
+                //For edit mode 
+                if(id != 0){this.mediadrop_ids.push(id);}
+                this.$emit("drop-ids",this.mediadrop_ids);
             },
             removeDocs: function(indexParent,id){
                 this.itemData.media.splice(indexParent,1);

@@ -8,9 +8,12 @@
         <input type="hidden" id="idmemory" value="{{request('id')}}">
         <div class="container">
            <div>
-                <Memory v-for="(e,index) of modelo"
-                        :item-data="e">
-                </Memory>
+                <memory 
+                        v-for="(e,index) of modelo"
+                        :pdata="e"
+                        @deleted="onDeletedMemory"
+                        @edit="onEditMemory">
+                </memory>
            </div>
         </div>
 

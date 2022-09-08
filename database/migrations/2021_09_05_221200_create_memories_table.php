@@ -19,14 +19,15 @@ class CreateMemoriesTable extends Migration
             $table->enum('type',['biography','memory'])->default('biography');
             $table->string("area",150);
             $table->string("name",100);
-            $table->string("other_name",100);
+            $table->string("other_name",100)->nullable();
             $table->date("birth_date");
             $table->date("death_date");
             $table->mediumText("content");
             $table->unsignedBigInteger('presentation_img')->nullable(); //sin restrincion 
             $table->unsignedBigInteger('creator_id');
-            $table->foreign('creator_id')->references('id')->on('users');
+            $table->foreign('creator_id')->references('id')->on('users')->onDelete('cascade');
             $table->enum('status',['review','approved','deleted'])->default('review');
+            
         });
     }
 

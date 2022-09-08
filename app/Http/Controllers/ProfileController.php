@@ -10,7 +10,7 @@ use App\UserMeta;
 use App\TagsOnProfile;
 use App\MediaProfile;
 use App\PostEvent;
-
+use Storage;
 
 /*
 ** Obtiene los elementos, (Publicaciones o eventos) del perfil pasado como parametro 
@@ -31,10 +31,19 @@ class ProfileController extends Controller
 			return redirect()->route('inicio');
 		}
 		
-		return view("profile",['id_user_cur' => $id]);
+		return view("profile.index",['id_user_cur' => $id]);
 	}
 
-	public function editElement($id_user, $id_post){
+	public function showPostEvent($id_post){
+		$e = PostEvent::find($id_post);
+		if(!$e){//No existe
+			return redirect()->route('inicio');
+		}		
+
+		return view("profile.showpost",["postid" => $id_post]);
+	}
+
+	public function editPostEvent($id_post){
 		$e = PostEvent::find($id_post);
 		if(!$e){
 			return redirect()->route('inicio');
@@ -43,13 +52,8 @@ class ProfileController extends Controller
 		if(!Auth::user()->can('editar-publicaciones') &&  intval($e->creator_id) !==  intval(Auth::user()->id)){
 			return redirect()->route('inicio');//permiso denegado 
 		}
-
-		//Inconsistencia visual 
-		if( intval($e->creator_id) !==  intval($id_user) ){
-			return redirect()->route('inicio');
-		}
-
-		return view("edit-item",['id_user_cur' =>  $id_user, 'id_elem_edit' => $id_post]);
+		
+		return view("profile.editpost",["postid" => $id_post]);
 	}
 	
 
@@ -163,7 +167,7 @@ class ProfileController extends Controller
 		return $output;				
 	}
 
-	
+
 
 	public function deleteTag($id_user,$id_tag){
         $salida = [

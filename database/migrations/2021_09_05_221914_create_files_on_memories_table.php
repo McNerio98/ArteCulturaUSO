@@ -18,7 +18,7 @@ class CreateFilesOnMemoriesTable extends Migration
             $table->timestamps();
             $table->string("name",500);
             $table->enum('type_file',['image','video','docfile'])->default('image');
-            $table->foreignId('memory_id')->constrained();
+            $table->foreignId('memory_id')->constrained()->onDelete('cascade');;
         });
 
     }

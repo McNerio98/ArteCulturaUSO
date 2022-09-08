@@ -11,9 +11,8 @@
           
         <memory-create
                 v-for="(e,index) of modelo"
-                :item-data="e"
-                :main-img-change="main_img_buffer.change"
-                :main-Img="main_img_buffer.base64"
+                ref="acVmCompMemory"
+                :pdata="e"
                 @trim-principal-img="openTrimPrincipalPic"
                 >
         </memory-create>

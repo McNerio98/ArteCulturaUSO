@@ -10,36 +10,38 @@
 
         <div class="collapse navbar-collapse " id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item active" style="margin-left:20px">
-                    <a class="nav-link" style="color:#20B7EB" href="{{route('inicio')}}"> <i class="fas fa-book"></i>
+                <li class="nav-item ml-1 ml-md-3 mt-2">
+                    <a class="" style="color:#20B7EB" href="{{route('inicio')}}"> <i class="fas fa-book"></i>
                         Inicio <span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item" style="margin-left:20px">
-                    <a class="nav-link" style="color:#20B7EB" href="{{url('/').'/search?id_filter=0&label=&type_search=all'}}"> <i
+                <li class="nav-item ml-1 ml-md-3 mt-2">
+                    <a class="" style="color:#20B7EB" href="{{url('/').'/search?id_filter=0&label=&type_search=all'}}"> <i
                             class="fas fa-guitar"></i> Artistas</a>
                 </li>
-                <li class="nav-item" style="margin-left:20px">
-                    <a class="nav-link" style="color:#20B7EB" href="{{url('/').'/search?id_filter=9&label=Promotores&type_search=cat'}}"> <i
+                <li class="nav-item ml-1 ml-md-3 mt-2">
+                    <a class="" style="color:#20B7EB" href="{{url('/').'/search?id_filter=9&label=Promotores&type_search=cat'}}"> <i
                             class="fas fa-compress-arrows-alt"></i> Promotores</a>
                 </li>
-                <li class="nav-item" style="margin-left:20px">
-                    <a class="nav-link" style="color:#20B7EB" href="{{url('/').'/search?id_filter=10&label=Escuelas&type_search=cat'}}"> <i
+                <li class="nav-item ml-1 ml-md-3 mt-2">
+                    <a class="" style="color:#20B7EB" href="{{url('/').'/search?id_filter=10&label=Escuelas&type_search=cat'}}"> <i
                             class="fas fa-book-open"></i> Escuelas</a>
                 </li>
-                <li class="nav-item" style="margin-left:20px">
-                    <a class="nav-link" style="color:#20B7EB" href="{{route('recursos')}}"> <i
+                <li class="nav-item ml-1 ml-md-3 mt-2">
+                    <a class="" style="color:#20B7EB" href="{{route('recursos')}}"> <i
                             class="fas fa-box-open"></i> Recursos</a>
                 </li>
-                <li class="nav-item" style="margin-left:20px">
-                    <a class="nav-link" style="color:#20B7EB" href="{{route('biografias')}}"> <i
+                <li class="nav-item ml-1 ml-md-3 mt-2">
+                    <a class="" style="color:#20B7EB" href="{{route('biografias')}}"> <i
                             class="fas fa-book-reader"></i> Biografías</a>
                 </li>
-                <li class="nav-item" style="margin-left:20px">
+
+                <!-- <li class="nav-item" style="margin-left:20px">
                     <a class="nav-link" style="color:#20B7EB" href="{{route('homenajes')}}"> <i
                             class="fas fa-hand-holding-heart"></i> Homenajes </a>
-                </li>
-                <li class="nav-item" style="margin-left:20px">
-                    <a class="nav-link" style="color:#20B7EB" href="{{route('acercade')}}"> <i
+                </li> -->
+
+                <li class="nav-item ml-1 ml-md-3 mt-2">
+                    <a class="" style="color:#20B7EB" href="{{route('acercade')}}"> <i
                             class="fas fa-exclamation"></i> Acerca de</a>
                 </li>
 

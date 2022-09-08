@@ -24,6 +24,10 @@ class WebsiteController extends Controller
         return view("welcome",['posts_popular'=>$data,'some_categories'=>$cats]);
     }
 
+    public function nearby(){
+        return view("nearby");
+    }
+
     public function artistas(){
         return view("talents");
     }
@@ -37,11 +41,11 @@ class WebsiteController extends Controller
     }
 
     public function recursos(){
-        return view("resources");
+        return view("recursos.index");
     }
 
     public function biografias(){
-        return view("biographies");
+        return view("memories.index");
     }
     
     public function homenajes(){

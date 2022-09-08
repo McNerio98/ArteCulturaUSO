@@ -7,7 +7,7 @@
             </div>
             <div class="_acTrimOptions">
               <button class="btnTrimOptions btnOk" @click="toConvertBase64">Guardar</button>
-              <button class="btnTrimOptions btnCancel" @click="closeTrim">Cancelar</button>
+              <button class="btnTrimOptions btnCancel" @click="onClickClose">Cancelar</button>
             </div>
         </div>
     </div>
@@ -19,8 +19,8 @@ export default {
   props: {
     aspectRatio: {type: Number,default: 1},
     viewMode: {type: Number,default: 1},
-    minCropBoxWidth: {type: Number,default: 100},
-    minCropBoxHeight: {type: Number, default: 100}
+    minCropBoxWidth: {type: Number,default: 140},
+    minCropBoxHeight: {type: Number, default: 140}
   },
   data: function () {
     return {
@@ -46,17 +46,32 @@ export default {
     openTrim: function(file_target){
       //validate file Element
       let valid_file = true;
-      var valid_format = ["jpg","jpeg","png","JPG","JPEG","PNG"];
-      var exten1 = file_target.name.split(".");
-      if(valid_format.indexOf(exten1[exten1.length -1]) == -1)valid_file = false;
-      if(file_target == undefined)valid_file = false;
-      if(file_target.name == undefined)valid_file = false;
-      if(!valid_file){alert("Error de formato, recargue el sitio"); this.closeTrim(); return;}
+      const validExten = ["jpeg","jpg","png"];
+      const  extenstion = file_target.name.substring(file_target.name.lastIndexOf('.')+1, file_target.name.length) || null;
+      if(extenstion == null || !validExten.includes(extenstion.toLowerCase().trim())){
+        this.closeTrim();
+        StatusHandler.ValidationMsg("Archivos no soportados");
+        return;
+      }
+      
+      //validar tamaños
 
-      let urlImage = URL.createObjectURL(file_target);
-      this.image_tag.setAttribute("src", urlImage);
-      let vm = this;
-
+      const urlImage = URL.createObjectURL(file_target);
+      const img = new Image();
+      const vm = this;
+      img.onload = function(){
+        if(this.width < 150 || this.height < 150){
+          vm.closeTrim();
+          StatusHandler.ValidationMsg("Imagen pequeña, seleccione una más grande");
+        }else{
+          vm.setupForOpen(urlImage);
+        }
+      }
+      img.src = urlImage;
+    },
+    setupForOpen: function(url){
+      this.image_tag.setAttribute("src", url);
+      const vm = this;
       $(vm.modal).fadeIn();     
       $("body").addClass("no-scroll");
 
@@ -68,22 +83,24 @@ export default {
 
           ready: function () {
             //vm.croppable = true;                  
-            vm.cropper_el
-              .setCropBoxData(null)
-              .setCanvasData(null);            
+            vm.cropper_el.setCropBoxData(null).setCanvasData(null);            
           },
-      });      
+      });
+
     },
     closeTrim: function(){
-        this.croppable = false;
-        this.cropper_el.destroy();
         $("body").removeClass("no-scroll");
         $(this.modal).fadeOut();
         this.$emit("oncancel");
     },
+    destroy: function(){
+        this.croppable = false;
+        this.cropper_el.destroy();
+    },
     onClickClose: function(){
       //this.toConvertBase64();
       this.closeTrim();
+      this.destroy();
     },
     toConvertBase64: function(){
         let base64 = null;

@@ -4,21 +4,24 @@
  * Content file: list all, new, update memory item 
  */
 
-Vue.component('building-page',require('../../components/BuildingPageComponent.vue').default);
+
 
 Vue.component('memory-create',require('../../components/memories/MemoryCreateComponent').default);
 
 
 Vue.component('control-trim', require('../../components/trim/TrimComponentv2.vue').default);
-import {formatter89,formatter90} from '../../formatters';
+import {formatter89} from '../../formatters';
 import {getMemory,getAdminMemories} from '../../service';
 import Memory from '../../components/memories/MemoryShowComponent.vue';
 import MemorySummary from '../../components/memories/MemoryMiniViewComponent.vue';
-
-//Show all items 
+import NoDataRegister from '../../components/NoDataRegister.vue';
+//Index,  all items (index)
 if(document.getElementById("appMemories") != undefined){
     const appMemories = new Vue({
-        components: {MemorySummary},
+        components: {
+            'memory-summary': MemorySummary,
+            'no-records' : NoDataRegister
+        },
         el: "#appMemories",
         data: {
             acAppData: {},
@@ -38,18 +41,27 @@ if(document.getElementById("appMemories") != undefined){
                     if(response.code == 0){
                         StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
                         return;
-                    }                  
+                    }     
+                    
+                    
 
-                    this.items = response.data.map(e => formatter90(e,this.acAppData.storage_url));
+                    this.items = response.data.map(e => {
+                        e.media = [];
+                        return formatter89(e,this.acAppData.storage_url);
+                    });
                 }).catch(ex =>{
-
+                    const target_process = "Recuperar elementos"; 
+                    StatusHandler.Exception(target_process,ex);
                 });
-            }
+            },
+            onReadMemory: function(id){
+                window.location.replace(this.acAppData.base_url + "/admin/memories/"+id);
+            }            
         }
     });
 }
 
-//Show item 
+//Show item (show)
 if(document.getElementById("appMemoryShow") != undefined){
     const appMemoryShow = new Vue({
         el: "#appMemoryShow",
@@ -72,9 +84,10 @@ if(document.getElementById("appMemoryShow") != undefined){
         methods: {
             getData: function(){
                 if(this.idmemory == 0){
-                    window.location.replace(this.acAppData +"/" + "memories");
+                    window.location.replace(this.acAppData.base_url  + "/admin/memories");
                     return;
                 }
+
                 getMemory(this.idmemory).then(result=>{
                     let response = result.data;
                     if(response.code == 0){
@@ -83,15 +96,21 @@ if(document.getElementById("appMemoryShow") != undefined){
                     }
                     this.modelo.push(formatter89(response.data,this.acAppData.storage_url));
                 }).catch(ex=>{
-                    let target_process = "Establecer Elemento como destacado"; 
+                    let target_process = "Recuperar elemento especificado"; 
                     StatusHandler.Exception(target_process,ex);
                 });            
+            },
+            onDeletedMemory: function($id){
+                window.location.replace(this.acAppData.base_url + "/admin/memories");
+            },
+            onEditMemory: function($id){
+                window.location.replace(this.acAppData.base_url + "/admin/memories/create?idm="+$id);                
             }
         }
     });
 }
 
-//New item or update  
+//New item or update  (create or update)
 if(document.getElementById("appMemoryCreateUpdate") != undefined){
     //Para el administrador se maneja una sola vista, para homenajes y biografias 
     const appMemoryCreateUpdate = new Vue({
@@ -122,7 +141,7 @@ if(document.getElementById("appMemoryCreateUpdate") != undefined){
             if(this.idmemory == 0){
                 this.createMemory();
             }else{
-                this.getMemory();
+                this.getDataMemory();
             }
         },
         methods: {
@@ -146,8 +165,23 @@ if(document.getElementById("appMemoryCreateUpdate") != undefined){
                     media: []
                 },this.acAppData.storage_url));
             },
-            getMemory: function(){
-
+            getDataMemory: function(){
+                if(this.idmemory == 0){
+                    window.location.replace(this.acAppData +"/" + "memories");
+                    return;
+                }
+                //Service
+                getMemory(this.idmemory).then(result=>{
+                    let response = result.data;
+                    if(response.code == 0){
+                        StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                        return;
+                    }
+                    this.modelo.push(formatter89(response.data,this.acAppData.storage_url));
+                }).catch(ex=>{
+                    let target_process = "Establecer Elemento como destacado"; 
+                    StatusHandler.Exception(target_process,ex);
+                });                     
             },
             openTrimPrincipalPic: function(file){
                 this.$refs.acVmCompCropper.openTrim(file);
@@ -157,7 +191,7 @@ if(document.getElementById("appMemoryCreateUpdate") != undefined){
                 switch(this.trim_buffer.target){
                     case "MAIN_IMG_MEMOY": {
                         //pass to component 
-                        this.$refs.acVmCompMemory.setPresentationImg(base64);
+                        this.$refs.acVmCompMemory[0].setPresentationImg(base64);
                         break;
                     }
                 }

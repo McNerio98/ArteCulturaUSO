@@ -17,7 +17,7 @@ class AddCamposTags extends Migration
         //el nombre de la tabla que queremos modificar
         Schema::table('tags', function (Blueprint $table) {
             $table->unsignedBigInteger('category_id');
-            $table->foreign('category_id')->references('id')->on('categories');
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');;
         });
     }
 
