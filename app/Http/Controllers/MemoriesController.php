@@ -148,7 +148,6 @@ class MemoriesController extends Controller
             "memory.id" => "required|numeric",
             "memory.area" => "required",
             "memory.name" => "required",
-            "memory.other_name" => "required",
             "memory.birth_date"   => "required | date",
             "memory.content"   => "required",
             "memory.type" => ["required",Rule::in(["biography","memory"])]
@@ -182,7 +181,7 @@ class MemoriesController extends Controller
 
             $memory->area                 = $request->memory["area"];
             $memory->name              = $request->memory["name"];
-            $memory->other_name   = $request->memory["other_name"];
+            $memory->other_name   = $request->memory["other_name"];//puede ser nulo
             $memory->birth_date       = $request->memory["birth_date"];
             $memory->content           = $request->memory["content"];
             $memory->type                 = $request->memory["type"];
@@ -227,7 +226,9 @@ class MemoriesController extends Controller
                         $FileMemory->save();
     
                         $path_store = $pathname.$filename;
-                        Storage::disk('local')->put($path_store, $dataFile);                                            
+                        if(!Storage::disk('local')->put($path_store, $dataFile)){
+                            throw new \Exception("No se logro guardar el archivo");
+                        }
                         
                         //Nueva imagen de presentacion 
                         if($FileMemory->type_file === "image" && isset($files[$index]["presentation"]) && $files[$index]["id"] == 0){
@@ -315,8 +316,8 @@ class MemoriesController extends Controller
             $output["data"] = $memory;            
         }catch(\Throwable $ex){
             DB::rollback();
-            $output["msg"] = "Error en la operación, consulte soporte técnico.";
-            //$output['msg'] = "Error: " . $ex->getLine() . " - " . $ex->getMessage(); //for debugin            
+            //$output["msg"] = "Error en la operación, consulte soporte técnico.";
+            $output['msg'] = "Error: " . $ex->getLine() . " - " . $ex->getMessage(); //for debugin            
         }
 
         return $output;

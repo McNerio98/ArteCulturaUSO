@@ -73,7 +73,7 @@
             </div>
 
             <!--MOSTRAR FOTOS Y VIDEOS-->
-            <h4>Archivos multimedia adjuntos</h4>
+            <h5>Archivos multimedia adjuntos</h5>
             <div class="row">
                 <div v-for="(m,index) of ListImagesOrVideos" 
                     :key="index"
@@ -112,7 +112,7 @@
             </div>
 
             <!--SECCION PARA MOSTRAR SOLO LOS DOCUMENTOS-->
-            <h4>Documentos adjuntos</h4>
+            <h5 class="mt-2">Documentos adjuntos</h5>
             <ul class="list-unstyled">
                 <li v-for="(m, index) of ListDocs" v-bind:key="index" class="docfile mb-2" :title="m.name">
                     <a target="_blank" :href="m.url" class="btn-link text-secondary"><i class="far fa-file-pdf"></i> {{m.name}}</a>

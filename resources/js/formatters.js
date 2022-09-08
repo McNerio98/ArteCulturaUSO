@@ -247,7 +247,7 @@ export function formatter91(item,storage_base_url){
             e.presentation = (e.id == id_presentation) ? true:false;
             switch(e.type_file){
                 case "image": {e.url = storage_base_url +"/files/images/"  + e.name;break;}
-                case "docfile": {e.url = storage_base_url + "/files/docs/me" + item.id + "/" + e.name;break;}
+                case "docfile": {e.url = storage_base_url + "/files/docs/rc" + item.id + "/" + e.name;break;}
                 case "video": {e.url = storage_base_url + "/images/youtube_item.jpg";break;}
             }
             return e;            
