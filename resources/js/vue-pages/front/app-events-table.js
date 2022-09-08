@@ -1,6 +1,6 @@
 Vue.component('spinner1',require('../../components/spinners/Spinner1Component.vue').default);
-Vue.component('summary-item',require('../../components/post/PostEventComponent.vue').default);
-Vue.component('post-general',require('../../components/post/PostGeneralComponent.vue').default);
+Vue.component('summary-item',require('../../components/post/PostEventCardComponent.vue').default);
+Vue.component('post-general',require('../../components/post/PostEventShowComponent.vue').default);
 
 const appEvents = new Vue({
     el: "#app_events",

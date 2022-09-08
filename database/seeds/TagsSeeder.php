@@ -3,8 +3,6 @@
 use Illuminate\Database\Seeder;
 use App\Tag;
 use App\Category;
-use App\Section;
-use App\SectionByCategory;
 
 class TagsSeeder extends Seeder
 {

@@ -1,10 +1,10 @@
 <template>
-    <div class="modal fade" id="modaPreviewMedia" tabindex="-1" role="dialog" aria-labelledby="ModalMedia"
+    <div class="modal fade" id="modaPreviewMedia" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="ModalMedia"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header" style="padding-top: 5px !important;padding-bottom: 5px !important;">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" @click="onClose" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -21,9 +21,16 @@
                         <div class="_acBtnNavigation" @click="nextItem"><i class="fas fa-chevron-right"></i></div>
                     </div>
                 </div>
-                <div v-if="typeMedia == 'PROFILE_MEDIAS' && target.owner.id === logged" class="modal-footer" style="justify-content: center !important;">
-                    <button @click="$emit('new-profile-media')" type="button" class="btn btnOptionsPreMedia">Subir nueva</button>
-                    <button @click="$emit('set-profile-media')"  type="button" class="btn btnOptionsPreMedia">Seleccionar como Perfil </button>
+                <div  class="modal-footer" style="justify-content: center !important;">
+                    <template v-if="openFor == 'PROFILE_MEDIAS' && Selected.owner.id === acAppData.current_user.id">
+                        <button @click="$emit('new-profileimg')" type="button" class="btn btnOptionsPreMedia">Subir nueva</button>
+                    </template>
+                    <template v-if="openFor == 'PROFILE_MEDIAS' && Selected.owner.id === acAppData.current_user.id && acAppData.current_user.presentation_img.id != Selected.id ">
+                        <button @click="$emit('setlike-perfil',Selected.id)"  type="button" class="btn btnOptionsPreMedia">Seleccionar como Perfil </button>
+                    </template>       
+                    <template v-if="openFor == 'PROFILE_MEDIAS' && Selected.owner.id === acAppData.current_user.id && Selected.name != 'default_img_profile.png'">
+                        <button @click="$emit('delete',Selected.id)"  type="button" class="btn btn-warning">Eliminar</button>
+                    </template>                            
                 </div>
             </div>
         </div>
@@ -32,14 +39,13 @@
 
 <script>
     export default {
-        props: {
-            logged: {type: Number,default: 0}, //id del usuario logeado 
-            typeMedia: {type: String}, // MEDIA_PROFILES (Images de perfiles)
-            target: {type: Object,required:true}, //elemento actual objecto completo()
-            items: {type: Array, default: []}, //los items se deben pasar formateados 
-        },
         data: function(){
             return {
+                target: null,
+                openFor: "",
+                items: [],
+                acAppData: window.obj_ac_app,        
+
                 current_media: "",
                 index_current: -1,
                 aux_mutated: false,
@@ -47,6 +53,12 @@
             }
         },
         methods: {
+            builderAndShow: function(items,open_for,target){
+                this.items = items;
+                this.openFor = open_for;
+                this.target = target;
+                $('#modaPreviewMedia').modal('show');
+            },
            preItem: function(){
                //console.log("Anterior...");
                if( (this.index_current - 1) >= 0){
@@ -62,6 +74,12 @@
                }else{
                    this.index_current++;
                }
+           },
+           onClose: function(){
+            this.items = [];
+            this.openFor = "";
+            this.target = null;
+             $('#modaPreviewMedia').modal('hide');
            }
         },
         watch: {
@@ -72,7 +90,6 @@
                        break;
                     }
                 }      
-
             }
         },
         computed: {
@@ -80,27 +97,6 @@
                 if(this.items[this.index_current] == undefined){
                     return {}; //retornar de no encontrado 
                 }
-
-                // if(this.items[this.index_current].type == 'image'){
-                //     const img = new Image();
-                //     const vu = this;
-                //     img.onload = function(){
-                //         if((this.width - 150) > this.height){
-                //             vu.dimg.width = "100%";
-                //             vu.dimg.height = "auto";
-                //         }else if(this.height > this.width){
-                //             vu.dimg.width = "auto";
-                //             vu.dimg.height = "100%";
-                //         }else{ // cuadrada, dado el radio de aspecto se ajusta al alto 
-                //             vu.dimg.width = "auto";
-                //             vu.dimg.height = "100%";                            
-                //         }
-                        
-                //     }
-                //     img.src = this.items[this.index_current].url;
-                // }
-
-                //pasar mejor el fullpath 
                 return this.items[this.index_current]; 
             }
         }

@@ -21,7 +21,7 @@ class CreatePostEventsTable extends Migration
             $table->unsignedBigInteger('creator_id');
             $table->unsignedBigInteger('presentation_img')->nullable(); //sin restrincion 
             $table->timestamps(); //este es el datepost, es decir cuando se publico el post 
-            $table->foreign('creator_id')->references('id')->on('users');
+            $table->foreign('creator_id')->references('id')->on('users')->onDelete('cascade');
             $table->index("title"); //plain index for search
         });
     }

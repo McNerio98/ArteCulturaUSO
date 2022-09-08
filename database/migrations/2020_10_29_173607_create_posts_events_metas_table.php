@@ -19,7 +19,7 @@ class CreatePostsEventsMetasTable extends Migration
             $table->string('key',45);
             $table->longText('value');
             $table->timestamps();
-            $table->foreign('post_event_id')->references('id')->on('post_events');
+            $table->foreign('post_event_id')->references('id')->on('post_events')->onDelete('cascade');
         });
     }
 

@@ -7,6 +7,7 @@ use App\User;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use App\PostEvent;
+use App\Helper\UsersHelper;
 
 class DashboardController extends Controller
 {
@@ -26,14 +27,14 @@ class DashboardController extends Controller
 	}
 
     public function index(){
-		$request_users = $this->userRequest();
+		$request_users = UsersHelper::usersRequest();
     	return view('admin.home' , ['ac_option' =>'home' , 'request_users' => $request_users]);
 	}
 
 	//MY CONTENT OPTION 
     public function content(){
-		$request_users = $this->userRequest();
-    	return view('admin.content' , ['ac_option' =>'content' , 'request_users' => $request_users]);
+		$request_users = UsersHelper::usersRequest();
+    	return view('admin.postevents.index' , ['ac_option' =>'content' , 'request_users' => $request_users]);
 	}
 
 	//SEARCH PAGE  
@@ -70,14 +71,6 @@ class DashboardController extends Controller
 	}
 
 
-	public function resources(){
-		if( ! Auth::user()->can('ver-recursos')){ 
-            return redirect()->route('dashboard');
-        };
-		$request_users = $this->userRequest();
-		return view("admin.resources", ['ac_option' =>'resources' , 'request_users' => $request_users]); 
-	}
-
 	
 	public function roles(){
 		if( ! Auth::user()->can('ver-roles')){ //poner esto en los de arriba 
@@ -108,9 +101,18 @@ class DashboardController extends Controller
 		if(!Auth::user()->can('editar-publicaciones') &&  intval($e->creator_id) !==  intval(Auth::user()->id)){
 			return redirect()->route('dashboard');
 		}
+		$request_users = $this->userRequest();
+		return view("admin.postevents.edit-item",['request_users' => $request_users,'id_elem_edit' => $id,'ac_option' =>'null']);
+	}
+
+	public function showElement($id){
+		$e = PostEvent::find($id);
+		if(!$e){
+			return redirect()->route('dashboard');
+		}		
 
 		$request_users = $this->userRequest();
-		return view("admin.edit-item",['request_users' => $request_users,'id_elem_edit' => $id,'ac_option' =>'null']);
+		return view("admin.postevents.show-item",['request_users' => $request_users,'id_elem_edit' => $id,'ac_option' =>'null']);
 	}
 	
 	//Access via AJAX 
