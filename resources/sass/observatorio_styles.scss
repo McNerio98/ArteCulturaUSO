@@ -452,8 +452,6 @@ body.no-scroll {
       width: 100%;
     }
   }
-
-  
 /*END LOGIN STYLES*/
 
 /*ABOUT STYLES*/
@@ -467,6 +465,82 @@ body.no-scroll {
   }
 }
 /*END ABOUT STYLES*/
+
+
+
+/*TABLERO DE EVENTOS*/
+.tblro__ac-container{
+  background-color: rgb(108 111 122);
+  height: 450px;
+  position: relative;
+}
+
+.tblro__ac-rigth{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
+  display: flex;  
+  align-items: center;
+  justify-content: center;
+  width: 10%;
+}
+
+.tblro__ac-left{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  display: flex;  
+  align-items: center;
+  justify-content: center;
+  width: 10%;
+}
+
+.tblro__ac-btns{
+  width: 80px;
+  height: 80px;
+  background-color: rgba(255, 255, 255, 0.904);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 0px;
+}
+
+.tblro__ac-opnearby{
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px;
+  z-index: 3;
+  a{
+    color: white !important;
+    display: flex;
+    align-items: center;
+    font-size: 150%;
+    img{
+      margin-right: 5px;
+      width: 40px;
+      height: auto;
+    }
+  }
+}
+
+.tblro__ac-item-container{
+  position: absolute;
+  width: 80%;
+  top: 0;
+  right: 10%;
+  height: 100%;
+  background-color: rgb(159, 155, 155);
+}
+
+
+
+/*END TABLERO DE EVENTOS*/
 
 
 /*MEDIAS QUERYS*/
