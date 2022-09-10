@@ -78,19 +78,19 @@
 
     <!--HERE ALL CONTENT-->
     <!--///////////////////////////////////////////////////////////////////////////////-->
-    <h5 id="ancla-title1">ELEMENTOS POR APROBAR</h5>
+    <h5 id="ancla-title1">Agregados recientemente</h5>
 
     <!--NO CONTENT-->
-    <div class="flex-shrink text-center p-md-3" style="max-width: 42em; margin:auto;" v-if="approval_items.length === 0 && !spinners.S1">
+    <div class="flex-shrink text-center p-md-3" style="max-width: 42em; margin:auto;" v-if="recientes.length < 1">
         <img src="{{asset('images/no-task.svg')}}" alt="" style="width: 80px;">
-        <h2 class="text-success">Ningún elemento que aprobar</h2>
-        <p class="lead">Actualmente ninguna publicación o evento se encuentra esperando tu aprobación</p>
-        <a href="{{route('inicio')}}" class="">Crear contenido para aprobación aquí</a></p>
+        <h2 class="text-success">Ningún elemento agregado</h2>
+        <p class="lead">Actualmente ningún evento se ha creado</p>
+        <a href="{{route('content')}}" class="">Crear contenido</a></p>
     </div>
     <!--END NO CONTENT-->
 
     <!--SPINNER LOADER-->
-    <div class="p-md-5 d-flex justify-content-center align-items-center flex-column" v-if="spinners.S">
+    <div class="p-md-5 d-flex justify-content-center align-items-center flex-column" v-if="isLoading">
         <div class="lds-ellipsis">
             <div></div>
             <div></div>
@@ -100,41 +100,15 @@
         <h4 style="color: #38c172;">Cargando contenido...</h4>
     </div>
     <!--END SPINNER LOADER-->
-    <div  v-if="postevent_selected !== undefined">
-        <post-general @source-files="onSources" v-if="postevent_selected != undefined" v-bind:model="postevent_selected"></post-general>                                
+    <div class="mt-3" v-else>
+            <div class="row">
+                <postevent-card 
+                v-for="(e) in recientes" 
+                :pdata="e"
+                @selected="onSelected"></postevent-card>
+            </div>
     </div>
 
-    
-    <div class="row">
-        <summary-item @selected-item="getApprovalEl" v-for="app of approval_items" :model="app"></summary-item>        
-    </div>
-    <a href="#ancla-title1" id="ctrlAnchor1" class="ancla"></a>
-    <!--PAGINATION-->
-    <div v-if="approval_items.length > 0">
-        <nav aria-label="Navegacion elementos en aprobación">
-            <ul class="pagination justify-content-center">
-                <li v-bind:class="{'disabled' : ! (paginate_approval.current_page > 1)}" class="page-item">
-                    <a @click.prevent="changePage(paginate_approval.current_page - 1)" class="page-link" href="#">Anterior</a>
-                </li>
-                <li v-for="page in pagesNumber" v-bind:key="page" v-bind:class="[page == isActive? 'active':'']" class="page-item">
-                    <a @click.prevent="changePage(page)" class="page-link" href="#">@{{page}}</a>
-                </li>
-                <li v-bind:class="{'disabled' : ! (this.paginate_approval.current_page < this.paginate_approval.last_page)}" class="page-item">
-                    <a @click.prevent="changePage(paginate_approval.current_page + 1)" class="page-link" href="#">Siguiente</a>
-                </li>
-            </ul>
-        </nav>           
-    </div>
-    <!--END PAGINATION-->
-
-    <media-viewer 
-    :media-profile="false"  
-    :target="media_view.target"
-    :logged.number='{{Auth::user() == null ? 0 : Auth::user()->id}}'
-    :owner="media_view.owner"
-    :items="media_view.items">
-    </media-viewer>        
-    <!--///////////////////////////////////////////////////////////////////////////////-->
     <!--END HERE ALL CONTENT-->        
 </div>
 <!--/. container-fluid -->               

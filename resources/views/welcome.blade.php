@@ -1,18 +1,36 @@
 @extends('layouts.general-template')
 @section('title', 'Inicio')
 
+
+
 @section('content')
 <main role="main" class="flex-shrink-0" id="app_inicio">
     <input type="hidden" id="openRegister" value="{{app('request')->input('register')}}">
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-7 margin-no">
-            @include("layouts.components.slider")
+        <div class="row tblro__ac-container">
+            <div class="tblro__ac-opnearby">
+                <a href="{{route('nearby')}}">
+                    <img src="{{asset('images/icons/gps-svgrepo-com.svg')}}" alt=""/>
+                    <span>Eventos cercanos</span>
+                </a>
             </div>
-            <div class="col-md-5 margin-no">
-            @include("layouts.components.banner-solicitud")
+            <div class="tblro__ac-item-container">
+
             </div>
+            <div class="tblro__ac-left">
+                <button class="tblro__ac-btns">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            </div>  
+            <div class="tblro__ac-rigth">
+                <button class="tblro__ac-btns">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>            
         </div>
+
+
+
     </div>
     <div class="container bg-tenue-ac">
         <!--::::::::::::::::::::::::::::::::::::::START CONTENT::::::::::::::::::::::::::::::::::::::-->
@@ -51,28 +69,6 @@
         @endif
 
         <hr />
-
-        <!--EVENTS TABLE-->
-        <div class="row mt-2 mt-md-5">
-            <div class="col-12">
-                <div class="SectionWelcome">
-                    <h4 class="hSectionW text-center">TABLERO DE EVENTOS</h4>
-                    <div class="row featurette">
-                        <div style="display: flex; justify-content: center;" class="col-12">
-                            <p class="lead" style="text-align: center; font-size: 18px; color:#212529;width: 700px">
-                                Descubre todos los eventos a los que puedes asistir en los próximos días.
-                            </p>
-                        </div>
-                    </div>               
-                </div>
-            </div>
-        </div>
-
-        <div class="row mt-2 mt-md-3">
-                <summary-item v-for="event of events" @selected-item="onClickEvent" :model="event"></summary-item>
-        </div>
-        <p class="text-center h4 mb-1 mb-md-5"><a style="text-decoration:underline;" href="{{route('events')}}">Ver todos los eventos</a></p>
-        <!--END EVENTS TABLE-->
         
     <hr/>
         <!--CENTROS DE ENSEÑANZAS Y ACADEMIAS-->

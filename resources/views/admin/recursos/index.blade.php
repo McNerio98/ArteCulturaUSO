@@ -5,7 +5,9 @@
 @section('content')
 <main role="main" class="flex-shrink-0" id="appResourcesAdminIndex">
     <div class="container">
+        @can('crear-recursos')
         <a href="{{route('recursos.create.admin')}}">+Nuevo</a>
+        @endcan
         <div class="row mb-2">
             <no-records v-if="items.length == 0" icon="box.svg" page="Recursos"></no-records>
             <resouce-summary v-else v-for="(e) in items" :pdata="e" :key="e.id" @on-read="onReadResource"/>
