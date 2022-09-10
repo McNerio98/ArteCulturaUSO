@@ -137,10 +137,16 @@ class MemoriesController extends Controller
         ];
 
         $user = Auth::user();
-        if(!$user->can("crear-reseñas")){
+
+        if(!$user->can('crear-reseñas') && $request->memory["id"] == 0){
             $output["msg"] = "Operación denegada";
             return $output;
         }
+
+        if(!$user->can('editar-reseñas') && $request->memory["id"] != 0){
+            $output["msg"] = "Operación denegada";
+            return $output;
+        }        
 
 
         //Validaciones de campos
@@ -168,6 +174,8 @@ class MemoriesController extends Controller
         }else{
             $memory = Memory::find($request->memory["id"]);
         }
+
+
 
         //For update only 
         if(!$memory){
