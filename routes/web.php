@@ -109,8 +109,8 @@ Route::get('/search','SearchController@index')->name('search');
 
 
 //Middleware addroles filtra que el usuario sea un administrador y no un invitado, si es invitado lo redirecciona 
-//Routes para petticiones ajax
-Route::get('/approval','PostEventController@approval')->name('items.approval')->middleware('auth','adroles');
+Route::get('/admin/recientes','PostEventController@approval')->name('items.approval')->middleware('auth','adroles');
+
 
 Route::get('/users/dataConfig/{id}','UsersController@configUserData')->name("user.dataconf")->middleware('auth','adroles');
 

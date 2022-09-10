@@ -157,6 +157,10 @@ export function changeImgProfile($id){
     return axios.put(`/user/selectimgperfil/${$id}`);
 }
 
+export function getRecientes(){
+    return axios.get('/admin/recientes');
+}
+
 /**
  * Using Geodecoding API 
  */

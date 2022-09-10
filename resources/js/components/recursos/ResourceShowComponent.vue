@@ -13,11 +13,15 @@
                             <p>Contiene: {{itemData.media.length}} archivos adjuntos</p>
                     </div>
                     <div>
-                        <button href="#" class="btn btn-default btn-sm float-right mr-2" @click="onEdit">
+                        <button href="#" class="btn btn-default btn-sm float-right mr-2" 
+                            v-if="has_cap('editar-recursos') || itemData.resource.creator_id === acAppData.current_user.id"
+                            @click="onEdit">
                             <i class="fas fa-pen"></i> 
                             Editar
                         </button>
-                        <button href="#" class="btn btn-default btn-sm float-right mr-2" @click="onDelete">
+                        <button href="#" class="btn btn-default btn-sm float-right mr-2" 
+                            v-if="has_cap('eliminar-recursos') || itemData.resource.creator_id === acAppData.current_user.id"
+                            @click="onDelete">
                             <i class="fas fa-trash-alt"></i>
                             Eliminar
                         </button>                        
@@ -145,7 +149,10 @@ export default {
                         vm.isDeleting = false;
                     }
                 });            
-        }
+        },
+        has_cap(e){
+            return window.has_cap == undefined ? false : window.has_cap(e);
+        }             
     }
 }
 </script>

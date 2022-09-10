@@ -132,35 +132,18 @@ class PostEventController extends Controller
 
     //Filter for only manager roles and auth (Done)
     public function approval(Request $request){
-        $salida = [
+        $output = [
             "code" => 0,
             "msg" => "",
-            "data" => null,
-            'paginate' => null
+            "data" => null
         ];
-
-
-        $per_page = ($request->per_page == null)?15:$request->per_page;
-        //$salida["extra"] = $per_page;
-        //$result = PostEvent::where("status","review")->paginate($per_page);
-
-        $result = DB::table("post_events AS e")
-        ->join("users AS u","u.id","=","e.creator_id")
-        ->leftJoin("dtl_events AS dtl","dtl.event_id","=","e.id")
-        ->leftJoin("files_on_post_events AS f","f.id","=","e.presentation_img")
-        ->select("e.id","e.title","e.content AS description", "e.type_post AS type",
-        "f.name AS presentation_img","f.type_file AS presentation_type", "e.is_popular","dtl.event_date","dtl.has_cost","dtl.cost","dtl.frequency","u.artistic_name AS nickname",
-        "u.id AS creator_id")->where("e.status","review")->paginate($per_page);
-
-        $salida["paginate"] = [
-            'total' =>$result->total(),
-            'current_page'  => $result->currentPage(),
-            'per_page'      => $result->perPage(),
-            'last_page'     => $result->lastPage(),
-            'from'          => $result->firstItem(),
-            'to'            => $result->lastPage(),
-        ];
-        $salida["data"] = $result->items();
+        $items = [];
+        $result = PostEvent::with('presentation_model')->with('owner')->with('event_detail')->orderBy('id','desc')->limit(10)->get();
+		foreach($result as $el){
+			$el->owner->load('profile_img');
+			$items[] = $el;
+		}    
+        $salida["data"] = $items;
         $salida["code"] = 1;
         return $salida;
     }

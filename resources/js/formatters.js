@@ -240,6 +240,7 @@ export function formatter91(item,storage_base_url){
             name: item.name,
             description: item.content,
             tipo_id: item.tipo_id,
+            creator_id: item.creator_id,
             presentation_img: item.presentation_img
         },
         presentation_model: item.presentation_model,
