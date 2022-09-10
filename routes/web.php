@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
+
 //Verificacion de correo electronico
 Route::get('account/verify/{token}','Auth\LoginController@verifyAccount')->name('user.veriry');
 
@@ -109,7 +110,7 @@ Route::get('/search','SearchController@index')->name('search');
 
 
 //Middleware addroles filtra que el usuario sea un administrador y no un invitado, si es invitado lo redirecciona 
-Route::get('/admin/recientes','PostEventController@approval')->name('items.approval')->middleware('auth','adroles');
+Route::get('/admin/recientes','PostEventController@recientes')->name('items.recientes')->middleware('auth','adroles');
 
 
 Route::get('/users/dataConfig/{id}','UsersController@configUserData')->name("user.dataconf")->middleware('auth','adroles');
@@ -159,6 +160,8 @@ Route::get('postevent/{id}','PostEventController@find')->name('post.show');
 Route::delete('postevent/{id}','PostEventController@destroy')->name("postevent.destroy")->middleware('auth');
 #Obtiene los items cercanos a una coordenda 
 Route::get('/post/nearby','PostEventController@nearby')->name('post.nearby');
+#Obtiene los datos para el tablero de eventos 
+Route::get('/tablero','PostEventController@tableevents')->name('table.events');
 
 //Middleware que necesitan que el usuario este logeado 
 #Guardar nueva etiqueta dentro del perfil 
