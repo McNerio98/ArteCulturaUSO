@@ -23,6 +23,42 @@ class PostEventController extends Controller
 {
 
 
+    public function tableevents(){
+        $output = [
+            "code" => 0,
+            "msg" => "",
+            "data" => null
+        ];
+
+        date_default_timezone_set('America/El_Salvador');        
+        $today = date("Y-m-d");
+        $start_at = date("Y-m-d",strtotime($today. ' - 10 days'));
+        $end_at = date("Y-m-d",strtotime($today. ' + 10 days'));
+
+        $output["other"] = [
+            "start_at" => $start_at,
+            "end_at" => $end_at
+        ];
+
+		$result = PostEvent::whereBetween('dtl.event_date',[$start_at,$end_at])
+            ->join('dtl_events AS dtl','dtl.event_id','post_events.id')
+			->with('presentation_model')
+			->with('owner')
+			->with('event_detail')
+            ->orderBy('dtl.event_date')
+            ->get();
+		$items = [];
+		foreach($result as $el){
+			$el->owner->load('profile_img');
+			$items[] = $el;
+		}   
+        $output["code"] = 1;
+        $output["data"] = $items;
+        $output["msg"] = "Elementos recuperados";
+        return $output;
+    }
+
+
     public function geodecoding(){
         $output = [
             "code" => 0,
@@ -71,7 +107,7 @@ class PostEventController extends Controller
         return $output;
     }
 
-    
+    /**McNerio Dev 10-09-2022 Deprecated */
     public function eventsTable(Request $request){
 
         $salida = [
@@ -131,7 +167,7 @@ class PostEventController extends Controller
     }
 
     //Filter for only manager roles and auth (Done)
-    public function approval(Request $request){
+    public function recientes(Request $request){
         $output = [
             "code" => 0,
             "msg" => "",

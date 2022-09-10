@@ -161,6 +161,10 @@ export function getRecientes(){
     return axios.get('/admin/recientes');
 }
 
+export function getElementoTablero($data){
+    return axios.get(`/tablero`,$data);
+}
+
 /**
  * Using Geodecoding API 
  */
