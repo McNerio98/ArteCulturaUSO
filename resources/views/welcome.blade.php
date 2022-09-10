@@ -7,32 +7,41 @@
 <main role="main" class="flex-shrink-0" id="app_inicio">
     <input type="hidden" id="openRegister" value="{{app('request')->input('register')}}">
     <div class="container-fluid">
-        <div class="row tblro__ac-container">
-            <div class="tblro__ac-opnearby">
-                <a href="{{route('nearby')}}">
-                    <img src="{{asset('images/icons/gps-svgrepo-com.svg')}}" alt=""/>
-                    <span>Eventos cercanos</span>
-                </a>
-            </div>
-            <div class="tblro__ac-item-container">
-
-            </div>
-            <div class="tblro__ac-left">
-                <button class="tblro__ac-btns">
-                    <i class="fas fa-chevron-left"></i>
+        @include("layouts.components.tablero-eventos")
+    </div>
+    <div class="container bg-tenue-ac">
+        <!--::::::::::::::::::::::::::::::::::::::REGISTER INVITE:::::::::::::::::::::::::::::::::::::-->
+        <div class="row">
+                <div class="col-12">
+                        <h1 class="text-center">Arte y Cultura en Sonsonate</h1>
+                        <p class="parrafoInfo text-center" style="width: 100%; max-width: 700px; margin: auto;">¿Eres artista o posees un grupo artístico? ¿Coordinas un colectivo artístico o administras alguna institución que promueva la cultura y el arte? Crea una cuenta y obtén acceso a nuestra plataforma para que puedas publicar tu contenido.</p>            
+                        <button  data-toggle="modal" data-target="#requestAccountModal" class="buttonSolicitud">
+                            Llenar formulario
+                        </button>
+                </div>
+        </div>
+        <!--::::::::::::::::::::::::::::::::::::::END / REGISTER INVITE::::::::::::::::::::::::::::::::::::::-->
+        <!-- Modal -->
+        <div id="request">
+        <div class="modal fade" id="requestAccountModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-user-plus"></i> Solicitar cuenta</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
                 </button>
-            </div>  
-            <div class="tblro__ac-rigth">
-                <button class="tblro__ac-btns">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>            
+                </div>
+                <div class="modal-body">
+                        <request-component></request-component>
+                </div>
+            </div>
+            </div>
+        </div>
         </div>
 
 
-
-    </div>
-    <div class="container bg-tenue-ac">
+        <hr/>
         <!--::::::::::::::::::::::::::::::::::::::START CONTENT::::::::::::::::::::::::::::::::::::::-->
         <div class="row">
             <div class="col-12">
@@ -86,7 +95,7 @@
                 </div>
             </div>
         </div>
-        <p class="text-center h4 mb-1 mb-md-5"><a style="text-decoration:underline;" href="{{url('/').'/search?id_filter=10&label=Escuelas&type_search=cat'}}">Ver todos</a></p>
+        <p class="text-center h4 mb-1 mb-md-5"><a style="text-decoration:underline;" href="{{url('/').'/search?id_filter=10&label=Escuelas&type_search=cat'}}">Ver todos los centros</a></p>
         <!--END CENTROS DE ENSEÑANZAS Y ACADEMIAS-->
 
         <hr />
@@ -103,7 +112,11 @@
         </div>            
         <div class="row mb-1 mb-md-5">
             <div style="display: flex; justify-content: center;" class="col-12">
-                <a class="btn btn-primary " href="{{route('recursos')}}" role="button">Ver todos los recursos</a>
+                <p class="text-center h4 mb-1 mb-md-5">
+                    <a style="text-decoration:underline;" href="{{route('recursos')}}">
+                        Ver todos los recursos
+                    </a>
+                </p>
             </div>
         </div>    
         <!-- ::::::::::::::::::::::::::::::::::::::END CONTENT::::::::::::::::::::::::::::::::::::::-->
