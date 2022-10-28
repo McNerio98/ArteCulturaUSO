@@ -19,6 +19,14 @@ const mix = require('laravel-mix');
     if (mix.inProduction()) {
         mix.version();
     }
+
+    mix.webpackConfig({
+        resolve: {
+            alias: {
+                '@': path.resolve(__dirname, 'resources/js/')
+            }
+        }
+    });
     
 
 mix.js('resources/js/app.js', 'public/js')
@@ -32,6 +40,7 @@ mix.js('resources/js/app.js', 'public/js')
     .js('resources/js/vue-pages/admin/app-search.js','public/js/admin')
     .js('resources/js/vue-pages/admin/app-memories.js','public/js/admin')
     .js('resources/js/vue-pages/admin/app-resources.js','public/js/admin')
+    .js('resources/js/vue-pages/admin/app-promociones.js','public/js/admin')
     .js('resources/js/vue-pages/admin/app-roles.js','public/js/admin')
     .js('resources/js/vue-pages/admin/app-config-user.js','public/js/admin')
     //public pages 

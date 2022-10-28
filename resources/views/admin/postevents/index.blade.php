@@ -39,6 +39,7 @@
                     @edit-item="onUpdatePostEvent" 
                     @delete-item="onDeletePost(index)" 
                     @source-files="onSources" 
+                    @on-promo="onPromo"
                     :key="'pes'+e.post.id"
                     :pdata="e" >
                 </postevent-show>  

@@ -1,8 +1,8 @@
 <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
 
     <ol class="carousel-indicators">
-      @if(count($posts_popular) > 0)
-        @foreach($posts_popular as $e)
+      @if(count($promos) > 0)
+        @foreach($promos as $e)
           <li data-target="#carouselExampleCaptions" data-slide-to="0" class="{{$loop->first?'active':''}}"></li>
         @endforeach
       @else
@@ -11,13 +11,13 @@
     </ol>
     
     <div class="carousel-inner">
-      @if(count($posts_popular) > 0)
-        @foreach($posts_popular as $e)
+      @if(count($promos) > 0)
+        @foreach($promos as $e)
           <div class="carousel-item {{$loop->first ? 'active':''}}">
-              <img src="{{asset('files/images/' . $e->name)}}" class="d-block w-100 sliderImage" style="object-fit: cover" height="450px" alt="...">
+              <img src="{{asset('files/images/' . $e->name_img)}}" class="d-block w-100 sliderImage" style="object-fit: cover" height="450px" alt="...">
               <div class="carousel-caption d-none d-md-block ac-caption-carousel">
                 <h5>{{$e->title}}</h5>
-                <p>{{$e->content}}<a href="{{url('events').'?target='.$e->id}}">Ver mas</a></p>
+                <p>{{$e->content}} <a href="javascript:void(0);" @click="onShowPromo({{$e->item_id}}, {{$e->type_ads}})">Ver mas</a></p>
               </div>
             </div>    
         @endforeach
