@@ -7,17 +7,26 @@
 <main role="main" class="flex-shrink-0" id="app_inicio">
     <input type="hidden" id="openRegister" value="{{app('request')->input('register')}}">
     <div class="container-fluid">
-        @include("layouts.components.tablero-eventos")
+        <div class="row">
+            <div class="col-md-7 margin-no">
+                @include("layouts.components.slider")
+            </div>
+            <div class="col-md-5 margin-no">
+                @include("layouts.components.banner-solicitud")
+            </div>
+        </div>
     </div>
     <div class="container bg-tenue-ac">
         <!--::::::::::::::::::::::::::::::::::::::REGISTER INVITE:::::::::::::::::::::::::::::::::::::-->
         <div class="row">
                 <div class="col-12">
                         <h1 class="text-center">Arte y Cultura en Sonsonate</h1>
-                        <p class="parrafoInfo text-center" style="width: 100%; max-width: 700px; margin: auto;">¿Eres artista o posees un grupo artístico? ¿Coordinas un colectivo artístico o administras alguna institución que promueva la cultura y el arte? Crea una cuenta y obtén acceso a nuestra plataforma para que puedas publicar tu contenido.</p>            
-                        <button  data-toggle="modal" data-target="#requestAccountModal" class="buttonSolicitud">
-                            Llenar formulario
-                        </button>
+                        <p class="parrafoInfo text-center" style="width: 100%; max-width: 700px; margin: auto;">Un espacio virtual para el artista sonsonateco y para el público en general acercándolo con la cultura y al arte.</p>            
+                        <div class="text-center">
+                            <button  data-toggle="modal" class="buttonSolicitud">
+                                Mas informacion
+                            </button>
+                        </div>
                 </div>
         </div>
         <!--::::::::::::::::::::::::::::::::::::::END / REGISTER INVITE::::::::::::::::::::::::::::::::::::::-->
@@ -77,7 +86,33 @@
         <p class="text-center text-primary h3">Actualmente no hay categorías disponibles</p>
         @endif
 
-        <hr />
+    <hr />
+
+        <!--EVENTS TABLE-->
+        <div class="row mt-2 mt-md-5">
+            <div class="col-12">
+                <div class="SectionWelcome">
+                    <h4 class="hSectionW text-center">TABLERO DE EVENTOS</h4>
+                    <div class="row featurette">
+                        <div style="display: flex; justify-content: center;" class="col-12">
+                            <p class="lead" style="text-align: center; font-size: 18px; color:#212529;width: 700px">
+                                Descubre todos los eventos a los que puedes asistir en los próximos días.
+                            </p>
+                        </div>
+                    </div>               
+                    <div class="text-center">
+                        <img class="homepage_iconevent" src="{{asset('/images/reloj.png')}}" alt="Reloj">
+                        <img class="homepage_iconevent" src="{{asset('/images/calendario.png')}}" alt="Reloj">
+                    </div>                    
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-2 mt-md-3">
+                
+        </div>
+        <p class="text-center h4 mb-1 mb-md-5"><a style="text-decoration:underline;" href="{{route('events')}}">Ver todos los eventos</a></p>
+        <!--END EVENTS TABLE-->    
         
     <hr/>
         <!--CENTROS DE ENSEÑANZAS Y ACADEMIAS-->
@@ -91,7 +126,12 @@
                                 Encuentra lugares que te ofrecer la oportunidad en el maravilloso mundo al arte y cultura.
                             </p>
                         </div>
-                    </div>               
+                    </div> 
+                    <div class="text-center">
+                        <img class="homepage_iconpromotores" src="{{asset('/images/arte.png')}}" alt="Reloj">
+                        <img class="homepage_iconpromotores" src="{{asset('/images/school.png')}}" alt="Reloj">
+                        <img class="homepage_iconpromotores" src="{{asset('/images/libro-de-arte.png')}}" alt="Reloj">
+                    </div>                                          
                 </div>
             </div>
         </div>

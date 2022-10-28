@@ -1,8 +1,8 @@
-<link href="{{ asset('css/bannerSolicitud.css') }}" rel="stylesheet">
+<link href="{{ asset('css/bannersolicitud.css') }}" rel="stylesheet">
 <div class="containerSolicitud mb-4 md-md-1">
     <div id='show_bg_2'>
-        <span class="title">Arte y Cultura en Sonsonate</span>
-        <p class="parrafoInfo">
+        <h1 class="text-center">Arte y Cultura en Sonsonate</h1>
+        <p class="text-center">
         ¿Eres artista o posees un grupo artístico? ¿Coordinas un colectivo artístico o administras alguna institución que promueva la cultura y el arte? Crea una cuenta y obtén acceso a nuestra plataforma para que puedas publicar tu contenido.
         </p>
         <br>

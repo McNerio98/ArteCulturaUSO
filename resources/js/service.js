@@ -165,6 +165,23 @@ export function getElementoTablero($data){
     return axios.get(`/tablero`,$data);
 }
 
+/**--------------- Promociones ---------------*/
+export function promociones(){
+    return axios.get(`/promociones`);
+}
+
+export function getPromo(id){
+    return axios.get(`/promocion/${id}`);
+}
+
+export function upsertPromo(payload){
+    return axios.post(`/promocion`,payload);
+}
+
+export function deletePromo(id){
+    return axios.delete(`/promocion/${id}`);
+}
+
 /**
  * Using Geodecoding API 
  */

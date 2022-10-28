@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePostsEventsMetasTable extends Migration
+class CreatePromotionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,14 @@ class CreatePostsEventsMetasTable extends Migration
      */
     public function up()
     {
-        Schema::create('posts_events_metas', function (Blueprint $table) {
+        Schema::create('promotions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('post_event_id');
-            $table->string('key',45);
-            $table->longText('value');
+            $table->string("title",100);
+            $table->string("content",500);
+            $table->string("type_ads",20);
+            $table->string("name_img",500)->nullable();
+            $table->unsignedBigInteger("item_id");
             $table->timestamps();
-            $table->foreign('post_event_id')->references('id')->on('post_events')->onDelete('cascade');
         });
     }
 
@@ -30,6 +31,6 @@ class CreatePostsEventsMetasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('posts_events_metas');
+        Schema::dropIfExists('promotions');
     }
 }

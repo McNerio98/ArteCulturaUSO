@@ -84,6 +84,9 @@ const appContent = new Vue({
         PostEventCreated: function(e){
             this.items_postevents.unshift(formatter88(e,this.acAppData.storage_url));     
             //Limpiar para nuevo ¿Ya se esta limpiando, pero quien lo esta haciendo?
+        },
+        onPromo: function(id){
+            window.location.replace(this.acAppData.base_url + `/admin/promociones/create?tarid=${id}&tartype=postevent`);
         }
     }
 });

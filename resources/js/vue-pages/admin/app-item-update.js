@@ -102,6 +102,9 @@ if(document.getElementById("appAdminShowPost") != undefined){
             },
             onSources: function(){
 
+            },
+            onPromo: function(id){
+                window.location.href = this.acAppData.base_url + `/admin/promociones/create?tarid=${id}&tartype=postevent`;
             }
         }
 

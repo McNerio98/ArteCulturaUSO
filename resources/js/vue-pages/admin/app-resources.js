@@ -76,7 +76,7 @@ if(document.getElementById("appResourcesAdminCreate") != undefined){
         },
         methods: {
             createResource: function(){
-                this.modelo.push(formatter91(getModel91(),this.acAppData.base_url));
+                this.modelo.push(formatter91(getModel91(),this.acAppData.storage_url));
             },            
             openTrimPrincipalPic: function(file){
                 this.$refs.acVmCompCropper.openTrim(file);
@@ -150,12 +150,14 @@ if(document.getElementById("appResourcesAdminShow") != undefined){
                 });
             },
             onEditResource: function(id){
-                window.location.replace(this.acAppData.base_url + "/admin/recursos/create?idr="+id);
+                window.location.href = this.acAppData.base_url + "/admin/recursos/create?idr="+id;
             },
             onDeletedResource: function(id){
-                window.location.replace(this.acAppData.base_url + "/admin/recursos");
-            }            
-            
+                window.location.href = this.acAppData.base_url + "/admin/recursos";
+            },
+            onPromo: function(id){
+                window.location.href = this.acAppData.base_url + `/admin/promociones/create?tarid=${id}&tartype=resource`;
+            }                        
         }
     });
 }

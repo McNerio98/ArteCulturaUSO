@@ -39,12 +39,21 @@
                     </a>
                 </li>
 
-                <!-- <li class="nav-item">
-                    <a href="{{route('admin.search')}}" class="nav-link text-hpolis  {{ $ac_option == 'search' ? 'active' : ''}} ">
-                        <i class="nav-icon fas fa-search"></i>
-                        <p>Buscador</p>
+                <!-- Agregar can cuando ya este-->
+                <li class="nav-item">
+                    <a href="{{route('promociones.admin')}}" class="nav-link text-hpolis  {{ $ac_option == 'promociones' ? 'active' : ''}} ">
+                        <i class="nav-icon fas fa-ad"></i>
+                        <p>Promociones</p>
                     </a>
-                </li>-->         
+                </li>
+
+                <!-- Agregar can cuando ya este-->
+                <li class="nav-item">
+                    <a href="{{route('procesos.admin')}}" class="nav-link text-hpolis  {{ $ac_option == 'procesos' ? 'active' : ''}} ">
+                        <i class="nav-icon fas fa-server"></i>
+                        <p>Procesos</p>
+                    </a>
+                </li>                
 
                 @can('ver-reseñas')
                 <li class="nav-item">

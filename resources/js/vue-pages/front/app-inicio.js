@@ -55,6 +55,34 @@ const app_inicio = new Vue({
         },
         onClickEvent: function(event_el){
             window.location.href = this.acAppData.base_url + `/events?target=${event_el.id}`;
+        },
+        onShowPromo(id,typeads){
+            const validTypes = [1,2,3,4];
+            var redirect = "";
+            if(!validTypes.includes(typeads)){
+                alert("Inconsistencia en los tipos de promociones");
+                return;
+            }
+
+            switch(typeads){
+                case 1: {//PostEvent 
+                    redirect = this.acAppData.base_url + `/postshow/${id}`;
+                    break;
+                }
+                case 2: {//Homenajes/Biografias
+                    redirect = this.acAppData.base_url + `/site/biografias/${id}`;
+                    break;
+                }
+                case 3: {//Recurso
+                    redirect = this.acAppData.base_url + `/site/recursos/${id}`;
+                    break;
+                }
+                case 4: {//Perfil
+                    redirect = this.acAppData.base_url + `/perfil/${id}`;
+                    break;
+                }                                                
+            }
+            window.location.href = redirect;
         }
     }
 });

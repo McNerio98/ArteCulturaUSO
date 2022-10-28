@@ -182,6 +182,26 @@ Route::get('/postsevents/{id}','ProfileController@elements');
 
 
 
+/*------------------ Promociones ------------------*/
+# view | admin -  Return blade for List elements 
+Route::get('/admin/promociones','PromocionesController@index')->middleware('auth','adroles')->name('promociones.admin');
+# view | admin -  Return blade for new element 
+Route::get('/admin/promociones/create','PromocionesController@create')->middleware('auth','adroles')->name('promociones.create.admin');
+# view | admin -  Return blade for show specific element 
+Route::get('/admin/promociones/{id}','PromocionesController@show')->middleware('auth','adroles')->name('promociones.show.admin');
+#AJAX Request | get All elementos 
+Route::get('/promociones','PromocionesController@getall')->name('promociones.all');
+#AJAX Request | create or update element 
+Route::post('/promocion','PromocionesController@upsert')->middleware('auth','adroles')->name('promociones.upsert');
+#AJAX Request | get data element 
+Route::get('/promocion/{id}','PromocionesController@find')->name('promociones.find');
+#AJAX Request | delete element 
+Route::delete('/promocion/{id}','PromocionesController@destroy')->name('promociones.destroy');
+
+/*------------------ Procesos ------------------*/
+Route::get('/admin/procesos','ProcesosController@index')->middleware('auth')->name('procesos.admin');
+
+
 
 
 Route::get('res/send', 'RequestAcountController@index');

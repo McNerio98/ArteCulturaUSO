@@ -33,22 +33,22 @@ class RolesPermissionSeeder extends Seeder
 		]);
 		
 		$permission = Permission::create([
-			'name' => 'crear-reseñas',
+			'name' => 'crear-biografias',
 			'description' => 'Capacidad para crear reseña de personajes, de tipo biografías u homenajes.'
 		]);
 
 		$permission = Permission::create([
-			'name' => 'ver-reseñas',
+			'name' => 'ver-biografias',
 			'description' => 'Capacidad para ver biografías de personajes u homenajes, aprobados y los pendientes de aprobar, desde la página publica siempre serán visibles todos los homenajes aprobados.'
 		]);
 
 		$permission = Permission::create([
-			'name' => 'editar-reseñas',
+			'name' => 'editar-biografias',
 			'description' => 'Capacidad de editar biografías u homenaje, cambiar sus datos e imágenes.'
 		]);
 
 		$permission = Permission::create([
-			'name' => 'eliminar-reseñas',
+			'name' => 'eliminar-biografias',
 			'description' => 'Capacidad de eliminar biografías u homenajes.'
 		]);
 
@@ -92,21 +92,6 @@ class RolesPermissionSeeder extends Seeder
 			'name' => 'eliminar-rubros',
 			'description' => 'Capacidad de eliminar categorías de rubros y etiquetas asociadas.'
 		]);
-		
-		$permission = Permission::create([
-			'name' => 'ver-destacados',
-			'description' => 'Capacidad de ver el apartado de publicaciones/eventos destacadas.'
-		]);
-
-		$permission = Permission::create([
-			'name' => 'destacar-publicaciones',
-			'description' => 'Capacidad de marcar un post o un evento como una publicación destacada, las publicaciones destacadas aparecerán en el panel principal del sitio y tienen un máximo definido.'
-		]);
-		
-		$permission = Permission::create([
-			'name' => 'aprobar-reseñas',
-			'description' => 'Capacidad de aprobar/desaprobar un homenaje de personajes o biografías.'
-		]);
 
 		$permission = Permission::create([
 			'name' => 'aprobar-publicaciones',
@@ -147,6 +132,32 @@ class RolesPermissionSeeder extends Seeder
 			'name' => 'asignar-permisos',
 			'description' => 'Capacidad de asignar N permisos a un rol determinado '
 		]);
+
+		$permission = Permission::create([
+			'name' => 'crear-promociones',
+			'description' => 'Capacidad para crear promocionales'
+		]);
+
+		$permission = Permission::create([
+			'name' => 'editar-promociones',
+			'description' => 'Capacidad para editar promocionales'
+		]);
+		
+		$permission = Permission::create([
+			'name' => 'eliminar-promociones',
+			'description' => 'Capacidad para eliminar promocionales'
+		]);		
+
+
+		$permission = Permission::create([
+			'name' => 'ver-procesos',
+			'description' => 'Capacidad para visualizar los procesos administrativos'
+		]);
+		
+		$permission = Permission::create([
+			'name' => 'ejecutar-procesos',
+			'description' => 'Capacidad para ejecutar procesos administrativos '
+		]);		
 		
 
 
@@ -154,10 +165,10 @@ class RolesPermissionSeeder extends Seeder
 		$list_permission = [ //for SuperAdmin 
 			'ver-usuarios',
 			'configurar-usuarios',
-			'crear-reseñas',
-			'ver-reseñas',
-			'editar-reseñas',
-			'eliminar-reseñas',
+			'crear-biografias',
+			'ver-biografias',
+			'editar-biografias',
+			'eliminar-biografias',
 			'crear-recursos',
 			'ver-recursos',
 			'editar-recursos',
@@ -166,9 +177,6 @@ class RolesPermissionSeeder extends Seeder
 			'ver-rubros',
 			'editar-rubros',
 			'eliminar-rubros',
-			'ver-destacados',
-			'destacar-publicaciones',
-			'aprobar-reseñas',
 			'aprobar-publicaciones',
 			'editar-publicaciones',
 			'eliminar-publicaciones',
@@ -176,22 +184,25 @@ class RolesPermissionSeeder extends Seeder
 			'ver-roles',
 			'editar-roles',
 			'eliminar-roles',
-			'asignar-permisos'
+			'asignar-permisos',
+			'crear-promociones',
+			'editar-promociones',
+			'eliminar-promociones',
+			'ver-procesos',
+			'ejecutar-procesos'
 		];
 
 		$list_permission2 = [ //for admin 
 			'ver-usuarios',
 			'configurar-usuarios',
-			'crear-reseñas',
-			'ver-reseñas',
-			'editar-reseñas',
-			'eliminar-reseñas',
+			'crear-biografias',
+			'ver-biografias',
+			'editar-biografias',
+			'eliminar-biografias',
 			'crear-recursos',
 			'ver-recursos',
 			'editar-recursos',
 			'eliminar-recursos',
-			'ver-destacados',
-			'destacar-publicaciones',
 			'aprobar-publicaciones',
 			'editar-publicaciones',
 			'eliminar-publicaciones',
@@ -200,8 +211,6 @@ class RolesPermissionSeeder extends Seeder
 
 		$list_permission3 = [ //for Supervisor 
 			'ver-usuarios',
-			'ver-destacados',
-			'destacar-publicaciones',
 			'aprobar-publicaciones',
 			'editar-publicaciones',
 			'eliminar-publicaciones',
@@ -210,7 +219,7 @@ class RolesPermissionSeeder extends Seeder
 
 		$list_permission4 = [ //for Inspector  
 			'ver-usuarios',
-			'ver-reseñas',
+			'ver-biografias',
 			'ver-recursos',
 			'ver-rubros'
 		];

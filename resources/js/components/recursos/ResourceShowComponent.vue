@@ -14,6 +14,12 @@
                     </div>
                     <div>
                         <button href="#" class="btn btn-default btn-sm float-right mr-2" 
+                            v-if="has_cap('crear-promociones')"
+                            @click="onPromo">
+                            <i class="fas fa-pen"></i> 
+                            Promocionar
+                        </button>                        
+                        <button href="#" class="btn btn-default btn-sm float-right mr-2" 
                             v-if="has_cap('editar-recursos') || itemData.resource.creator_id === acAppData.current_user.id"
                             @click="onEdit">
                             <i class="fas fa-pen"></i> 
@@ -149,6 +155,9 @@ export default {
                         vm.isDeleting = false;
                     }
                 });            
+        },
+        onPromo: function(){
+            this.$emit('on-promo',this.itemData.resource.id);
         },
         has_cap(e){
             return window.has_cap == undefined ? false : window.has_cap(e);
