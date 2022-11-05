@@ -16,7 +16,7 @@
     max-width: 40rem;
     }
 </style>
-<main role="main" class="flex-shrink-0" id="app_events">
+<main role="main" class="flex-shrink-0" id="appEventsTable">
     <input type="hidden" id="targetOpenItem" value="{{app('request')->input('target')}}">
 
     <section v-if="postevent_selected == undefined" class="jumbotron text-center" style="background-color: rgb(233, 236, 239);">
@@ -34,10 +34,9 @@
                     <spinner1 label="Cargando eventos …"></spinner1>
                 </div>
             </div>
-            <post-general @source-files="onSources" v-if="postevent_selected != undefined" v-bind:model="postevent_selected"></post-general>             
-            <div class="row" v-if="!spinners.S1">
-                <summary-item v-for="event of events" @selected-item="onClickEvent" :model="event"></summary-item>                
-            </div> 
+
+            
+
         </div>
         <!-- ::::::::::::::::::::::::::::::::::::::END CONTENT::::::::::::::::::::::::::::::::::::::-->
     </div>        

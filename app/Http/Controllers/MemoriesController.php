@@ -17,9 +17,9 @@ class MemoriesController extends Controller
 {
     public function __construct(){
 		//Todos requieren estar logeados 
-		$this->middleware('auth',['except' => ['getAllPublic','show','find']]);
+		//$this->middleware('auth',['except' => ['getAllPublic','show','find']]);
 		//adroles verifica que no sea un invitado el que esta intentado ver la dashboard 
-		$this->middleware('adroles',['except' => ['indexpublic','getAllPublic','show','find']]);
+		//$this->middleware('adroles',['except' => ['getAllPublic','show','find']]);
         
         //Only for example 
         /**
@@ -31,7 +31,7 @@ class MemoriesController extends Controller
 
     #Muestra vista 
     public function indexadmin(){
-		if( ! Auth::user()->can('ver-reseñas')){ //poner esto en los de arriba 
+		if( ! Auth::user()->can('ver-biografias')){ //poner esto en los de arriba 
             return redirect()->route('dashboard');
         };		
 		$request_users = UsersHelper::usersRequest();
@@ -49,14 +49,15 @@ class MemoriesController extends Controller
             "msg" => "",
         ];            
 
-        //Validar aunq halla una parte publica 
-		if( ! Auth::user()->can('ver-reseñas')){ //poner esto en los de arriba 
+        /**
+         * Validar aunq halla una parte publica  
+         * Porque se pueden filtrar, por ejemplo aprobador si lo ubiera 
+         * Actualmente no pasa ningun filtrado asi que se recuperan todos 
+         */
+		if( ! Auth::user()->can('ver-biografias')){ 
             $output["msg"] = "Acción no permitida";
             return $output;
         };
-
-        #Actualmente no pasa ningun filtrado asi que se recuperan todos 
-        #Usar paginacion 
 
         $list = Memory::with('presentation_model')->get();
 
@@ -121,7 +122,7 @@ class MemoriesController extends Controller
     }
 
     public function showadmin(){
-		if( ! Auth::user()->can('ver-reseñas')){ //poner esto en los de arriba 
+		if( ! Auth::user()->can('ver-biografias')){ //poner esto en los de arriba 
             return redirect()->route('dashboard');
         };	        
 		$request_users = UsersHelper::usersRequest();

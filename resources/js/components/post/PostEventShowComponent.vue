@@ -5,13 +5,12 @@
                 <div class="user-block">
                     <img class="img-circle" :src="itemData.creator.profile_img" alt="User Image">
                     <span class="username"><a href="#">{{itemData.creator.nickname == null?itemData.creator.name:itemData.creator.nickname}}</a></span>
-                    <span class="description">{{itemData.post.title}}</span>
                 </div>
                 <!-- /.user-block -->                
                 <div class="card-tools">
                     <div class="btn-group">
                         <button type="button" style="font-size: 120%;" class="btn btn-tool dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-wrench"></i>
+                            <i class="fas fa-cog"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" role="menu" style="">
                             <a href="javascript:void(0);" 
@@ -55,6 +54,7 @@
              -->
             <div  class="row" v-if="itemData.post.type == 'event' ">
                 <div class="col-12">
+                    <p class="description">{{itemData.post.title}}</p>
                     <div class="callout callout-info p-1 rounded-0 shadow-none">
                         <h5 class="p-0 m-0 text-success"><i class="fas fa-map-marker-alt"></i> Lugar</h5>
                          {{getDirection}}

@@ -43,6 +43,7 @@ mix.js('resources/js/app.js', 'public/js')
     .js('resources/js/vue-pages/admin/app-promociones.js','public/js/admin')
     .js('resources/js/vue-pages/admin/app-roles.js','public/js/admin')
     .js('resources/js/vue-pages/admin/app-config-user.js','public/js/admin')
+    .js('resources/js/vue-pages/admin/app-procesos.js','public/js/admin')
     //public pages 
     .js('resources/js/vue-pages/front/app-inicio.js','public/js/front')
     .js('resources/js/vue-pages/front/app-search.js','public/js/front')

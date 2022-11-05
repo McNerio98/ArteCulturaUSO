@@ -101,11 +101,16 @@
                         </div>
                     </div>               
                     <div class="text-center">
-                        <img class="homepage_iconevent" src="{{asset('/images/reloj.png')}}" alt="Reloj">
                         <img class="homepage_iconevent" src="{{asset('/images/calendario.png')}}" alt="Reloj">
                     </div>                    
                 </div>
             </div>
+
+            <!-- <div>
+                <posttable-style v-for="(e,index) in events" :pdata="e"/>
+            </div>
+            -->
+
         </div>
 
         <div class="row mt-2 mt-md-3">

@@ -15,6 +15,38 @@ export default class StatusHandler{
             SUCCESS: 1
         };
     }
+
+    static confirm(title = "¿Está usted seguro?",text = "¡No podrás revertir esto! "){
+        return Swal.fire({
+            title: title,
+            text: text,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, ¡Continuar!',
+            cancelButtonText: 'Cancelar',
+            allowOutsideClick: false
+        }).then((result) => {
+            return result.isConfirmed;
+        })        
+    }
+
+    static inputtext(title,label,textvalid){
+        return Swal.fire({
+            title: title,
+            input: 'text',
+            inputPlaceholder: label,
+            inputValue: "",
+            showCancelButton: true,
+            allowOutsideClick: false,
+            inputValidator: (value) => {
+                if (!value) {
+                    return textvalid
+                }
+            }
+          })        
+    }
     
     static ShowLoading(){
         let node = "<div id='spinerLoad'><div class='spinner-border' role='status' style='width: 4rem !important; height: 4rem " +
@@ -33,14 +65,13 @@ export default class StatusHandler{
     }
 
     static Exception(target_msg,data_ex){
-        console.error(data_ex); 
         //HTTP 401 la petición (request) no ha sido ejecutada porque carece de credenciales
-        // if(data_ex?.response?.status == 401){//para volver al inicio/login 
-        //     window.location.reload();
-        // }else{
-        //     let msg = "El proceso ("+target_msg+")no se ha podido completar, póngase con soporte técnico."
-        //     this.ShowStatus(msg,null,StatusHandler.STATUS.FAIL);
-        // }       
+        if(data_ex?.response?.status == 401){//para volver al inicio/login 
+            window.location.reload();
+         }else{
+             let msg = "El proceso ("+target_msg+") no se ha podido completar, póngase con soporte técnico."
+             this.ShowStatus(msg,null,StatusHandler.STATUS.FAIL);
+        }       
     }
 
     static ValidationMsg(mensaje){

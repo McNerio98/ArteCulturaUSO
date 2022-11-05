@@ -1,19 +1,16 @@
 
-Vue.component('media-viewer', require('../../components/media/ViewMediaComponent.vue').default);
-Vue.component('control-trim', require('../../components/trim/TrimComponentv2.vue').default);
-Vue.component('preview-media',require('../../components/media/PreviewMediaComponent.vue').default);
-
-Vue.component('pagination-component',require('../../components/pagination/PaginationComponent.vue').default);
-
-
+Vue.component('media-viewer', require('@/components/media/ViewMediaComponent.vue').default);
+Vue.component('control-trim', require('@/components/trim/TrimComponentv2.vue').default);
+Vue.component('preview-media',require('@/components/media/PreviewMediaComponent.vue').default);
+Vue.component('pagination-component',require('@/components/pagination/PaginationComponent.vue').default);
 
 //Registro de componentes locales 
-import GeneralInfoComponent from '../../components/profile/GeneralInfoComponent.vue';
-import AboutComponent from '../../components/profile/AboutComponent.vue';
+import GeneralInfoComponent from '@/components/profile/GeneralInfoComponent.vue';
+import AboutComponent from '@/components/profile/AboutComponent.vue';
 import {getUserProfileInformation,uploadImgProfile,deleteImgProfile,changeImgProfile} from '../../service';
-import {getModel88,formatter88,formatter87} from '../../formatters';
-import PostEventCreateComponent from '../../components/post/PostEventCreateComponent.vue';
-import PostEventShowComponent from '../../components/post/PostEventShowComponent.vue';
+import {getModel88,formatter88,formatter87} from '@/formatters';
+import PostEventCreateComponent from '@/components/post/PostEventCreateComponent.vue';
+import PostEventShowComponent from '@/components/post/PostEventShowComponent.vue';
 
 const appProfileVue = new Vue({
     el: "#appProfile",
@@ -27,7 +24,7 @@ const appProfileVue = new Vue({
     data: function(){
         return{
             isCreating: false,
-            modelo_create: [],
+            modelo_create: null,
             profileSummary: [],
             profileAbout: [],
             flags: {
@@ -94,18 +91,18 @@ const appProfileVue = new Vue({
     },
     methods: {
         onCreate: function(tipo){
+            //Este flag viene de la version anterior
+            //Version, crear post o evento
             this.isCreating= true;
-            this.modelo_create.splice(0);
-
-            var nuevo = getModel88();
-            nuevo.type_post = tipo;
-            if(this.modelo_create.length > 0){//Esto lo esta haciendo disparar cada que cambia
-                
-                this.$set(this.modelo_create.array, 0, formatter88(nuevo,this.acAppData.storage_url));
-            }else{
-                this.modelo_create.push(formatter88(nuevo,this.acAppData.storage_url));
+            const valid = ['post','event'];
+            if(!valid.includes(tipo)){
+                alert("Inconsistencia de datos");
+                return;
             }
-        },        
+            const nuevo = getModel88();
+            nuevo.type_post = tipo;
+            this.modelo_create = formatter88(nuevo,this.acAppData.storage_url);
+        },           
         itemLoaded: function(fulldata){
             this.items_postevents = fulldata.map(e=>{
                 return formatter88(e,this.acAppData.storage_url);
@@ -160,6 +157,7 @@ const appProfileVue = new Vue({
         PostEventCreated: function(e){
             this.profileSummary[0].cout_postevents = parseInt(e.owner.count_posts + e.owner.count_events);
             this.items_postevents.unshift(formatter88(e,this.acAppData.storage_url));
+            this.onCreate('event');
         },
         onUpdatePostEvent: function(id){
             window.location.href = this.acAppData.base_url + `/postedit/${id}`;

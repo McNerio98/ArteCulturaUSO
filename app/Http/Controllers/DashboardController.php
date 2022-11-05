@@ -55,7 +55,7 @@ class DashboardController extends Controller
 	
 	//USERS OPTION	
     public function users(){
-		if( ! Auth::user()->can('ver-usuarios')){ //poner esto en los de arriba 
+		if( ! Auth::user()->can('ver-usuarios')){
             return redirect()->route('dashboard');
         };
 		$request_users = $this->userRequest();
