@@ -2,11 +2,18 @@ Vue.component('request-component', require('../../components/RequestAccount.vue'
 Vue.component('search-component', require('../../components/search/SearchComponent.vue').default);
 Vue.component('summary-item',require('../../components/post/PostEventCardComponent.vue').default);
 
-import {getElementoTablero} from '../../service';
-import {formatter88} from '../../formatters';
+
+
+
+import {getElementoTablero} from '@/service';
+import {formatter88} from '@/formatters';
+import PostEventCard2Component from '@/components/post/PostEventCard2Component.vue'
 
 const app_inicio = new Vue({
     el: '#app_inicio',
+    components: {
+        'posttable-style': PostEventCard2Component
+    },
     data: {
         isLoading: false,
         acAppData: window.obj_ac_app,

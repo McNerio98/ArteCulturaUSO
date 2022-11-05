@@ -55,11 +55,11 @@
                     </a>
                 </li>                
 
-                @can('ver-reseñas')
+                @can('ver-biografias')
                 <li class="nav-item">
                     <a href="{{route('memories.index.admin')}}" class="nav-link text-hpolis  {{ $ac_option == 'memories' ? 'active' : ''}} ">
                         <i class="nav-icon fas fa-star-half-alt"></i>
-                        <p>Homenajes</p>
+                        <p>Biografias</p>
                     </a>
                 </li>
                 @endcan

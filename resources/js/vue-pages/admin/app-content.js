@@ -1,12 +1,12 @@
 
-Vue.component('pagination-component',require('../../components/pagination/PaginationComponent.vue').default);
-Vue.component('media-viewer', require('../../components/media/ViewMediaComponent.vue').default);
-Vue.component('preview-media',require('../../components/media/PreviewMediaComponent.vue').default);
+Vue.component('pagination-component',require('@/components/pagination/PaginationComponent.vue').default);
+Vue.component('media-viewer', require('@/components/media/ViewMediaComponent.vue').default);
+Vue.component('preview-media',require('@/components/media/PreviewMediaComponent.vue').default);
 
 
-import {formatter88,getModel88,formatter87} from '../../formatters';
-import PostEventCreate from '../../components/post/PostEventCreateComponent.vue';
-import PostEventShowComponent from '../../components/post/PostEventShowComponent.vue';
+import {formatter88,getModel88,formatter87} from '@/formatters';
+import PostEventCreate from '@/components/post/PostEventCreateComponent.vue';
+import PostEventShowComponent from '@/components/post/PostEventShowComponent.vue';
 
 const appContent = new Vue({
     el: "#appContent",
@@ -15,7 +15,7 @@ const appContent = new Vue({
         "postevent-show": PostEventShowComponent
     },
     data: {
-        modelo_create: [],
+        modelo_create: null,
         isCreating: false,
         create_type: "post",
         spinners: {
@@ -24,8 +24,7 @@ const appContent = new Vue({
 
         no_data_postevents: false,
         items_postevents: [],
-        acAppData: {},
-        current_user: {},
+        acAppData: window.obj_ac_app,
         is_mdprofiles: false, // is media profiles 
         media_view: {
             owner: 0,
@@ -33,32 +32,21 @@ const appContent = new Vue({
             items: []
         }        
     },
-    mounted: function(){
-        this.acAppData = window.obj_ac_app;
-        if(this.acAppData.current_user.id != null){
-            this.current_user = {
-                id                      : this.acAppData.current_user.id,
-                nickname        : this.acAppData.current_user.nickname,
-                fullname          : this.acAppData.current_user.fullname,
-                profile_path    : window.obj_ac_app.base_url + "/files/profiles/" + this.acAppData.current_user.presentation_img.name,
-            }
-        }
-    },
     methods: {
         onCreate: function(tipo){
+            //Este flag viene de la version anterior
+            //Version, crear post o evento
             this.isCreating= true;
-            this.modelo_create.splice(0);
-
-            var nuevo = getModel88();
-            nuevo.type_post = tipo;
-            if(this.modelo_create.length > 0){
-                this.$set(this.modelo_create.array, 0, formatter88(nuevo,this.acAppData.storage_url));
-            }else{
-                this.modelo_create.push(formatter88(nuevo,this.acAppData.storage_url));
+            const valid = ['post','event'];
+            if(!valid.includes(tipo)){
+                alert("Inconsistencia de datos");
+                return;
             }
+            const nuevo = getModel88();
+            nuevo.type_post = tipo;
+            this.modelo_create = formatter88(nuevo,this.acAppData.storage_url);
         },
         onUpdatePostEvent: function(id){
-            //console.log("Editando este id " + id);
             window.location.href = this.acAppData.base_url + '/admin/post/edit/' + id;
         },
         onDeletePost: function(index){
@@ -82,8 +70,8 @@ const appContent = new Vue({
             this.$refs.mediaviewer.builderAndShow(items,'POST_EVENTS',items[0]);            
         },        
         PostEventCreated: function(e){
-            this.items_postevents.unshift(formatter88(e,this.acAppData.storage_url));     
-            //Limpiar para nuevo ¿Ya se esta limpiando, pero quien lo esta haciendo?
+            this.items_postevents.unshift(formatter88(e,this.acAppData.storage_url));  
+            this.onCreate('event');
         },
         onPromo: function(id){
             window.location.replace(this.acAppData.base_url + `/admin/promociones/create?tarid=${id}&tartype=postevent`);

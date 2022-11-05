@@ -291,7 +291,7 @@ class UsersController extends Controller
         return $salida;
     }
 
-    //Filtrado por el middleware addroles, auth web (Done)
+    
     public function updateConfigUser(Request $request,$id){
         $salida = [
             'code' => 0,

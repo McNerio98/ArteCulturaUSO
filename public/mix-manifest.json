@@ -5,6 +5,7 @@
     "/js/admin/app-item-update.js": "/js/admin/app-item-update.js",
     "/js/admin/app-memories.js": "/js/admin/app-memories.js",
     "/js/admin/app-populars.js": "/js/admin/app-populars.js",
+    "/js/admin/app-procesos.js": "/js/admin/app-procesos.js",
     "/js/admin/app-promociones.js": "/js/admin/app-promociones.js",
     "/js/admin/app-resources.js": "/js/admin/app-resources.js",
     "/js/admin/app-roles.js": "/js/admin/app-roles.js",

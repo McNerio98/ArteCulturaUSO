@@ -182,6 +182,16 @@ export function deletePromo(id){
     return axios.delete(`/promocion/${id}`);
 }
 
+/**--------------- Procesos administrativos ---------------*/
+export function proResetEventDates(payload){
+    return axios.post('/procesofechas',payload);
+}
+
+export function proTestEmail(payload){
+    return axios.post('/procesoemail',payload);
+}
+
+
 /**
  * Using Geodecoding API 
  */
