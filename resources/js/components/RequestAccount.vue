@@ -201,7 +201,7 @@
                                 type="button"
                                 class="btn btn-secondary"
                                 data-dismiss="modal"
-                            >
+                                :disabled="isSendData">
                                 Cancelar
                             </button>
                             <button
@@ -324,7 +324,7 @@ export default {
         },
         onSubmit: async function () {
             if (this.$refs.frmRequestAccount.checkValidity() !== false) {
-                if (this.rubro == undefined || this.rubro == 0 || this.rubro.trim().length == 0) {
+                if (this.rubro == undefined || this.rubro == 0 || isNaN(parseInt(this.rubro))) {
                     StatusHandler.StatusToast(StatusHandler.TOAST_STATUS.FAIL,"Debe seleccionar una espacialidad/rubro artístico");
                     return;
                 }
@@ -364,6 +364,13 @@ export default {
             axios.post(`/api/requestaccounts`, data).then((result) => {
                     let response = result.data;
                     if (response.code == 0) {
+                        
+                        //Si error viene vacio y el response code es 0 entonces es otro tipo de error
+                        if(response.errors == undefined){
+                            StatusHandler.ShowStatus("Error en el proceso de ingreso de usuario, consulte soporte técnico",StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                            return;
+                        }
+
                         if (response.errors.email != undefined) {
                             this.flags.email_exists = true;
                             StatusHandler.StatusToast(

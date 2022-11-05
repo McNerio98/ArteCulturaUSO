@@ -124,8 +124,7 @@ class RecursosController extends Controller
         DB::beginTransaction();
         $idImgPresentation = 0;
         try{
-
-            $recurso->id                   = $request->resource["id"];
+            
             $recurso->name            = $request->resource["name"];
             $recurso->content         = $request->resource["description"];
             $recurso->tipo_id           = $request->resource["tipo_id"];

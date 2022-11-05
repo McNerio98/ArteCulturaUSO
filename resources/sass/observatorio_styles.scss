@@ -3,6 +3,12 @@
 @import 'style_ac2';
 @import 'tablero';
 
+.ac_event-card-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 /*Carousel Option*/
 .ac-caption-carousel{
   background-color: #000000bd !important;
@@ -468,18 +474,40 @@ body.no-scroll {
 /*END ABOUT STYLES*/
 
 
-.buttonSolicitud{
-  border: 0px;
-  background-color: #00b05c;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 15px;
-  display: block;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  margin-left: auto;
-  margin-right: auto;
+.homepage_iconevent{
+  width: 80%;
+  max-width: 90px;
 }
+
+.homepage_iconpromotores{
+  width: 80%;
+  max-width: 90px;
+}
+
+
+
+
+/*>>>>>>>>>>>>>>>>Modulo de procesos>>>>>>>>>>>>>>>>*/
+.ac_avatar-xl {
+  width: 74px!important;
+  height: 74px!important;
+}
+
+.ac_avatar img {
+  width: 100%;
+}
+
+.ac_bg-gradient-dark{
+  background-image: linear-gradient(195deg,#42424a,#191919);
+}
+
+.ac_border-radius-xl{
+  border-radius: 0.75rem;
+}
+
+/*>>>>>>>>>>>>>>>>/ Modulo de procesos>>>>>>>>>>>>>>>>*/
+
+
 
 /*MEDIAS QUERYS*/
 

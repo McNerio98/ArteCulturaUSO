@@ -26,9 +26,8 @@
                         -->                                
                     </div>
 
-                    <postevent-create v-for="e of modelo_create" 
-                        :pdata="e"
-                        :key="'id' + (new Date()).getTime()"
+                    <postevent-create
+                        :pdata="modelo_create"
                         @saved="PostEventCreated" 
                         v-if="isCreating">
                     </postevent-create>
@@ -39,6 +38,7 @@
                     @edit-item="onUpdatePostEvent" 
                     @delete-item="onDeletePost(index)" 
                     @source-files="onSources" 
+                    @on-promo="onPromo"
                     :key="'pes'+e.post.id"
                     :pdata="e" >
                 </postevent-show>  

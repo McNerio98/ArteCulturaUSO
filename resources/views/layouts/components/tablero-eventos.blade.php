@@ -12,14 +12,14 @@
             <a href="javascript:void;" >
                 <div class="tblro__ac-item-a">
 
-                <div v-if="e.presentation_model == undefined || e.presentation_model.type_file == 'docfile'" class="bg-dark" style="height: 100%; display: flex;flex-direction: column;justify-content: center;align-items: center;">
-                    <i class="fas fa-image text-muted" style="font-size: 2rem;"></i>
-                    <span class="text-muted">Sin Imagen</span>
-                </div>
-                <!--IF THE PRESENTATION IMG IS IMAGE OR VIDEO-->
-                <template v-if="e.presentation_model != undefined && (e.presentation_model.type_file == 'image' || e.presentation_model.type_file == 'video')" class="bg-dark" style="height: 200px;">                    
-                    <img style="object-fit: contain; padding-top: 3px; width: 100%;height: 100%;" alt="" :src="e.presentation_model.url">
-                </template>    
+                    <div v-if="e.presentation_model == undefined || e.presentation_model.type_file == 'docfile'" class="bg-dark" style="height: 100%; display: flex;flex-direction: column;justify-content: center;align-items: center;">
+                        <i class="fas fa-image text-muted" style="font-size: 2rem;"></i>
+                        <span class="text-muted">Sin Imagen</span>
+                    </div>
+                    <!--IF THE PRESENTATION IMG IS IMAGE OR VIDEO-->
+                    <template v-if="e.presentation_model != undefined && (e.presentation_model.type_file == 'image' || e.presentation_model.type_file == 'video')" class="bg-dark" style="height: 200px;">                    
+                        <img style="object-fit: contain; padding-top: 3px; width: 100%;height: 100%;" alt="" :src="e.presentation_model.url">
+                    </template>    
 
                 </div>
                 <div class="tblro__ac-item-b p-1 p-md-2">                    

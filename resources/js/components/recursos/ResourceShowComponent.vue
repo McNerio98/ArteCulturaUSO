@@ -14,17 +14,16 @@
                     </div>
                     <div>
                         <button href="#" class="btn btn-default btn-sm float-right mr-2" 
+                            v-if="has_cap('crear-promociones')"
+                            @click="onPromo"><i class="fas fa-star"></i> Promocionar</button>                        
+                        <button href="#" class="btn btn-default btn-sm float-right mr-2" 
                             v-if="has_cap('editar-recursos') || itemData.resource.creator_id === acAppData.current_user.id"
                             @click="onEdit">
-                            <i class="fas fa-pen"></i> 
-                            Editar
-                        </button>
+                            <i class="fas fa-pen"></i>  Editar</button>
                         <button href="#" class="btn btn-default btn-sm float-right mr-2" 
                             v-if="has_cap('eliminar-recursos') || itemData.resource.creator_id === acAppData.current_user.id"
                             @click="onDelete">
-                            <i class="fas fa-trash-alt"></i>
-                            Eliminar
-                        </button>                        
+                            <i class="fas fa-trash-alt"></i>  Eliminar</button>                        
                     </div>
                 </div>
             </div>
@@ -53,11 +52,18 @@
                                 <i class="fas fa-cloud-download-alt"></i>
                                 Descargar
                             </a>
+                            <a v-if="isPDF(e.name)" @click="showPDF(e.url)" href="javascript:void(0);" class="btn btn-default btn-sm float-right mr-2" download>
+                                <i class="fas fa-book-reader"></i> Visualizar</a>
                         </span>
+
                     </div>
                 </li>
             </ul>
-
+        <div class="ac_frame-pdf-preview" v-if="pdfselected != null">
+            <object class="ac_frame-pdf-target" :data="pdfselected" type="application/pdf">
+                <div>No online PDF viewer installed</div>
+            </object>
+        </div>
         </div>
         </div>
     </div>
@@ -73,6 +79,7 @@ export default {
         return {
             isDeleting: false,
             tiposRecursos: [],
+            pdfselected: null,
             acAppData: window.obj_ac_app,
             itemData: JSON.parse(JSON.stringify(this.pdata))            
         }
@@ -150,6 +157,12 @@ export default {
                     }
                 });            
         },
+        showPDF: function(pdf_url){
+            this.pdfselected = pdf_url;            
+        },
+        onPromo: function(){
+            this.$emit('on-promo',this.itemData.resource.id);
+        },
         has_cap(e){
             return window.has_cap == undefined ? false : window.has_cap(e);
         }             
@@ -177,4 +190,23 @@ export default {
     .border1rc{
         border: 4px solid #363333
     }    
+
+    .ac_frame-pdf-preview{
+        display: flex;
+        position: fixed;
+        z-index: 1060;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: #262323a3;
+    }
+
+    .ac_frame-pdf-target{
+        width: 100%;
+        max-width: 800px;
+        height: 100%;
+        display: block;
+        margin: auto;
+    }
 </style>

@@ -177,33 +177,6 @@ export function formatter89(item,storage_base_url){
     }
 }
 
-/**
- * Formateado: JSON
- * Orgien: Tabla (memories) con todas relacion imagen de presentacion 
- * Destino: Arbol JSON para componentes: MemoryMiniComponent
- */
-
-/*export function formatter90(item,storage_base_url){
-    if(item.presentation_model != null){
-        item.presentation_model.url = storage_base_url +"/files/images/" + item.presentation_model.name; 
-    }    
-    return {
-        memory: {
-            id: item.id,
-            name: item.name,
-            other_name: item.other_name,
-            type: item.type,
-            area: item.area,
-            birth_date: new Date(item.birth_date),
-            death_date: item.death_date != null && item.death_date != "0000-00-00" ? new Date(item.death_date) : null,
-            content: item.content,
-            presentation_img: item.presentation_img,
-            creator_id: item.creator_id,
-            status: item.creator_id
-        },
-        presentation_model: item.presentation_model,
-    }
-}*/
 
 /**
  * Mapeo de Modelo  para Registros de Recursos 
@@ -254,5 +227,34 @@ export function formatter91(item,storage_base_url){
             return e;            
         }),
         mediadrop_ids: []
+    }
+}
+
+export function getModel92(){
+    return {
+        id: 0,
+        title: "",
+        content: "",
+        type_ads: 1,
+        name_img: null,
+        item_id: null
+    }
+}
+
+export function formatter92(item,storage_url){
+    
+    return {
+        promo: {
+            id: item.id,
+            title: item.title,
+            description: item.content,
+            type_ads: item.type_ads,
+            image: {
+                name: item.name_img,
+                data: null,
+                url: storage_url + "/files/images/" + item.name_img
+            },
+            item_id: item.item_id
+        }
     }
 }

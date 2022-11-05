@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\PostEvent;
 use App\DtlEvent;
 use App\FilesOnPostEvents as FilesPost;
-use App\postsEventsMeta;
 use Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -46,7 +45,7 @@ class PostEventController extends Controller
 			->with('owner')
 			->with('event_detail')
             ->orderBy('dtl.event_date')
-            ->get();
+            ->limit(4)->get();
 		$items = [];
 		foreach($result as $el){
 			$el->owner->load('profile_img');

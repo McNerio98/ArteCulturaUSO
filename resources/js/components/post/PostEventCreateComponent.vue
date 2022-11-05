@@ -293,6 +293,12 @@ export default {
     mounted: function () {
         this.loadLocalValues();
     },
+    watch: {
+        pdata(nuevo,antiguo){
+             this.itemData = JSON.parse(JSON.stringify(nuevo));
+             this.loadLocalValues();
+        }
+    },
     computed: {
         PlaceholderMsg1: function () {
             return this.itemData.post.type == "event"
@@ -383,6 +389,7 @@ export default {
                     return;
                 }
 
+                this.$refs.frmCreatePostEvent.classList.remove("was-validated");
                 this.$emit("saved", response.data);
             }).catch((ex) => {
                     const target_process = "Guarda informacion de elemento";
