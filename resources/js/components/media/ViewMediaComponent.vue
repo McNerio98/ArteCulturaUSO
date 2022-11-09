@@ -38,6 +38,9 @@
 </template>
 
 <script>
+    /**
+     * openFor: PROFILE_MEDIAS,POST_EVENTS,MEMORIES
+     */
     export default {
         data: function(){
             return {

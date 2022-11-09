@@ -7,10 +7,11 @@
 
 
 Vue.component('memory-create',require('../../components/memories/MemoryCreateComponent').default);
-
-
+Vue.component('media-viewer', require('@/components/media/ViewMediaComponent.vue').default);
 Vue.component('control-trim', require('../../components/trim/TrimComponentv2.vue').default);
-import {formatter89} from '../../formatters';
+
+
+import {formatter89,formatter87} from '@/formatters';
 import {getMemory,getAdminMemories} from '../../service';
 import Memory from '../../components/memories/MemoryShowComponent.vue';
 import MemorySummary from '../../components/memories/MemoryMiniViewComponent.vue';
@@ -55,7 +56,7 @@ if(document.getElementById("appMemories") != undefined){
                 });
             },
             onReadMemory: function(id){
-                window.location.replace(this.acAppData.base_url + "/admin/memories/"+id);
+                window.location.href = this.acAppData.base_url + "/admin/memories/show/"+id
             }            
         }
     });
@@ -84,7 +85,7 @@ if(document.getElementById("appMemoryShow") != undefined){
         methods: {
             getData: function(){
                 if(this.idmemory == 0){
-                    window.location.replace(this.acAppData.base_url  + "/admin/memories");
+                    window.location.href = this.acAppData.base_url  + "/admin/memories";
                     return;
                 }
 
@@ -100,11 +101,20 @@ if(document.getElementById("appMemoryShow") != undefined){
                     StatusHandler.Exception(target_process,ex);
                 });            
             },
+
+            onSources: function(object_media){
+                const items =  object_media.items.map((e)=>{{
+                    return formatter87(e,0);
+                }});
+                const target = formatter87(object_media.target,0);
+                this.$refs.mediaviewer.builderAndShow(items,'MEMORIES',target);         
+            },
+
             onDeletedMemory: function($id){
-                window.location.replace(this.acAppData.base_url + "/admin/memories");
+                window.location.href = this.acAppData.base_url + "/admin/memories";
             },
             onEditMemory: function($id){
-                window.location.replace(this.acAppData.base_url + "/admin/memories/create?idm="+$id);                
+                window.location.href = this.acAppData.base_url + "/admin/memories/create?idm="+$id;
             }
         }
     });

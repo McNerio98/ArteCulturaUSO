@@ -268,7 +268,7 @@
                         return;
                     }
 
-                    window.location.replace(this.acAppData.base_url + "/admin/memories/"+response.data.id);
+                    window.location.replace(this.acAppData.base_url + "/admin/memories/show/"+response.data.id);
                 }).catch(ex=>{
                     this.isSaving = false;
                     let target_process = "Guarda informacion de elemento"; 

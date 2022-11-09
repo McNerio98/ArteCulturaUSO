@@ -63,19 +63,7 @@ Route::get('/admin/home','DashboardController@index')->name('dashboard');
 Route::get('/admin/content','DashboardController@content')->name('content');
 Route::get('/admin/search','DashboardController@search')->name('admin.search'); //dado que hay otra para el cliente 
 
-# Crea o actualiza  recurso del tipo reseña, [Homenaje o Biografias]
-Route::post('/memories','MemoriesController@upsert')->name("memory.store")->middleware('auth','adroles');
 
-#Muestra un formulario limpio o muestra para actualiza para el administrador
-Route::get('/admin/memories/create','MemoriesController@create')->name('memories.create.admin');
-
-
-#Recupera un elemento con peticion ajax 
-Route::get('/memories/find/{id}','MemoriesController@find')->name('memories.find');
-#Recupera lista de homenajes/biografias para el apartado public 
-Route::get('/memories/all','MemoriesController@getAllPublic')->name('memories.all');
-#AJAX 1 Elimina un elemento de  con todos sus medios(files,video.image) asociados 
-Route::delete('/memories/{id}','MemoriesController@destroy')->name("memories.destroy"); //middleware in controller
 
 
 # view | admin -  
@@ -106,10 +94,20 @@ Route::put('/user/updateConfig/{id}','UsersController@updateConfigUser')->name("
 /*------------------------------Biografias/Homenajes------------------------------*/
 #Blade View | Muestra pantalla con items reseñas, con opcion de crear nuevo para el administrador
 Route::get('/admin/memories','MemoriesController@indexadmin')->name('memories.index.admin');
+#Blade View | Muestra un vista pra formulario crear o actualizar 
+Route::get('/admin/memories/create','MemoriesController@create')->name('memories.create.admin');
 #Ajax Request |  Recupera lista de homenajes/biografias para el administrador 
 Route::get('/admin/memories/all','MemoriesController@getAllAdmin')->name('memories.all.admin');
 #Blade View | Muestra un Elemento especifico para el administrador 
 Route::get('/admin/memories/show/{id}','MemoriesController@showadmin')->name('memories.show.admin');
+# AJAX Request | Crea o actualiza  recurso del tipo reseña, [Homenaje o Biografias]
+Route::post('/memories','MemoriesController@upsert')->name("memory.store")->middleware('auth','adroles');
+#AJAX Request | Recupera un elemento 
+Route::get('/memories/find/{id}','MemoriesController@find')->name('memories.find');
+#Recupera lista de homenajes/biografias para el apartado public 
+Route::get('/memories/all','MemoriesController@getAllPublic')->name('memories.all');
+#AJAX 1 Elimina un elemento de  con todos sus medios(files,video.image) asociados 
+Route::delete('/memories/{id}','MemoriesController@destroy')->name("memories.destroy");
 
 
 Route::get('/admin/populars','DashboardController@populars')->name('populars');
@@ -225,3 +223,13 @@ Route::get('res/send', 'RequestAcountController@index');
 #Rutas para API Google
 Route::get('/post/placesquery','PostEventController@places')->middleware('auth');
 Route::get('/post/geoquery','PostEventController@geodecoding')->middleware('auth');
+
+
+/*------------------ Installer Only Router ------------------*/
+Route::get('/install/keyapplication','InstallerController@key_generate');
+Route::get('/install/storagelink','InstallerController@storage_link');
+Route::get('/install/clearconfig','InstallerController@clear_config');
+Route::get('/install/clearcache','InstallerController@clear_cache');
+Route::get('/install/clearroute','InstallerController@clear_route');
+
+

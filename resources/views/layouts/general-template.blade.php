@@ -65,8 +65,8 @@
         return status_cap;
     }
     </script>    
-    <link href="{{ mix('css/app.css') }}" rel="stylesheet">    
-    <link href="{{ mix('css/observatorio_styles.css') }}" rel="stylesheet">
+    <link href="{{ asset(mix('css/app.css')) }}" rel="stylesheet">    
+    <link href="{{ asset(mix('css/observatorio_styles.css')) }}" rel="stylesheet">
     <link href="{{ asset('css/general_styles.css')}}" rel="stylesheet">    
     @stack('styles')
 </head>
@@ -77,7 +77,7 @@
     <!-- </main> -->
     <div class="mb-md-3"></div>
     @include('layouts.components.footer')
-    <script src="{{mix('js/app.js')}}"></script>
+    <script src="{{ asset(mix('js/app.js'))}}"></script>
     @stack('customScript')
 </body>
 
