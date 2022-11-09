@@ -93,10 +93,6 @@ class RolesPermissionSeeder extends Seeder
 			'description' => 'Capacidad de eliminar categorías de rubros y etiquetas asociadas.'
 		]);
 
-		$permission = Permission::create([
-			'name' => 'aprobar-publicaciones',
-			'description' => 'Capacidad de aprobar/desaprobar una publicación o evento.'
-		]);
 
 		$permission = Permission::create([
 			'name' => 'editar-publicaciones',
@@ -121,11 +117,6 @@ class RolesPermissionSeeder extends Seeder
 		$permission = Permission::create([
 			'name' => 'editar-roles',
 			'description' => 'Capacidad de modificar roles'
-		]);
-
-		$permission = Permission::create([
-			'name' => 'eliminar-roles',
-			'description' => 'Capacidad de eliminar roles' //verificar aqui que pasa con los usuarios que lo tienen 
 		]);
 
 		$permission = Permission::create([
@@ -177,13 +168,11 @@ class RolesPermissionSeeder extends Seeder
 			'ver-rubros',
 			'editar-rubros',
 			'eliminar-rubros',
-			'aprobar-publicaciones',
 			'editar-publicaciones',
 			'eliminar-publicaciones',
 			'crear-roles',
 			'ver-roles',
 			'editar-roles',
-			'eliminar-roles',
 			'asignar-permisos',
 			'crear-promociones',
 			'editar-promociones',
@@ -203,7 +192,6 @@ class RolesPermissionSeeder extends Seeder
 			'ver-recursos',
 			'editar-recursos',
 			'eliminar-recursos',
-			'aprobar-publicaciones',
 			'editar-publicaciones',
 			'eliminar-publicaciones',
 			'ver-roles'
@@ -211,7 +199,6 @@ class RolesPermissionSeeder extends Seeder
 
 		$list_permission3 = [ //for Supervisor 
 			'ver-usuarios',
-			'aprobar-publicaciones',
 			'editar-publicaciones',
 			'eliminar-publicaciones',
 			'ver-roles'

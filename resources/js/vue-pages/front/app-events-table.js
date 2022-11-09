@@ -1,7 +1,13 @@
 Vue.component('spinner1',require('@/components/spinners/Spinner1Component.vue').default);
+import TableroPostEventCad from '@/components/tablero/PostEventCard.vue';
+import TableroLoadMore from '@/components/tablero/MoreContentCard.vue';
 
 const appEvents = new Vue({
     el: "#appEventsTable",
+    components: {
+        'table-event': TableroPostEventCad,
+        'table-load-more' : TableroLoadMore
+    },
     data: {
         spinners: {
             S1: false
@@ -11,8 +17,8 @@ const appEvents = new Vue({
         acAppData: window.obj_ac_app
     }, 
     mounted: function(){
-        this.loadEvents();
-        this.checkParam();
+        //this.loadEvents();
+        //this.checkParam();
     },
     methods: {
         checkParam: function(){

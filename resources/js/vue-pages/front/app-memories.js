@@ -1,9 +1,13 @@
+/**GLOBALS */
+Vue.component('media-viewer', require('@/components/media/ViewMediaComponent.vue').default);
 
-import MemoryShow from '../../components/memories/MemoryShowComponent.vue';
-import MemorySummary from '../../components/memories/MemoryMiniViewComponent.vue';
-import {getMemory,getAllMemories} from '../../service';
-import {formatter89} from '../../formatters';
-import NoDataRegister from '../../components/NoDataRegister.vue';
+import MemoryShow from '@/components/memories/MemoryShowComponent.vue';
+import MemorySummary from '@/components/memories/MemoryMiniViewComponent.vue';
+import {getMemory,getAllMemories} from '@/service';
+import {formatter89,formatter87} from '@/formatters';
+import NoDataRegister from '@/components/NoDataRegister.vue';
+
+
 //Index
 if(document.getElementById("appMemoryIndex") != undefined){
     const appMemoryIndex = new Vue({
@@ -76,6 +80,13 @@ if(document.getElementById("appMemoryShow") != undefined){
                     let target_process = "Recuperar elemento especificado"; 
                     StatusHandler.Exception(target_process,ex);
                 });                   
+            },
+            onSources: function(object_media){
+                const items =  object_media.items.map((e)=>{{
+                    return formatter87(e,0);
+                }});
+                const target = formatter87(object_media.target,0);
+                this.$refs.mediaviewer.builderAndShow(items,'MEMORIES',target);                        
             }
         }
     });

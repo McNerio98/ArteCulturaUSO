@@ -106,11 +106,9 @@
                 </div>
             </div>
 
-            <!-- <div>
-                <posttable-style v-for="(e,index) in events" :pdata="e"/>
+            <div class="ac_tbl-container">
+                <table-event v-for="(e,index) in [1,2,3,4]"/>
             </div>
-            -->
-
         </div>
 
         <div class="row mt-2 mt-md-3">
@@ -170,5 +168,5 @@
 @endsection
 
 @Push('customScript')
-    <script src="{{ mix('js/front/app-inicio.js') }}"></script>
+    <script src="{{ asset(mix('js/front/app-inicio.js')) }}"></script>
 @endpush
