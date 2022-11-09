@@ -114,7 +114,7 @@ class MemoriesController extends Controller
 
 
     public function create(){
-		if( ! Auth::user()->can('crear-reseñas')){ //poner esto en los de arriba 
+		if( ! Auth::user()->can('crear-biografias')){ //poner esto en los de arriba 
             return redirect()->route('dashboard');
         };				
 		$request_users = UsersHelper::usersRequest();
@@ -139,12 +139,12 @@ class MemoriesController extends Controller
 
         $user = Auth::user();
 
-        if(!$user->can('crear-reseñas') && $request->memory["id"] == 0){
+        if(!$user->can('crear-biografias') && $request->memory["id"] == 0){
             $output["msg"] = "Operación denegada";
             return $output;
         }
 
-        if(!$user->can('editar-reseñas') && $request->memory["id"] != 0){
+        if(!$user->can('editar-biografias') && $request->memory["id"] != 0){
             $output["msg"] = "Operación denegada";
             return $output;
         }        

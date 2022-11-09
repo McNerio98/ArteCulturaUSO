@@ -8,11 +8,14 @@ Vue.component('summary-item',require('../../components/post/PostEventCardCompone
 import {getElementoTablero} from '@/service';
 import {formatter88} from '@/formatters';
 import PostEventCard2Component from '@/components/post/PostEventCard2Component.vue'
+import TableroPostEventCad from '@/components/tablero/PostEventCard.vue';
+
 
 const app_inicio = new Vue({
     el: '#app_inicio',
     components: {
-        'posttable-style': PostEventCard2Component
+        'posttable-style': PostEventCard2Component,
+        'table-event': TableroPostEventCad
     },
     data: {
         isLoading: false,

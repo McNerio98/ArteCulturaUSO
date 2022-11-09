@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="container-fluid" id="appMemories">        
-        @can('crear-reseñas')
+        @can('crear-biografias')
         <a href="{{route('memories.create.admin')}}">+ Nuevo</a>
         @endcan
         <div class="row mb-2">
