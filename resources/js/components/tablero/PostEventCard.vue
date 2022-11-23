@@ -4,13 +4,13 @@
             <div class="ac_tbl-linetime-point">
                 <div class="ac_tbl-event1Bubble">
                     <div class="ac_tbl-eventTime">
-                        <div class="ac_tbl-DayDigit">31</div>
+                        <div class="ac_tbl-DayDigit">{{itemData.dtl_event.event_date|DateFormatDay}}</div>
                             <div class="ac_tbl-Day">
-                                Miercoles
-                                <div class="ac_tbl-MonthYear">Febrero 2020</div>
+                                {{itemData.dtl_event.event_date|DateFormatDayName}}
+                                <div class="ac_tbl-MonthYear">{{itemData.dtl_event.event_date|DateFormatMonthName}} {{itemData.dtl_event.event_date|DateFormatYear}}</div>
                             </div>
                     </div>
-                    <div class="ac_tbl-eventTitle">Acajutla</div>
+                    <div class="ac_tbl-eventTitle">{{itemData.dtl_event.event_date|DateFormatTime}} </div>
                 </div>
                 <svg height="20" width="20">
                     <circle cx="10" cy="11" r="8" fill="#004165"></circle>
@@ -20,7 +20,35 @@
         </div>
         <div class="ac_tbl-item-content">
             <div class="ac_tbl-item-card">
+
+                <!--IF THE PRESENTATION IMG IS PDF OR UNDEFINED-->
+                <div v-if="itemData.presentation_model == undefined || itemData.presentation_model.type_file == 'docfile'" class="bg-dark ac_tbl-item-card-no-img">
+                    <i class="fas fa-image text-muted" style="font-size: 2rem;"></i>
+                    <span class="text-muted">Sin Imagen</span>
+                </div>           
+                <!--IF THE PRESENTATION IMG IS IMAGE OR VIDEO-->
+                <div v-if="itemData.presentation_model != undefined && (itemData.presentation_model.type_file == 'image' || itemData.presentation_model.type_file == 'video')" class="bg-dark ac_tbl-item-card-img"> 
+                    <img style="object-fit: contain; padding-top: 3px; width: 100%;height: 100%;" alt="" :src="itemData.presentation_model.url">
+                </div> 
+
+                <div class="ac_tbl-item-card-desc">
+                    <p><i class="fas fa-map-marker-alt"></i> Lugar : Lugar del evento</p>
+                    <h5>{{itemData.post.title}}</h5>
+                </div>
             </div>                    
         </div>
     </div>
 </template>
+
+<script>
+    export default {
+        props: {
+            pdata: {type: Object,required:true}
+        },
+        data: function(){
+            return {
+                itemData: JSON.parse(JSON.stringify(this.pdata))                   
+            }
+        }
+    }
+</script>

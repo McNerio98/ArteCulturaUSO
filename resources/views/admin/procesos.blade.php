@@ -2,6 +2,9 @@
 @section('title', 'Procesos')
 @section('windowName', 'PROCESOS')
 
+@section('PanelTitle', 'PROCESOS')
+@section('PanelSubtitle', 'EJECUTAR')
+
 
 @section('content')
 <div class="container-fluid" id="appProcesos">        

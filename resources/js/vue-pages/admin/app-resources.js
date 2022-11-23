@@ -1,11 +1,13 @@
 
-import ResouceCreate from '../../components/recursos/ResourceCreateComponent.vue';
-import ResouceSummary from '../../components/recursos/ResourceShowCardComponent.vue';
-import ResouceShow from '../../components/recursos/ResourceShowComponent.vue';
-import {getModel91,formatter91} from '../../formatters';
-import Trimmer from '../../components/trim/TrimComponentv2.vue';
-import { getAllResources,getResource } from '../../service';
-import NoDataRegister from '../../components/NoDataRegister.vue';
+import ResouceCreate from '@/components/recursos/ResourceCreateComponent.vue';
+import ResouceSummary from '@/components/recursos/ResourceShowCardComponent.vue';
+import ResouceShow from '@/components/recursos/ResourceShowComponent.vue';
+import {getModel91,formatter91,formatter87} from '@/formatters';
+import Trimmer from '@/components/trim/TrimComponentv2.vue';
+import { getAllResources,getResource } from '@/service';
+import NoDataRegister from '@/components/NoDataRegister.vue';
+
+Vue.component('media-viewer', require('@/components/media/ViewMediaComponent.vue').default);
 
 // index
 if(document.getElementById("appResourcesAdminIndex") != undefined){
@@ -42,7 +44,7 @@ if(document.getElementById("appResourcesAdminIndex") != undefined){
                 })
             },
             onReadResource: function(id){
-                window.location.replace(this.acAppData.base_url + '/admin/recursos/' + id);
+                window.location.replace(this.acAppData.base_url + '/admin/recurso/' + id);
             }            
         }
     });
@@ -149,6 +151,13 @@ if(document.getElementById("appResourcesAdminShow") != undefined){
                     StatusHandler.Exception(target_process,ex);                
                 });
             },
+            onSources: function(object_media){
+                const items =  object_media.items.map((e)=>{{
+                    return formatter87(e,0);
+                }});
+                const target = formatter87(object_media.target,0);
+                this.$refs.mediaviewer.builderAndShow(items,'RESOURCES',target);         
+            },            
             onEditResource: function(id){
                 window.location.href = this.acAppData.base_url + "/admin/recursos/create?idr="+id;
             },
