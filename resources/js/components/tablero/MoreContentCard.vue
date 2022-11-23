@@ -1,5 +1,5 @@
 <template>
-    <div class="ac_tbl-item-wrp">
+    <div class="ac_tbl-item-wrp" @click="$emit('onmore')">
         <div class="ac_tbl-linetime-wrp">
 
                     <div class="ac_tbl-linetime-more">

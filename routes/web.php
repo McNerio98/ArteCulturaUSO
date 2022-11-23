@@ -66,19 +66,9 @@ Route::get('/admin/search','DashboardController@search')->name('admin.search'); 
 
 
 
-# view | admin -  
-Route::get('/admin/recursos','RecursosController@indexadmin')->name('recursos.index.admin')->middleware('auth','adroles');
-# view | admin -  
-Route::get('/admin/recursos/create','RecursosController@createadmin')->name('recursos.create.admin')->middleware('auth');
-# view | admin -  
-Route::get('/admin/recursos/{id}','RecursosController@showadmin')->name('recursos.show.admin')->middleware('auth');
-# endpoint - save or update Recurso 
-Route::post('/resource','RecursosController@upsert')->name("resource.store")->middleware('auth','adroles');
-# endpoint - get all items Recursos 
-Route::get('/resources','RecursosController@getall')->name('resources.all');
-Route::get('/resource/{id}','RecursosController@find')->name('resources.find');
-#AJAX 1 Elimina un elemento de  con todos sus medios(files,video.image) asociados 
-Route::delete('/resource/{id}','RecursosController@destroy')->name("resouce.destroy")->middleware('auth','adroles');
+
+
+
 
 /*:::::::::::::::::::::::::::::::::::::: ADMIN PANEL ::::::::::::::::::::::::::::::::::::::*/
 
@@ -108,6 +98,24 @@ Route::get('/memories/find/{id}','MemoriesController@find')->name('memories.find
 Route::get('/memories/all','MemoriesController@getAllPublic')->name('memories.all');
 #AJAX 1 Elimina un elemento de  con todos sus medios(files,video.image) asociados 
 Route::delete('/memories/{id}','MemoriesController@destroy')->name("memories.destroy");
+
+
+/*------------------------------Recursos------------------------------*/
+# Blade View | admin -  
+Route::get('/admin/recursos','RecursosController@indexadmin')->name('recursos.index.admin')->middleware('auth','adroles');
+# Blade View | admin -  
+Route::get('/admin/recursos/create','RecursosController@createadmin')->name('recursos.create.admin')->middleware('auth');
+# Blade View | admin -  
+Route::get('/admin/recurso/{id}','RecursosController@showadmin')->name('recursos.show.admin')->middleware('auth');
+# AJAX - save or update Recurso 
+Route::post('/resource','RecursosController@upsert')->name("resource.store")->middleware('auth','adroles');
+# AJAX - get all items Recursos 
+Route::get('/resources','RecursosController@getall')->name('resources.all');
+# AJAX
+Route::get('/resource/{id}','RecursosController@find')->name('resources.find');
+#AJAX 1 Elimina un elemento de  con todos sus medios(files,video.image) asociados 
+Route::delete('/resource/{id}','RecursosController@destroy')->name("resouce.destroy")->middleware('auth','adroles');
+
 
 
 Route::get('/admin/populars','DashboardController@populars')->name('populars');

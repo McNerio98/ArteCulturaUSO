@@ -23,23 +23,22 @@ const app_inicio = new Vue({
         events: []
     },
     mounted: function(){
-        this.loadTableEvents();
+        const params = {
+            start_date: null,
+            items_limit: 4
+        };
+
+        this.loadTableEvents(params);
     },
     computed: {
     },
-    methods: {  
-        classHidden: function(pos){
-            return {
-                'dis-lg-none' : [2,3].includes(pos),
-                'dis-ms-none': [1].includes(pos),
-            }
-        },       
+    methods: {      
         onSeeMore: function(id){
             window.location.replace(this.acAppData.base_url + `/postshow/${id}`);
         },
-        loadTableEvents: function(){
-            getElementoTablero().then(result => {
-                let response = result.data;
+        loadTableEvents: function(params){
+            getElementoTablero(params).then(result => {
+                const response = result.data;
                 if(response.code == 0){
                     this.isLoading = false;
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);

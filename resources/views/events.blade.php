@@ -25,7 +25,7 @@
         <!--::::::::::::::::::::::::::::::::::::::START CONTENT::::::::::::::::::::::::::::::::::::::-->
         <div class="container pt-2">
 
-        <section v-if="postevent_selected == undefined" class="p-3">
+        <section class="p-3">
             <div class="container">
                 <h1>Tablero de Eventos</h1>
                 <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it entirely.</p>
@@ -34,8 +34,8 @@
 
         <div class="ac_tbl-container">
                 <!--No quitar las etiquetas de cierren, si se usa <component/> tiene un comportamiento incongruente-->
-                <table-event v-for="(k,index2) in [1,2,3,4,5,7,8,9]" :key="index2+'el002'"></table-event>
-                <table-load-more></table-load-more>
+                <table-event v-for="(e,index) in events" :pdata="e" :key="e.post.id"/></table-event>
+                <table-load-more v-if="isEnableMore" @onmore="onLoadMore"></table-load-more>
         </div>        
 
         <div class="ac_tbl-container">

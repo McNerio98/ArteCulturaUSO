@@ -2,6 +2,9 @@
 @section('title', 'Recursos')
 @section('windowName', 'Lista de recursos')
 
+@section('PanelTitle', 'RECURSOS')
+@section('PanelSubtitle', 'TODOS LOS ELEMENTOS')
+
 @section('content')
 <main role="main" class="flex-shrink-0" id="appResourcesAdminIndex">
     <div class="container">

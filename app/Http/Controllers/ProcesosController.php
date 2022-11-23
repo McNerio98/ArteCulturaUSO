@@ -7,6 +7,7 @@ use App\Helper\UsersHelper;
 use App\DtlEvent;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\TestEmail;
+use Illuminate\Support\Facades\Validator;
 
 class ProcesosController extends Controller
 {
@@ -15,25 +16,36 @@ class ProcesosController extends Controller
         return view('admin.procesos' , ['ac_option' =>'procesos' , 'request_users' => $request_users]);        
     }
 
-    public function testemail(){
+    public function testemail(Request $request){
         $output = [
             "code" => 0,
             "msg" => "",
             "data" => null
         ];
 
+        $validator = Validator::make($request->all(),[
+            "email" => "required|email"
+        ]);
+
+
+        if($validator->fails()){
+            $output["msg"] = "Valores imcompletos";
+            return $output;
+        }
+
+
         $tosend = $request->email;
 
         try{
             $dataemail = new \stdClass();
             $dataemail->email = $tosend;
-            Mail::to($new_user->email)->send(new TestEmail($tmp_data));
+            Mail::to($dataemail->email)->send(new TestEmail($dataemail));
             $output["code"] = 1;
             $output["msg"] = "Test de verificacion con exito";
 
         }catch(\Throwable $ex){
-            $salida["msg"] = "Ocurrio un error: [".$ex->getMessage()."]";
-            $salida["msg"] .= " , consulte soporte tecnico";
+            $output["msg"] = "Ocurrio un error: [".$ex->getMessage()."]";
+            $output["msg"] .= " , consulte soporte tecnico";
         }
         
         return $output;
@@ -51,7 +63,7 @@ class ProcesosController extends Controller
         try{
             $rows_affected = 0;
             date_default_timezone_set('America/El_Salvador');        
-            $today = date("Y-m-d");
+            $today = date("Y-m-d") . " 00:00:00";
             $events = DtlEvent::where('frequency','repeat')
             ->where('event_date','<',$today)
             ->get();

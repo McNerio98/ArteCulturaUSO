@@ -23,9 +23,7 @@
                         <h1 class="text-center">Arte y Cultura en Sonsonate</h1>
                         <p class="parrafoInfo text-center" style="width: 100%; max-width: 700px; margin: auto;">Un espacio virtual para el artista sonsonateco y para el público en general acercándolo con la cultura y al arte.</p>            
                         <div class="text-center">
-                            <button  data-toggle="modal" class="buttonSolicitud">
-                                Mas informacion
-                            </button>
+                            <a href="{{route('acercade')}}" class="buttonSolicitud" style="display: inline-block;color: white;">Mas informacion</a>
                         </div>
                 </div>
         </div>
@@ -107,7 +105,7 @@
             </div>
 
             <div class="ac_tbl-container">
-                <table-event v-for="(e,index) in [1,2,3,4]"/>
+                <table-event v-for="(e,index) in events" :pdata="e" :key="e.post.id"/>
             </div>
         </div>
 

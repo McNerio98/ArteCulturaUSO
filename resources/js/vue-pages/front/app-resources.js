@@ -1,8 +1,9 @@
 import ResourceSummary from '../../components/recursos/ResourceShowCardComponent.vue';
 import ResourceShow from '../../components/recursos/ResourceShowComponent.vue';
-import {formatter91} from '../../formatters';
+import {formatter91,formatter87} from '../../formatters';
 import { getAllResources,getResource } from '../../service';
 import NoDataRegister from '../../components/NoDataRegister.vue';
+Vue.component('media-viewer', require('@/components/media/ViewMediaComponent.vue').default);
 
 //Show
 if(document.getElementById("appResourcesShow") != undefined){
@@ -40,6 +41,13 @@ if(document.getElementById("appResourcesShow") != undefined){
                     StatusHandler.Exception(target_process,ex);                
                 });
             },
+            onSources: function(object_media){
+                const items =  object_media.items.map((e)=>{{
+                    return formatter87(e,0);
+                }});
+                const target = formatter87(object_media.target,0);
+                this.$refs.mediaviewer.builderAndShow(items,'RESOURCES',target);         
+            },               
             onEditResource: function(){
 
             }
