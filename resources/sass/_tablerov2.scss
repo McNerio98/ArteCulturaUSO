@@ -5,6 +5,9 @@
     width:100%;
     overflow-x: auto;    
     overflow-y:hidden ;    
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .ac_tbl-item-wrp{
@@ -35,6 +38,36 @@
 
 .ac_tbl-item-card:hover{
     background-color: rgb(201, 199, 199);
+}
+
+.ac_tbl-item-card-img{
+    height: 40%;
+}
+
+.ac_tbl-item-card-no-img{
+    height: 40%; /*debe tener el mismo valor que la clase ac_tbl-item-card-img*/
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.ac_tbl-item-card-desc{
+    overflow: hidden;
+    height: 55%;
+    padding: 5px;
+}
+.ac_tbl-item-card-desc p{
+    color: #343a40;
+    font-weight: bold;
+    font-size: 150%;
+    margin: 0px !important;
+    line-height: 80%;
+}
+
+.ac_tbl-item-card-desc h5{
+    color: #e34e4b !important;
+
 }
 
 

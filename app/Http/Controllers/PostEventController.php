@@ -22,30 +22,45 @@ class PostEventController extends Controller
 {
 
 
-    public function tableevents(){
+    public function tableevents(Request $request){
         $output = [
             "code" => 0,
             "msg" => "",
-            "data" => null
+            "data" => null,
         ];
 
+        $start_date = $request->start_date;
+        $items_limit  = $request->items_limit;
+
+        
+        
         date_default_timezone_set('America/El_Salvador');        
-        $today = date("Y-m-d");
-        $start_at = date("Y-m-d",strtotime($today. ' - 10 days'));
-        $end_at = date("Y-m-d",strtotime($today. ' + 10 days'));
+        if(is_null($start_date)){
+            $today = date("Y-m-d");
+            $start_date = date("Y-m-d").' 00:00:00';
+        }else{
+            $start_date = date("Y-m-d H:i:s",strtotime($start_date));
+        }
 
-        $output["other"] = [
-            "start_at" => $start_at,
-            "end_at" => $end_at
-        ];
+        $output["extra"] = $start_date;
 
-		$result = PostEvent::whereBetween('dtl.event_date',[$start_at,$end_at])
+        if(is_null($items_limit) || $items_limit > 10){
+            $items_limit = 10;
+        }
+
+        #$start_date = date("Y-m-d",strtotime($today. ' - 10 days'));
+        #$end_at = date("Y-m-d",strtotime($today. ' + 10 days'));
+
+
+        //Dejar el > ,si se usa >= siempre devolvera dado que se envia la ultima en el tablero 
+		$result = PostEvent::where('dtl.event_date','>' ,$start_date)
             ->join('dtl_events AS dtl','dtl.event_id','post_events.id')
 			->with('presentation_model')
 			->with('owner')
 			->with('event_detail')
-            ->orderBy('dtl.event_date')
-            ->limit(4)->get();
+            ->orderBy('dtl.event_date','asc')
+            ->limit($items_limit)->get();
+            #Dejar ordenamiento por ASC, verificado!
 		$items = [];
 		foreach($result as $el){
 			$el->owner->load('profile_img');
@@ -106,64 +121,6 @@ class PostEventController extends Controller
         return $output;
     }
 
-    /**McNerio Dev 10-09-2022 Deprecated */
-    public function eventsTable(Request $request){
-
-        $salida = [
-            "code" => 0,
-            "msg" => "",
-            "data" => null
-        ];
-
-        //Si no se paso la variable la inicia con 1, sino hace la conversion del que trae 
-        $page_aux = $request->page == null ? 1 : intval($request->page);
-        //Si la conversion fue 0, es porque es el parseo no fue exitoso, se establece a uno 
-        if($page_aux === 0){    $page_aux = 1;  }        
-        $init_pagination = $request->init_pagination == null ? false : boolval($request->init_pagination);
-
-        $paginate = [
-            "total" => 0,
-            "current_page" => 0,
-            "per_page" => 0,
-            "last_page" => 0,
-            "from" => 0,
-            "to" => 0
-        ];    
-        $paginate["per_page"] = 12;
-        $paginate["current_page"] = $page_aux;
-        $paginate["from"] = ( ($paginate["current_page"] * $paginate["per_page"]) - $paginate["per_page"]) +1;
-
-        /* Mas adenta se consultara si es necesario agregar la hora del evento, por ahora solo los muestra conforme 
-        ** a la fecha que se ira a realizar   ----  Pero no sabra a que horas finaliza exactamente
-        */
-
-        date_default_timezone_set('America/El_Salvador');
-        $range_init = date("Y-m-d")." 00:00:00"; //today
-        //$range_init = "2021-07-23 00:00:00"; //quitar este, es solo para pruebas 
-        $range_end = date('Y-m-d', strtotime("+3 months", strtotime($range_init)))." 00:00:00";
-        $items      = null;
-        $offset     = $paginate["from"] - 1;
-        $limit        = $paginate["per_page"];
-
-        if($init_pagination){
-            $call_string            = "call getEvents('$range_init','$range_end',0,0,true)";
-            $result                    = DB::select($call_string);
-            $paginate["total"]= intval($result[0]->calc_total);
-        }
-
-        $call_string            = "call getEvents('$range_init','$range_end',$limit,$offset,false)";
-        $items                    = DB::select($call_string);
-
-
-        //Segun la paginacion usada en todos los modulos, la variable "to" es la misma que la ultima pagina 
-        $paginate["last_page"] = intval(ceil($paginate["total"] / $paginate["per_page"]));
-        $paginate["to"] = $paginate["last_page"];         
-
-        $salida["code"] = 1;
-        $salida["data"] = $items;
-        $salida["pagination"] = $paginate;
-        return $salida;
-    }
 
     //Filter for only manager roles and auth (Done)
     public function recientes(Request $request){
@@ -534,49 +491,6 @@ class PostEventController extends Controller
         }
 
         return $output;
-    }
-
-    public function popularPost(){
-        $salida = [
-            "code" => 0,
-            "msg" =>"",
-            "data" => []
-        ];
-
-        $query = "select pe.id,pe.title,concat(substring(pe.content,1,100),'...') as content,pe.type_post,pe.is_popular,fop.name,fop.path_file,fop.type_file from post_events pe
-        left join (select * from files_on_post_events fope where fope.type_file = 'image' group by fope.id_post_event) as fop on fop.id_post_event = pe.id
-        where pe.is_popular = true"; 
-
-        $result = DB::select(DB::raw($query));
-        $salida = [
-            "code" => 1,
-            "msg" =>"result ok",
-            "data" => $result
-        ];
-
-        return $salida;        
-    }
-
-    //Uscar esta en lugar de la de arriba, y se elimina la de arriba 
-    public function popularItems(){
-        $salida = [
-            "code" => 0,
-            "msg" =>"",
-            "data" => []
-        ];
-
-        #Se envian todas, para el administrador se muestran todas, para la pagina princila
-        #Se filtra en la vista solo los aprovados 
-        $result = DB::table("post_events AS e")
-        ->join("users AS u","u.id","=","e.creator_id")
-        ->leftJoin("dtl_events AS dtl","dtl.event_id","=","e.id")
-        ->leftJoin("files_on_post_events AS f","f.id","=","e.presentation_img")
-        ->select("e.id","e.title","e.content AS description", "e.type_post AS type","e.status",
-        "f.name AS presentation_img","f.type_file AS presentation_type", "e.is_popular","dtl.event_date","dtl.has_cost","dtl.cost","dtl.frequency","u.artistic_name AS nickname",
-        "u.id AS creator_id")->where("e.is_popular","=",true)->get();
-        $salida["code"] = 1;
-        $salida["data"] = $result;
-        return $salida;        
     }
 
     
