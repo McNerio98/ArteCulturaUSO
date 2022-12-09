@@ -17,7 +17,7 @@ class CreateFilesOnPostEventsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->unsignedBigInteger('id_post_event');
-            $table->string("name",500);
+            $table->string("name",200);
             $table->enum('type_file',['image','video','docfile'])->default('image');
             $table->foreign('id_post_event')->references('id')->on('post_events')->onDelete('cascade');
         });

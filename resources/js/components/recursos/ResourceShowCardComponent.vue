@@ -9,21 +9,14 @@
                     <div class="d-flex flex-column h-100 justify-content-center">
                         <p>Tipo de recurso: {{getTipo}}</p>
                         <h3>{{itemData.resource.name}}</h3>
+                        <div>
+                            <a href="javascript:void;" @click.prevent="goRead"> Seguir leyendo</a>
+                        </div>
                     </div>
                 </div>
             </div>    
         </div>    
         <div>
-        <div class="mlist_item-description">
-            <span v-html="itemData.resource.description"></span>
-            <div class="mlist_item-gradient">
-
-            </div>
-        </div>
-        <div class="text-right">
-            <a href="javascript:void;" @click.prevent="goRead"> Seguir leyendo</a>
-        </div>
-
         </div>
     </div>
 </template>
@@ -99,7 +92,7 @@ export default {
     }
 
     .bg1rc{
-        background-color: #d2d6de;
+        background-color: #e0e2e4;
     }
 
     .border1rc{

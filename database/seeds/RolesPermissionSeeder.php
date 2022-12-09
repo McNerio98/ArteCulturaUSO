@@ -29,7 +29,7 @@ class RolesPermissionSeeder extends Seeder
 		
 		$permission = Permission::create([
 			'name' => 'configurar-usuarios',
-			'description' => 'Cambiar la información del usuario, así como habilitar, desactivar, o eliminar la cuenta, si tiene ese acceso podrá ver la contraseña del usuario, podrá aceptar un usuario.'
+			'description' => 'Modificar la información del usuario; rol, nombre de usuario, correo, clave, descripción. Así como habilitar, desactivar, o eliminar la cuenta, si tiene este acceso podrá ver la contraseña del usuario, podrá aceptar un usuario'
 		]);
 		
 		$permission = Permission::create([
@@ -39,17 +39,17 @@ class RolesPermissionSeeder extends Seeder
 
 		$permission = Permission::create([
 			'name' => 'ver-biografias',
-			'description' => 'Capacidad para ver biografías de personajes u homenajes, aprobados y los pendientes de aprobar, desde la página publica siempre serán visibles todos los homenajes aprobados.'
+			'description' => 'Capacidad para ver biografías de personajes u homenajes. desde la página publica siempre serán visibles todos los homenajes/biografías'
 		]);
 
 		$permission = Permission::create([
 			'name' => 'editar-biografias',
-			'description' => 'Capacidad de editar biografías u homenaje, cambiar sus datos e imágenes.'
+			'description' => 'Capacidad de editar biografías u homenaje, cambiar sus datos e imágenes. El creador original de la biografía u homenaje siempre podrá editarlo.'
 		]);
 
 		$permission = Permission::create([
 			'name' => 'eliminar-biografias',
-			'description' => 'Capacidad de eliminar biografías u homenajes.'
+			'description' => 'Capacidad de eliminar biografías u homenajes. El creador original de la biografía siempre podrá eliminarlo.'
 		]);
 
 		$permission = Permission::create([
@@ -64,12 +64,12 @@ class RolesPermissionSeeder extends Seeder
 		
 		$permission = Permission::create([
 			'name' => 'editar-recursos',
-			'description' => 'Capacidad de editar recursos.'
+			'description' => 'Capacidad de editar recursos. El creador original del recurso siempre podrá editarlo.'
 		]);
 
 		$permission = Permission::create([
 			'name' => 'eliminar-recursos',
-			'description' => 'Capacidad de eliminar un ítem de tipo recurso, documentos PDF y videos, si el recurso fue tomado de una publicación o evento; aun seguirá existiendo en ese elemento.'
+			'description' => 'Capacidad de eliminar un ítem de tipo recurso. El creador original del recurso siempre podrá eliminarlo.'
 		]);
 
 

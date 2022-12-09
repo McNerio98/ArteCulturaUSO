@@ -2,14 +2,18 @@
     <div class="pnl-memory card">
             <div class="card-header">
                 <div class="card-tools p-2">
-                    <button @click="onClickEdit" type="button" class="btn btn-tool" data-toggle="tooltip" 
+                    <button class="btn btn-default btn-sm float-right mr-2" 
+                        v-if="has_cap('crear-promociones')"
+                    @click="onPromo"><i class="fas fa-star"></i> Promocionar</button>                         
+
+                    <button @click="onClickEdit" class="btn btn-default btn-sm float-right mr-2" data-toggle="tooltip" 
                         v-if="has_cap('editar-biografias') || itemData.memory.creator_id === acAppData.current_user.id"
                         data-placement="right"
                         title="Editar elemento">
                         <i class="fas fa-pen"></i> Editar
                     </button>
                     
-                    <button @click="onClickDelete" type="button" class="btn btn-tool" data-toggle="tooltip" 
+                    <button @click="onClickDelete" class="btn btn-default btn-sm float-right mr-2" data-toggle="tooltip" 
                         v-if="has_cap('eliminar-biografias') || itemData.memory.creator_id === acAppData.current_user.id"
                         data-placement="right"
                         title="Eliminar elemento">
@@ -201,6 +205,9 @@
             }
         },     
         methods: {
+            onPromo: function(){
+                this.$emit('on-promo',this.itemData.memory.id);
+            },            
             onClickEdit: function(){
                 this.$emit('edit',this.itemData.memory.id);
             },
@@ -258,3 +265,4 @@
         
     }
 </script>
+

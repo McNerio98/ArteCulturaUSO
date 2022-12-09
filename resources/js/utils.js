@@ -19,6 +19,10 @@ export function municipiosItems(){
     ]
 }
 
+export function getABC(){
+    return ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+}
+
 export function directionsTokens(direction){
     var item = direction.replace(/(c)(ll|all|l)(\.| )/gi,"calle ");
     item = item.replace(/av(\.| )/gi,"avenida ");
