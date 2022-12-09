@@ -243,6 +243,7 @@ export default {
       acAppData: {},
       limitefiles: 10,
       mediadrop_ids: [],
+      limitFileName: 200,
       flags: {
           modal_video_youtube: false
       }      
@@ -322,6 +323,7 @@ export default {
       }                
     },    
     addFileToMultimedia: function (file) {
+
       let reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = (e) => {
@@ -340,7 +342,11 @@ export default {
             data: e.target.result,
         };
 
-        this.itemData.media.push(newFileMedia);    
+        if(file.name.length > this.limitFileName && newFileMedia.type_file == "docfile"){
+          StatusHandler.ValidationMsg(`El nombre del documento supera el límite de ${this.limitFileName} caracteres`);
+        }else{
+          this.itemData.media.push(newFileMedia);    
+        }
       };
     },
     removeFile: function (indexParent,id) {

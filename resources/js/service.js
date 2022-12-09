@@ -61,15 +61,11 @@ export function getAdminMemories(){
     });
 }
 
-export function getAllMemories(){
-    return new Promise((resolve,reject) =>{
-        axios.get(`/memories/all`).then(response => {
-            resolve(response);
-        }).catch(ex => {
-            reject(ex);
-        });
-    });
+export function getAllMemories(filter){
+    /**Return Route for Pagination */
+    return `/memories/all?filter_letter=${filter}`;
 }
+
 
 export function deleteMemory($id){
     return axios.delete(`/memories/${$id}`);
@@ -132,8 +128,9 @@ export function upsertResource(data){
 }
 
 //Obtiene todos los recursos 
-export function getAllResources(){
-    return axios.get(`/resources`);
+export function getAllResources(filter){
+    /**Return Route for Pagination */
+    return `/resources?filter=${filter}`
 }
 
 //Obtiene un recurso especifico 

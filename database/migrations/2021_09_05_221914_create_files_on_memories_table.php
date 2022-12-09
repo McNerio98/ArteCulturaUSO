@@ -16,7 +16,7 @@ class CreateFilesOnMemoriesTable extends Migration
         Schema::create('files_on_memories', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string("name",500);
+            $table->string("name",200);
             $table->enum('type_file',['image','video','docfile'])->default('image');
             $table->foreignId('memory_id')->constrained()->onDelete('cascade');;
         });

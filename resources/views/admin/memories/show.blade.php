@@ -16,6 +16,7 @@
                         :pdata="e"
                         @source-files="onSources" 
                         @deleted="onDeletedMemory"
+                        @on-promo="onPromo"
                         @edit="onEditMemory">
                 </memory>
            </div>

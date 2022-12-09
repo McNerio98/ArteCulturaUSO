@@ -115,7 +115,10 @@ if(document.getElementById("appMemoryShow") != undefined){
             },
             onEditMemory: function($id){
                 window.location.href = this.acAppData.base_url + "/admin/memories/create?idm="+$id;
-            }
+            },
+            onPromo: function(id){
+                window.location.href = this.acAppData.base_url + `/admin/promociones/create?tarid=${id}&tartype=memory`;
+            }                 
         }
     });
 }

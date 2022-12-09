@@ -2,6 +2,9 @@
 @section('title', 'Promociones')
 @section('windowName', 'PROMOCIONES')
 
+@section('PanelTitle', 'PROMOCIONES')
+@section('PanelSubtitle', 'CREAR')
+
 
 @section('content')
 <div class="container-fluid" id="appPromoCreateUpdate">        

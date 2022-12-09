@@ -2,6 +2,9 @@
 @section('title', 'Inicio')
 @section('windowName', 'PANEL PRINCIPAL')
 
+@section('PanelTitle', 'DASHBOARD')
+@section('PanelSubtitle', 'INICIO')
+
 @section('content')
 <div class="container" id="appHome">
     <!--Tag hidden Token-->
