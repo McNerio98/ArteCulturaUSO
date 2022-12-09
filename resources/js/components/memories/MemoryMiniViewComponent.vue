@@ -1,12 +1,11 @@
 <template>
     <div class="col-md-6">
-        <div class="row border rounded flex-md-row mb-4 shadow-sm">
+        <div class="row border rounded flex-md-row mb-4 shadow-sm bg1rc">
             <div class="col-8">
                 <div class="d-flex flex-column p-1 p-md-4 acm-content">
                     <strong class="d-inline-block mb-2 text-primary">{{itemData.memory.area}}</strong>
                     <h3 class="mb-0">{{itemData.memory.name}}</h3>
                     <div class="mb-1 text-muted">{{itemData.memory.birth_date | DateFormatES2}}</div>
-                    <p style="word-break: break-all;" class="card-text mb-auto" v-html="contentShort"></p>
                     <a href="javascript:void;" @click.prevent="onGoRead" class="stretched-link">Seguir leyendo</a>
                 </div>
             </div>
@@ -34,6 +33,10 @@
 
     .acm-content{
         justify-content: space-between;
+    }
+
+    .bg1rc{
+        background-color: #e0e2e4;
     }
 
     .acm-dots{
