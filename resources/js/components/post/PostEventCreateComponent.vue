@@ -144,6 +144,7 @@
                                                 v-model="itemData.dtl_event.cost"
                                                 type="number"
                                                 min="0"
+                                                step=".01"
                                                 class="form-control"
                                                 placeholder="precio"
                                                 aria-label="Username"
@@ -265,8 +266,8 @@ import {
     getMunicipios,
     getGeo,
     getPlaces,
-} from "../../service";
-import { directionsTokens } from "../../utils";
+} from "@/service";
+import { directionsTokens } from "@/utils";
 
 export default {
     components: { DatePicker, MediaComponent },
@@ -292,6 +293,12 @@ export default {
     },
     mounted: function () {
         this.loadLocalValues();
+    },
+    watch: {
+        pdata(nuevo,antiguo){
+             this.itemData = JSON.parse(JSON.stringify(nuevo));
+             this.loadLocalValues();
+        }
     },
     computed: {
         PlaceholderMsg1: function () {
@@ -331,6 +338,20 @@ export default {
                 StatusHandler.ValidationMsg("Municipio no seleccionado");
                 return;
             }
+
+            if(this.itemData.post.type == 'event' && this.itemData.dtl_event.has_cost){
+                if(isNaN(parseFloat(this.itemData.dtl_event.cost))){
+                    StatusHandler.ValidationMsg("Ingrese el costo del evento");
+                    return;
+                }
+
+                const regexp = /^\d+(\.\d{1,2})?$/;
+                if(!regexp.test(this.itemData.dtl_event.cost)){
+                    StatusHandler.ValidationMsg("Formato de costo no valido");
+                    return;                
+                }
+            }
+
 
             this.itemData.dtl_event.event_date = moment(this.eventDate).format('YYYY-MM-DD HH:mm:ss');
             this.upsert();
@@ -383,6 +404,7 @@ export default {
                     return;
                 }
 
+                this.$refs.frmCreatePostEvent.classList.remove("was-validated");
                 this.$emit("saved", response.data);
             }).catch((ex) => {
                     const target_process = "Guarda informacion de elemento";

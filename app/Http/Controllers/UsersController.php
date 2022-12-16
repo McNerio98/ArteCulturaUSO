@@ -24,6 +24,9 @@ class UsersController extends Controller
 {
     public $path_store_profiles =  "/files/profiles/";
 
+    public function noactive(){
+		return view("user-noactive");
+    }
 
     public function uploadProfileImg(Request $request){
         $salida = [
@@ -291,7 +294,7 @@ class UsersController extends Controller
         return $salida;
     }
 
-    //Filtrado por el middleware addroles, auth web (Done)
+    
     public function updateConfigUser(Request $request,$id){
         $salida = [
             'code' => 0,
@@ -474,8 +477,11 @@ class UsersController extends Controller
             $salida["msg"] = "Inconsistencia de datos, recargue el sitio";
             return $salida;
         }
-        //only for test 
-        //$per_page = 2;
+
+		if( ! Auth::user()->can('ver-usuarios')){ 
+            $salida["msg"] = "Acción no permitida";
+            return $salida;
+        };        
 		
         $builder = DB::table('users')
         ->join("model_has_roles","model_has_roles.model_id","=","users.id")
@@ -483,7 +489,7 @@ class UsersController extends Controller
         ->leftJoin('media_profiles','media_profiles.id','=','users.img_profile_id')
         ->select("users.id","roles.name as role","users.name","users.img_profile_id","users.email",
             "users.username","users.telephone","users.rubros","users.status","media_profiles.path_file AS img_profile")
-        ->where('email_verified_at','<>',null); //only verified users
+        ->whereNotNull('email_verified_at'); //only verified users
 
         switch($filter){
             case "enabled": {
@@ -582,16 +588,6 @@ class UsersController extends Controller
         return $salida;
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.

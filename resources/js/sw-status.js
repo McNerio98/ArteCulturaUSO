@@ -15,13 +15,46 @@ export default class StatusHandler{
             SUCCESS: 1
         };
     }
+
+    static confirm(title = "¿Está usted seguro?",text = "¡No podrás revertir esto! "){
+        return Swal.fire({
+            title: title,
+            text: text,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, ¡Continuar!',
+            cancelButtonText: 'Cancelar',
+            allowOutsideClick: false
+        }).then((result) => {
+            return result.isConfirmed;
+        })        
+    }
+
+    static inputtext(title,label,textvalid,inputValue = ""){
+        return Swal.fire({
+            title: title,
+            input: 'text',
+            inputPlaceholder: label,
+            inputValue: inputValue,
+            showCancelButton: true,
+            allowOutsideClick: false,
+            inputValidator: (value) => {
+                if (!value) {
+                    return textvalid
+                }
+            }
+          })        
+    }
     
-    static ShowLoading(){
+    static ShowLoading(title = '¡Actualizando datos! Por favor, espere...'){
+
         let node = "<div id='spinerLoad'><div class='spinner-border' role='status' style='width: 4rem !important; height: 4rem " +
             "!important;'><span class='sr-only'>Loading...</span></div><div class='icon'>" +
             "<span>Cargando ...</span></div></div>";
         Swal.fire({
-            title: '¡Actualizando datos! Por favor, espere...',
+            title: title,
             html: node,
             showConfirmButton: false,
             allowOutsideClick: false
@@ -33,14 +66,14 @@ export default class StatusHandler{
     }
 
     static Exception(target_msg,data_ex){
-        console.error(data_ex); 
         //HTTP 401 la petición (request) no ha sido ejecutada porque carece de credenciales
-        // if(data_ex?.response?.status == 401){//para volver al inicio/login 
-        //     window.location.reload();
-        // }else{
-        //     let msg = "El proceso ("+target_msg+")no se ha podido completar, póngase con soporte técnico."
-        //     this.ShowStatus(msg,null,StatusHandler.STATUS.FAIL);
-        // }       
+        console.error(data_ex);
+        if(data_ex?.response?.status == 401){//para volver al inicio/login 
+            window.location.reload();
+         }else{
+             let msg = "El proceso ("+target_msg+") no se ha podido completar, póngase con soporte técnico."
+             this.ShowStatus(msg,null,StatusHandler.STATUS.FAIL);
+        }       
     }
 
     static ValidationMsg(mensaje){
@@ -73,13 +106,13 @@ export default class StatusHandler{
         } else if (estado == this.STATUS.SUCCESS) {
             msgIcon = "success";
             switch (tipo) {
-                case operacion.INSERT:
+                case this.OPERATION.INSERT:
                     msgTitle = "Informe de Registro";
                     break;
-                case operacion.UPDATE:
+                case this.OPERATION.UPDATE:
                     msgTitle = "Informe de Actualizacion";
                     break;
-                case operacion.DELETE:
+                case this.OPERATION.DELETE:
                     msgTitle = "Informe de Eliminacion";
                     break;
                 default:

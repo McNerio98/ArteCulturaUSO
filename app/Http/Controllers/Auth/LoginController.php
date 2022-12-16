@@ -63,9 +63,16 @@ class LoginController extends Controller
             // validar 
             $current_user = Auth::user();
 
+            //Esta parte es por si implementa el usuario se registre con password, dado que la version actula
+            //(2022.12.14) no puede iniciar sesion mientras esta en solicitud porque no tiene asignada la clave
             if($current_user->status == 'request'){
                 return redirect()->route('waiting');    
             }
+
+            if($current_user->status == 'disabled'){
+                Auth::logout();
+                return redirect()->route('user.noactive');    
+            }            
 
             //generando token de acceso 
             //$api_token_access = (string) Str::uuid();

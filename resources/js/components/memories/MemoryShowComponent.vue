@@ -2,15 +2,19 @@
     <div class="pnl-memory card">
             <div class="card-header">
                 <div class="card-tools p-2">
-                    <button @click="onClickEdit" type="button" class="btn btn-tool" data-toggle="tooltip" 
-                        v-if="has_cap('editar-reseñas') || itemData.memory.creator_id === acAppData.current_user.id"
+                    <button class="btn btn-default btn-sm float-right mr-2" 
+                        v-if="has_cap('crear-promociones')"
+                    @click="onPromo"><i class="fas fa-star"></i> Promocionar</button>                         
+
+                    <button @click="onClickEdit" class="btn btn-default btn-sm float-right mr-2" data-toggle="tooltip" 
+                        v-if="has_cap('editar-biografias') || itemData.memory.creator_id === acAppData.current_user.id"
                         data-placement="right"
                         title="Editar elemento">
                         <i class="fas fa-pen"></i> Editar
                     </button>
                     
-                    <button @click="onClickDelete" type="button" class="btn btn-tool" data-toggle="tooltip" 
-                        v-if="has_cap('eliminar-reseñas') || itemData.memory.creator_id === acAppData.current_user.id"
+                    <button @click="onClickDelete" class="btn btn-default btn-sm float-right mr-2" data-toggle="tooltip" 
+                        v-if="has_cap('eliminar-biografias') || itemData.memory.creator_id === acAppData.current_user.id"
                         data-placement="right"
                         title="Eliminar elemento">
                         <i class="fas fa-trash-alt"></i> Eliminar
@@ -65,7 +69,7 @@
                     </div>
 
                     <div class="col-12 col-md-5">
-                        <div class="wrpp-img-presentation" :style="[{ backgroundImage: 'url(' +  srcPresentationImg + ')' }]" >
+                        <div @click="onPresentationImg" class="wrpp-img-presentation" :style="[{ backgroundImage: 'url(' +  srcPresentationImg + ')' }]" >
                         </div>
                     </div>                          
               </div>
@@ -83,7 +87,7 @@
                     :key="index"
                     class="col-6 col-md-4">
 
-                    <div v-if="m.type_file === 'image' && !m.presentation">
+                    <div v-if="m.type_file === 'image' && !m.presentation" @click="onSources(m)">
                         <div class="image-area"
                             data-toggle="tooltip"
                             data-placement="top"
@@ -161,7 +165,8 @@
 
 <script>
 
-    import {deleteMemory} from '../../service';
+    import {deleteMemory} from '@/service';
+
     export default {
         props: {
             pdata: {type: Object,required:true}
@@ -170,7 +175,7 @@
             return {
                 isDeleting: false,
                 itemData: JSON.parse(JSON.stringify(this.pdata)),
-                acAppData: {}
+                acAppData: window.obj_ac_app
             }
         },
         computed: {
@@ -199,10 +204,10 @@
                 });;
             }
         },     
-        mounted() {
-            this.acAppData = window.obj_ac_app;
-        },
         methods: {
+            onPromo: function(){
+                this.$emit('on-promo',this.itemData.memory.id);
+            },            
             onClickEdit: function(){
                 this.$emit('edit',this.itemData.memory.id);
             },
@@ -235,9 +240,29 @@
                         }
                 });   
             },
+            onPresentationImg: function(){
+                if(this.itemData.presentation_model != null){
+                    this.onSources(this.itemData.presentation_model);
+                }
+            },
+            onSources: function(target){
+                const object_media = {
+                    items: [],
+                    target: null
+                }
+                object_media.target = target;
+                object_media.items = this.ListImagesOrVideos.slice();
+
+                if(this.itemData.presentation_model != null){
+                    object_media.items.push(this.itemData.presentation_model);
+                }
+                this.$emit('source-files',object_media);
+            },            
             has_cap(e){
                 return window.has_cap == undefined ? false : window.has_cap(e);
             }               
         }
+        
     }
 </script>
+

@@ -16,28 +16,35 @@
     max-width: 40rem;
     }
 </style>
-<main role="main" class="flex-shrink-0" id="app_events">
+<main role="main" class="flex-shrink-0" id="appEventsTable">
     <input type="hidden" id="targetOpenItem" value="{{app('request')->input('target')}}">
 
-    <section v-if="postevent_selected == undefined" class="jumbotron text-center" style="background-color: rgb(233, 236, 239);">
-        <div class="container">
-            <h1>Tablero de Eventos</h1>
-            <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it entirely.</p>
-        </div>
-    </section>
+
 
     <div class="container bg-white">
         <!--::::::::::::::::::::::::::::::::::::::START CONTENT::::::::::::::::::::::::::::::::::::::-->
         <div class="container pt-2">
-            <div class="row" v-if="spinners.S1">
-                <div class="col-12 text-center">
-                    <spinner1 label="Cargando eventos …"></spinner1>
-                </div>
+
+        <section class="p-3">
+            <div class="container">
+                <h1>Tablero de Eventos</h1>
+                <p class="lead text-muted">Agenda que se estará llevando a cabo en los siguientes días , donde podrás encontrar a los diversos sectores artísticos promover sus eventos para niños , adultos y familias interesados , ven y disfruta a la ciudad de los cocos , Sonsonate no faltes.</p>
             </div>
-            <post-general @source-files="onSources" v-if="postevent_selected != undefined" v-bind:model="postevent_selected"></post-general>             
-            <div class="row" v-if="!spinners.S1">
-                <summary-item v-for="event of events" @selected-item="onClickEvent" :model="event"></summary-item>                
-            </div> 
+        </section>
+
+        <div class="ac_tbl-container">
+                <!--No quitar las etiquetas de cierren, si se usa <component/> tiene un comportamiento incongruente-->
+                <table-event v-for="(e,index) in events" :pdata="e" :key="e.post.id" @on-show="onSeeMore"></table-event>
+                <table-load-more v-if="isEnableMore" @onmore="onLoadMore"></table-load-more>
+        </div>        
+
+        <div class="ac_tbl-container">
+        
+        </div>           
+
+
+            
+
         </div>
         <!-- ::::::::::::::::::::::::::::::::::::::END CONTENT::::::::::::::::::::::::::::::::::::::-->
     </div>        

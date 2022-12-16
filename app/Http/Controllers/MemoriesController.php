@@ -19,7 +19,7 @@ class MemoriesController extends Controller
 		//Todos requieren estar logeados 
 		$this->middleware('auth',['except' => ['getAllPublic','show','find']]);
 		//adroles verifica que no sea un invitado el que esta intentado ver la dashboard 
-		$this->middleware('adroles',['except' => ['indexpublic','getAllPublic','show','find']]);
+		$this->middleware('adroles',['except' => ['getAllPublic','show','find']]);
         
         //Only for example 
         /**
@@ -31,7 +31,7 @@ class MemoriesController extends Controller
 
     #Muestra vista 
     public function indexadmin(){
-		if( ! Auth::user()->can('ver-reseñas')){ //poner esto en los de arriba 
+		if( ! Auth::user()->can('ver-biografias')){ //poner esto en los de arriba 
             return redirect()->route('dashboard');
         };		
 		$request_users = UsersHelper::usersRequest();
@@ -42,46 +42,64 @@ class MemoriesController extends Controller
         return view('memories.show');
     }
 
-    public function getAllAdmin(){
+    public function getAllAdmin(Request $request){
         $output = [
             "code" => 0,
             "data" => null,
             "msg" => "",
         ];            
 
-        //Validar aunq halla una parte publica 
-		if( ! Auth::user()->can('ver-reseñas')){ //poner esto en los de arriba 
+        /**
+         * Validar aunq halla una parte publica  
+         * Porque se pueden filtrar, por ejemplo aprobador si lo ubiera 
+         * Actualmente no pasa ningun filtrado asi que se recuperan todos 
+         */
+		if( ! Auth::user()->can('ver-biografias')){ 
             $output["msg"] = "Acción no permitida";
             return $output;
         };
-
-        #Actualmente no pasa ningun filtrado asi que se recuperan todos 
-        #Usar paginacion 
-
-        $list = Memory::with('presentation_model')->get();
-
-        $output["code"] = 1;
-        $output["data"] = $list;
-        $output["msg"] = "Elementos recuperados";           
-         
-        return $output;
+        $queryParams = [
+            "page" => $request->page,
+            "per_page" => $request->per_page,
+            "filter_letter" => $request->filter_letter
+        ];
+        return redirect()->action('MemoriesController@getAllPublic',$queryParams);
     }
     
 
     #Si por ejemplo se implementa apartado de revision (solo verian los que estanb aprobador por ejemplo)
-    public function getAllPublic(){
+    public function getAllPublic(Request $request){
         $output = [
             "code" => 0,
             "data" => null,
             "msg" => "",
+            'pagination' => null
         ];        
         #Actualmente no pasa ningun filtrado asi que se recuperan todos 
         #Usar paginacion 
 
-        $list = Memory::with('presentation_model')->get();
+        $per_page = ($request->per_page === null || $request->per_page > 15) ? 15 : $request->per_page;
+
+        $builder = Memory::with('presentation_model');
+        if($request->filter_letter != "ALL" && $request->filter_letter != null){
+            $builder->where('name'  ,   'LIKE'  ,   $request->filter_letter.'%');
+            $builder->orWhere('other_name'  ,   'LIKE'  ,   $request->filter_letter.'%');
+        }
+
+        $builder->orderBy('id','desc');
+        $result = $builder->paginate($per_page);
+
+        $output["data"] = $result->items();
+        $output["pagination"] = [
+            'total' 				=>$result->total(),
+            'current_page'  => $result->currentPage(),
+            'per_page'      => $result->perPage(),
+            'last_page'     => $result->lastPage(),
+            'from'          => $result->firstItem(),
+            'to'            => $result->lastPage(),
+        ];        
 
         $output["code"] = 1;
-        $output["data"] = $list;
         $output["msg"] = "Elementos recuperados";
         
         return $output;
@@ -113,7 +131,7 @@ class MemoriesController extends Controller
 
 
     public function create(){
-		if( ! Auth::user()->can('crear-reseñas')){ //poner esto en los de arriba 
+		if( ! Auth::user()->can('crear-biografias')){ //poner esto en los de arriba 
             return redirect()->route('dashboard');
         };				
 		$request_users = UsersHelper::usersRequest();
@@ -121,7 +139,7 @@ class MemoriesController extends Controller
     }
 
     public function showadmin(){
-		if( ! Auth::user()->can('ver-reseñas')){ //poner esto en los de arriba 
+		if( ! Auth::user()->can('ver-biografias')){ //poner esto en los de arriba 
             return redirect()->route('dashboard');
         };	        
 		$request_users = UsersHelper::usersRequest();
@@ -137,13 +155,24 @@ class MemoriesController extends Controller
         ];
 
         $user = Auth::user();
+        if($request->memory["id"] == 0){
+            $memory = new Memory();
+        }else{
+            $memory = Memory::find($request->memory["id"]);
+        }
 
-        if(!$user->can('crear-reseñas') && $request->memory["id"] == 0){
+        if(!$memory){//For update case only 
+            $output["msg"] = "Ítem no encontrado";
+            return $output;            
+        }
+
+
+        if(!$user->can('crear-biografias') && $request->memory["id"] == 0){
             $output["msg"] = "Operación denegada";
             return $output;
         }
 
-        if(!$user->can('editar-reseñas') && $request->memory["id"] != 0){
+        if((!$user->can('editar-biografias') && $request->memory["id"] != 0) && !($memory->creator_id == $user->id)){
             $output["msg"] = "Operación denegada";
             return $output;
         }        
@@ -169,19 +198,7 @@ class MemoriesController extends Controller
             return $output;
         }
 
-        if($request->memory["id"] == 0){
-            $memory = new Memory();
-        }else{
-            $memory = Memory::find($request->memory["id"]);
-        }
 
-
-
-        //For update only 
-        if(!$memory){
-            $output["msg"] = "Ítem no encontrado";
-            return $output;            
-        }
 
         DB::beginTransaction();
         $idImgPresentation = 0;
@@ -346,7 +363,7 @@ class MemoriesController extends Controller
         }
 
         //Verificando permisos 
-        if(!$user->can('eliminar-reseñas') && $memory->creator_id != $user->id){
+        if(!$user->can('eliminar-biografias') && !($memory->creator_id == $user->id)){
             $output["msg"] = "Operación denegada";
             return $output;
         }

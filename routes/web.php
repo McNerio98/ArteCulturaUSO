@@ -47,12 +47,7 @@ Route::get('/login','Auth\LoginController@showLoginForm')->middleware('guest');
 Route::post('/login','Auth\LoginController@login')->name('login');
 Route::post('/logout','Auth\LoginController@logout')->name('logout');
 
-# Carga el perfil de un usuario invitado
-Route::get('/perfil/{idUser}','ProfileController@index')->name('profile.show');
-# Carga la informacion completa para el usuario 
-Route::get('/profile/information/{id}','ProfileController@information')->name('profile.information');
-#Muestra la vista para editar un postevent especifico en apartado publico  
-Route::get('/postedit/{postid}','ProfileController@editPostEvent')->name('profile.edit.item')->middleware('auth');
+
 #Muestra la vista para mostrar un postevent especifico en apartado publico 
 Route::get('/postshow/{postid}','ProfileController@showPostEvent')->name('profile.show.item');
 
@@ -63,44 +58,83 @@ Route::get('/admin/home','DashboardController@index')->name('dashboard');
 Route::get('/admin/content','DashboardController@content')->name('content');
 Route::get('/admin/search','DashboardController@search')->name('admin.search'); //dado que hay otra para el cliente 
 
-# Crea o actualiza  recurso del tipo reseña, [Homenaje o Biografias]
-Route::post('/memories','MemoriesController@upsert')->name("memory.store")->middleware('auth','adroles');
-#Muestra pantalla con items reseñas, con opcion de crear nuevo para el administrador
+
+
+
+
+
+
+
+/*:::::::::::::::::::::::::::::::::::::: ADMIN PANEL ::::::::::::::::::::::::::::::::::::::*/
+
+/*------------------------------Biografias/Homenajes------------------------------*/
+#Blade View | Muestra pantalla con items reseñas, con opcion de crear nuevo para el administrador
 Route::get('/admin/memories','MemoriesController@indexadmin')->name('memories.index.admin');
-#Muestra un formulario limpio o muestra para actualiza para el administrador
+#Blade View | Muestra un vista pra formulario crear o actualizar 
 Route::get('/admin/memories/create','MemoriesController@create')->name('memories.create.admin');
-#Recupera lista de homenajes/biografias para el administrador 
+#Ajax Request |  Recupera lista de homenajes/biografias para el administrador 
 Route::get('/admin/memories/all','MemoriesController@getAllAdmin')->name('memories.all.admin');
-#Muestra un Elemento especifico para el administrador 
-Route::get('/admin/memories/{id}','MemoriesController@showadmin')->name('memories.show.admin');
-#Recupera un elemento con peticion ajax 
+#Blade View | Muestra un Elemento especifico para el administrador 
+Route::get('/admin/memories/show/{id}','MemoriesController@showadmin')->name('memories.show.admin');
+# AJAX Request | Crea o actualiza  recurso del tipo reseña, [Homenaje o Biografias]
+Route::post('/memories','MemoriesController@upsert')->name("memory.store")->middleware('auth','adroles');
+#AJAX Request | Recupera un elemento 
 Route::get('/memories/find/{id}','MemoriesController@find')->name('memories.find');
 #Recupera lista de homenajes/biografias para el apartado public 
 Route::get('/memories/all','MemoriesController@getAllPublic')->name('memories.all');
 #AJAX 1 Elimina un elemento de  con todos sus medios(files,video.image) asociados 
-Route::delete('/memories/{id}','MemoriesController@destroy')->name("memories.destroy"); //middleware in controller
+Route::delete('/memories/{id}','MemoriesController@destroy')->name("memories.destroy");
 
 
-# view | admin -  
+/*------------------------------Recursos------------------------------*/
+# Blade View | admin -  
 Route::get('/admin/recursos','RecursosController@indexadmin')->name('recursos.index.admin')->middleware('auth','adroles');
-# view | admin -  
+# Blade View | admin -  
+Route::get('/admin/recurso/show/{id}','RecursosController@showadmin')->name('recursos.show.admin')->middleware('auth');
+# Blade View | admin -  
 Route::get('/admin/recursos/create','RecursosController@createadmin')->name('recursos.create.admin')->middleware('auth');
-# view | admin -  
-Route::get('/admin/recursos/{id}','RecursosController@showadmin')->name('recursos.show.admin')->middleware('auth');
-# endpoint - save or update Recurso 
+# AJAX - save or update Recurso 
 Route::post('/resource','RecursosController@upsert')->name("resource.store")->middleware('auth','adroles');
-# endpoint - get all items Recursos 
-Route::get('/resources','RecursosController@getall')->name('resources.all');
+# AJAX - get all items Recursos for PUBLIC site 
+Route::get('/resources','RecursosController@getAllPublic')->name('resources.all');
+# AJAX - get all items Recursos for ADMIN site 
+Route::get('/admin/resources','RecursosController@getAllAdmin')->name('resources.all.admin');
+# AJAX
 Route::get('/resource/{id}','RecursosController@find')->name('resources.find');
 #AJAX 1 Elimina un elemento de  con todos sus medios(files,video.image) asociados 
 Route::delete('/resource/{id}','RecursosController@destroy')->name("resouce.destroy")->middleware('auth','adroles');
 
 
-Route::get('/admin/populars','DashboardController@populars')->name('populars');
+/*------------------------------Profile------------------------------*/
+# Blade View | Carga el perfil de un usuario invitado
+Route::get('/perfil/{idUser}','ProfileController@index')->name('profile.show');
+# Carga la informacion completa para el usuario 
+Route::get('/profile/information/{id}','ProfileController@information')->name('profile.information');
+
+
+/*------------------------------User------------------------------*/
 Route::get('/admin/users','DashboardController@users')->name('users');
+#Obtiene los usuarios dentro de la plataforma, con filtros para todos los usuarios, solicitudes, habilitados, no activos 
+Route::get('users','UsersController@index')->name('users.fetch')->middleware('auth','adroles');
+# Blade View | Apartado muestra la informacion del usuario con apartados de configuracion 
+Route::get('/admin/users/config/{id}','DashboardController@infoUser')->name('user.info');
+# AJAX Request| Actualiza la configuracion del usuario 
+Route::put('/user/updateConfig/{id}','UsersController@updateConfigUser')->name("user.updateconf")->middleware('auth','adroles');
+# Blade View | Muestra mensaje de cuenta desactivada
+Route::get('/user/noactive','UsersController@noactive')->name('user.noactive');
+
+
+/*------------------------------PostEvents------------------------------*/
+# Blade View | Muestra la vista para editar un postevent especifico en apartado publico  
+Route::get('/postedit/{postid}','PostEventController@editPostEvent')->name('profile.edit.item')->middleware('auth');
+#AJAX Request | Crea o actualiza  un elemento, publicacion o evento con sus medios digitales (UPSERT)
+Route::post('/postevent','PostEventController@upsert')->name('postevent.store')->middleware('auth');
+
+
+
+Route::get('/admin/populars','DashboardController@populars')->name('populars');
 Route::get('/admin/categories','DashboardController@rubros')->name('rubros'); //categories and tags 
 Route::get('/admin/roles','DashboardController@roles')->name('roles');
-Route::get('/admin/users/config/{id}','DashboardController@infoUser')->name('user.info');
 Route::get('/admin/post/edit/{id}','DashboardController@editElement')->name('admin.edit.item');
 Route::get('/admin/post/show/{id}','DashboardController@showElement')->name('admin.edit.item');
 
@@ -115,11 +149,10 @@ Route::get('/admin/recientes','PostEventController@recientes')->name('items.reci
 
 Route::get('/users/dataConfig/{id}','UsersController@configUserData')->name("user.dataconf")->middleware('auth','adroles');
 
-Route::put('/user/updateConfig/{id}','UsersController@updateConfigUser')->name("user.updateconf")->middleware('auth','adroles');
 
 
-#Obtiene los usuarios dentro de la plataforma, con filtros para todos los usuarios, solicitudes, habilitados, no activos 
-Route::get('users','UsersController@index')->name('users.fetch')->middleware('auth','adroles');
+
+
 # Guarda la fotografia de presentacion de la categoria que se esta editando 
 Route::post('/categories/saveImgPresentation','CategoriesController@changeImgPresentation')->middleware('auth','adroles');
 # Establece un recurso de tipo publicacion como popular o no popular 
@@ -152,8 +185,6 @@ Route::put('/user/selectimgperfil/{id}','UsersController@selectimgperfil')->midd
 #Obtiene los notificadores, usuario, eventos, events para los paneles notificaciones en la pagina principal del admin 
 #Esta ruta ya tiene los middleware adroles desde el constructor 
 Route::get('/notifiers','DashboardController@notifiers')->name("notifiers");
-#Crea o actualiza  un elemento, publicacion o evento con sus medios digitales (UPSERT)
-Route::post('postevent','PostEventController@upsert')->name('postevent.store')->middleware('auth');
 #Obtiene la informacion de un elemento/ evento/publicacion con todas sus relaciones 
 Route::get('postevent/{id}','PostEventController@find')->name('post.show');
 #AJAX 1 Elimina un recurso de tipo publicacion o evento con todos sus medios(files,video.image) asociados 
@@ -169,16 +200,38 @@ Route::put('/profile/tags/{id}','ProfileController@updateTags')->middleware('aut
 #Eliminar etiqueta desde perfil 
 Route::delete('/profile/deltag/{idu}/{idtg}','ProfileController@deleteTag')->middleware('auth');
 #Guardar informacion del usuario, informacion como ['user_email','user_phone','user_other_name','user_nickname'];
-#Todas las rutas deben estar sin el separador(/)
 Route::post('users','UsersController@store')->middleware('auth');
 #Guarda cualquier meta dato del usuario
 Route::post('usersmeta','UsersMetasController@store')->middleware('auth');
 
 
-//RUTAS AJAX QUE NO NECESITAN PROTECCION
-Route::get('/profile/{id}','ProfileController@show');
+
+
 #Muestra la lista de elementos post y eventos del usuario parado como id 
 Route::get('/postsevents/{id}','ProfileController@elements');
+
+
+
+/*------------------ Promociones ------------------*/
+# view | admin -  Return blade for List elements 
+Route::get('/admin/promociones','PromocionesController@index')->middleware('auth','adroles')->name('promociones.admin');
+# view | admin -  Return blade for new element 
+Route::get('/admin/promociones/create','PromocionesController@create')->middleware('auth','adroles')->name('promociones.create.admin');
+# view | admin -  Return blade for show specific element 
+Route::get('/admin/promociones/{id}','PromocionesController@show')->middleware('auth','adroles')->name('promociones.show.admin');
+#AJAX Request | get All elementos 
+Route::get('/promociones','PromocionesController@getall')->name('promociones.all');
+#AJAX Request | create or update element 
+Route::post('/promocion','PromocionesController@upsert')->middleware('auth','adroles')->name('promociones.upsert');
+#AJAX Request | get data element 
+Route::get('/promocion/{id}','PromocionesController@find')->name('promociones.find');
+#AJAX Request | delete element 
+Route::delete('/promocion/{id}','PromocionesController@destroy')->name('promociones.destroy');
+
+/*------------------ Procesos ------------------*/
+Route::get('/admin/procesos','ProcesosController@index')->middleware('auth')->name('procesos.admin');
+Route::post('/procesofechas','ProcesosController@resetdatesevent')->middleware('auth','adroles')->name('procesos.resetdates');
+Route::post('/procesoemail','ProcesosController@testemail')->middleware('auth','adroles')->name('procesos.testemail');
 
 
 
@@ -190,3 +243,13 @@ Route::get('res/send', 'RequestAcountController@index');
 #Rutas para API Google
 Route::get('/post/placesquery','PostEventController@places')->middleware('auth');
 Route::get('/post/geoquery','PostEventController@geodecoding')->middleware('auth');
+
+
+/*------------------ Installer Only Router ------------------*/
+Route::get('/install/keyapplication','InstallerController@key_generate');
+Route::get('/install/storagelink','InstallerController@storage_link');
+Route::get('/install/clearconfig','InstallerController@clear_config');
+Route::get('/install/clearcache','InstallerController@clear_cache');
+Route::get('/install/clearroute','InstallerController@clear_route');
+
+

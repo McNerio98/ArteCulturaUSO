@@ -7,55 +7,67 @@
 
 
 Vue.component('memory-create',require('../../components/memories/MemoryCreateComponent').default);
-
-
+Vue.component('media-viewer', require('@/components/media/ViewMediaComponent.vue').default);
 Vue.component('control-trim', require('../../components/trim/TrimComponentv2.vue').default);
-import {formatter89} from '../../formatters';
-import {getMemory,getAdminMemories} from '../../service';
+
+
+import {formatter89,formatter87} from '@/formatters';
+import {getMemory,getAdminMemories} from '@/service';
 import Memory from '../../components/memories/MemoryShowComponent.vue';
-import MemorySummary from '../../components/memories/MemoryMiniViewComponent.vue';
-import NoDataRegister from '../../components/NoDataRegister.vue';
+import MemorySummary from '@/components/memories/MemoryMiniViewComponent.vue';
+import NoDataRegister from '@/components/NoDataRegister.vue';
+import {getABC} from '@/utils.js';
+import PaginationComponent from '@/components/pagination/PaginationComponent.vue';
+
 //Index,  all items (index)
 if(document.getElementById("appMemories") != undefined){
     const appMemories = new Vue({
         components: {
             'memory-summary': MemorySummary,
-            'no-records' : NoDataRegister
+            'no-records' : NoDataRegister,
+            'pagination' : PaginationComponent
         },
         el: "#appMemories",
         data: {
             acAppData: {},
             items: [],
+            /**---------------------------------- */
+            ABC: [],
+            filterSelected: null,
+            routeDynamic: null,
+            componentPagKey: 100,
+            showPagination: true,          
+            /**---------------------------------- */   
         },
         created: function(){
             this.acAppData = window.obj_ac_app;
         },
         mounted: function(){
-            this.loadData();
+            this.ABC = getABC();            
+            this.filterSelected = "ALL";
+            this.getData();            
+            //this.loadData();
         },
         methods: {
-            //Implementar paginacion
-            loadData: function(){
-                getAdminMemories().then(result =>{
-                    let response = result.data;
-                    if(response.code == 0){
-                        StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
-                        return;
-                    }     
-                    
-                    
-
-                    this.items = response.data.map(e => {
-                        e.media = [];
-                        return formatter89(e,this.acAppData.storage_url);
-                    });
-                }).catch(ex =>{
-                    const target_process = "Recuperar elementos"; 
-                    StatusHandler.Exception(target_process,ex);
-                });
-            },
+            getData: function(){
+                if(this.filterSelected == null){return;}
+                this.showPagination = true;
+                this.routeDynamic = getAdminMemories(this.filterSelected);
+                this.componentPagKey += 1;
+            },            
             onReadMemory: function(id){
-                window.location.replace(this.acAppData.base_url + "/admin/memories/"+id);
+                window.location.href = this.acAppData.base_url + "/admin/memories/show/"+id
+            },
+            onLoadData: function(dataPag){
+                this.showPagination = (dataPag.length > 0); 
+                this.items = dataPag.map(e => {
+                    e.media = [];
+                    return formatter89(e,this.acAppData.storage_url);
+                });                
+            },            
+            onSelectFilter: function(selected){
+                this.filterSelected = selected;
+                this.getData();
             }            
         }
     });
@@ -84,7 +96,7 @@ if(document.getElementById("appMemoryShow") != undefined){
         methods: {
             getData: function(){
                 if(this.idmemory == 0){
-                    window.location.replace(this.acAppData.base_url  + "/admin/memories");
+                    window.location.href = this.acAppData.base_url  + "/admin/memories";
                     return;
                 }
 
@@ -100,12 +112,24 @@ if(document.getElementById("appMemoryShow") != undefined){
                     StatusHandler.Exception(target_process,ex);
                 });            
             },
+
+            onSources: function(object_media){
+                const items =  object_media.items.map((e)=>{{
+                    return formatter87(e,0);
+                }});
+                const target = formatter87(object_media.target,0);
+                this.$refs.mediaviewer.builderAndShow(items,'MEMORIES',target);         
+            },
+
             onDeletedMemory: function($id){
-                window.location.replace(this.acAppData.base_url + "/admin/memories");
+                window.location.href = this.acAppData.base_url + "/admin/memories";
             },
             onEditMemory: function($id){
-                window.location.replace(this.acAppData.base_url + "/admin/memories/create?idm="+$id);                
-            }
+                window.location.href = this.acAppData.base_url + "/admin/memories/create?idm="+$id;
+            },
+            onPromo: function(id){
+                window.location.href = this.acAppData.base_url + `/admin/promociones/create?tarid=${id}&tartype=memory`;
+            }                 
         }
     });
 }

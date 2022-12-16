@@ -2,6 +2,9 @@
 @section('title', 'Reseñas')
 @section('windowName', 'HOMENAJES / BIOGRAFÍAS ')
 
+@section('PanelTitle', 'HOMENAJES / BIOGRAFÍAS ')
+@section('PanelSubtitle', 'MOSTRAR')
+
 
 @section('content')
 <div class="container-fluid" id="appMemoryShow">        
@@ -11,12 +14,15 @@
                 <memory 
                         v-for="(e,index) of modelo"
                         :pdata="e"
+                        @source-files="onSources" 
                         @deleted="onDeletedMemory"
+                        @on-promo="onPromo"
                         @edit="onEditMemory">
                 </memory>
            </div>
         </div>
-
+        
+        <media-viewer ref="mediaviewer"/>
 </div>
 <!--/. container-fluid -->               
 @endsection

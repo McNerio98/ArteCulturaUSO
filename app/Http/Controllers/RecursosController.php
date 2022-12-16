@@ -40,18 +40,58 @@ class RecursosController extends Controller
     	return view('admin.recursos.show' , ['ac_option' =>'recursos' , 'request_users' => $request_users]);        
     }
 
-
-    public function getall(){
+    public function getAllAdmin(Request $request){
         $output = [
             "code" => 0,
             "data" => null,
             "msg" => "",
+        ];            
+
+        /**
+         * Validar aunq halla una parte publica  
+         * Porque se pueden filtrar, por ejemplo aprobador si lo ubiera 
+         * Actualmente no pasa ningun filtrado asi que se recuperan todos 
+         */
+		if( ! Auth::user()->can('ver-recursos')){ 
+            $output["msg"] = "Acción no permitida";
+            return $output;
+        };
+        $queryParams = [
+            "page" => $request->page,
+            "per_page" => $request->per_page,
+            "filter" => $request->filter
+        ];
+        return redirect()->action('RecursosController@getAllPublic',$queryParams);        
+    }
+
+    public function getAllPublic(Request $request){
+        $output = [
+            "code" => 0,
+            "data" => null,
+            "msg" => "",
+            'pagination' => null
         ];       
 
-        $list = Recurso::with('presentation_model')->get();
+        $per_page = ($request->per_page === null || $request->per_page > 15) ? 15 : $request->per_page;
 
+        $builder = Recurso::with('presentation_model');
+        if($request->filter != "ALL" && $request->filter != null){
+            $builder->where('tipo_id'  , $request->filter);
+        }
+
+        $builder->orderBy('id','desc');
+        $result = $builder->paginate($per_page);
+
+        $output["data"] = $result->items();
+        $output["pagination"] = [
+            'total' 				=>$result->total(),
+            'current_page'  => $result->currentPage(),
+            'per_page'      => $result->perPage(),
+            'last_page'     => $result->lastPage(),
+            'from'          => $result->firstItem(),
+            'to'            => $result->lastPage(),
+        ];  
         $output["code"] = 1;
-        $output["data"] = $list;
         $output["msg"] = "Elementos recuperados";           
          
         return $output;        
@@ -89,10 +129,28 @@ class RecursosController extends Controller
         ];
 
         $user = Auth::user();
-        if(!$user->can("crear-recursos")){
+        if($request->resource["id"] == 0){
+            $recurso = new Recurso();
+        }else{
+            $recurso = Recurso::find($request->resource["id"]);
+        }   
+
+        if(!$recurso){
+            $output["msg"] = "Ítem no encontrado";
+            return $output;            
+        }   
+
+        if(!$user->can("crear-recursos") && $request->resource["id"] == 0){
             $output["msg"] = "Operación denegada";
             return $output;
         }
+
+
+        //Si no puede editar recursos y efectivamente es un id de edicion, pero si tambien no es el propietario del recurso 
+        if((!$user->can("editar-recursos") && $request->resource["id"] != 0) && !($recurso->creator_id == $user->id)){
+            $output["msg"] = "Operación denegada";
+            return $output;
+        }        
 
         $params = [
             "resource.id" => "required|numeric",
@@ -107,25 +165,13 @@ class RecursosController extends Controller
         if($validator->fails()){
             $output["msg"] = "Campos imcompletos";
             return $output;
-        }        
-
-        if($request->resource["id"] == 0){
-            $recurso = new Recurso();
-        }else{
-            $recurso = Recurso::find($request->resource["id"]);
-        }   
-
-        if(!$recurso){
-            $output["msg"] = "Ítem no encontrado";
-            return $output;            
-        }        
+        }             
 
         
         DB::beginTransaction();
         $idImgPresentation = 0;
         try{
-
-            $recurso->id                   = $request->resource["id"];
+            
             $recurso->name            = $request->resource["name"];
             $recurso->content         = $request->resource["description"];
             $recurso->tipo_id           = $request->resource["tipo_id"];
@@ -265,7 +311,7 @@ class RecursosController extends Controller
         }
 
         //Verificando permisos 
-        if(!$user->can('eliminar-recursos') && $recurso->creator_id != $user->id){
+        if(!$user->can('eliminar-recursos') && !($recurso->creator_id == $user->id)){
             $output["msg"] = "Operación denegada";
             return $output;
         }        

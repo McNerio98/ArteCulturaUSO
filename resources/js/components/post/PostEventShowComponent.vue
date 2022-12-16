@@ -1,22 +1,32 @@
 <template>
     <div class="card card-widget mb-1 mb-md-3" style="width: 100%;max-width: 600px;margin: auto;">
         <div class="card-header p-2">
-            <div class="user-block">
-                <img class="img-circle" :src="itemData.creator.profile_img" alt="User Image">
-                <span class="username"><a href="#">{{itemData.creator.nickname == null?itemData.creator.name:itemData.creator.nickname}}</a></span>
-                <span class="description">{{itemData.post.title}}</span>
-            </div>
-            <!-- /.user-block -->
-            <div class="card-tools">
+            <div class="ac_event-card-header">
+                <div class="user-block">
+                    <img class="img-circle" :src="itemData.creator.profile_img" alt="User Image">
+                    <span class="username"><a href="#">{{itemData.creator.nickname == null?itemData.creator.name:itemData.creator.nickname}}</a></span>
+                </div>
 
-                <button @click="onClickEdit" :disabled="disabled_controls" v-if="has_cap('editar-publicaciones') || itemData.creator.id === acAppData.current_user.id" type="button" class="btn btn-tool" data-toggle="tooltip" data-placement="right"
-                    title="Editar elemento">
-                    <i class="fas fa-pen"></i> Editar
-                </button>
-                <button @click="onClickDelete" :disabled="disabled_controls" v-if="has_cap('eliminar-publicaciones') || itemData.creator.id === acAppData.current_user.id" type="button" class="btn btn-tool" data-toggle="tooltip" data-placement="right"
-                    title="Eliminar elemento">
-                    <i class="fas fa-trash-alt"></i> Eliminar
-                </button>
+                <!-- /.La condicion en el v-if Debe ser la misma que en los controles individuales -->                
+                <div class="card-tools" v-if="(has_cap('editar-publicaciones') || itemData.creator.id === acAppData.current_user.id) || 
+                (has_cap('eliminar-publicaciones') || itemData.creator.id === acAppData.current_user.id) || (has_cap('crear-promociones'))">
+
+                    <div class="btn-group">
+                        <button type="button" style="font-size: 120%;" class="btn btn-tool dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" role="menu" style="">
+                            <a href="javascript:void(0);" 
+                                @click="onClickEdit" :disabled="disabled_controls" 
+                                v-if="has_cap('editar-publicaciones') || itemData.creator.id === acAppData.current_user.id"
+                                class="dropdown-item">Editar</a>
+                            <a href="javascript:void(0);" 
+                                @click="onClickDelete" :disabled="disabled_controls" v-if="has_cap('eliminar-publicaciones') || itemData.creator.id === acAppData.current_user.id"
+                                class="dropdown-item">Eliminar</a>
+                            <a href="javascript:void(0);" v-if="has_cap('crear-promociones')" @click="onPromo" class="dropdown-item">Promocionar</a>
+                        </div>
+                    </div>
+                </div>    
 
             </div>
             <!-- /.card-tools -->
@@ -48,6 +58,7 @@
              -->
             <div  class="row" v-if="itemData.post.type == 'event' ">
                 <div class="col-12">
+                    <p class="description">{{itemData.post.title}}</p>
                     <div class="callout callout-info p-1 rounded-0 shadow-none">
                         <h5 class="p-0 m-0 text-success"><i class="fas fa-map-marker-alt"></i> Lugar</h5>
                          {{getDirection}}
@@ -146,7 +157,7 @@
             getDirection: function(){
                 if(this.municipios.length > 0){
                     let municipioName = this.municipios[this.itemData.dtl_event.address.municipio_id - 1].municipio;
-                    return this.itemData.dtl_event.address.details + " " + municipioName + " Sonsonate";
+                    return this.itemData.dtl_event.address.details + ", " + municipioName + ", Sonsonate";
                 }else{
                     return "(No Especificado)";
                 }
@@ -244,6 +255,9 @@
                     bool = true;
                 }
                 return bool;
+            },
+            onPromo: function(){
+                this.$emit('on-promo',this.itemData.post.id);
             },
             switchStatePost: function(event, state = null){
                 let last_state = this.itemData.post.status; 

@@ -51,25 +51,16 @@ export function getMemory(id){
     });
 }
 
-export function getAdminMemories(){
-    return new Promise((resolve,reject) =>{
-        axios.get(`/admin/memories/all`).then(response => {
-            resolve(response);
-        }).catch(ex => {
-            reject(ex);
-        });
-    });
+export function getAdminMemories(filter){
+    /**Return Route for Pagination */
+    return `/admin/memories/all?filter_letter=${filter}`;
 }
 
-export function getAllMemories(){
-    return new Promise((resolve,reject) =>{
-        axios.get(`/memories/all`).then(response => {
-            resolve(response);
-        }).catch(ex => {
-            reject(ex);
-        });
-    });
+export function getAllMemories(filter){
+    /**Return Route for Pagination */
+    return `/memories/all?filter_letter=${filter}`;
 }
+
 
 export function deleteMemory($id){
     return axios.delete(`/memories/${$id}`);
@@ -132,8 +123,14 @@ export function upsertResource(data){
 }
 
 //Obtiene todos los recursos 
-export function getAllResources(){
-    return axios.get(`/resources`);
+export function getAllResources(filter){
+    /**Return Route for Pagination */
+    return `/resources?filter=${filter}`
+}
+
+export function getAdminResources(filter){
+    /**Return Route for Pagination */
+    return `/admin/resources?filter=${filter}`
 }
 
 //Obtiene un recurso especifico 
@@ -161,9 +158,36 @@ export function getRecientes(){
     return axios.get('/admin/recientes');
 }
 
-export function getElementoTablero($data){
-    return axios.get(`/tablero`,$data);
+export function getElementoTablero(params){
+    return axios.get(`/tablero`,{params: params});
 }
+
+/**--------------- Promociones ---------------*/
+export function promociones(){
+    return axios.get(`/promociones`);
+}
+
+export function getPromo(id){
+    return axios.get(`/promocion/${id}`);
+}
+
+export function upsertPromo(payload){
+    return axios.post(`/promocion`,payload);
+}
+
+export function deletePromo(id){
+    return axios.delete(`/promocion/${id}`);
+}
+
+/**--------------- Procesos administrativos ---------------*/
+export function proResetEventDates(payload){
+    return axios.post('/procesofechas',payload);
+}
+
+export function proTestEmail(payload){
+    return axios.post('/procesoemail',payload);
+}
+
 
 /**
  * Using Geodecoding API 

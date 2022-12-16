@@ -243,6 +243,7 @@ export default {
       acAppData: {},
       limitefiles: 10,
       mediadrop_ids: [],
+      limitFileName: 200,
       flags: {
           modal_video_youtube: false
       }      
@@ -282,8 +283,9 @@ export default {
       this.$refs.inputfordocs.click();
     },
     addVideo: function(video_uri){
-      if((this.itemData.media.length + 1) >= this.limitefiles){
-        StatusHandler.ValidationMsg("Límite de carga de archivos superado, elimine algunos elementos.")
+      console.log((this.itemData.media.length + 1) > this.limitefiles);
+      if((this.itemData.media.length + 1) > this.limitefiles){
+        StatusHandler.ValidationMsg(`Límite de carga de archivos superado, elimine algunos elementos. (Limite : ${this.limitefiles} archivos)`)
         return;
       }
 
@@ -312,8 +314,9 @@ export default {
       this.itemData.media.push(newVideoMedia);
     },
     addFile: function(e){
-      if((this.itemData.media.length + e.target.files.length) >= this.limitefiles){
-        StatusHandler.ValidationMsg("Límite de carga de archivos superado, elimine algunos elementos.")
+      console.log((this.itemData.media.length + e.target.files.length) > this.limitefiles);
+      if((this.itemData.media.length + e.target.files.length) > this.limitefiles){
+        StatusHandler.ValidationMsg(`Límite de carga de archivos superado, elimine algunos elementos. (Limite : ${this.limitefiles} archivos)`)
         return;
       }
 
@@ -322,6 +325,7 @@ export default {
       }                
     },    
     addFileToMultimedia: function (file) {
+
       let reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = (e) => {
@@ -340,7 +344,11 @@ export default {
             data: e.target.result,
         };
 
-        this.itemData.media.push(newFileMedia);    
+        if(file.name.length > this.limitFileName && newFileMedia.type_file == "docfile"){
+          StatusHandler.ValidationMsg(`El nombre del documento supera el límite de ${this.limitFileName} caracteres`);
+        }else{
+          this.itemData.media.push(newFileMedia);    
+        }
       };
     },
     removeFile: function (indexParent,id) {

@@ -27,6 +27,37 @@ window.Vue.filter('DateFormatES3',function(value){
     }    
 });
 
+window.Vue.filter('DateFormatYear',function(value){
+    if (value) {
+        return moment(String(value)).format('YYYY');
+    }    
+});
+
+window.Vue.filter('DateFormatDay',function(value){
+    if (value) {
+        return moment(String(value)).format('DD');
+    }    
+});
+
+window.Vue.filter('DateFormatDayName',function(value){
+    if (value) {
+        const str =  moment(String(value)).format('dddd');
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }    
+});
+
+window.Vue.filter('DateFormatMonthName',function(value){
+    if (value) {
+        return moment(String(value)).format('MMMM');
+    }    
+});
+
+window.Vue.filter('DateFormatTime',function(value){
+    if (value) {
+        return moment(String(value)).format('hh:mm a');
+    }    
+});
+
 
 require('./bootstrap');
 require('admin-lte');

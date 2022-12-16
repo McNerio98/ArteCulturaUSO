@@ -39,11 +39,17 @@
         },
         mounted() {
            this.loadData();
-           console.log("Pagionacion montada");
         },
         methods: {
             loadData:  function(page = 1){
-                axios(this.route + `?page=${page}&per_page=${this.per_page}`).then(result=>{
+                var pathRequest = this.route;
+                if(this.route.includes("?")){
+                    pathRequest += `&page=${page}&per_page=${this.per_page}`;
+                }else{
+                    pathRequest += `?page=${page}&per_page=${this.per_page}`;
+                }
+
+                axios(pathRequest).then(result=>{
                     let response = result.data;
                     if(response.code == 0){
                         StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);

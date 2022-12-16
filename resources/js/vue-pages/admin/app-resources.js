@@ -1,11 +1,13 @@
 
-import ResouceCreate from '../../components/recursos/ResourceCreateComponent.vue';
-import ResouceSummary from '../../components/recursos/ResourceShowCardComponent.vue';
-import ResouceShow from '../../components/recursos/ResourceShowComponent.vue';
-import {getModel91,formatter91} from '../../formatters';
-import Trimmer from '../../components/trim/TrimComponentv2.vue';
-import { getAllResources,getResource } from '../../service';
-import NoDataRegister from '../../components/NoDataRegister.vue';
+import ResouceCreate from '@/components/recursos/ResourceCreateComponent.vue';
+import ResouceSummary from '@/components/recursos/ResourceShowCardComponent.vue';
+import ResouceShow from '@/components/recursos/ResourceShowComponent.vue';
+import {getModel91,formatter91,formatter87} from '@/formatters';
+import Trimmer from '@/components/trim/TrimComponentv2.vue';
+import { getAdminResources,getResource,getTiposRecursos } from '@/service';
+import NoDataRegister from '@/components/NoDataRegister.vue';
+import PaginationComponent from '@/components/pagination/PaginationComponent.vue';
+Vue.component('media-viewer', require('@/components/media/ViewMediaComponent.vue').default);
 
 // index
 if(document.getElementById("appResourcesAdminIndex") != undefined){
@@ -13,36 +15,56 @@ if(document.getElementById("appResourcesAdminIndex") != undefined){
         el: "#appResourcesAdminIndex",
         components: {
             'resouce-summary' : ResouceSummary,
-            'no-records' : NoDataRegister            
+            'no-records' : NoDataRegister,
+            'pagination' : PaginationComponent
         },
         data: {
             acAppData: window.obj_ac_app,
+            recursoTypes: [],
+            filterSelected: null,
+            routeDynamic: null,
+            componentPagKey: 100,
+            showPagination: true,               
             items: []
         },
         created: function(){
-            this.getDataResources();
+            this.getTiposRecursosData();
         },
         methods: {
-            getDataResources: function(){
-                getAllResources().then(result =>{
-                    let response = result.data;
+            getTiposRecursosData: function(){
+                getTiposRecursos().then(result => {
+                    //const response = result.data;
+                    const response = result;
                     if(response.code == 0){
                         StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
                         return;
-                    }        
-                    
-                    this.items = response.data.map(e => {
-                        e.media = []; //no lo trae por temas de carga y que no lo necesita en apartado de mostrar todos
-                        return formatter91(e,this.acAppData.storage_url)
-                    });                    
-    
+                    }     
+                    this.recursoTypes = response.data;
+                    this.onSelectFilter("ALL");
                 }).catch(ex => {
-                    const target_process = "Recuperar elementos"; 
+                    const target_process = "Recuperar tipos de recursos"; 
                     StatusHandler.Exception(target_process,ex);
                 })
+            },     
+            onSelectFilter: function(selected){
+                this.filterSelected = selected;
+                this.getData();
+            },  
+            getData: function(){
+                if(this.filterSelected == null){return;}
+                this.showPagination = true;
+                this.routeDynamic = getAdminResources(this.filterSelected);
+                this.componentPagKey += 1;
+            },           
+            onLoadData: function(dataPag){
+                this.showPagination = (dataPag.length > 0); 
+                this.items = dataPag.map(e => {
+                    e.media = []; //no lo trae por temas de carga y que no lo necesita en apartado de mostrar todos
+                    return formatter91(e,this.acAppData.storage_url)
+                });                  
             },
             onReadResource: function(id){
-                window.location.replace(this.acAppData.base_url + '/admin/recursos/' + id);
+                window.location.replace(this.acAppData.base_url + '/admin/recurso/show/' + id);
             }            
         }
     });
@@ -76,7 +98,7 @@ if(document.getElementById("appResourcesAdminCreate") != undefined){
         },
         methods: {
             createResource: function(){
-                this.modelo.push(formatter91(getModel91(),this.acAppData.base_url));
+                this.modelo.push(formatter91(getModel91(),this.acAppData.storage_url));
             },            
             openTrimPrincipalPic: function(file){
                 this.$refs.acVmCompCropper.openTrim(file);
@@ -107,11 +129,13 @@ if(document.getElementById("appResourcesAdminCreate") != undefined){
                 });
             },
             onCreateResource: function(id){
-                window.location.replace(this.acAppData.base_url + "/admin/recursos/"+id);
+                window.location.replace(this.acAppData.base_url + "/admin/recurso/show/"+id);
             }
         }
     });
 }
+
+
 //show 
 if(document.getElementById("appResourcesAdminShow") != undefined){
     const appResourcesAdminShow = new Vue({
@@ -149,13 +173,22 @@ if(document.getElementById("appResourcesAdminShow") != undefined){
                     StatusHandler.Exception(target_process,ex);                
                 });
             },
+            onSources: function(object_media){
+                const items =  object_media.items.map((e)=>{{
+                    return formatter87(e,0);
+                }});
+                const target = formatter87(object_media.target,0);
+                this.$refs.mediaviewer.builderAndShow(items,'RESOURCES',target);         
+            },            
             onEditResource: function(id){
-                window.location.replace(this.acAppData.base_url + "/admin/recursos/create?idr="+id);
+                window.location.href = this.acAppData.base_url + "/admin/recursos/create?idr="+id;
             },
             onDeletedResource: function(id){
-                window.location.replace(this.acAppData.base_url + "/admin/recursos");
-            }            
-            
+                window.location.href = this.acAppData.base_url + "/admin/recursos";
+            },
+            onPromo: function(id){
+                window.location.href = this.acAppData.base_url + `/admin/promociones/create?tarid=${id}&tartype=resource`;
+            }                        
         }
     });
 }

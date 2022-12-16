@@ -3,7 +3,7 @@
         <div class="bg1rc p-0 p-md-3">
             <div class="row ">
                 <div class="col">
-                    <div class="acm-img border1rc" :style="[{ backgroundImage: 'url(' +  srcPresentationImg + ')' }]">
+                    <div @click="onPresentationImg" class="acm-img border1rc" :style="[{ backgroundImage: 'url(' +  srcPresentationImg + ')' }]">
                     </div>
                 </div>
                 <div class="col-8">
@@ -13,18 +13,17 @@
                             <p>Contiene: {{itemData.media.length}} archivos adjuntos</p>
                     </div>
                     <div>
-                        <button href="#" class="btn btn-default btn-sm float-right mr-2" 
+                        <button class="btn btn-default btn-sm float-right mr-2" 
+                            v-if="has_cap('crear-promociones')"
+                            @click="onPromo"><i class="fas fa-star"></i> Promocionar</button>                        
+                        <button class="btn btn-default btn-sm float-right mr-2" 
                             v-if="has_cap('editar-recursos') || itemData.resource.creator_id === acAppData.current_user.id"
                             @click="onEdit">
-                            <i class="fas fa-pen"></i> 
-                            Editar
-                        </button>
-                        <button href="#" class="btn btn-default btn-sm float-right mr-2" 
+                            <i class="fas fa-pen"></i>  Editar</button>
+                        <button class="btn btn-default btn-sm float-right mr-2" 
                             v-if="has_cap('eliminar-recursos') || itemData.resource.creator_id === acAppData.current_user.id"
                             @click="onDelete">
-                            <i class="fas fa-trash-alt"></i>
-                            Eliminar
-                        </button>                        
+                            <i class="fas fa-trash-alt"></i>  Eliminar</button>                        
                     </div>
                 </div>
             </div>
@@ -53,10 +52,24 @@
                                 <i class="fas fa-cloud-download-alt"></i>
                                 Descargar
                             </a>
+                            <a v-if="isPDF(e.name)" @click="showPDF(e.url)" href="javascript:void(0);" class="btn btn-default btn-sm float-right mr-2" download>
+                                <i class="fas fa-book-reader"></i> Visualizar</a>
                         </span>
+
                     </div>
                 </li>
             </ul>
+
+        <div class="ac_frame-pdf-preview" v-if="pdfselected != null">
+            <div class="ac_frame-header">
+                <button class="ac_close" @click="onClosePDF">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <object class="ac_frame-pdf-target" :data="pdfselected" type="application/pdf">
+                <div>No online PDF viewer installed</div>
+            </object>
+        </div>
 
         </div>
         </div>
@@ -73,6 +86,7 @@ export default {
         return {
             isDeleting: false,
             tiposRecursos: [],
+            pdfselected: null,
             acAppData: window.obj_ac_app,
             itemData: JSON.parse(JSON.stringify(this.pdata))            
         }
@@ -120,7 +134,7 @@ export default {
             return namefile;
         },
         onEdit: function(){
-            this.$emit('edit',this.itemData.resource.id);
+            this.$emit('on-edit',this.itemData.resource.id);
         },
         onDelete: function(){
             var vm = this;
@@ -150,6 +164,36 @@ export default {
                     }
                 });            
         },
+        showPDF: function(pdf_url){
+            document.body.classList.add('no-scroll');
+            this.pdfselected = pdf_url;            
+        },
+
+        onPresentationImg: function(){
+            if(this.itemData.presentation_model != null){
+                this.onSources(this.itemData.presentation_model);
+            }
+        },
+        onSources: function(target){
+            const object_media = {
+                items: [],
+                target: null
+            }
+
+            object_media.target = target;
+            if(this.itemData.presentation_model != null){
+                object_media.items.push(this.itemData.presentation_model);
+            }            
+
+            this.$emit('source-files',object_media);
+        },
+        onClosePDF: function(){
+            document.body.classList.remove('no-scroll');
+            this.pdfselected = null;
+        },
+        onPromo: function(){
+            this.$emit('on-promo',this.itemData.resource.id);
+        },
         has_cap(e){
             return window.has_cap == undefined ? false : window.has_cap(e);
         }             
@@ -177,4 +221,40 @@ export default {
     .border1rc{
         border: 4px solid #363333
     }    
+
+    .ac_frame-pdf-preview{
+        display: flex;
+        position: fixed;
+        z-index: 1060;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: #262323a3;
+        flex-direction: column;
+        animation: fadeIn 0.5s; 
+    }
+
+    .ac_frame-pdf-target{
+        width: 100%;
+        max-width: 950px;
+        height: 100%;
+        display: block;
+        margin: auto;
+    }
+
+    .ac_frame-header{
+        background-color: #ccc8c8;
+    }
+
+    .ac_frame-header .ac_close{
+        background-color: #ca7373;
+        padding: 5px 20px;
+        float: right;
+        border: 0px;
+        color: white;
+    }
+
+
+
 </style>

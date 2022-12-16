@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePopularsTable extends Migration
+class CreateBioTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class CreatePopularsTable extends Migration
      */
     public function up()
     {
-        Schema::create('populars', function (Blueprint $table) {
+        Schema::create('bio_types', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('post_event_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ class CreatePopularsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('populars');
+        Schema::dropIfExists('bio_types');
     }
 }
