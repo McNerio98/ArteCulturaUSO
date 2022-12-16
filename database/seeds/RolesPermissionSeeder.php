@@ -96,7 +96,7 @@ class RolesPermissionSeeder extends Seeder
 
 		$permission = Permission::create([
 			'name' => 'editar-publicaciones',
-			'description' => 'Capacidad de editar publicaciones/eventos. El usuario propietario (creador original) siempre podrá editar, si edita se establecerá a estado de revisión nuevamente.'
+			'description' => 'Capacidad de editar publicaciones/eventos. El usuario propietario (creador original) siempre podrá editar.'
 		]);
 
 		$permission = Permission::create([

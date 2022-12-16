@@ -5,8 +5,11 @@
 <main role="main" class="flex-shrink-0" id="appResourcesShow">
     <input type="hidden" id="idresource" value="{{request('id')}}">
     <div class="container">
-        <resource v-for="(e,index) in modelo" :pdata="e" :key="e.id" 
+        <resource v-for="(e,index) in modelo" 
+        :pdata="e" :key="e.id" 
+        @deleted="onDeletedResource"
         @source-files="onSources" 
+        @on-promo="onPromo"
         @on-edit="onEditResource"/> 
     </div>
     <media-viewer ref="mediaviewer"/>

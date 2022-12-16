@@ -42,7 +42,7 @@ class MemoriesController extends Controller
         return view('memories.show');
     }
 
-    public function getAllAdmin(){
+    public function getAllAdmin(Request $request){
         $output = [
             "code" => 0,
             "data" => null,
@@ -58,14 +58,12 @@ class MemoriesController extends Controller
             $output["msg"] = "Acción no permitida";
             return $output;
         };
-
-        $list = Memory::with('presentation_model')->get();
-
-        $output["code"] = 1;
-        $output["data"] = $list;
-        $output["msg"] = "Elementos recuperados";           
-         
-        return $output;
+        $queryParams = [
+            "page" => $request->page,
+            "per_page" => $request->per_page,
+            "filter_letter" => $request->filter_letter
+        ];
+        return redirect()->action('MemoriesController@getAllPublic',$queryParams);
     }
     
 

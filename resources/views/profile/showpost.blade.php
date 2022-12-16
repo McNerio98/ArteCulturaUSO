@@ -11,6 +11,7 @@
             v-for="(e,index) of items_postevents"  
             @edit-item="onUpdatePostEvent" 
             @delete-item="onDeletePost" 
+            @on-promo="onPromo"
             @source-files="onSources" 
             :key="'pes'+e.post.id"
             :pdata="e" >

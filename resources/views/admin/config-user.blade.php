@@ -1,6 +1,10 @@
 @extends('layouts.admin-template')
 @section('title', 'Configuración')
 @section('windowName', 'CONFIGURACIÓN DE CUENTA')
+
+@section('PanelTitle', 'Usuario')
+@section('PanelSubtitle', 'Configuración')
+
 @section('content')
     <div class="container-fluid" id="appConfigUser">
         <input type="hidden" value="{{$id_user_cur}}" id="current_user_id_request" />

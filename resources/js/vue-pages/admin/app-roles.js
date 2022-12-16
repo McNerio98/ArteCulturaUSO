@@ -28,24 +28,29 @@ const appRoles = new Vue({
                 if(this.roles.length > 0){
                     this.setRoleSelected(this.roles[0]);
                 }
-            }).catch(ex={
-
+            }).catch(ex=> {
+                const target_process = "Obtener roles"; 
+                StatusHandler.Exception(target_process,ex);
             });
         },
         setRoleSelected: function(role){
+            StatusHandler.ShowLoading("Verificando Rol");
             axios(`/roles/${role.role_id}`).then(result=>{
                 let response = result.data;
                 if(response.code == 0){
+                    StatusHandler.CloseLoading();
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
                     return;
                 }
+                StatusHandler.CloseLoading();
                 
                 this.role_selected = role;
                 this.role_selected.caps = response.data;
             }).catch(ex=>{
-
+                StatusHandler.CloseLoading();
+                const target_process = "Obtener configuracion del rol"; 
+                StatusHandler.Exception(target_process,ex);
             });
-            //aqui
         },
         capsInCurrentRole: function(cap_id){
             return this.role_selected.caps.find(e => e.id == cap_id) != undefined ? true: false;
@@ -86,7 +91,8 @@ const appRoles = new Vue({
                     this.role_selected.count_caps++;
                 }
             }).catch(ex=>{
-                alert("Error Fatal");
+                const target_process = "Establecer configuración del rol"; 
+                StatusHandler.Exception(target_process,ex);                
             }).finally( res =>{
                 event.target.disabled = false;
             });

@@ -62,9 +62,12 @@ class PostEventController extends Controller
             ->limit($items_limit)->get();
             #Dejar ordenamiento por ASC, verificado!
 		$items = [];
+        // if($user->active == false || $user->is_admin == true || $user->status == 'deleted' || $user->status == 'disabled'){
 		foreach($result as $el){
-			$el->owner->load('profile_img');
-			$items[] = $el;
+            if($el->owner->active == true && $el->owner->status == 'enabled'){
+                $el->owner->load('profile_img');
+                $items[] = $el;
+            }
 		}   
         $output["code"] = 1;
         $output["data"] = $items;
@@ -170,6 +173,18 @@ class PostEventController extends Controller
         return $output;
     }
 
+	public function editPostEvent($id_post){
+		$e = PostEvent::find($id_post);
+		if(!$e){
+			return redirect()->route('inicio');
+		}
+		
+		if(!Auth::user()->can('editar-publicaciones') &&  intval($e->creator_id) !==  intval(Auth::user()->id)){
+			return redirect()->route('inicio');//permiso denegado 
+		}
+		
+		return view("profile.editpost",["postid" => $id_post]);
+	}    
 
     public function upsert(Request $request){
         $output = [
@@ -179,6 +194,7 @@ class PostEventController extends Controller
         ];
 
         $user = Auth::user();
+        $isUpdate = ($request->post["id"] != 0);
 
         $params = [
             "post.title" => "required",
@@ -204,10 +220,10 @@ class PostEventController extends Controller
             return $output;
         };
 
-        if($request->post["id"] == 0){
-            $postEvent = new PostEvent();
+        if($isUpdate){
+            $postEvent = PostEvent::find($request->post["id"]);            
         }else{
-            $postEvent = PostEvent::find($request->post["id"]);
+            $postEvent = new PostEvent();
         }
 
         //For update only 
@@ -216,16 +232,24 @@ class PostEventController extends Controller
             return $output;            
         }        
 
+        if($isUpdate && !$user->can('editar-publicaciones') && $postEvent->creator_id != $user->id){
+            $output["msg"] = "Operación denegada";
+            return $output;
+        }        
+
 
         DB::beginTransaction();
         $idImgPresentation = 0;
+        $showMsgError = false;
 
         try{
             $postEvent->title                  = $request->post["title"];
             $postEvent->content          = $request->post["description"];
             $postEvent->status              = 'approved';
             $postEvent->type_post       = $request->post["type"];
-            $postEvent->creator_id      = $user->id;
+            if(!$isUpdate){ //Solo cuando se crea agrega el creator_id
+                $postEvent->creator_id      = $user->id;
+            }
             $postEvent->save();
 
             if($request->post["type"] == "event"){
@@ -269,8 +293,8 @@ class PostEventController extends Controller
             $limite_carga = 10;
             $index = 0;
             $files = $request->media;
-            $mediadrop_ids = $request->mediadrop_ids;
-            if(count($files) >= ($limite_carga - count($mediadrop_ids))){
+            if(count($files) > $limite_carga){
+                $showMsgError = true;
                 throw new \Exception("Límite de carga superado, máximo ".$limite_carga." archivos");
             }            
 
@@ -344,23 +368,18 @@ class PostEventController extends Controller
             #Eliminacion de multimedias existentes para caso de actualización
             #En la eliminacion se puede incluir eliminacion de imagen de presentacion por nueva actualización             
             $mediadrop_ids = $request->mediadrop_ids;
-            #Se actualiza por una nueva imagen
-            if($idImgPresentation !== 0){
-                /**Verificando si tenia una anteriormente en caso de actualizacion, se agrega para eliminar */
-                if(!is_null($postEvent->presentation_img) && $postEvent->presentation_img != 0){
-                    array_push($mediadrop_ids,$postEvent->presentation_img);
-                }
-                $postEvent->presentation_img = $idImgPresentation;
-                $postEvent->save();
-            }else{
-                #/Si no se cargo nueva imagen de presentacion, se verifica si dentro de las eliminaciones esta la 
-                #imagen de presentacion, si es asi se setea a nula el post actual 
-                if(in_array($postEvent->presentation_img,$mediadrop_ids)){
-                    $postEvent->presentation_img = null;
-                    $postEvent->save();
-                }
+
+
+            if(in_array($postEvent->presentation_img,$mediadrop_ids)){
+                array_push($mediadrop_ids,$postEvent->presentation_img);
+                $postEvent->presentation_img = null;
             }
-        
+
+            #Se actualiza por una nueva imagen si la hay
+            if($idImgPresentation !== 0){                
+                $postEvent->presentation_img = $idImgPresentation;
+            }
+            $postEvent->save();
 
             $count_drop = 0;
             if($request->post["id"] != 0 && count($mediadrop_ids) > 0){
@@ -376,11 +395,13 @@ class PostEventController extends Controller
 
                             if(trim($aux_path) !== "" && Storage::disk('local')->exists($aux_path)){
                                 if(! Storage::disk('local')->delete($aux_path) ){
+                                    $showMsgError = true;
                                     throw new \Exception("No se logró eliminar algunos medios".$candidato->name);
                                 }                                   
                             }
 
                             if(!$candidato->delete()){
+                                $showMsgError = true;
                                 throw new \Exception("No se logró eliminar el registro");
                             }
                             $count_drop++;                            
@@ -390,7 +411,7 @@ class PostEventController extends Controller
                     }
 
                     if($count_drop == count($mediadrop_ids)){
-                        $salida["extra"] = "Se eliminaron " .$count_drop . " Elementos";
+                        $output["extra"] = "Se eliminaron " .$count_drop . " Elementos";
                         break; //break 2 for, all element was deleted 
                     }
                 }              
@@ -414,8 +435,12 @@ class PostEventController extends Controller
             $output["data"] = $postEvent;            
         }catch(\Exception $e){
             DB::rollback();
-            //$output["msg"] = "Error en la operación, consulte soporte técnico.";
-            $output['msg'] = "Error: " . $e->getMessage(); //for debugin
+            if($showMsgError){
+                $output['msg'] = "Error: " . $e->getMessage();
+            }else{
+                $output["msg"] = "Error en la operación, consulte soporte técnico.";
+            }
+            
         }
 
         return $output;        

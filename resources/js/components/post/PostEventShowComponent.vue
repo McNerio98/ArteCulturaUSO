@@ -6,8 +6,11 @@
                     <img class="img-circle" :src="itemData.creator.profile_img" alt="User Image">
                     <span class="username"><a href="#">{{itemData.creator.nickname == null?itemData.creator.name:itemData.creator.nickname}}</a></span>
                 </div>
-                <!-- /.user-block -->                
-                <div class="card-tools">
+
+                <!-- /.La condicion en el v-if Debe ser la misma que en los controles individuales -->                
+                <div class="card-tools" v-if="(has_cap('editar-publicaciones') || itemData.creator.id === acAppData.current_user.id) || 
+                (has_cap('eliminar-publicaciones') || itemData.creator.id === acAppData.current_user.id) || (has_cap('crear-promociones'))">
+
                     <div class="btn-group">
                         <button type="button" style="font-size: 120%;" class="btn btn-tool dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-cog"></i>
@@ -23,7 +26,8 @@
                             <a href="javascript:void(0);" v-if="has_cap('crear-promociones')" @click="onPromo" class="dropdown-item">Promocionar</a>
                         </div>
                     </div>
-                </div>                
+                </div>    
+
             </div>
             <!-- /.card-tools -->
         </div>
@@ -153,7 +157,7 @@
             getDirection: function(){
                 if(this.municipios.length > 0){
                     let municipioName = this.municipios[this.itemData.dtl_event.address.municipio_id - 1].municipio;
-                    return this.itemData.dtl_event.address.details + " " + municipioName + " Sonsonate";
+                    return this.itemData.dtl_event.address.details + ", " + municipioName + ", Sonsonate";
                 }else{
                     return "(No Especificado)";
                 }

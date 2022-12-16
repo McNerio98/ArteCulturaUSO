@@ -1,5 +1,5 @@
 <template>
-    <div class="ac_tbl-item-wrp">
+    <div class="ac_tbl-item-wrp" @click="onSelected">
         <div class="ac_tbl-linetime-wrp">
             <div class="ac_tbl-linetime-point">
                 <div class="ac_tbl-event1Bubble">
@@ -32,7 +32,8 @@
                 </div> 
 
                 <div class="ac_tbl-item-card-desc">
-                    <p><i class="fas fa-map-marker-alt"></i> Lugar : Lugar del evento</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Lugar :  <span class="text-success">{{getDirection()}}</span></p>
+                    <hr class="mt-2 mb-2"/>
                     <h5>{{itemData.post.title}}</h5>
                 </div>
             </div>                    
@@ -41,6 +42,7 @@
 </template>
 
 <script>
+    import { getMunicipioById, getDeptoById } from "@/utils";
     export default {
         props: {
             pdata: {type: Object,required:true}
@@ -48,6 +50,16 @@
         data: function(){
             return {
                 itemData: JSON.parse(JSON.stringify(this.pdata))                   
+            }
+        },
+        methods: {
+            onSelected: function(){
+                this.$emit('on-show',this.itemData.post.id);
+            },
+            getDirection: function(){
+                return this.itemData.dtl_event.address.details +
+                ", " + getMunicipioById(this.itemData.dtl_event.address.municipio_id) +
+                ", " + getDeptoById(this.itemData.dtl_event.address.depto_id);
             }
         }
     }

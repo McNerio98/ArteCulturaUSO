@@ -49,9 +49,15 @@ if(document.getElementById("appResourcesShow") != undefined){
                 const target = formatter87(object_media.target,0);
                 this.$refs.mediaviewer.builderAndShow(items,'RESOURCES',target);         
             },               
-            onEditResource: function(){
-
-            }
+            onEditResource: function(id){
+                window.location.href = this.acAppData.base_url + "/admin/recursos/create?idr="+id;
+            },
+            onDeletedResource: function(id){
+                window.location.href = this.acAppData.base_url;
+            },
+            onPromo: function(id){
+                window.location.href = this.acAppData.base_url + `/admin/promociones/create?tarid=${id}&tartype=resource`;
+            }                
         }        
     });
 }

@@ -47,12 +47,7 @@ Route::get('/login','Auth\LoginController@showLoginForm')->middleware('guest');
 Route::post('/login','Auth\LoginController@login')->name('login');
 Route::post('/logout','Auth\LoginController@logout')->name('logout');
 
-# Carga el perfil de un usuario invitado
-Route::get('/perfil/{idUser}','ProfileController@index')->name('profile.show');
-# Carga la informacion completa para el usuario 
-Route::get('/profile/information/{id}','ProfileController@information')->name('profile.information');
-#Muestra la vista para editar un postevent especifico en apartado publico  
-Route::get('/postedit/{postid}','ProfileController@editPostEvent')->name('profile.edit.item')->middleware('auth');
+
 #Muestra la vista para mostrar un postevent especifico en apartado publico 
 Route::get('/postshow/{postid}','ProfileController@showPostEvent')->name('profile.show.item');
 
@@ -71,15 +66,6 @@ Route::get('/admin/search','DashboardController@search')->name('admin.search'); 
 
 
 /*:::::::::::::::::::::::::::::::::::::: ADMIN PANEL ::::::::::::::::::::::::::::::::::::::*/
-
-/*------------------------------Usuarios------------------------------*/
-Route::get('/admin/users','DashboardController@users')->name('users');
-#Obtiene los usuarios dentro de la plataforma, con filtros para todos los usuarios, solicitudes, habilitados, no activos 
-Route::get('users','UsersController@index')->name('users.fetch')->middleware('auth','adroles');
-# Blade View | Apartado muestra la informacion del usuario con apartados de configuracion 
-Route::get('/admin/users/config/{id}','DashboardController@infoUser')->name('user.info');
-# Ajax Request| Actualiza la configuracion del usuario 
-Route::put('/user/updateConfig/{id}','UsersController@updateConfigUser')->name("user.updateconf")->middleware('auth','adroles');
 
 /*------------------------------Biografias/Homenajes------------------------------*/
 #Blade View | Muestra pantalla con items reseñas, con opcion de crear nuevo para el administrador
@@ -104,17 +90,45 @@ Route::delete('/memories/{id}','MemoriesController@destroy')->name("memories.des
 # Blade View | admin -  
 Route::get('/admin/recursos','RecursosController@indexadmin')->name('recursos.index.admin')->middleware('auth','adroles');
 # Blade View | admin -  
-Route::get('/admin/recursos/create','RecursosController@createadmin')->name('recursos.create.admin')->middleware('auth');
+Route::get('/admin/recurso/show/{id}','RecursosController@showadmin')->name('recursos.show.admin')->middleware('auth');
 # Blade View | admin -  
-Route::get('/admin/recurso/{id}','RecursosController@showadmin')->name('recursos.show.admin')->middleware('auth');
+Route::get('/admin/recursos/create','RecursosController@createadmin')->name('recursos.create.admin')->middleware('auth');
 # AJAX - save or update Recurso 
 Route::post('/resource','RecursosController@upsert')->name("resource.store")->middleware('auth','adroles');
-# AJAX - get all items Recursos 
-Route::get('/resources','RecursosController@getall')->name('resources.all');
+# AJAX - get all items Recursos for PUBLIC site 
+Route::get('/resources','RecursosController@getAllPublic')->name('resources.all');
+# AJAX - get all items Recursos for ADMIN site 
+Route::get('/admin/resources','RecursosController@getAllAdmin')->name('resources.all.admin');
 # AJAX
 Route::get('/resource/{id}','RecursosController@find')->name('resources.find');
 #AJAX 1 Elimina un elemento de  con todos sus medios(files,video.image) asociados 
 Route::delete('/resource/{id}','RecursosController@destroy')->name("resouce.destroy")->middleware('auth','adroles');
+
+
+/*------------------------------Profile------------------------------*/
+# Blade View | Carga el perfil de un usuario invitado
+Route::get('/perfil/{idUser}','ProfileController@index')->name('profile.show');
+# Carga la informacion completa para el usuario 
+Route::get('/profile/information/{id}','ProfileController@information')->name('profile.information');
+
+
+/*------------------------------User------------------------------*/
+Route::get('/admin/users','DashboardController@users')->name('users');
+#Obtiene los usuarios dentro de la plataforma, con filtros para todos los usuarios, solicitudes, habilitados, no activos 
+Route::get('users','UsersController@index')->name('users.fetch')->middleware('auth','adroles');
+# Blade View | Apartado muestra la informacion del usuario con apartados de configuracion 
+Route::get('/admin/users/config/{id}','DashboardController@infoUser')->name('user.info');
+# AJAX Request| Actualiza la configuracion del usuario 
+Route::put('/user/updateConfig/{id}','UsersController@updateConfigUser')->name("user.updateconf")->middleware('auth','adroles');
+# Blade View | Muestra mensaje de cuenta desactivada
+Route::get('/user/noactive','UsersController@noactive')->name('user.noactive');
+
+
+/*------------------------------PostEvents------------------------------*/
+# Blade View | Muestra la vista para editar un postevent especifico en apartado publico  
+Route::get('/postedit/{postid}','PostEventController@editPostEvent')->name('profile.edit.item')->middleware('auth');
+#AJAX Request | Crea o actualiza  un elemento, publicacion o evento con sus medios digitales (UPSERT)
+Route::post('/postevent','PostEventController@upsert')->name('postevent.store')->middleware('auth');
 
 
 
@@ -171,8 +185,6 @@ Route::put('/user/selectimgperfil/{id}','UsersController@selectimgperfil')->midd
 #Obtiene los notificadores, usuario, eventos, events para los paneles notificaciones en la pagina principal del admin 
 #Esta ruta ya tiene los middleware adroles desde el constructor 
 Route::get('/notifiers','DashboardController@notifiers')->name("notifiers");
-#Crea o actualiza  un elemento, publicacion o evento con sus medios digitales (UPSERT)
-Route::post('postevent','PostEventController@upsert')->name('postevent.store')->middleware('auth');
 #Obtiene la informacion de un elemento/ evento/publicacion con todas sus relaciones 
 Route::get('postevent/{id}','PostEventController@find')->name('post.show');
 #AJAX 1 Elimina un recurso de tipo publicacion o evento con todos sus medios(files,video.image) asociados 
@@ -193,8 +205,8 @@ Route::post('users','UsersController@store')->middleware('auth');
 Route::post('usersmeta','UsersMetasController@store')->middleware('auth');
 
 
-//RUTAS AJAX QUE NO NECESITAN PROTECCION
-Route::get('/profile/{id}','ProfileController@show');
+
+
 #Muestra la lista de elementos post y eventos del usuario parado como id 
 Route::get('/postsevents/{id}','ProfileController@elements');
 

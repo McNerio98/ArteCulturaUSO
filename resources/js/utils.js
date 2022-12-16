@@ -1,22 +1,40 @@
+
+const municipios = [
+    {id: 1,municipio: "Acajutla"},
+    {id: 2,municipio: "Armenia"},
+    {id: 3,municipio: "Caluco"},
+    {id: 4,municipio: "Cuisnahuat"},
+    {id: 5,municipio: "Izalco"},
+    {id: 6,municipio: "Juayúa"},
+    {id: 7,municipio: "Nahuizalco"},
+    {id: 8,municipio: "Nahulingo"},
+    {id: 9,municipio: "Salcoatitán"},
+    {id: 10,municipio: "San Antonio del Monte"},
+    {id: 11,municipio: "San Julián"},
+    {id: 12,municipio: "Santa Catarina Masahuat"},
+    {id: 13,municipio: "Santa Isabel Ishuatán"},
+    {id: 14,municipio: "Santo Domingo de Guzmán"},
+    {id: 15,municipio: "Sonsonate"},
+    {id: 16,municipio: "Sonzacate"}        
+];
+
+const deptos = [
+    {id: 1,depto: "Sonsonate"}
+]
+
 export function municipiosItems(){
-    return [
-        {id: 1,municipio: "Acajutla"},
-        {id: 2,municipio: "Armenia"},
-        {id: 3,municipio: "Caluco"},
-        {id: 4,municipio: "Cuisnahuat"},
-        {id: 5,municipio: "Izalco"},
-        {id: 6,municipio: "Juayúa"},
-        {id: 7,municipio: "Nahuizalco"},
-        {id: 8,municipio: "Nahulingo"},
-        {id: 9,municipio: "Salcoatitán"},
-        {id: 10,municipio: "San Antonio del Monte"},
-        {id: 11,municipio: "San Julián"},
-        {id: 12,municipio: "Santa Catarina Masahuat"},
-        {id: 13,municipio: "Santa Isabel Ishuatán"},
-        {id: 14,municipio: "Santo Domingo de Guzmán"},
-        {id: 15,municipio: "Sonsonate"},
-        {id: 16,municipio: "Sonzacate"}        
-    ]
+    return municipios;
+}
+
+export function getMunicipioById(id){
+    const result = municipios.filter(el => el.id == id);
+    return (result.length > 0 ? result[0].municipio : null);
+}
+
+export function getDeptoById(id){
+    console.log("Ejecutando formatter");
+    const result = deptos.filter(el => el.id == id);
+    return (result.length > 0 ? result[0].depto : null);
 }
 
 export function getABC(){
