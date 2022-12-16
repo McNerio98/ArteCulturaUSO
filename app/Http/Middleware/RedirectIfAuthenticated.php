@@ -27,10 +27,8 @@ class RedirectIfAuthenticated
             }
 
             if($current_user->hasRole('Invitado')){
-                return redirect()->route('profile');
+                return redirect()->route('profile.show',$current_user->id);
             }else{
-                //aqui tendria que extraerlos de la db, porq puede hallan registrado nuevos
-                //$user->hasRole(['editor', 'moderator'])
                 return redirect()->route('dashboard');    
             }
         }

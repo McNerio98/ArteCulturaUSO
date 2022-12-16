@@ -88,11 +88,11 @@ if(document.getElementById('appShowPostFront') != undefined){
                 });
 
             },
-            onUpdatePostEvent: function(){
-
+            onUpdatePostEvent: function(id){
+                window.location.href = this.acAppData.base_url + `/postedit/${id}`;
             },
-            onDeletePost: function(){
-
+            onDeletePost: function(post_id){
+                window.location.href = this.acAppData.base_url;
             },
             onSources: function(sources){
                 var items = sources.map((e)=>{{
@@ -100,7 +100,10 @@ if(document.getElementById('appShowPostFront') != undefined){
                 }});
 
                 this.$refs.mediaviewer.builderAndShow(items,'POST_EVENTS',items[0]);
-            }
+            },
+            onPromo: function(id){
+                window.location.href = this.acAppData.base_url + `/admin/promociones/create?tarid=${id}&tartype=postevent`;
+            }            
         }
     });
 }

@@ -3,6 +3,9 @@
 @section('title', 'Privilegios')
 @section('windowName', 'ROLES Y PERMISOS')
 
+@section('PanelTitle', 'SEGURIDAD')
+@section('PanelSubtitle', 'ROLES Y PERMISOS')
+
 @section('content')
     <div class="container" id="appRoles">
         <section class="content">

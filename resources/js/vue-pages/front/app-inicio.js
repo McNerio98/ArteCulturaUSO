@@ -7,14 +7,12 @@ Vue.component('summary-item',require('../../components/post/PostEventCardCompone
 
 import {getElementoTablero} from '@/service';
 import {formatter88} from '@/formatters';
-import PostEventCard2Component from '@/components/post/PostEventCard2Component.vue'
 import TableroPostEventCad from '@/components/tablero/PostEventCard.vue';
 
 
 const app_inicio = new Vue({
     el: '#app_inicio',
     components: {
-        'posttable-style': PostEventCard2Component,
         'table-event': TableroPostEventCad
     },
     data: {
@@ -34,7 +32,7 @@ const app_inicio = new Vue({
     },
     methods: {      
         onSeeMore: function(id){
-            window.location.replace(this.acAppData.base_url + `/postshow/${id}`);
+            window.location.href = this.acAppData.base_url + `/postshow/${id}`;
         },
         loadTableEvents: function(params){
             getElementoTablero(params).then(result => {

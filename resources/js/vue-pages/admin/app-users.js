@@ -5,6 +5,7 @@ const appUsersAdminVue = new Vue({
     el: '#appUsersAdmin',
     data: function(){
         return {         
+            showPagination: true,
             filters: {
                 users: ""
             },
@@ -37,18 +38,25 @@ const appUsersAdminVue = new Vue({
             this.loadData();
         },
         loadData: function(page = 1, per_page = 15){
+            StatusHandler.ShowLoading("Consultando datos");
             axios(`/users?page=${page}&per_page=${per_page}&filter=${this.filters.users}`).then(result =>{
                 let response = result.data;
                 if(response.code == 0){
+                    StatusHandler.CloseLoading();
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
                     return;
                 }
+                StatusHandler.CloseLoading();
+
                 this.user_list = response.data.items.map(e=>{
                     e.img_profile = this.acAppData.storage_url + "/files/profiles/" + e.img_profile;
                     return e;
                 });
+
+                this.showPagination =  (this.user_list.length > 0);
                 this.pagination = response.data.pagination;
             }).catch(ex=>{
+                StatusHandler.CloseLoading();
                 StatusHandler.Exception("Obtener usuarios ", ex);
             });
         },

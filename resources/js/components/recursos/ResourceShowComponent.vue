@@ -134,7 +134,7 @@ export default {
             return namefile;
         },
         onEdit: function(){
-            this.$emit('edit',this.itemData.resource.id);
+            this.$emit('on-edit',this.itemData.resource.id);
         },
         onDelete: function(){
             var vm = this;

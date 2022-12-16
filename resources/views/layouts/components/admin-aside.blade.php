@@ -64,6 +64,15 @@
                 </li>
                 @endcan
 
+                @can('ver-recursos')                
+                <li class="nav-item">
+                    <a href="{{route('recursos.index.admin')}}" class="nav-link text-hpolis  {{ $ac_option == 'resources' ? 'active' : ''}}">
+                        <i class="nav-icon fas fa-book"></i>
+                        <p>Recursos</p>
+                    </a>
+                </li>
+                @endcan                
+
                 @can('ver-usuarios')
                 <li class="nav-item">
                     <a href="{{route('users')}}" class="nav-link text-hpolis  {{ $ac_option == 'usuarios' ? 'active' : ''}}">
@@ -93,14 +102,7 @@
                     </li>
                 @endcan
 
-                @can('ver-recursos')                
-                <li class="nav-item">
-                    <a href="{{route('recursos.index.admin')}}" class="nav-link text-hpolis  {{ $ac_option == 'resources' ? 'active' : ''}}">
-                        <i class="nav-icon fas fa-book"></i>
-                        <p>Recursos</p>
-                    </a>
-                </li>
-                @endcan
+
 
                 @can('ver-roles')                
                 <li class="nav-item">

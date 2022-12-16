@@ -105,7 +105,7 @@
             </div>
 
             <div class="ac_tbl-container">
-                <table-event v-for="(e,index) in events" :pdata="e" :key="e.post.id"/>
+                <table-event v-for="(e,index) in events" :pdata="e" :key="e.post.id" @on-show="onSeeMore"/>
             </div>
         </div>
 
