@@ -12,51 +12,62 @@ Vue.component('control-trim', require('../../components/trim/TrimComponentv2.vue
 
 
 import {formatter89,formatter87} from '@/formatters';
-import {getMemory,getAdminMemories} from '../../service';
+import {getMemory,getAdminMemories} from '@/service';
 import Memory from '../../components/memories/MemoryShowComponent.vue';
-import MemorySummary from '../../components/memories/MemoryMiniViewComponent.vue';
-import NoDataRegister from '../../components/NoDataRegister.vue';
+import MemorySummary from '@/components/memories/MemoryMiniViewComponent.vue';
+import NoDataRegister from '@/components/NoDataRegister.vue';
+import {getABC} from '@/utils.js';
+import PaginationComponent from '@/components/pagination/PaginationComponent.vue';
+
 //Index,  all items (index)
 if(document.getElementById("appMemories") != undefined){
     const appMemories = new Vue({
         components: {
             'memory-summary': MemorySummary,
-            'no-records' : NoDataRegister
+            'no-records' : NoDataRegister,
+            'pagination' : PaginationComponent
         },
         el: "#appMemories",
         data: {
             acAppData: {},
             items: [],
+            /**---------------------------------- */
+            ABC: [],
+            filterSelected: null,
+            routeDynamic: null,
+            componentPagKey: 100,
+            showPagination: true,          
+            /**---------------------------------- */   
         },
         created: function(){
             this.acAppData = window.obj_ac_app;
         },
         mounted: function(){
-            this.loadData();
+            this.ABC = getABC();            
+            this.filterSelected = "ALL";
+            this.getData();            
+            //this.loadData();
         },
         methods: {
-            //Implementar paginacion
-            loadData: function(){
-                getAdminMemories().then(result =>{
-                    let response = result.data;
-                    if(response.code == 0){
-                        StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
-                        return;
-                    }     
-                    
-                    
-
-                    this.items = response.data.map(e => {
-                        e.media = [];
-                        return formatter89(e,this.acAppData.storage_url);
-                    });
-                }).catch(ex =>{
-                    const target_process = "Recuperar elementos"; 
-                    StatusHandler.Exception(target_process,ex);
-                });
-            },
+            getData: function(){
+                if(this.filterSelected == null){return;}
+                this.showPagination = true;
+                this.routeDynamic = getAdminMemories(this.filterSelected);
+                this.componentPagKey += 1;
+            },            
             onReadMemory: function(id){
                 window.location.href = this.acAppData.base_url + "/admin/memories/show/"+id
+            },
+            onLoadData: function(dataPag){
+                this.showPagination = (dataPag.length > 0); 
+                this.items = dataPag.map(e => {
+                    e.media = [];
+                    return formatter89(e,this.acAppData.storage_url);
+                });                
+            },            
+            onSelectFilter: function(selected){
+                this.filterSelected = selected;
+                this.getData();
             }            
         }
     });

@@ -11,7 +11,7 @@
             @deleted="onDeletedResource"
             @source-files="onSources" 
             @on-promo="onPromo"
-            @edit="onEditResource"/>        
+            @on-edit="onEditResource"/>        
     </div>
     <media-viewer ref="mediaviewer"/>
 </main>

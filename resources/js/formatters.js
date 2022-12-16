@@ -1,4 +1,5 @@
 import moment from 'moment';
+import {getMunicipioById} from '@/utils';
 
 /**
  * Formateado: JSON
@@ -108,7 +109,7 @@ export function formatter88(item,storage_base_url){
             is_geo: item.event_detail?.is_geo,
             address: {
                 details: item.event_detail?.address,
-                depto: 0, //Usar para futuras versiones 
+                depto_id: 1, //Dejar establecido 1 para Sonsonate
                 municipio_id: item.event_detail?.municipio_id
             },
             geo: {

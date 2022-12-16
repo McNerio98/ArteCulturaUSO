@@ -59,12 +59,15 @@
                       <button type="submit" 
                       :disabled="isSendData"
                       class="btn btn-primary btn-block">
-                      <span v-if="isSendData" class="spinner-border spinner-border-sm" 
-                      @click="onSubmit"
-                      role="status" aria-hidden="true"></span>
+                      <i v-if="!isSendData" class="fas fa-sign-in-alt"></i>
+                      <span v-if="isSendData" class="spinner-border spinner-border-sm"  role="status" aria-hidden="true"></span>
                           <template v-if="!isSendData">Iniciar</template>
                           <template v-else>Verificando …</template>                        
-                      </button>                    
+                      </button> 
+                      <a :disabled="isSendData" class="btn btn-success btn-block" href="{{route('inicio')}}">
+                        <i class="fas fa-home"></i>
+                        Regresa al Inicio
+                      </a>                
                   </div>
                   <div class="col-12">
                     <p class="mt-2 mt-md-3">¿No tiene una cuenta? <a href="{{url('/').'?register=true'}}">Cree una</a></p>

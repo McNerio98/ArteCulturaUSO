@@ -18,25 +18,31 @@
             <div v-if="itemData.presentation_model != undefined && (itemData.presentation_model.type_file == 'image' || itemData.presentation_model.type_file == 'video')" class="bg-dark" style="height: 200px;">                    
                 <img style="object-fit: contain; padding-top: 3px; width: 100%;height: 100%;" alt="" :src="itemData.presentation_model.url">
             </div>      
-            <div class="card-body p-1 p-md-2">
-                <p class="mb-0 mb-md-1">
-                    <i class="fas fa-map-marker-alt"></i> 
-                    Lugar  
-                    <span class="badge  bg-success">
-                        {{itemData.dtl_event.address.details}}
+            <div class="card-body p-1 p-md-2" style="background-color: #e1dede !important;">
+                <p class="mb-0 mb-md-1 _noWrp">
+                    <span class="text-dark font-weight-bold">
+                        <i class="fas fa-map-marker-alt"></i> 
+                        Lugar  
+                    </span>
+                    <span class="text-success font-weight-bold">
+                        {{getDirection()}}
                     </span>
                 </p>
-                <p class="mb-0 mb-md-1">
-                    <i class="fas fa-dollar-sign"></i> 
-                    Entrada 
-                    <span class="badge  bg-success">
+                <p class="mb-0 mb-md-1 _noWrp">
+                    <span class="text-dark font-weight-bold">
+                        <i class="fas fa-dollar-sign"></i> 
+                        Entrada
+                    </span> 
+                    <span class="text-success font-weight-bold">
                         {{itemData.dtl_event.has_cost == true ? "$ " + itemData.dtl_event.cost : "GRATIS"}}
                     </span>                    
                 </p>
-                <p class="mb-0 mb-md-1">
-                    <i class="fas fa-redo-alt"></i>
-                    Se repite 
-                    <span class="badge  bg-success">
+                <p class="mb-0 mb-md-1 _noWrp">
+                    <span class="text-dark font-weight-bold">
+                        <i class="fas fa-redo-alt"></i>
+                        Se repite 
+                    </span>
+                    <span class="text-success font-weight-bold">
                         {{itemData.dtl_event.frequency == "unique" ? 'FECHA ÚNICA ' : 'CADA AÑO'}}
                     </span>                    
                 </p>                
@@ -62,6 +68,7 @@
 </style> 
 
 <script>
+    import { getMunicipioById, getDeptoById } from "@/utils";
     export default {
         props: {
             pdata: {type: Object,required:true},
@@ -76,7 +83,12 @@
         methods: {
             onSeeMore: function(){
                 this.$emit('selected',this.itemData.post.id);
-            }
+            },
+            getDirection: function(){
+                return this.itemData.dtl_event.address.details +
+                ", " + getMunicipioById(this.itemData.dtl_event.address.municipio_id) +
+                ", " + getDeptoById(this.itemData.dtl_event.address.depto_id);
+            }            
         } 
     }
 </script>

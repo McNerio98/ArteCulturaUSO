@@ -71,6 +71,9 @@ const appEvents = new Vue({
         onSources: function(){
 
         },
+        onSeeMore: function(id){
+            window.location.href = this.acAppData.base_url + `/postshow/${id}`;
+        },
         onClickEvent: function(event_el){
             this.loadTarget(event_el.id);
         },

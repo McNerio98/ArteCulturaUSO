@@ -2,6 +2,11 @@
 @section('title', 'Usuarios')
 @section('windowName', 'USUARIOS REGISTRADOS ')
 
+
+@section('PanelTitle', 'Usuarios')
+@section('PanelSubtitle', 'Registros')
+
+
 @section('content')
 <div class="container-fluid" id="appUsersAdmin">
         <input type="hidden" id="hFilterUser" value="{{app('request')->input('filter')}}">
@@ -28,7 +33,7 @@
         </div>
 
         <!--PAGINATION-->
-        <div>
+        <div v-if="showPagination">
             <nav aria-label="Navegacion elementos">
                 <ul class="pagination justify-content-center">
                     <li v-bind:class="{'disabled' : ! (pagination.current_page > 1)}" class="page-item">

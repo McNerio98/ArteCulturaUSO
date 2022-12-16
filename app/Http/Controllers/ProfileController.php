@@ -27,7 +27,7 @@ class ProfileController extends Controller
 			return redirect()->route('inicio');
 		}
 
-		if($user->active == 0 || $user->is_admin == 1 || $user->status == 'deleted'){
+		if($user->active == false || $user->is_admin == true || $user->status == 'disabled'){
 			return redirect()->route('inicio');
 		}
 		
@@ -40,22 +40,15 @@ class ProfileController extends Controller
 			return redirect()->route('inicio');
 		}		
 
+		$user = $e->owner;
+		if($user->active == false || $user->is_admin == true || $user->status == 'disabled'){
+			return redirect()->route('inicio');
+		}		
+
+
 		return view("profile.showpost",["postid" => $id_post]);
 	}
 
-	public function editPostEvent($id_post){
-		$e = PostEvent::find($id_post);
-		if(!$e){
-			return redirect()->route('inicio');
-		}
-		
-		if(!Auth::user()->can('editar-publicaciones') &&  intval($e->creator_id) !==  intval(Auth::user()->id)){
-			return redirect()->route('inicio');//permiso denegado 
-		}
-		
-		return view("profile.editpost",["postid" => $id_post]);
-	}
-	
 
 	public function elements(Request $request, $id){
 		$output = [
@@ -64,6 +57,17 @@ class ProfileController extends Controller
 			"data" => null,
 			'pagination' => null
 		];		
+
+		$user = User::find($id);
+		if(!$user){
+			$output["msg"] = "Usuario no existe";
+			return $output;			
+		}
+
+		if($user->active == false || $user->status == 'disabled'){
+			$output["msg"] = "Cuenta no disponible";
+			return $output;
+		}		
 
 		$per_page = ($request->per_page === null || $request->per_page > 15) ? 15 : $request->per_page;
 
@@ -94,42 +98,6 @@ class ProfileController extends Controller
         return $output;				
 	}
 
-	public function show($id){
-		$salida = [
-			"code" => 0,
-			"msg"=>"",
-			"data" => null
-		];
-
-		$user = User::find($id);
-		
-		if(!$user){
-			$salida["msg"] = "El usuario no existe";
-			return $salida;
-		}
-
-		$metas_get 		= ['user_profile_description','user_profile_address','user_profile_notes']; //add another meta 
-		$metas 				= UserMeta::whereIn('key',$metas_get)->where('user_id',$id)->get();
-		$tags 				= 	User::select('tg.id','tg.name')->join('tags_on_profiles AS top','top.user_id','users.id')
-									->join('tags AS tg','tg.id','top.tag_id')->where('users.id',$id)->get();
-		$profile_media = MediaProfile::where('user_id',$user->id)->get(); 
-		
-        $fulldata = [
-            'metas' => $metas,
-            'user' => $user,
-			'tags' => $tags,
-			'media_profile' => $profile_media
-        ];
-
-        $salida = [
-            'code' => 1,
-            'data' => $fulldata,
-            'msg' => 'Datos recuperados'
-        ];
-		return $salida;		
-	}
-
-
 	#Carga la informacion completa del usuario
 	public function information($id){
 		$output = [
@@ -143,6 +111,11 @@ class ProfileController extends Controller
 			$output["msg"] = "El usuario no existe";
 			return $output;
 		}
+
+		if($user->active == false || $user->is_admin == true  || $user->status == 'disabled'){
+			$output["msg"] = "Cuenta no disponible";
+			return $output;
+		}		
 
 		$metas_get 		= ['user_profile_description','user_profile_address','user_profile_notes']; //add another meta 
 		$metas 				= UserMeta::whereIn('key',$metas_get)->where('user_id',$id)->get();		

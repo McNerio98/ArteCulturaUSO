@@ -28,13 +28,13 @@
         <section class="p-3">
             <div class="container">
                 <h1>Tablero de Eventos</h1>
-                <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it entirely.</p>
+                <p class="lead text-muted">Agenda que se estará llevando a cabo en los siguientes días , donde podrás encontrar a los diversos sectores artísticos promover sus eventos para niños , adultos y familias interesados , ven y disfruta a la ciudad de los cocos , Sonsonate no faltes.</p>
             </div>
         </section>
 
         <div class="ac_tbl-container">
                 <!--No quitar las etiquetas de cierren, si se usa <component/> tiene un comportamiento incongruente-->
-                <table-event v-for="(e,index) in events" :pdata="e" :key="e.post.id"/></table-event>
+                <table-event v-for="(e,index) in events" :pdata="e" :key="e.post.id" @on-show="onSeeMore"></table-event>
                 <table-load-more v-if="isEnableMore" @onmore="onLoadMore"></table-load-more>
         </div>        
 

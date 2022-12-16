@@ -40,8 +40,31 @@ class RecursosController extends Controller
     	return view('admin.recursos.show' , ['ac_option' =>'recursos' , 'request_users' => $request_users]);        
     }
 
+    public function getAllAdmin(Request $request){
+        $output = [
+            "code" => 0,
+            "data" => null,
+            "msg" => "",
+        ];            
 
-    public function getall(Request $request){
+        /**
+         * Validar aunq halla una parte publica  
+         * Porque se pueden filtrar, por ejemplo aprobador si lo ubiera 
+         * Actualmente no pasa ningun filtrado asi que se recuperan todos 
+         */
+		if( ! Auth::user()->can('ver-recursos')){ 
+            $output["msg"] = "Acción no permitida";
+            return $output;
+        };
+        $queryParams = [
+            "page" => $request->page,
+            "per_page" => $request->per_page,
+            "filter" => $request->filter
+        ];
+        return redirect()->action('RecursosController@getAllPublic',$queryParams);        
+    }
+
+    public function getAllPublic(Request $request){
         $output = [
             "code" => 0,
             "data" => null,

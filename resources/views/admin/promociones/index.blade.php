@@ -2,6 +2,8 @@
 @section('title', 'Promociones')
 @section('windowName', 'PROMOCIONES')
 
+@section('PanelTitle', 'PROMOCIONES')
+@section('PanelSubtitle', 'REGISTROS')
 
 @section('content')
 <div class="container-fluid" id="appPromoIndex">        
