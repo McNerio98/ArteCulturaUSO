@@ -5,6 +5,7 @@ const appRoles = new Vue({
     data: {
         roles: [],
         caps: [],
+        acAppData: window.obj_ac_app,        
         count_caps_global:0,
         role_selected: {caps: []}
     },
@@ -12,6 +13,9 @@ const appRoles = new Vue({
         this.loadData();
     },
     methods: {
+        has_cap(e){
+            return window.has_cap == undefined ? false : window.has_cap(e);
+        },              
         loadData: function(){
             axios(`/roles`).then(result=>{
                 let response = result.data;

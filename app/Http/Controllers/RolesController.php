@@ -46,89 +46,88 @@ class RolesController extends Controller
      * Obtiene una lista de permisos asociada a un rol determinado 
      */
     public function show(Request $request, $id){
-
-        //Verificando permisos 
-        if(!Auth::user()->can('ver-roles') || !Auth::user()->can('editar-roles')){
-            $salida["msg"] = "Operación denegada";
-            return $salida;
-        }
-
-        $salida = [
+        $output = [
             "code" => 0,
             "data" => null,
             "msg" => ''
         ];
 
-        $rol = Role::find($id);
-
-        if(! $rol){
-            $salida["msg"] = "El rol no existe";
-            return $salida;
+        //Verificando permisos 
+        if(!Auth::user()->can('ver-roles')){
+            $output["msg"] = "Operación denegada";
+            return $output;
         }
 
-        $salida["code"] = 1;
-        $salida["data"] = $rol->permissions()->get();
-        $salida["msg"] = "Proccesed Successfully";
+        $rol = Role::find($id);
+
+        if(!$rol){
+            $output["msg"] = "El rol no existe";
+            return $output;
+        }
+
+        $output["code"] = 1;
+        $output["data"] = $rol->permissions()->get();
+        $output["msg"] = "Proccesed Successfully";
         
-        return $salida;
+        return $output;
     }
 
     public function update(Request $request,$id){
 
-        if(!Auth::user()->can('ver-roles') || !Auth::user()->can('editar-roles')){
-            $salida["msg"] = "Operación denegada";
-            return $salida;
-        }
-
-        $salida = [
+        $output = [
             "code" => 0,
             "data" => null,
-            "msg" => 'Hola'
-        ];
+            "msg" => ''
+        ];        
+
+        if(!Auth::user()->can('ver-roles') || !Auth::user()->can('editar-roles')){
+            $output["msg"] = "Operación denegada";
+            return $output;
+        }
+
 
         //acction modificar un permiso del rol 
         if($request->alter_caps){
-            $salida["extra"] = "El alter caps se definio"; // <=====
             $validator = Validator::make($request->all(),[
                 'cap_id' => 'required',
                 'is_checked' => 'required'
             ]); 
 
             if($validator->fails()){
-                $salida["msg"] = "Parametros incompletos";
-                return $salida;
+                $output["msg"] = "Parametros incompletos";
+                return $output;
             }
 
             //obteniendo el rol 
             $rol = Role::find($id);
             if(! $rol){
-                $salida["msg"] = "El rol no existe";
-                return $salida;
+                $output["msg"] = "El rol no existe";
+                return $output;
             }
 
-            if($rol->name == "Invitado"){
-                $salida["msg"] = "Operacion no permitida";
-                return $salida;
+            if(trim($rol->name) == "Invitado"){
+                /**Se asegura por cualquier intento */
+                $output["msg"] = "Operación restringida, este apartado no es modificable";
+                return $output;
             }
 
             //obteniendo el permiso 
             $cap = Cap::find($request->cap_id);
             if(! $cap){
-                $salida["msg"] = "El permiso no existe, recargue el sitio";
-                return $salida;
+                $output["msg"] = "El permiso no existe, recargue el sitio";
+                return $output;
             }
 
             if($request->is_checked){ //removiendo 
-                $salida["extra"] = "El permiso existre dentro del rol, se removera"; // <=====
                 $rol->revokePermissionTo($cap->name);
             }else{ //agregando 
-                $salida["extra"] = "El permiso no existe del rol, se agrega"; // <=====
                 $rol->givePermissionTo($cap->name);
             }
-            $salida["code"] = 1;
-            $salida["msg"] = "Action complete";
-            $salida["data"] = $cap;
-            return $salida;
+            
+            $output["code"] = 1;
+            $output["msg"] = "Action complete";
+            $output["data"] = $cap;
+            return $output;
         }
 
 

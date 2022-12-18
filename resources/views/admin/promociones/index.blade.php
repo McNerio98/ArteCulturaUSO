@@ -7,9 +7,11 @@
 
 @section('content')
 <div class="container-fluid" id="appPromoIndex">        
-        <!--AGREGAR EL CAN AQUI-->
+
+        @can('crear-promociones')
         <a href="{{route('promociones.create.admin')}}">+ Nuevo</a>
-        <!--AGREGAR EL CAN AQUI-->
+        @endcan
+
         <div class="container">
                 <div class="row mb-2">
                         <no-records v-if="items.length == 0" icon="box.svg" page="Promociones"></no-records>

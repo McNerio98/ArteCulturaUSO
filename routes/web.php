@@ -132,6 +132,16 @@ Route::post('/postevent','PostEventController@upsert')->name('postevent.store')-
 
 
 
+/*------------------------------Roles y permisos------------------------------*/
+#Obtiene la lista de todos los roles con los conteos de los permisos que posee
+Route::get('roles','RolesController@index')->name("roles.index")->middleware('auth','adroles');
+#AJAX Request | Obtiene la lista de permisos relacionadas al rol solicitado 
+Route::get('roles/{id}','RolesController@show')->name("roles.show")->middleware('auth','adroles');
+//Actualiza, asocia o desvincula un permiso dentro del rol 
+Route::put('roles/{id}','RolesController@update')->name("roles.update")->middleware('auth','adroles');
+
+
+
 Route::get('/admin/populars','DashboardController@populars')->name('populars');
 Route::get('/admin/categories','DashboardController@rubros')->name('rubros'); //categories and tags 
 Route::get('/admin/roles','DashboardController@roles')->name('roles');
@@ -164,12 +174,7 @@ Route::post('/categories/saveImgPresentation','CategoriesController@changeImgPre
 # Almacena una nueva categoria 
 Route::post('categories','CategoriesController@store')->name('cat.store')->middleware('auth','adroles');
 
-#Obtiene la lista de todos los roles con los conteos de los permisos que posee
-Route::get('roles','RolesController@index')->name("roles.index")->middleware('auth','adroles');
-#Obtiene la lista de permisos relacionadas al rol solicitado 
-Route::get('roles/{id}','RolesController@show')->name("roles.show")->middleware('auth','adroles');
-//Actualiza, asocia o desvincula un permiso dentro del rol 
-Route::put('roles/{id}','RolesController@update')->name("roles.update")->middleware('auth','adroles');
+
 
 #Actualiza una etiqueta 
 Route::put('tags/{id}','TagsController@update')->name("tag.update")->middleware('auth','adroles');

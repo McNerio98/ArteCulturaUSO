@@ -20,7 +20,7 @@
                 @foreach($request_users as $e)
                     <a href="{{route('user.info',$e->id)}}" class="dropdown-item">
                         <div class="media">
-                            <img src="{{asset('files/profiles/'.$e->path_file)}}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                            <img src="{{asset('files/profiles/'.$e->profile_img->path_file)}}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
                             <div class="media-body">
                                 <h3 class="dropdown-item-title">
                                     {{$e->name}}
