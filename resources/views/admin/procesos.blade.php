@@ -27,9 +27,11 @@
                         <hr class="horizontal dark">
                         <div class="row">
                             <div class="col-6">
+                                @can('ejecutar-procesos')
                                 <a href="javascript:void(0);" @click="runResetDatesEvents">
                                 <i class="fas fa-rocket"></i>
                                     INICIAR PROCESO</a>
+                                @endcan
                             </div>
                             <div class="col-6 text-right">
                                 <h6 class="mb-0 text-sm">02.03.22</h6>
@@ -56,9 +58,11 @@
                         <hr class="horizontal dark">
                         <div class="row">
                             <div class="col-6">
+                                @can('ejecutar-procesos')
                                 <a href="javascript:void(0);" @click="runTestEmail">
                                 <i class="fas fa-rocket"></i>
                                     INICIAR PROCESO</a>
+                                @endcan
                             </div>
                             <div class="col-6 text-right">
                                 <h6 class="mb-0 text-sm">02.03.22</h6>
