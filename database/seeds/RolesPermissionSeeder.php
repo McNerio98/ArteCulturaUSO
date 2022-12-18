@@ -121,7 +121,12 @@ class RolesPermissionSeeder extends Seeder
 
 		$permission = Permission::create([
 			'name' => 'asignar-permisos',
-			'description' => 'Capacidad de asignar N permisos a un rol determinado '
+			'description' => 'Capacidad de asignar N permisos a un rol determinado.'
+		]);
+
+		$permission = Permission::create([
+			'name' => 'ver-promociones',
+			'description' => 'Permiso para poder visualizar apartado promociones desde panel administrativo.'
 		]);
 
 		$permission = Permission::create([
@@ -174,6 +179,7 @@ class RolesPermissionSeeder extends Seeder
 			'ver-roles',
 			'editar-roles',
 			'asignar-permisos',
+			'ver-promociones',
 			'crear-promociones',
 			'editar-promociones',
 			'eliminar-promociones',

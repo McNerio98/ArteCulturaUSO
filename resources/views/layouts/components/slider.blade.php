@@ -26,7 +26,7 @@
               <img src="{{asset('images/popular_empty.jpg')}}" class="d-block w-100 sliderImage" style="object-fit: cover" height="450px" alt="...">
               <div class="carousel-caption d-none d-md-block ">
                 <h5></h5>
-                <p>No hay elementos destacados por ahora</p>
+                <p>No se tienen promociones registradas aun.</p>
               </div>
             </div>       
       @endif

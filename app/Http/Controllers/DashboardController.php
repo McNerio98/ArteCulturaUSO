@@ -19,13 +19,6 @@ class DashboardController extends Controller
 		$this->middleware('adroles');
 	}
 
-	private function userRequest(){
-		return User::join("media_profiles AS mp","mp.id","=","users.img_profile_id")
-		->select("users.*","mp.path_file")
-		->where("users.status","request")
-		->where('email_verified_at','<>',null)->get();
-	}
-
     public function index(){
 		$request_users = UsersHelper::usersRequest();
     	return view('admin.home' , ['ac_option' =>'home' , 'request_users' => $request_users]);
@@ -39,26 +32,18 @@ class DashboardController extends Controller
 
 	//SEARCH PAGE  
     public function search(){
-		$request_users = $this->userRequest();
+		$request_users = UsersHelper::usersRequest();
     	return view('admin.search' , ['ac_option' =>'search' , 'request_users' => $request_users]);
 	}	
 	
-	//POPULAR OPTIONS 
-    public function populars(){
-		if( ! Auth::user()->can('ver-destacados')){ //poner esto en los de arriba 
-            return redirect()->route('dashboard');
-        };		
-		$request_users = $this->userRequest();
-    	return view('admin.populars' , ['ac_option' =>'populars' , 'request_users' => $request_users]);
-	}	
-	
+
 	
 	//USERS OPTION	
     public function users(){
 		if( ! Auth::user()->can('ver-usuarios')){
             return redirect()->route('dashboard');
         };
-		$request_users = $this->userRequest();
+		$request_users = UsersHelper::usersRequest();
     	return view('admin.users' , ['ac_option' =>'usuarios' , 'request_users' => $request_users]);
 	}
 
@@ -66,7 +51,7 @@ class DashboardController extends Controller
 		if( ! Auth::user()->can('ver-rubros')){ 
             return redirect()->route('dashboard');
         };
-		$request_users = $this->userRequest();
+		$request_users = UsersHelper::usersRequest();
 		return view("admin.rubros", ['ac_option' =>'rubros' , 'request_users' => $request_users]); 
 	}
 
@@ -76,7 +61,7 @@ class DashboardController extends Controller
 		if( ! Auth::user()->can('ver-roles')){ //poner esto en los de arriba 
             return redirect()->route('dashboard');
         };
-		$request_users = $this->userRequest();
+		$request_users = UsersHelper::usersRequest();
 		return view('admin.roles' , ['ac_option' =>'roles' , 'request_users' => $request_users]);
 	}
 
@@ -86,7 +71,7 @@ class DashboardController extends Controller
         if( ! Auth::user()->can('ver-usuarios') && Auth::user()->id != $id){
             return redirect()->route('dashboard');
         };
-        $request_users = $this->userRequest();
+		$request_users = UsersHelper::usersRequest();
         $roles = Role::all();
 
         return view("admin.config-user",['id_user_cur' => $id,'all_roles' =>$roles,'ac_option' =>'usuarios' , 'request_users' => $request_users]);
@@ -101,7 +86,7 @@ class DashboardController extends Controller
 		if(!Auth::user()->can('editar-publicaciones') &&  intval($e->creator_id) !==  intval(Auth::user()->id)){
 			return redirect()->route('dashboard');
 		}
-		$request_users = $this->userRequest();
+		$request_users = UsersHelper::usersRequest();
 		return view("admin.postevents.edit-item",['request_users' => $request_users,'id_elem_edit' => $id,'ac_option' =>'null']);
 	}
 
@@ -111,7 +96,7 @@ class DashboardController extends Controller
 			return redirect()->route('dashboard');
 		}		
 
-		$request_users = $this->userRequest();
+		$request_users = UsersHelper::usersRequest();
 		return view("admin.postevents.show-item",['request_users' => $request_users,'id_elem_edit' => $id,'ac_option' =>'null']);
 	}
 	
