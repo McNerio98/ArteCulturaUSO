@@ -39,21 +39,23 @@
                     </a>
                 </li>
 
-                <!-- Agregar can cuando ya este-->
+                @can('ver-promociones')
                 <li class="nav-item">
                     <a href="{{route('promociones.admin')}}" class="nav-link text-hpolis  {{ $ac_option == 'promociones' ? 'active' : ''}} ">
                         <i class="nav-icon fas fa-ad"></i>
                         <p>Promociones</p>
                     </a>
                 </li>
+                @endcan
 
-                <!-- Agregar can cuando ya este-->
+                @can('ver-procesos')
                 <li class="nav-item">
                     <a href="{{route('procesos.admin')}}" class="nav-link text-hpolis  {{ $ac_option == 'procesos' ? 'active' : ''}} ">
                         <i class="nav-icon fas fa-server"></i>
                         <p>Procesos</p>
                     </a>
-                </li>                
+                </li>             
+                @endcan   
 
                 @can('ver-biografias')
                 <li class="nav-item">

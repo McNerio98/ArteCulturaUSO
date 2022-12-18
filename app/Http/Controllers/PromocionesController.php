@@ -19,16 +19,25 @@ use Storage;
 class PromocionesController extends Controller
 {
     public function index(){
+		if( ! Auth::user()->can('ver-promociones')){ //poner esto en los de arriba 
+            return redirect()->route('dashboard');
+        };	        
         $request_users = UsersHelper::usersRequest();
         return view('admin.promociones.index' , ['ac_option' =>'promociones' , 'request_users' => $request_users]);        
     }
 
     public function create(){
+		if( ! Auth::user()->can('crear-promociones')){ //poner esto en los de arriba 
+            return redirect()->route('dashboard');
+        };	        
         $request_users = UsersHelper::usersRequest();
         return view('admin.promociones.create' , ['ac_option' =>'promociones' , 'request_users' => $request_users]);           
     }
 
     public function show(){
+		if( ! Auth::user()->can('ver-promociones')){ //poner esto en los de arriba 
+            return redirect()->route('dashboard');
+        };	        
         $request_users = UsersHelper::usersRequest();
         return view('admin.promociones.show' , ['ac_option' =>'promociones' , 'request_users' => $request_users]);           
     }  

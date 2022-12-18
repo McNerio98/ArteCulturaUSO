@@ -46,7 +46,7 @@
                                         <td class="p-1">
                                             <div class="form-group clearfix m-0">
                                                 <div class="icheck-primary d-inline">
-                                                    <input type="checkbox" :id=" `checkboxPrimary${index}` " :checked="capsInCurrentRole(cap.id)" @click="switchStateCap($event,cap.id)">
+                                                    <input type="checkbox" :id=" `checkboxPrimary${index}` " :disabled="!has_cap('asignar-permisos')" :checked="capsInCurrentRole(cap.id)" @click="switchStateCap($event,cap.id)">
                                                     <label :for=" `checkboxPrimary${index}` ">
                                                     </label>
                                                 </div>
