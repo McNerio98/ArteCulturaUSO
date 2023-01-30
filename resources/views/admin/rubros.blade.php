@@ -2,6 +2,8 @@
 @section('title', 'Rubros')
 @section('windowName', 'CATEGORÍAS Y RUBROS')
 
+@section('PanelTitle', 'RUBROS')
+@section('PanelSubtitle', 'CONFIGURACIÓN')
 
 @section('content')
 <div class="container" id="appRubros">
@@ -13,7 +15,8 @@
             <div style="max-height: 400px;overflow-y: auto;">
                 <category-row 
                 v-for="e of categories" 
-                :model="e" 
+                :key="e.id"
+                :pdata="e" 
                 :selected="ref_cat_selected"
                 @select-item="selectCategory"></category-row>                
             </div>
@@ -31,7 +34,10 @@
                 </span>
             </div>
 
-            <button type="button" v-if="!creating_category" @click="creating_category = true" class="btn btn-block btn-outline-success btn-flat">+ Agregar Categoria</button>
+            <button type="button" v-if="!creating_category && has_cap('crear-rubros')" 
+            @click="creating_category = true" 
+            class="btn btn-block btn-outline-success btn-flat">+ Agregar Categoria</button>
+
         </div>
         <div class="col-md-6">
             <div class="d-flex justify-content-center" v-if="pnl_wait1">
@@ -52,15 +58,18 @@
 
             <h5 class="mb-2 mt-3 text-center">Etiquetas/Rubros <small><i>(Los nuevos usuarios podrán seleccionar cualquiera de estas etiquetas)</i></small></h5>
             <div class="tags mt-2 text-center">
-                <span v-if="!creating_tag && ref_cat_selected !=null " class="ac-tag">
+
+
+                <span v-if="!creating_tag && ref_cat_selected !=null && has_cap('crear-rubros')" class="ac-tag">
                     <a href="javascript:void(0);" v-on:click="creating_tag = true">+ Nuevo</a>
                 </span>
                 <span class="ac-tag" v-else>
                     <input type="text" maxlength="25" minlength="4" v-model="tag_insert">
                     <i v-on:click="storeTag" class="fas fa-save icon"></i>
                     <i v-on:click="tag_insert = '';creating_tag = false;" class="fas fa-times icon"></i>
-                </span>                                
-                <tag-rubro v-for="(e,index) of tags" :key="e.id" @delete="deleteTag(index)" :tag="e"></tag-rubro>
+                </span>     
+
+                <tag-rubro v-for="(e,index) of tags" :key="e.id" @delete="deleteTag(index)" :ptag="e"></tag-rubro>
             </div>
         </div>
     </div>
@@ -73,8 +82,8 @@
 
 
 @Push('customScript')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.9/cropper.min.js" integrity="sha512-9pGiHYK23sqK5Zm0oF45sNBAX/JqbZEP7bSDHyt+nT3GddF+VFIcYNqREt0GDpmFVZI3LZ17Zu9nMMc9iktkCw==" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.9/cropper.min.css" integrity="sha512-w+u2vZqMNUVngx+0GVZYM21Qm093kAexjueWOv9e9nIeYJb1iEfiHC7Y+VvmP/tviQyA5IR32mwN/5hTEJx6Ng==" crossorigin="anonymous" />
+<script src="{{ asset('js/cropper.min.js') }}"></script>
+<link href="{{ asset('css/cropper.min.css') }}" rel="stylesheet">
 
 <script src="{{ mix('js/admin/app-rubros.js') }}"></script>
 @endpush

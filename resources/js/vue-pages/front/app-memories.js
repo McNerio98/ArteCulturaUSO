@@ -5,9 +5,10 @@ import MemoryShow from '@/components/memories/MemoryShowComponent.vue';
 import MemorySummary from '@/components/memories/MemoryMiniViewComponent.vue';
 import {getMemory,getAllMemories} from '@/service';
 import {formatter89,formatter87} from '@/formatters';
-import NoDataRegister from '@/components/NoDataRegister.vue';
+import NoDataFound from '@/components/NoDataFound.vue';
 import {getABC} from '@/utils.js';
 import PaginationComponent from '@/components/pagination/PaginationComponent.vue';
+Vue.component('spinner1',require('@/components/spinners/Spinner1Component.vue').default);
 
 //Index
 if(document.getElementById("appMemoryIndex") != undefined){
@@ -15,7 +16,7 @@ if(document.getElementById("appMemoryIndex") != undefined){
         el: "#appMemoryIndex",
         components: {
             'memory-summary' : MemorySummary,
-            'no-records' : NoDataRegister,
+            'no-records-found' : NoDataFound,
             'pagination' : PaginationComponent
         },
         data: {
@@ -26,6 +27,7 @@ if(document.getElementById("appMemoryIndex") != undefined){
             routeDynamic: null,
             componentPagKey: 100,
             showPagination: true, 
+            isGettingResources: false
         },
         mounted: function(){
             this.ABC = getABC();            
@@ -35,6 +37,7 @@ if(document.getElementById("appMemoryIndex") != undefined){
         methods: {
             getData: function(){
                 if(this.filterSelected == null){return;}
+                this.isGettingResources = true;
                 this.showPagination = true;
                 this.routeDynamic = getAllMemories(this.filterSelected);
                 this.componentPagKey += 1;
@@ -47,9 +50,12 @@ if(document.getElementById("appMemoryIndex") != undefined){
                 this.items = dataPag.map(e => {
                     e.media = [];
                     return formatter89(e,this.acAppData.storage_url);
-                });                
+                });       
+                //Despues de recuperar, remover el loading
+                this.isGettingResources = false;                              
             },
             onSelectFilter: function(selected){
+                if(this.isGettingResources){return;} //Si esta obteniendo esperar 
                 this.filterSelected = selected;
                 this.getData();
             }

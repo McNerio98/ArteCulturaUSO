@@ -10,27 +10,27 @@
 
         <div class="collapse navbar-collapse " id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item ml-1 ml-md-3 mt-2">
+                <li class="nav-item p-md-2 p-1 {{ isset($ac_option) && $ac_option == 'welcome' ? 'navactive' : ''}}">
                     <a class="" style="color:#20B7EB" href="{{route('inicio')}}"> <i class="fas fa-book"></i>
                         Inicio <span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item ml-1 ml-md-3 mt-2">
+                <li class="nav-item p-md-2 p-1 {{ isset($ac_option) && $ac_option == 'artistas' ? 'navactive' : ''}}">
                     <a class="" style="color:#20B7EB" href="{{url('/').'/search?id_filter=0&label=&type_search=all'}}"> <i
                             class="fas fa-guitar"></i> Artistas</a>
                 </li>
-                <li class="nav-item ml-1 ml-md-3 mt-2">
+                <li class="nav-item p-md-2 p-1 {{ isset($ac_option) && $ac_option == 'promotores' ? 'navactive' : ''}}">
                     <a class="" style="color:#20B7EB" href="{{url('/').'/search?id_filter=9&label=Promotores&type_search=cat'}}"> <i
                             class="fas fa-compress-arrows-alt"></i> Promotores</a>
                 </li>
-                <li class="nav-item ml-1 ml-md-3 mt-2">
+                <li class="nav-item p-md-2 p-1 {{ isset($ac_option) && $ac_option == 'escuelas' ? 'navactive' : ''}}">
                     <a class="" style="color:#20B7EB" href="{{url('/').'/search?id_filter=10&label=Escuelas&type_search=cat'}}"> <i
                             class="fas fa-book-open"></i> Escuelas</a>
                 </li>
-                <li class="nav-item ml-1 ml-md-3 mt-2">
+                <li class="nav-item p-md-2 p-1 {{ isset($ac_option) && $ac_option == 'resources' ? 'navactive' : ''}}">
                     <a class="" style="color:#20B7EB" href="{{route('recursos')}}"> <i
                             class="fas fa-box-open"></i> Recursos</a>
                 </li>
-                <li class="nav-item ml-1 ml-md-3 mt-2">
+                <li class="nav-item p-md-2 p-1 {{ isset($ac_option) && $ac_option == 'memories' ? 'navactive' : ''}}">
                     <a class="" style="color:#20B7EB" href="{{route('biografias')}}"> <i
                             class="fas fa-book-reader"></i> Biografías</a>
                 </li>
@@ -40,7 +40,7 @@
                             class="fas fa-hand-holding-heart"></i> Homenajes </a>
                 </li> -->
 
-                <li class="nav-item ml-1 ml-md-3 mt-2">
+                <li class="nav-item p-md-2 p-1 {{ isset($ac_option) && $ac_option == 'about' ? 'navactive' : ''}}">
                     <a class="" style="color:#20B7EB" href="{{route('acercade')}}"> <i
                             class="fas fa-exclamation"></i> Acerca de</a>
                 </li>

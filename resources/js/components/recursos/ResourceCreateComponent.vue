@@ -137,7 +137,7 @@ export default {
                 let index = -1;
                 //Si ya cargo una pero vuelve a cargar otra se hace replace 
                 for(let e in this.itemData.media){
-                    if(this.itemData.media[e].type_file == "image" && this.itemData.media[e].presentation == true && this.itemData.media[e].id == 0){
+                    if(this.itemData.media[e].type_file == "image" && this.itemData.media[e].presentation == true){
                         index = e
                         break;
                     }
@@ -154,7 +154,12 @@ export default {
                 if(index === -1){//Si no se encontro se agrega 
                     this.itemData.media.push(img_add);
                 }else{//Si se encontro se remplaza 
-                    this.itemData.media[index] = img_add;
+                    //Dejar de esta forma 
+                    this.itemData.media[index].id = img_add.id;
+                    this.itemData.media[index].type_file = img_add.type_file;
+                    this.itemData.media[index].name = img_add.name;
+                    this.itemData.media[index].data = img_add.data;
+                    this.itemData.media[index].presentation = img_add.presentation;
                 }                
         },        
         onCancel: function(){

@@ -110,8 +110,8 @@ class DashboardController extends Controller
 
 		$posts 		  =	PostEvent::where("type_post","post")->count();
 		$events 	= PostEvent::where("type_post","event")->count();
-		$requests 	= User::where("status","request")->count(); //se puede cambiar por otro 
-		$users 		   = User::count();
+		$requests 	= User::where("status","request")->where('active',true)->count(); //se puede cambiar por otro 
+		$users 		   = User::where('status','enabled')->where('active',true)->count();
 
 		$salida["data"] = [
 			"posts" => $posts,

@@ -236,8 +236,8 @@
                 this.$refs.inputfordocs.click();
             },
             addVideo: function(video_uri){
-                if((this.itemData.media.length + 1) >= this.limitefiles){
-                    StatusHandler.ValidationMsg("Límite de carga de archivos superado, elimine algunos elementos.")
+                if((this.itemData.media.length + 1) > this.limitefiles){
+                    StatusHandler.ValidationMsg(`Límite de carga de archivos superado, elimine algunos elementos. (Limite : ${this.limitefiles} archivos)`);
                     return;
                 }
 
@@ -275,8 +275,8 @@
                 this.itemData.media.splice(indexParent,1);
             },
             addFile: function(e){
-                if((this.itemData.media.length + e.target.files.length) >= this.limitefiles){
-                    StatusHandler.ValidationMsg("Límite de carga de archivos superado, elimine algunos elementos.")
+                if((this.itemData.media.length + e.target.files.length) > this.limitefiles){
+                    StatusHandler.ValidationMsg(`Límite de carga de archivos superado, elimine algunos elementos. (Limite : ${this.limitefiles} archivos)`);
                     return;
                 }
 
@@ -295,7 +295,7 @@
                     }
 
                     var newFileMedia = {
-                        id: null,
+                        id: 0,
                         type_file: e.target.result.substring(0, 10) == "data:image" ? "image" : "docfile",
                         name: file.name,
                         memory_id: null, //se establece en el padre

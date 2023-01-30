@@ -36,8 +36,13 @@
                 </div>
             </div>
             <div class="text-right">
-                <button type="button" @click="onEdit" class="btn bg-gradient-success btn-flat">Editar</button>
-                <button type="button" @click="onDelete" class="btn bg-gradient-warning btn-flat">Eliminar</button>
+                <button type="button" @click="onEdit" class="btn bg-gradient-warning btn-flat" :disabled="isDeleting">
+                    Editar
+                </button>
+                <button type="button" @click="onDelete" class="btn bg-gradient-danger btn-flat" :disabled="isDeleting">
+                    <span v-if="isDeleting" class="spinner-border spinner-border-sm"  role="status" aria-hidden="true"></span>
+                    Eliminar
+                </button>
             </div>
         </div>
     </div>
@@ -58,7 +63,7 @@ export default {
     },
     methods: {
         onEdit: function(){
-
+            this.$emit('on-edit',this.itemData.promo.id);
         },
         onDelete: function(){
             const vm = this;
@@ -74,6 +79,7 @@ export default {
                     deletePromo(vm.itemData.promo.id).then(result => {
                         const response = result.data;
                         if(response.code == 0){
+                            vm.isDeleting = false;
                             StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
                             return;
                         }                

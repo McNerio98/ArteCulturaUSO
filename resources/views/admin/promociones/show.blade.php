@@ -3,6 +3,11 @@
 @section('windowName', 'PROMOCIONES ')
 
 
+@section('PanelTitle', 'PROMOCIONES')
+@section('PanelSubtitle', 'MOSTRAR ELEMENTO')
+
+
+
 @section('content')
 <div class="container-fluid" id="appPromoShow">        
         <input type="hidden" id="idpromo" value="{{request('id')}}">
@@ -11,7 +16,7 @@
                 <promocion v-for="(e,index) in modelo" 
                         :pdata="e" :key="e.id" 
                         @deleted="onDeletedPromo"
-                        @edit="onEditPromo"/>                  
+                        @on-edit="onEditPromo"/>
            </div>
         </div>
 

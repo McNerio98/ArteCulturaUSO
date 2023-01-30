@@ -27,7 +27,7 @@
                 <span v-for="(e,index) of rubros" v-bind:key="index">
                     <span class="usTagProfile">
                     {{e.name}}
-                        <span  vif="authId === targetId" class="iconDel" @click="deleteTagUser(e.id,index)"><i class="fas fa-times"></i></span>
+                        <span  v-if="authId === targetId" class="iconDel" @click="deleteTagUser(e.id,index)"><i class="fas fa-times"></i></span>
                     </span>
                 <template v-if="index != (rubros.length - 1)">,</template>
                 </span>
@@ -57,6 +57,13 @@
                     <b>Publicaciones</b> <a class="float-right">{{itemData.cout_postevents}}</a>
                 </li>
             </ul>
+
+            <div>
+                <button class="d-block w-100 btn bg-gradient-success"  v-if="has_cap('crear-promociones')" @click="onPromo">
+                    <i class="fas fa-star"></i>
+                    Promocionar perfil
+                </button>
+            </div>
 
         <!-- /.card-body -->
         </div>
@@ -202,7 +209,13 @@
                         console.error(ex);
                     })
                 }
-            }
+            },
+            onPromo: function(){
+                this.$emit('on-promo',this.targetId);
+            },
+            has_cap(e){
+                return window.has_cap == undefined ? false : window.has_cap(e);
+            }                         
         }
     }
 </script>

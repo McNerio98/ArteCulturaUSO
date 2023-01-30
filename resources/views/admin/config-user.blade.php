@@ -2,8 +2,8 @@
 @section('title', 'Configuración')
 @section('windowName', 'CONFIGURACIÓN DE CUENTA')
 
-@section('PanelTitle', 'Usuario')
-@section('PanelSubtitle', 'Configuración')
+@section('PanelTitle', 'USUARIO')
+@section('PanelSubtitle', 'CONFIGURACIÓN')
 
 @section('content')
     <div class="container-fluid" id="appConfigUser">
@@ -71,15 +71,21 @@
 
                                     <div class="text-center">
                                         @can('configurar-usuarios')
-                                        <button type="submit" class="btn btn-warning" v-if="!is_accepted_request && !is_edit_credential" @click.prevent="is_accept_account = true ; editCredentials(true);">Aceptar solicitud</button>
+                                        <button type="submit" class="btn btn-warning" v-if="!is_accepted_request && !is_edit_credential" 
+                                            @click.prevent="is_accept_account = true ; editCredentials(true);">
+                                            Aceptar solicitud
+                                        </button>
                                         <button type="submit" class="btn btn-warning" v-if="is_accepted_request && !is_edit_credential" @click.prevent="editCredentials(true);">Editar credenciales</button>                                        
                                         @endcan
                                         <div class="btn-group w-100" v-if="is_edit_credential">
-                                            <button class="btn btn-success col fileinput-button dz-clickable" :disabled="send_credentials" @click.prevent="updateCredentials">
-                                                <i class="fas fa-save"></i>
+                                            <button class="btn btn-success col fileinput-button dz-clickable" 
+                                                :disabled="send_credentials" 
+                                                @click.prevent="updateCredentials">
+                                                <span v-if="send_credentials" class="spinner-border spinner-border-sm"  role="status" aria-hidden="true"></span>
+                                                <i v-else class="fas fa-save"></i>
                                                 <span>Guardar</span>
                                             </button>
-                                            <button class="btn btn-primary col start" @click="editCredentials(false);">
+                                            <button class="btn btn-primary col start" :disabled="send_credentials" @click="editCredentials(false);">
                                                 <i class="fas fa-times-circle"></i>
                                                 <span>Cancelar</span>
                                             </button>

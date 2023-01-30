@@ -55,6 +55,11 @@ class User extends Authenticatable
         return $this->belongsTo("App\MediaProfile","img_profile_id","id");
     }
 
+    public function strRubros(){
+        
+    }
+
+
     //Get Only names from permissions 
     public function getCapsAttribute(){
         $ret = [];

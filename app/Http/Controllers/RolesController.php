@@ -80,7 +80,7 @@ class RolesController extends Controller
             "msg" => ''
         ];        
 
-        if(!Auth::user()->can('ver-roles') || !Auth::user()->can('editar-roles')){
+        if(!Auth::user()->can('asignar-permisos')){
             $output["msg"] = "Operación denegada";
             return $output;
         }
