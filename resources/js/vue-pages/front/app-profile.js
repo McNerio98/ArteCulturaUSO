@@ -70,6 +70,8 @@ const appProfileVue = new Vue({
                 cout_postevents: response.data.user.count_posts + response.data.user.count_events
             });
 
+            this.data_config.description.value = response.data.metas.find(e => e.key === 'user_profile_description')?.value;
+
             this.profileAbout.push({
                 email: response.data.user.email,
                 username: response.data.user.username,
@@ -224,6 +226,9 @@ const appProfileVue = new Vue({
             }
             //Se debe dejar vacio, dado que el evento ya ocurrio y se espera otro nuevo
             this.trim_buffer.target = '';
+        },
+        onPromo: function(id){
+            window.location.href = this.acAppData.base_url + `/admin/promociones/create?tarid=${id}&tartype=profile`;
         },
         SendImgProfile: function(base64){
             let data = {

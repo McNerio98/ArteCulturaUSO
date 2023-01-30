@@ -15,6 +15,7 @@
                 :pdata="s"
                 @imgs-perfil="onPhotosProfiles"
                 :auth-id="{{Auth::user() == null ? 0 : Auth::user()->id}}" 
+                @on-promo="onPromo"
                 :target-id="{{$id_user_cur}}">
                 </profile-summary>
 

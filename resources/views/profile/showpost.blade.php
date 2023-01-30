@@ -16,6 +16,7 @@
             :key="'pes'+e.post.id"
             :pdata="e" >
         </postevent-show>  
+        <div class="pb-2"></div>
 
         <media-viewer ref="mediaviewer"></media-viewer>    
 

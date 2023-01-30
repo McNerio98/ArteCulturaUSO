@@ -2,6 +2,8 @@
 @section('title', 'Reseñas')
 @section('windowName', 'HOMENAJES / BIOGRAFÍAS ')
 
+@section('PanelTitle', 'HOMENAJES / BIOGRAFÍAS')
+@section('PanelSubtitle', 'CREAR/EDITAR')
 
 @section('content')
 <div class="container-fluid" id="appMemoryCreateUpdate">        

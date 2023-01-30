@@ -46,6 +46,7 @@
 
             </div>
         </div>
+
         <!--SECCION PARA MOSTRAR SOLO LOS DOCUMENTOS-->
         <ul class="list-unstyled">
             <li v-for="(m, key) of ListDocs" v-bind:key="key" class="docfile mb-2" :title="m.name">
@@ -100,7 +101,7 @@
                     type="file"
                     @change="addFile"
                 multiple />
-            </div>              
+            </div>            
 
             <div class="col-6">
                 <label for="contenidoInput"
@@ -250,6 +251,9 @@
             triggerInputForMSWord: function(){
                 this.$refs.inputforword.click();
             },
+            triggerInputForAudio: function(){
+                this.$refs.inputforaudio.click();
+            },
             triggerInputForDocs: function(){
                 this.$refs.inputfordocs.click();
             },
@@ -278,7 +282,7 @@
                 let reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onload = (e) => {
-                    const validExten = ["pdf","doc","docx","jpeg","jpg","png"];
+                    const validExten = ["pdf","doc","docx","jpeg","jpg","png","mp3"];
                     let extenstion = file.name.substring(file.name.lastIndexOf('.')+1, file.name.length) || null;
 
                     if(extenstion == null || !validExten.includes(extenstion.toLowerCase().trim())){
@@ -287,7 +291,7 @@
                     }
 
                     var newFileMedia = {
-                        id: null,
+                        id: 0,
                         type_file: e.target.result.substring(0, 10) == "data:image" ? "image" : "docfile",
                         name: file.name,
                         memory_id: null, //se establece en el padre

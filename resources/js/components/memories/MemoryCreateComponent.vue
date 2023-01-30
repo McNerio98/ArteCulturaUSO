@@ -93,12 +93,15 @@
             @drop-ids="setMediaDrops"/>
             
             <div>
-                <button class="btn btn-app" :disabled="isSaving" @click="onSave">
-                    <i class="fas fa-save"></i> Guardar
-                </button>                    
-                <button class="btn btn-app" :disabled="isSaving" @click="onCancel">
-                    <i class="fas fa-minus"></i> Cancelar
-                </button>                 
+
+                <button type="button" class="btn bg-gradient-success" :disabled="isSaving" @click="onSave">
+                    <i class="fas fa-save"></i> 
+                    Guardar
+                </button>
+                <button type="button" class="btn bg-gradient-warning" :disabled="isSaving" @click="onCancel">
+                    <i class="fas fa-ban"></i>
+                    Cancelar
+                </button>        
             </div>
         </form>
     </div>
@@ -209,13 +212,17 @@
             setMediaDrops: function(arr){
                 this.itemData.mediadrop_ids = JSON.parse(JSON.stringify(arr));
             },
+            getPresentationCheck: function(){
+                /**Para actualizacion, verifica si se tiene una imagen de presentacion ya incluida */
+                const temp = this.itemData.media.filter(e => (e.type_file == "image" && e.presentation == true && this.itemData.media[e].id != 0));
+                return temp.length > 0 ? 1 : 0 ;
+            },
             setPresentationImg: function(base64_img){
                 let index = -1;
                 //Si ya cargo una pero vuelve a cargar otra se hace replace 
                 for(let e in this.itemData.media){
-                    if(this.itemData.media[e].type_file == "image" && this.itemData.media[e].presentation == true && this.itemData.media[e].id == 0){
-                        index = e
-                        console.log("La imagen ya existe, se va a cargar en " + index);
+                    if(this.itemData.media[e].type_file == "image" && this.itemData.media[e].presentation == true){
+                        index = e;
                         break;
                     }
                 }
@@ -233,7 +240,12 @@
                 if(index === -1){//Si no se encontro se agrega 
                     this.itemData.media.push(img_add);
                 }else{//Si se encontro se remplaza 
-                    this.itemData.media[index] = img_add;
+                    //Dejar de esta forma 
+                    this.itemData.media[index].id = img_add.id;
+                    this.itemData.media[index].type_file = img_add.type_file;
+                    this.itemData.media[index].name = img_add.name;
+                    this.itemData.media[index].data = img_add.data;
+                    this.itemData.media[index].presentation = img_add.presentation;
                 }                
             },
             onCancel: function(){

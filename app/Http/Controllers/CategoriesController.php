@@ -25,50 +25,113 @@ class CategoriesController extends Controller
         return $salida;
     }
 
+    /**Save or Update */
     public function store(Request $request){
-        $salida = [
+        $output = [
             "code" => 0,
             "data" => null,
             "msg" => null
         ];
 
-        if(!Auth::user()->can('crear-rubros')){
-            $salida["msg"] = "Operación denegada";
-            return $salida;            
-        }
-
         $validator = Validator::make($request->all(),[
+            "category_id" => "required|numeric",
             "category_name" => "required|min: 2|max: 50"
         ]);
 
         if($validator->fails()){
-            $salida["msg"] = "Valores imcompletos";
-            return $salida;
+            $output["msg"] = "Valores imcompletos";
+            return $output;
         }
 
-        $prev = Category::where('name',$request->category_name)->first();
 
-        if($prev){
-            $salida["msg"] = "El nombre de la categoria ya existe";
-            return $salida;
+        $user = Auth::user();
+        $isUpdate = (intval($request->category_id) != 0);
+
+        if($isUpdate){
+            $category = Category::find($request->category_id);
+        }else{
+            $category = new Category();
+            $prev = Category::where('name',$request->category_name)->first();
+
+            if($prev && !$isUpdate){
+                $output["msg"] = "El nombre de la categoria ya existe";
+                return $output;
+            }            
         }
 
-        $cat = new Category();
-        $cat->name = $request->category_name;
+        if(!$category){//For update case only 
+            $output["msg"] = "Ítem no encontrado";
+            return $output;                   
+        }
+
+        if(!$isUpdate && !$user->can('crear-rubros')){
+            $output["msg"] = "Operación denegada";
+            return $output;
+        }
+
+        if($isUpdate && !$user->can('editar-rubros')){
+            $output["msg"] = "Operación denegada";
+            return $output;
+        }
+
+
+        $category->name = $request->category_name;
         
-        if(! $cat->save()){
-            $salida["msg"] = "Error al guardar la categoria";
-            return $salida;
+        if(! $category->save()){
+            $output["msg"] = "Error al guardar los cambios en la categoria";
+            return $output;
         }
 
-        $salida = [
+        $output = [
             "code" => 1,
-            "data" => $cat->refresh(),
+            "data" => $category->refresh(),
             "msg" => "Saved successfully"
         ];        
 
-        return $salida;
+        return $output;
     }
+
+    public function destroy($id){
+        $output = [
+            "code" => 0,
+            "data" => null,
+            "msg" => ""
+        ];        
+
+        $user = Auth::user();
+        $category = Category::find($id);
+        if(!$category){
+            $output["msg"] = "No existe el elemento";
+            return $output;
+        }        
+
+        if(!$user->can('eliminar-rubros')){
+            $output["msg"] = "Operación denegada";
+            return $output;
+        }
+
+        //Eliminando imagen 
+        $img_path = null;
+        if($category->img_presentation != 'default_img_category.png'){
+            $img_path = 'files/categories/'.$category->img_presentation;
+        }
+
+        $category->delete();
+
+        if($img_path != null && Storage::disk('local')->exists($img_path)){
+            if(! Storage::disk('local')->delete($img_path) ){
+                $output["msg"] = "No se pudo eliminar la imagen";
+            }               
+        }
+
+        $output["code"] = 1;
+        $output["msg"] = "Deleted Successfully";              
+
+        return $output;
+        
+    }
+
+
 
     public function changeImgPresentation(Request $request){
         $salida = [

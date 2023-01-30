@@ -16,10 +16,16 @@
             </div>        
         </div>
 
-        <div class="row">
-            <no-records v-if="items.length == 0" icon="box.svg" page="Biografías/Homenajes"></no-records>
+        <div class="row" v-if="!isGettingResources">
+            <no-records-found v-if="items.length == 0" icon="box.svg" product="Biografías/Homenajes"></no-records-found>
             <memory-summary v-else v-for="(e,index) of items" :key="e.memory.id" :pdata="e" @on-read="onReadMemory"/>
         </div>
+
+        <div class="row" v-if="isGettingResources">
+            <div class="col-12">
+                    <spinner1 label="Cargando Biografías/Homenajes …"></spinner1>
+            </div>
+         </div>           
         
         <div class="pb-3 pt-3" v-if="showPagination">
             <pagination v-if="routeDynamic != null" :route="routeDynamic" @source-items="onLoadData" :key="componentPagKey"></pagination>

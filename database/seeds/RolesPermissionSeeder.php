@@ -115,13 +115,8 @@ class RolesPermissionSeeder extends Seeder
 		]);
 
 		$permission = Permission::create([
-			'name' => 'editar-roles',
-			'description' => 'Capacidad de modificar roles'
-		]);
-
-		$permission = Permission::create([
 			'name' => 'asignar-permisos',
-			'description' => 'Capacidad de asignar N permisos a un rol determinado.'
+			'description' => 'Capacidad de asignar o remover N permisos a un rol determinado.'
 		]);
 
 		$permission = Permission::create([
@@ -177,7 +172,6 @@ class RolesPermissionSeeder extends Seeder
 			'eliminar-publicaciones',
 			'crear-roles',
 			'ver-roles',
-			'editar-roles',
 			'asignar-permisos',
 			'ver-promociones',
 			'crear-promociones',

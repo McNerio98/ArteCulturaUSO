@@ -4,6 +4,7 @@ import PromoSummary from '@/components/promociones/PromoCardComponent.vue'
 import {formatter92,getModel92} from '@/formatters';
 import PromoShow from '@/components/promociones/PromoShowComponent.vue';
 import {getPromo,promociones} from '@/service';
+Vue.component('spinner1',require('@/components/spinners/Spinner1Component.vue').default);
 
 /**---------- index---------- **/
 if(document.getElementById("appPromoIndex") != undefined){
@@ -15,31 +16,36 @@ if(document.getElementById("appPromoIndex") != undefined){
         },
         data: {
             acAppData: window.obj_ac_app,
-            items: []
+            items: [],
+            isGettingResources: false
         },
         created: function(){
             this.getDataPromotions();
         },
         methods: {
             getDataPromotions: function(){
+                this.isGettingResources = true;
                 promociones().then(result => {
                     const response = result.data;
                     if(response.code == 0){
+                        this.isGettingResources = false;
                         StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
                         return;
                     }  
-                    
+
+                    this.isGettingResources = false;
                     this.items = response.data.map(e => {
                         return formatter92(e,this.acAppData.storage_url)
                     })
 
                 }).catch(ex => {
+                    this.isGettingResources = false;
                     const target_process = "Recuperar elementos"; 
                     StatusHandler.Exception(target_process,ex);
                 });
             },
             onRead: function(id){
-                window.location.replace(this.acAppData.base_url + "/admin/promociones/"+id);
+                window.location.replace(this.acAppData.base_url + "/admin/promociones/show/"+id);
             },
             onPreview: function(){
 
@@ -94,18 +100,38 @@ if(document.getElementById("appPromoCreateUpdate") != undefined){
                     case "resource": {
                         type_ads = 3;
                         break;
-                    }                    
+                    }
+                    case "profile": {
+                        type_ads = 4;
+                        break;
+                    }
                 }
                 if(type_ads != 0){
                     this.modelo[0].promo.type_ads = type_ads;
                     this.modelo[0].promo.item_id = targetId;
                 }
             },
+            onEditPromo: function(id){
+                window.location.href = this.acAppData.base_url + "/admin/promociones/create?idp="+id;
+            },
             getDataPromo: function(){
-                // getPromo(this.idpromo)
+                getPromo(this.idpromo).then(result => {
+                    const response = result.data;
+                    if(response.code == 0){
+                        StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                        return;
+                    }
+
+                    this.modelo.push(formatter92(response.data,this.acAppData.storage_url));
+
+                }).catch(ex => {
+                    let target_process = "Recuperar elemento especificado"; 
+                    StatusHandler.Exception(target_process,ex);
+                });
             },
             onCreatePromo: function(id){
-                window.location.replace(this.acAppData.base_url + "/admin/promociones/"+id);
+                //On Create or Edit Promo
+                window.location.replace(this.acAppData.base_url + "/admin/promociones/show/"+id);
             }
         }
     });
@@ -147,11 +173,12 @@ if(document.getElementById("appPromoShow") != undefined){
                     this.modelo.push(formatter92(response.data,this.acAppData.storage_url));
 
                 }).catch(ex => {
-
+                    let target_process = "Recuperar elemento especificado"; 
+                    StatusHandler.Exception(target_process,ex);
                 });
             },
             onEditPromo: function(id){
-                window.location.replace(this.acAppData.base_url + "/admin/promociones/create?idr="+id);
+                window.location.replace(this.acAppData.base_url + "/admin/promociones/create?idp="+id);
             },
             onDeletedPromo: function(id){
                 window.location.replace(this.acAppData.base_url + "/admin/promociones");

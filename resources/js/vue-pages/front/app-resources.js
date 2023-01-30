@@ -2,9 +2,10 @@ import ResourceSummary from '@/components/recursos/ResourceShowCardComponent.vue
 import ResourceShow from '@/components/recursos/ResourceShowComponent.vue';
 import {formatter91,formatter87} from '@/formatters';
 import { getAllResources,getResource,getTiposRecursos } from '@/service';
-import NoDataRegister from '../../components/NoDataRegister.vue';
+import NoDataFound from '../../components/NoDataFound.vue';
 import PaginationComponent from '@/components/pagination/PaginationComponent.vue';
 Vue.component('media-viewer', require('@/components/media/ViewMediaComponent.vue').default);
+Vue.component('spinner1',require('@/components/spinners/Spinner1Component.vue').default);
 
 //Show
 if(document.getElementById("appResourcesShow") != undefined){
@@ -68,7 +69,7 @@ if(document.getElementById("appResourcesIndex") != undefined){
         el: "#appResourcesIndex",
         components: {
             'resource-summary' : ResourceSummary,
-            'no-records' : NoDataRegister,
+            'no-records-found' : NoDataFound,
             'pagination' : PaginationComponent
         },
         data: {
@@ -78,7 +79,8 @@ if(document.getElementById("appResourcesIndex") != undefined){
             routeDynamic: null,
             componentPagKey: 100,
             showPagination: true,            
-            items: []            
+            items: [],
+            isGettingResources: false
         },
         created: async function(){
             //this.getDataResources();
@@ -101,11 +103,13 @@ if(document.getElementById("appResourcesIndex") != undefined){
                 })
             },
             onSelectFilter: function(selected){
+                if(this.isGettingResources){return;} //Si esta obteniendo esperar 
                 this.filterSelected = selected;
                 this.getData();
             },  
             getData: function(){
                 if(this.filterSelected == null){return;}
+                this.isGettingResources = true;
                 this.showPagination = true;
                 this.routeDynamic = getAllResources(this.filterSelected);
                 this.componentPagKey += 1;
@@ -115,7 +119,9 @@ if(document.getElementById("appResourcesIndex") != undefined){
                 this.items = dataPag.map(e => {
                     e.media = []; //no lo trae por temas de carga y que no lo necesita en apartado de mostrar todos
                     return formatter91(e,this.acAppData.storage_url)
-                });                  
+                });   
+                //Despues de recuperar, remover el loading
+                this.isGettingResources = false;               
             },
             onReadResource: function(id){
                 window.location.replace(this.acAppData.base_url + '/site/recursos/' + id)

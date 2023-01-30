@@ -26,10 +26,21 @@ class PromocionesController extends Controller
         return view('admin.promociones.index' , ['ac_option' =>'promociones' , 'request_users' => $request_users]);        
     }
 
-    public function create(){
-		if( ! Auth::user()->can('crear-promociones')){ //poner esto en los de arriba 
-            return redirect()->route('dashboard');
-        };	        
+    public function create(Request $request){
+        $idp = $request->input('idp');
+        $isUpdate = ($idp != null && intval($idp) > 0);
+
+        if($isUpdate){
+            if( ! Auth::user()->can('editar-promociones') || Promotion::find($idp) == null){ 
+                return redirect()->route('dashboard');
+            };	
+        }else{
+            if( ! Auth::user()->can('crear-promociones')){ //poner esto en los de arriba 
+                return redirect()->route('dashboard');
+            };	
+        }
+          
+
         $request_users = UsersHelper::usersRequest();
         return view('admin.promociones.create' , ['ac_option' =>'promociones' , 'request_users' => $request_users]);           
     }
@@ -180,7 +191,7 @@ class PromocionesController extends Controller
             if(!is_null($request->promo["image"]["data"])){
                 #Eliminando previa 
                 if(!is_null($promo->name_img) && Storage::disk('local')->exists($pathname . $promo->name_img)){
-                    if(! Storage::disk('local')->delete($aux_path . $promo->name_img) ){
+                    if(! Storage::disk('local')->delete($pathname . $promo->name_img) ){
                         throw new \Exception("No se logró eliminar la imagen previa");
                     }                       
                 } 
@@ -236,12 +247,14 @@ class PromocionesController extends Controller
             return $output;
         }  
 
+        $showMsgError = false;
         try{
             //Eliminando archivo imagen del almacenamiento
             if(!is_null($promo->name_img)){
                 $aux_path = 'files/images/' . $promo->name_img;
                 if(Storage::disk('local')->exists($aux_path)){
                     if(! Storage::disk('local')->delete($aux_path) ){
+                        $showMsgError = true;
                         throw new \Exception("No se logró eliminar el archivo imagen");
                     }   
                 }                 
@@ -251,8 +264,11 @@ class PromocionesController extends Controller
             $output["code"] = 1;
             $output["msg"] = "Deleted Successfully";    
         }catch(\Throwable $ex){
-            $output["msg"] = "Error al eliminar promocion";
-            //$output["msg"] = "Error al actualizar promocion ".$ex->getMessage(); //for debug                  
+            if($showMsgError){
+                $output['msg'] = "Error: " . $ex->getMessage(); //for debugin            
+            }else{
+                $output["msg"] = "Error en la operación (Eliminar promocion), consulte soporte técnico.";
+            }            
         }
 
         return $output;

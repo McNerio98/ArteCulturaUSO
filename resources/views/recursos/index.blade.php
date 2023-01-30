@@ -16,11 +16,16 @@
             </div>        
         </div>
 
-
-        <div class="row">
-            <no-records v-if="items.length == 0" icon="box.svg" page="Recursos"></no-records>
-            <resource-summary v-else v-for="(e) in items" :pdata="e" :key="e.id" @on-read="onReadResource"/>
+        <div class="row" v-if="!isGettingResources">
+            <no-records-found v-if="items.length == 0" icon="box.svg" product="Recursos"></no-records-found>
+            <resource-summary v-else v-for="(e) in items" :pdata="e" :key="e.resource.id" @on-read="onReadResource"/>
         </div>
+
+        <div class="row" v-if="isGettingResources">
+            <div class="col-12">
+                    <spinner1 label="Cargando recursos …"></spinner1>
+            </div>
+         </div>        
 
         <div class="pb-3 pt-3" v-if="showPagination">
             <pagination v-if="routeDynamic != null" :route="routeDynamic" @source-items="onLoadData" :key="componentPagKey"></pagination>

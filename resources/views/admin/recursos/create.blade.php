@@ -2,6 +2,9 @@
 @section('title', 'Crear recurso')
 @section('windowName', 'Creacion de nuevo recurso')
 
+@section('PanelTitle', 'RECURSOS')
+@section('PanelSubtitle', 'CREAR/EDITAR')
+
 @section('content')
 <main role="main" class="flex-shrink-0" id="appResourcesAdminCreate">
 <input type="hidden" id="idresource" value="{{app('request')->input('idr')}}">
