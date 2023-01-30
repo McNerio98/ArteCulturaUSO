@@ -18,6 +18,7 @@ class CheckRol
         //Determine if the current request is asking for JSON. This checks Content-Type equals application/json
         if($request->wantsJson() && Auth::user()->hasRole('Invitado')){
             //El usuario no tiene acceso al recurso, porque es un recursos solo para administradores
+            //30/01/2023 McNerio aqui deberia devolver otro mensaje
             return response()->json(['Session_error'=>'Session Expired'], 401);
         }
 

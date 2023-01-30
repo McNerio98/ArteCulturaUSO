@@ -1,10 +1,11 @@
 
-import GpsComponent from '../../components/nearby/GpsComponent.vue';
-import Spinner1Component from '../../components/spinners/Spinner1Component.vue';
-import PostEventCard from '../../components/post/PostEventCardComponent.vue';
-import {getNearbyPostEvents} from '../../service';
-import {formatter88} from '../../formatters';
-import {municipiosItems} from '../../utils';
+import GpsComponent from '@/components/nearby/GpsComponent.vue';
+import Spinner1Component from '@/components/spinners/Spinner1Component.vue';
+import PostEventCard from '@/components/post/PostEventCardComponent.vue';
+import {getNearbyPostEvents} from '@/service';
+import {formatter88} from '@/formatters';
+import {municipiosItems} from '@/utils';
+import NoDataCustom from '@/components/NoDataCustom.vue';
 
 
 const appNearbyFront = new Vue({
@@ -12,7 +13,8 @@ const appNearbyFront = new Vue({
     components: {
         'gps-request': GpsComponent,
         'spinner1': Spinner1Component,
-        'postevent-card' : PostEventCard
+        'postevent-card' : PostEventCard,
+        'nodata-custom' : NoDataCustom
     },
     data: {
         acAppData: window.obj_ac_app,

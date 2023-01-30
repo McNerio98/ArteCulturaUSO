@@ -71,7 +71,7 @@ export default class StatusHandler{
         if(data_ex?.response?.status == 401){//para volver al inicio/login 
             window.location.reload();
          }else{
-             let msg = "El proceso ("+target_msg+") no se ha podido completar, póngase con soporte técnico."
+             let msg = "El proceso ("+target_msg+") no se ha podido completar, póngase en contacto con soporte técnico."
              this.ShowStatus(msg,null,StatusHandler.STATUS.FAIL);
         }       
     }

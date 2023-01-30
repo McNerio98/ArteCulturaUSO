@@ -5,8 +5,16 @@ export function updateTag(tag_id,payload){
     return axios.put(`/tags/${tag_id}`,payload);
 }
 
+export function deleteTag(id){
+    return axios.delete(`/tag/${id}`);
+}
+
 export function upsertCategory(payload){
     return axios.post(`/categories`,payload);
+}
+
+export function deleteCategory(id){
+    return axios.delete(`/category/${id}`);
 }
 
 

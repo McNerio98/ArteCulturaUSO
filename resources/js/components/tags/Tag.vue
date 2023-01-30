@@ -14,7 +14,7 @@
 </template>
 
 <script>
-    import {updateTag} from '@/service';
+    import {updateTag , deleteTag} from '@/service';
     
     export default {
         props: ["ptag"],
@@ -78,7 +78,7 @@
                 if(!confirmUser){this.onCancelEdit();return;}                
 
                 this.editMode = false;
-                axios.delete(`/api/tags/${this.tag.id}`).then((result)=>{
+                deleteTag(this.tag.id).then((result)=>{
                     let response = result.data;
                     if(response.code == 0){
                         StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
@@ -86,7 +86,6 @@
                         return;
                     };
                     this.$emit('delete');
-                    console.log("Etiqueta eliminada");
                 }).catch((ex)=>{
                      StatusHandler.Exception("Eliminar Etiqueta/Rubro",ex);
                 });

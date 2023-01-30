@@ -25,9 +25,15 @@
             </div>
         </div>
 
-        <div v-if="!isGettingItems && finalNearby.length == 0 && !isRequestActive">
-            No se encontraron elementos en esta seccion
-        </div>
+        <div class="row" v-if="!isGettingItems && finalNearby.length == 0 && !isRequestActive">
+            <div class="col-12">
+                <nodata-custom 
+                    header="No se encontraron eventos cercanos"
+                    title="¡¡Espéralos muy pronto!!"
+                    subtitle="Sin eventos cerca de tu ubicación actual"
+                    icon="box.svg"></nodata-custom>
+            </div>
+        </div>        
         
     </div>
 </main>
