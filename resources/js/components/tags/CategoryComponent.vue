@@ -29,7 +29,7 @@
 </template>
 
 <script>
-    import {upsertCategory} from '@/service';
+    import {upsertCategory , deleteCategory} from '@/service';
 
     export default {
         props: ["pdata","selected"],
@@ -52,7 +52,18 @@
                     '(NO RECOMENDADO) Esta operación removerá todas las etiquetas asociadas a esta categoría; por consiguiente removerá las etiquetas dentro de los usuarios que la han asociado. Procesa solo si está realmente seguro.'
                 );
 
-                if(!confirmUser){this.onCancelEdit();return;}                        
+                if(!confirmUser){this.onCancelEdit();return;}                 
+                
+                deleteCategory(this.itemData.id).then(result => {
+                    const response = result.data;
+                    if(response.code == 0){
+                        StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                        return;
+                    };
+                    this.$emit('deleted');
+                }).catch(ex => {
+                    StatusHandler.Exception("Eliminar categoría",ex);
+                });
             },
             onClickConfirmUpdate: async function(){
                 const  nameLength = this.itemData.name.length;
@@ -96,7 +107,10 @@
             onClickCancelUpdate: function(){
                 this.edit_mode = false;
                 this.itemData.name = this.backup_name;
-            }
+            },
+            has_cap(e){
+                return window.has_cap == undefined ? false : window.has_cap(e);
+            }                      
         },
         mounted: function(){
 

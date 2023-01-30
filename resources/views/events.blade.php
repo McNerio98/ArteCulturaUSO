@@ -37,6 +37,15 @@
                 <table-event v-for="(e,index) in events" :pdata="e" :key="e.post.id" @on-show="onSeeMore"></table-event>
                 <table-load-more v-if="isEnableMore" @onmore="onLoadMore"></table-load-more>
         </div>        
+        <div class="row" v-if="!isGettingData && events.length == 0">
+            <div class="col-12">
+                <nodata-custom 
+                    header="No se encontraron eventos próximos"
+                    title="¡¡Espéralos muy pronto!!"
+                    subtitle="Tablero de eventos sin datos que mostrar"
+                    icon="box.svg"></nodata-custom>
+            </div>
+        </div>
         <hr/>
         <div class="mt-3 mb-3">
             <h4 class="text-center">Encuentra eventos cerca de ti, esta opción requerirá acceso a tu ubicación actual.</h4>
