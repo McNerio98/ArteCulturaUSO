@@ -18,6 +18,7 @@
                 :key="e.id"
                 :pdata="e" 
                 :selected="ref_cat_selected"
+                @deleted="onDeletedCategory"
                 @select-item="selectCategory"></category-row>                
             </div>
 
@@ -25,12 +26,13 @@
                 <input type="text" name="message" 
                 v-model="category_insert"
                 placeholder="Nombre de nueva categoría" 
+                :disabled="isSavingCat"
                 maxlength="50" minlength="1" class="form-control">
                 <span class="input-group-append">
-                    <button type="button" @click="storeCategory" class="btn btn-primary">Agregar</button>
+                    <button type="button" @click="storeCategory" :disabled="isSavingCat" class="btn btn-primary">Agregar</button>
                 </span>
                 <span class="input-group-append">
-                    <button type="button" class="btn btn-danger" @click="creating_category = false">Cancelar</button>
+                    <button type="button" class="btn btn-danger" :disabled="isSavingCat" @click="creating_category = false">Cancelar</button>
                 </span>
             </div>
 
@@ -63,7 +65,7 @@
                 <span v-if="!creating_tag && ref_cat_selected !=null && has_cap('crear-rubros')" class="ac-tag">
                     <a href="javascript:void(0);" v-on:click="creating_tag = true">+ Nuevo</a>
                 </span>
-                <span class="ac-tag" v-else>
+                <span class="ac-tag" v-if="creating_tag && ref_cat_selected != null && has_cap('crear-rubros')">
                     <input type="text" maxlength="25" minlength="4" v-model="tag_insert">
                     <i v-on:click="storeTag" class="fas fa-save icon"></i>
                     <i v-on:click="tag_insert = '';creating_tag = false;" class="fas fa-times icon"></i>

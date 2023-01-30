@@ -3,12 +3,14 @@ import TableroPostEventCad from '@/components/tablero/PostEventCard.vue';
 import TableroLoadMore from '@/components/tablero/MoreContentCard.vue';
 import {getElementoTablero} from '@/service';
 import {formatter88} from '@/formatters';
+import NoDataCustom from '@/components/NoDataCustom.vue';
 
 const appEvents = new Vue({
     el: "#appEventsTable",
     components: {
         'table-event': TableroPostEventCad,
-        'table-load-more' : TableroLoadMore
+        'table-load-more' : TableroLoadMore,
+        'nodata-custom' : NoDataCustom
     },
     data: {
         spinners: {
@@ -16,6 +18,7 @@ const appEvents = new Vue({
         },
         isEnableMore: true, //cambiar aqui
         events: [],
+        isGettingData: true,
         acAppData: window.obj_ac_app
     }, 
     mounted: function(){
@@ -37,10 +40,11 @@ const appEvents = new Vue({
             this.loadTableEvents(params);
         },
         loadTableEvents: function(params){
+            this.isGettingData = true;
             getElementoTablero(params).then(result => {
                 const response = result.data;
                 if(response.code == 0){
-                    this.isLoading = false;
+                    this.isGettingData = false;
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
                     return;
                 }     
@@ -56,7 +60,9 @@ const appEvents = new Vue({
                     this.isEnableMore = false;
                 }
 
+                this.isGettingData = false;
             }).catch(ex => {
+                this.isGettingData = false;
                 const target_process = "Recuperar elementos"; 
                 StatusHandler.Exception(target_process,ex);
             });

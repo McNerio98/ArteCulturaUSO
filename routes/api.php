@@ -41,11 +41,6 @@ Route::get('tags/withCategories', 'TagsController@getBySeccion');
 
 
 //ESTOS SE QUEDAN AQUI, PUEDEN SER UTILIZADOS PARA UNA API FUTURA
-#Obtiene los eventos dentro de los tres meses siguientes 
-Route::get('posts/events','PostEventController@eventsTable')->name('table.events');
-
-# Obtiene la lista de elementos destacados, independiente si esta o no aprovados 
-Route::get('posts/populars','PostEventController@popularItems')->name("posts.populars");
 
 # Obtiene todas las etiquetas, respuesta en JSON 
 Route::get('tags','TagsController@index')->name('tags.index');

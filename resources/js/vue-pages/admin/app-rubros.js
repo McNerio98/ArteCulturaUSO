@@ -17,7 +17,8 @@ const appRubros = new Vue({
         category_insert: "",
         tag_insert: "",
         creating_category: false,
-        creating_tag: false
+        creating_tag: false,
+        isSavingCat: false,
     },
     methods: {
         loadCategories: function(){
@@ -68,12 +69,15 @@ const appRubros = new Vue({
                 category_name: this.category_insert.trim()
             };
 
+            this.isSavingCat = true;
             upsertCategory(data).then((result)=>{
                 let response = result.data;
                 if(response.code == 0){
+                    this.isSavingCat = false;
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
                     return;
                 };
+                this.isSavingCat = false;
                 response.data.img_presentation = this.acAppData.storage_url + "/files/categories/"+response.data.img_presentation;
                 //ingresando la nueva categoria 
                 this.categories.unshift(response.data);
@@ -81,6 +85,7 @@ const appRubros = new Vue({
                 this.category_insert = "";
                 this. selectCategory(this.categories[0]);
             }).catch((ex)=>{
+                this.isSavingCat = false;
                 StatusHandler.Exception("Registrar Nueva Categoria",ex);
             });
         },
@@ -110,6 +115,9 @@ const appRubros = new Vue({
         },  
         deleteTag: function(index){
             this.tags.splice(index,1);
+        },
+        onDeletedCategory: function(){
+            window.location.reload();
         },
         openModalTrim: function(){
             this.modal_cropper = "IMG_PRESENTATION";
@@ -145,7 +153,8 @@ const appRubros = new Vue({
                     this.ref_cat_selected.img_presentation = prev_path_img;
                     return;
                 }
-                this.ref_cat_selected.img_presentation = this.acAppData.base_url+"/files/categories/"+ response.data; //containt new path 
+                //this.ref_cat_selected.img_presentation = this.acAppData.base_url+"/files/categories/"+ response.data; //containt new path 
+                window.location.reload();
             }).catch((ex)=>{
                 StatusHandler.Exception("Establecer presentación de categoría",ex);
                 this.ref_cat_selected.img_presentation = prev_path_img;

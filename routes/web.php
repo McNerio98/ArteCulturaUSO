@@ -162,26 +162,24 @@ Route::get('/users/dataConfig/{id}','UsersController@configUserData')->name("use
 
 
 
-
-# Guarda la fotografia de presentacion de la categoria que se esta editando 
+/*------------------ Categories ------------------*/
+# AJAX Request | Guarda la fotografia de presentacion de la categoria que se esta editando 
 Route::post('/categories/saveImgPresentation','CategoriesController@changeImgPresentation')->middleware('auth','adroles');
-# Establece un recurso de tipo publicacion como popular o no popular 
-#Route::post('post/setPopular','PostEventController@setPostPopular')->name('post.set.popular')->middleware('auth','adroles');
-# Establece el estado de un recurso de tipo publicacion, con estados de approval, review. deleted
-#Route::post('post/setState','PostEventController@switchStatePost')->name('post.set.state')->middleware('auth','adroles');
-
-
-# Almacena una nueva categoria 
+# AJAX Request | Almacena una nueva categoria 
 Route::post('categories','CategoriesController@store')->name('cat.store')->middleware('auth','adroles');
+# AJAX Request | Elimina una categorias con su imagen de presentacion
+Route::delete('category/{id}','CategoriesController@destroy')->name('category.destroy')->middleware('auth','adroles');
 
-
-
-#Actualiza una etiqueta 
+/*------------------ Tags ------------------*/
+#AJAX Request | Actualiza una etiqueta 
 Route::put('tags/{id}','TagsController@update')->name("tag.update")->middleware('auth','adroles');
-#Registra una nueva etiqueta
+# AJAX Request | Registra una nueva etiqueta
 Route::post('tags','TagsController@store')->name('tags.store')->middleware('auth','adroles');
-#Obtiene todas las etiquetas mediante el paso de una categoria , solo es necesario que este logeado sea rol o podria ser un invitado 
+# AJAX Request | Elimina una etiqueta 
+Route::delete('tag/{id}','TagsController@destroy')->name('tag.destroy')->middleware('auth','adroles');
+# AJAX Request | Obtiene todas las etiquetas mediante el paso de una categoria , solo es necesario que este logeado sea rol o podria ser un invitado 
 Route::get('tags/byCategory/{id}','TagsController@tagsByCategory')->name('tag.select')->middleware('auth');
+
 #Guarda una nueva imagen de perfil del usuario logeado 
 Route::post('user/uploadprofileimg','UsersController@uploadProfileImg')->middleware('auth');
 #Elimina unaimagen de perfil del usuario, si es la que actualmente tiene de perfil setea la por defecto 
