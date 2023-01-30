@@ -34,20 +34,7 @@ class ProfileController extends Controller
 		return view("profile.index",['id_user_cur' => $id]);
 	}
 
-	public function showPostEvent($id_post){
-		$e = PostEvent::find($id_post);
-		if(!$e){//No existe
-			return redirect()->route('inicio');
-		}		
 
-		$user = $e->owner;
-		if($user->active == false || $user->is_admin == true || $user->status == 'disabled'){
-			return redirect()->route('inicio');
-		}		
-
-
-		return view("profile.showpost",["postid" => $id_post]);
-	}
 
 
 	public function elements(Request $request, $id){

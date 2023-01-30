@@ -283,9 +283,8 @@ export default {
       this.$refs.inputfordocs.click();
     },
     addVideo: function(video_uri){
-      console.log((this.itemData.media.length + 1) > this.limitefiles);
       if((this.itemData.media.length + 1) > this.limitefiles){
-        StatusHandler.ValidationMsg(`Límite de carga de archivos superado, elimine algunos elementos. (Limite : ${this.limitefiles} archivos)`)
+        StatusHandler.ValidationMsg(`Límite de carga de archivos superado, elimine algunos elementos. (Limite : ${this.limitefiles} archivos)`);
         return;
       }
 
@@ -316,7 +315,7 @@ export default {
     addFile: function(e){
       console.log((this.itemData.media.length + e.target.files.length) > this.limitefiles);
       if((this.itemData.media.length + e.target.files.length) > this.limitefiles){
-        StatusHandler.ValidationMsg(`Límite de carga de archivos superado, elimine algunos elementos. (Limite : ${this.limitefiles} archivos)`)
+        StatusHandler.ValidationMsg(`Límite de carga de archivos superado, elimine algunos elementos. (Limite : ${this.limitefiles} archivos)`);
         return;
       }
 

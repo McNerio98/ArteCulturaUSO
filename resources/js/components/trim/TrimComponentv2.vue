@@ -24,12 +24,10 @@ export default {
   },
   data: function () {
     return {
-      //cropper intsnace 
+      //cropper instance 
       cropper_el: null,
       //@ {HML Img Element}
       image_tag: null,
-      //If the element was fully loaded and ready to trim 
-      croppable: false,
       //HTML modal element 
       modal: null,
 
@@ -55,7 +53,6 @@ export default {
       }
       
       //validar tamaños
-
       const urlImage = URL.createObjectURL(file_target);
       const img = new Image();
       const vm = this;
@@ -70,6 +67,9 @@ export default {
       img.src = urlImage;
     },
     setupForOpen: function(url){
+      //aqui, eliminar posible instancia anterior 
+      this.destroy();
+
       this.image_tag.setAttribute("src", url);
       const vm = this;
       $(vm.modal).fadeIn();     
@@ -82,7 +82,6 @@ export default {
           minCropBoxHeight  : vm. minCropBoxHeight,
 
           ready: function () {
-            //vm.croppable = true;                  
             vm.cropper_el.setCropBoxData(null).setCanvasData(null);            
           },
       });
@@ -94,8 +93,9 @@ export default {
         this.$emit("oncancel");
     },
     destroy: function(){
-        this.croppable = false;
+      if(this.cropper_el != null){
         this.cropper_el.destroy();
+      }
     },
     onClickClose: function(){
       //this.toConvertBase64();
@@ -105,7 +105,7 @@ export default {
     toConvertBase64: function(){
         let base64 = null;
         let canvas = this.cropper_el.getCroppedCanvas();
-        base64 = canvas.toDataURL("image/jpeg");
+        base64 = canvas.toDataURL("image/jpeg");//aqui esta dando error 
         this.$emit("base64-generated",base64);
         this.closeTrim();
     }

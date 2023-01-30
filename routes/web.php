@@ -49,7 +49,7 @@ Route::post('/logout','Auth\LoginController@logout')->name('logout');
 
 
 #Muestra la vista para mostrar un postevent especifico en apartado publico 
-Route::get('/postshow/{postid}','ProfileController@showPostEvent')->name('profile.show.item');
+Route::get('/postshow/{postid}','UsersController@showPostEvent')->name('profile.show.item');
 
 
 
@@ -178,6 +178,7 @@ Route::post('categories','CategoriesController@store')->name('cat.store')->middl
 
 #Actualiza una etiqueta 
 Route::put('tags/{id}','TagsController@update')->name("tag.update")->middleware('auth','adroles');
+#Registra una nueva etiqueta
 Route::post('tags','TagsController@store')->name('tags.store')->middleware('auth','adroles');
 #Obtiene todas las etiquetas mediante el paso de una categoria , solo es necesario que este logeado sea rol o podria ser un invitado 
 Route::get('tags/byCategory/{id}','TagsController@tagsByCategory')->name('tag.select')->middleware('auth');
@@ -223,7 +224,7 @@ Route::get('/admin/promociones','PromocionesController@index')->middleware('auth
 # view | admin -  Return blade for new element 
 Route::get('/admin/promociones/create','PromocionesController@create')->middleware('auth','adroles')->name('promociones.create.admin');
 # view | admin -  Return blade for show specific element 
-Route::get('/admin/promociones/{id}','PromocionesController@show')->middleware('auth','adroles')->name('promociones.show.admin');
+Route::get('/admin/promociones/show/{id}','PromocionesController@show')->middleware('auth','adroles')->name('promociones.show.admin');
 #AJAX Request | get All elementos 
 Route::get('/promociones','PromocionesController@getall')->name('promociones.all');
 #AJAX Request | create or update element 
@@ -239,10 +240,6 @@ Route::post('/procesofechas','ProcesosController@resetdatesevent')->middleware('
 Route::post('/procesoemail','ProcesosController@testemail')->middleware('auth','adroles')->name('procesos.testemail');
 
 
-
-
-
-Route::get('res/send', 'RequestAcountController@index');
 
 
 #Rutas para API Google

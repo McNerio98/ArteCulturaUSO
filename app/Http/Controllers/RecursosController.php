@@ -27,7 +27,21 @@ class RecursosController extends Controller
 
 
 
-    public function createadmin(){
+    public function createadmin(Request $request){
+
+        $idr = $request->input('idr');
+        $isUpdate = ($idr != null && intval($idr) > 0);
+
+        if($isUpdate){
+            if( ! Auth::user()->can('editar-recursos') || Recurso::find($idr) == null){ 
+                return redirect()->route('dashboard');
+            };	
+        }else{
+            if( ! Auth::user()->can('crear-recursos')){ //poner esto en los de arriba 
+                return redirect()->route('dashboard');
+            };	
+        }
+
 		$request_users = UsersHelper::usersRequest();
     	return view('admin.recursos.create' , ['ac_option' =>'recursos' , 'request_users' => $request_users]);        
     }

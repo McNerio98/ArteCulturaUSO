@@ -4,6 +4,14 @@
 @import 'tablero';
 @import 'tablerov2';
 
+
+.navactive{
+  border-radius: 10px;
+  a {
+    color: white !important;
+  }  
+}
+
 .ac_event-card-header{
     display: flex;
     justify-content: space-between;
@@ -491,6 +499,37 @@ body.no-scroll {
   max-width: 90px;
 }
 
+
+.ac_img_nearby{
+  width: 65px;
+}
+
+.ac_bgmaps-nearby{
+  background-size: cover;
+  background-position: center;
+}
+
+.ac_bgmaps-black{
+  background-color: rgba(164, 163, 163, 0.458);
+
+}
+
+.ac_bgmaps-content{
+  display: flex;
+  padding: 20px;
+  justify-content: center;
+  a {
+    border: 2px solid white;
+    background-color: rgb(255, 255, 255);
+    padding: 5px;    
+    border-radius: 10px;
+    color: green;
+    font-size: 120%;
+    &:hover{
+      background-color: rgba(231, 231, 231, 0.981);
+    }
+  }
+}
 
 
 

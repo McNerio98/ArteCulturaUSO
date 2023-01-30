@@ -1,6 +1,15 @@
 import axios from "axios";
 
 
+export function updateTag(tag_id,payload){
+    return axios.put(`/tags/${tag_id}`,payload);
+}
+
+export function upsertCategory(payload){
+    return axios.post(`/categories`,payload);
+}
+
+
 export function getUserProfileInformation(id){
     return new Promise((resolve,reject)=>{
         axios.get(`/profile/information/${id}`).then(response => {

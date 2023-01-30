@@ -8,7 +8,7 @@
 
 @section('content')
 <div class="container-fluid" id="appPromoCreateUpdate">        
-        <input type="hidden" id="idmemory" value="{{app('request')->input('idm')}}">
+        <input type="hidden" id="idpromo" value="{{app('request')->input('idp')}}">
         <input type="hidden" id="tarid" value="{{app('request')->input('tarid')}}">
         <input type="hidden" id="tartype" value="{{app('request')->input('tartype')}}">
         <div class="container">

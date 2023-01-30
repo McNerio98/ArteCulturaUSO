@@ -3,8 +3,8 @@
 @section('windowName', 'USUARIOS REGISTRADOS ')
 
 
-@section('PanelTitle', 'Usuarios')
-@section('PanelSubtitle', 'Registros')
+@section('PanelTitle', 'USUARIOS')
+@section('PanelSubtitle', 'REGISTROS')
 
 
 @section('content')

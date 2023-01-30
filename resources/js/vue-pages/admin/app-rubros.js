@@ -2,6 +2,7 @@
 Vue.component('modal-trim-img', require('../../components/trim/TrimComponent.vue').default);
 Vue.component('tag-rubro',require('../../components/tags/Tag.vue').default);
 Vue.component('category-row',require('../../components/tags/CategoryComponent.vue').default);
+import {upsertCategory} from '@/service';
 
 const appRubros = new Vue({
     el: '#appRubros',
@@ -63,10 +64,11 @@ const appRubros = new Vue({
                 return;
             }
             const data = {
+                category_id: 0,
                 category_name: this.category_insert.trim()
             };
 
-            axios.post(`/categories`,data).then((result)=>{
+            upsertCategory(data).then((result)=>{
                 let response = result.data;
                 if(response.code == 0){
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
@@ -88,6 +90,7 @@ const appRubros = new Vue({
                 StatusHandler.ValidationMsg("Nombre de etiqueta no valido");
                 return;
             }
+
             const data = {
                 tag_name: this.tag_insert,
                 category_id: this.ref_cat_selected.id
@@ -149,7 +152,10 @@ const appRubros = new Vue({
             }).finally(()=>{
                 this.pnl_wait1 = false;
             });
-        }
+        },
+        has_cap(e){
+            return window.has_cap == undefined ? false : window.has_cap(e);
+        }             
     },
     mounted: function(){
         this.acAppData = window.obj_ac_app;

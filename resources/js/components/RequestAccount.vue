@@ -10,32 +10,35 @@
                     >
                         <div class="form-row">
                             <div class="form-group col-12">
-                                <label for="raCompleteName"
-                                    >Nombre propietario cuenta</label
-                                >
-                                <label class="sr-only" for="raCompleteName"
-                                    >Nombre propietario cuenta</label
-                                >
+                                <label for="raNameArt">
+                                    Nombre artístico / Entidad
+                                </label>
                                 <div class="input-group mb-2">
                                     <div class="input-group-prepend">
                                         <div class="input-group-text">
-                                            <i class="fas fa-address-book"></i>
+                                            <i class="fas fa-paint-brush"></i>
                                         </div>
                                     </div>
                                     <input
-                                        v-model="fullname"
-                                        type="text"
                                         required
-                                        maxlength="200"
+                                        v-model="artistic"
+                                        type="tel"
+                                        maxlength="100"
                                         minlength="2"
                                         class="form-control"
-                                        id="raCompleteName"
+                                        id="raNameArt"
                                         aria-describedby="emailHelp"
                                     />
                                     <div class="invalid-feedback">
-                                        Ingrese su nombre completo
+                                        Ingrese su nombre artístico
                                     </div>
                                 </div>
+                                <small
+                                    id="emailHelp"
+                                    class="form-text text-muted"
+                                    >*Escribe el nombre que te representa como
+                                    artista/banda/entidad.</small
+                                >
                             </div>
 
                             <div class="form-group col-6">
@@ -67,13 +70,7 @@
                                     </div>
                                     <div
                                         v-if="flags.email_exists"
-                                        style="
-                                            width: 100%;
-                                            margin-top: 0.25rem;
-                                            font-size: 80%;
-                                            color: #dc3545;
-                                            font-weight: bold;
-                                        "
+                                        style="width: 100%;margin-top: 0.25rem;font-size: 80%;color: #dc3545;font-weight: bold;"
                                     >
                                         El correo electrónico ya ha sido
                                         registrado
@@ -82,18 +79,13 @@
                             </div>
 
                             <div class="form-group col-6">
-                                <label for="raTelephone"
-                                    >Número telefónico</label
-                                >
-                                <label class="sr-only" for="raTelephone"
-                                    >Número telefónico
+                                <label for="raTelephone">
+                                    Número telefónico
                                 </label>
                                 <div class="input-group mb-2">
                                     <div class="input-group-prepend">
                                         <div class="input-group-text">
-                                            <i
-                                                class="fas fa-phone-square-alt"
-                                            ></i>
+                                            <i class="fas fa-phone-square-alt"></i>
                                         </div>
                                     </div>
                                     <input
@@ -128,36 +120,29 @@
                             </div>
 
                             <div class="form-group col-6">
-                                <label for="raNameArt">Nombre artístico</label>
-                                <label class="sr-only" for="raNameArt"
-                                    >Nombre artístico
-                                </label>
+                                    <label for="raCompleteName">
+                                        Nombre propietario cuenta
+                                    </label>
                                 <div class="input-group mb-2">
                                     <div class="input-group-prepend">
                                         <div class="input-group-text">
-                                            <i class="fas fa-paint-brush"></i>
+                                            <i class="fas fa-address-book"></i>
                                         </div>
                                     </div>
                                     <input
+                                        v-model="fullname"
+                                        type="text"
                                         required
-                                        v-model="artistic"
-                                        type="tel"
-                                        maxlength="100"
+                                        maxlength="200"
                                         minlength="2"
                                         class="form-control"
-                                        id="raNameArt"
+                                        id="raCompleteName"
                                         aria-describedby="emailHelp"
                                     />
                                     <div class="invalid-feedback">
-                                        Ingrese su nombre artístico
+                                        Ingrese su nombre completo
                                     </div>
                                 </div>
-                                <small
-                                    id="emailHelp"
-                                    class="form-text text-muted"
-                                    >*Escribe el nombre que te representa como
-                                    artista/banda/entidad.</small
-                                >
                             </div>
 
                             <div class="form-group col-6">
@@ -328,6 +313,12 @@ export default {
                     StatusHandler.StatusToast(StatusHandler.TOAST_STATUS.FAIL,"Debe seleccionar una espacialidad/rubro artístico");
                     return;
                 }
+
+                if(this.correo.includes(" ")){
+                    StatusHandler.StatusToast(StatusHandler.TOAST_STATUS.FAIL,"Correo no puede contener espacios");
+                    return;
+                }
+
                 this.isSendData = true;
                 //Verificate if email or telephone already exist
                 var response = await this.checkExistData();

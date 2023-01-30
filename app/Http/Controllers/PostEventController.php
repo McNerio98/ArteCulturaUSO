@@ -194,7 +194,7 @@ class PostEventController extends Controller
         ];
 
         $user = Auth::user();
-        $isUpdate = ($request->post["id"] != 0);
+        $isUpdate = (intval($request->post["id"]) != 0);
 
         $params = [
             "post.title" => "required",
@@ -425,7 +425,7 @@ class PostEventController extends Controller
             $postEvent->load('media');
             $postEvent->load('event_detail');
 
-            if($request->post["id"] == 0){
+            if(!$isUpdate){
                 $output["msg"] = "Elemento creado";
             }else{
                 $output["msg"] = "Elemento actualizado";
