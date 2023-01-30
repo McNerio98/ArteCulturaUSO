@@ -19,6 +19,7 @@ use App\Mail\CredentialsUpdated;
 use App\Mail\VerifyEmail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use App\PostEvent;
 
 class UsersController extends Controller
 {
@@ -27,6 +28,23 @@ class UsersController extends Controller
     public function noactive(){
 		return view("user-noactive");
     }
+
+
+	public function showPostEvent($id_post){
+		$e = PostEvent::find($id_post);
+		if(!$e){//No existe
+			return redirect()->route('inicio');
+		}		
+
+		$user = $e->owner;
+		if($user->active == false || $user->status == 'disabled'){
+			return redirect()->route('inicio');
+		}		
+
+
+		return view("profile.showpost",["postid" => $id_post]);
+	}
+
 
     public function uploadProfileImg(Request $request){
         $salida = [
@@ -371,10 +389,14 @@ class UsersController extends Controller
                         ['user_id' => $id,'key' => 'user_profile_rawpass'],
                         ['value' => $request->raw_pass]
                     );
-
+                    
                     //ya estan validado que no se repita nombre de usuario y email 
                     $user->username = trim($request->username);
                     $user->password =  Hash::make($request->raw_pass);
+
+                    if(count(   explode(' ', $user->username)     ) >   1){
+                        throw new \Exception('Nombre de usuario no puede contener espacios');
+                    }
                     
                     //Solo los usuarios con el permiso pueden asignar roles.
                     if( Auth::user()->can('configurar-usuarios') ){
@@ -717,8 +739,8 @@ class UsersController extends Controller
             ];
         }catch(\Exception $ex){
             DB::rollback();
-            $salida["msg"] = $ex->getMessage();
-            //$salida['msg'] = "Error de transacción Póngase en contacto con soporte técnico.";
+            //$salida["msg"] = $ex->getMessage();
+            $salida['msg'] = "Error de transacción Póngase en contacto con soporte técnico.";
         }
         return $salida;
     }

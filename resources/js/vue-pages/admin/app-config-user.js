@@ -1,5 +1,3 @@
-import StatusHandler from "../../sw-status";
-
 
 const appConfigUser = new Vue({
     el: '#appConfigUser',
@@ -146,11 +144,19 @@ const appConfigUser = new Vue({
                 return;
             }
 
+            if(this.credentials.username.trim().includes(' ')){
+                StatusHandler.ValidationMsg("El nombre de usuario no puede contener espacios");
+                return;
+            }
+
+            this.send_credentials = true;
             let response = await this.validateEmailUsername();
             if(response.exists || response.exists == null){
+                this.send_credentials = false;
                 return;
             }
             if(this.email_exist || this.username_exist){
+                this.send_credentials = false;
                 return;
             }
             

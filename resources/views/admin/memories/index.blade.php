@@ -6,11 +6,15 @@
 @section('PanelSubtitle', 'REGISTROS')
 
 @section('content')
-<div class="container-fluid" id="appMemories">        
+<div class="container-fluid" id="appMemories">       
+    <div class="container">
         @can('crear-biografias')
-        <a href="{{route('memories.create.admin')}}">+ Nuevo</a>
+            <a class="btn  bg-gradient-success mb-3" href="{{route('memories.create.admin')}}">
+                <i class="fas fa-plus"></i>
+                Crear nueva Biografía/Homenaje
+            </a>
         @endcan
-        
+
         <div style="overflow-x: auto;padding: 5px;" class="mb-3">
             <div class="btn-group btn-group-toggle">
                 <label class="btn btn-default text-center" @click="onSelectFilter('ALL')" :class="{'abc-active': (filterSelected == 'ALL')}">
@@ -22,14 +26,21 @@
             </div>        
         </div>
 
-        <div class="row mb-2">
-                <no-records v-if="items.length == 0" icon="box.svg" page="Biografías/Homenajes"></no-records>
-                <memory-summary v-else v-for="(e,index) in items" :key="index" :pdata="e" @on-read="onReadMemory">
+        <div class="row mb-2" v-if="!isGettingResources">
+                <no-records-found v-if="items.length == 0" icon="box.svg" product="Biografías/Homenajes"></no-records-found>
+                <memory-summary v-else v-for="(e,index) in items" :key="e.memory.id" :pdata="e" @on-read="onReadMemory">
         </div>
+        <div class="row" v-else>
+            <div class="col-12">
+                    <spinner1 label="Cargando Biografías/Homenajes …"></spinner1>
+            </div>
+         </div>              
 
         <div class="pb-3 pt-3" v-if="showPagination">
             <pagination v-if="routeDynamic != null" :route="routeDynamic" @source-items="onLoadData" :key="componentPagKey"></pagination>
-        </div>        
+        </div> 
+
+    </div>       
 </div>
 <!--/. container-fluid -->               
 @endsection

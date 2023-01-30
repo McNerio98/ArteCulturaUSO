@@ -17,7 +17,7 @@ class WebsiteController extends Controller
     public function welcome(){
         $promos = Promotion::all();
         $cats = Category::orderBy('id')->limit(4)->get();
-        return view("welcome",['promos'=>$promos,'some_categories'=>$cats]);
+        return view("welcome",['promos'=>$promos,'some_categories'=>$cats,'ac_option' => 'welcome']);
     }
 
     public function nearby(){
@@ -28,28 +28,16 @@ class WebsiteController extends Controller
         return view("talents");
     }
 
-    public function promotores(){
-        return view("promotores");
-    }
-
-    public function escuelas(){
-        return view("escuelas");
-    }
-
     public function recursos(){
-        return view("recursos.index");
+        return view("recursos.index",['ac_option' => 'resources']);
     }
 
     public function biografias(){
-        return view("memories.index");
+        return view("memories.index",['ac_option' => 'memories']);
     }
-    
-    public function homenajes(){
-        return view("memories");
-    }    
 
     public function acercade(){
-        return view("about");
+        return view("about",['ac_option' => 'about']);
     }
 
     public function events(){

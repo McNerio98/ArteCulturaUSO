@@ -130,13 +130,28 @@ class MemoriesController extends Controller
     }
 
 
-    public function create(){
-		if( ! Auth::user()->can('crear-biografias')){ //poner esto en los de arriba 
-            return redirect()->route('dashboard');
-        };				
+    public function create(Request $request){
+
+        
+        $idm = $request->input('idm');
+        $isUpdate = ($idm != null && intval($idm) > 0);
+
+        if($isUpdate){
+            if( ! Auth::user()->can('editar-biografias') || Memory::find($idm) == null){ 
+                return redirect()->route('dashboard');
+            };	
+        }else{
+            if( ! Auth::user()->can('crear-biografias')){ //poner esto en los de arriba 
+                return redirect()->route('dashboard');
+            };	
+        }
+
+			
 		$request_users = UsersHelper::usersRequest();
     	return view('admin.memories.create' , ['ac_option' =>'memories' , 'request_users' => $request_users]);
     }
+
+
 
     public function showadmin(){
 		if( ! Auth::user()->can('ver-biografias')){ //poner esto en los de arriba 
@@ -155,11 +170,14 @@ class MemoriesController extends Controller
         ];
 
         $user = Auth::user();
-        if($request->memory["id"] == 0){
-            $memory = new Memory();
-        }else{
+        $isUpdate = (intval($request->memory["id"]) != 0);
+
+        if($isUpdate){
             $memory = Memory::find($request->memory["id"]);
+        }else{
+            $memory = new Memory();
         }
+
 
         if(!$memory){//For update case only 
             $output["msg"] = "Ítem no encontrado";
@@ -167,12 +185,12 @@ class MemoriesController extends Controller
         }
 
 
-        if(!$user->can('crear-biografias') && $request->memory["id"] == 0){
+        if(!$user->can('crear-biografias') && !$isUpdate){
             $output["msg"] = "Operación denegada";
             return $output;
         }
 
-        if((!$user->can('editar-biografias') && $request->memory["id"] != 0) && !($memory->creator_id == $user->id)){
+        if($isUpdate && !$user->can('editar-biografias')  && $memory->creator_id != $user->id){
             $output["msg"] = "Operación denegada";
             return $output;
         }        
@@ -202,6 +220,7 @@ class MemoriesController extends Controller
 
         DB::beginTransaction();
         $idImgPresentation = 0;
+        $showMsgError = false;
         try{
 
             $memory->area                 = $request->memory["area"];
@@ -210,17 +229,21 @@ class MemoriesController extends Controller
             $memory->birth_date       = $request->memory["birth_date"];
             $memory->content           = $request->memory["content"];
             $memory->type                 = $request->memory["type"];
-            $memory->creator_id       = $user->id;
+            if(!$isUpdate){
+                $memory->creator_id       = $user->id;
+            }
+            
             if($request->memory["type"] == "memory"){
                 $memory->death_date = $request->memory["death_date"];
             }
             $memory->save();            
 
             #Carga de archivos multimedias 
-            $limite_carga = 70;
+            $limite_carga = 10;
             $index = 0;
             $files = $request->media;
-            if(count($files) >= $limite_carga){
+            if(count($files) > $limite_carga){
+                $showMsgError = true;
                 throw new \Exception("Límite de carga superado, máximo ".$limite_carga." archivos");
             }            
 
@@ -252,6 +275,7 @@ class MemoriesController extends Controller
     
                         $path_store = $pathname.$filename;
                         if(!Storage::disk('local')->put($path_store, $dataFile)){
+                            $showMsgError = true;
                             throw new \Exception("No se logro guardar el archivo");
                         }
                         
@@ -279,6 +303,7 @@ class MemoriesController extends Controller
             #Eliminacion de multimedias existentes para caso de actualización
             #En la eliminacion se puede incluir eliminacion de imagen de presentacion por nueva actualización             
             $mediadrop_ids = $request->mediadrop_ids;
+
             #Si cargo imagen de presentacion entonces se asocia 
             if($idImgPresentation !== 0){
                 /**Verificando si tenia una anteriormente en caso de actualizacion, se agrega para eliminar */
@@ -292,7 +317,7 @@ class MemoriesController extends Controller
         
 
             $count_drop = 0;
-            if($request->memory["id"] != 0 && count($mediadrop_ids) > 0){
+            if($isUpdate && count($mediadrop_ids) > 0){
                 foreach($memory->media as $candidato){
                     foreach($mediadrop_ids as $dropid){
                         if($candidato->id === intval($dropid)){
@@ -305,11 +330,13 @@ class MemoriesController extends Controller
 
                             if(trim($aux_path) !== "" && Storage::disk('local')->exists($aux_path)){
                                 if(! Storage::disk('local')->delete($aux_path) ){
+                                    $showMsgError = true;
                                     throw new \Exception("No se logró eliminar algunos medios".$candidato->name);
                                 }                                   
                             }
 
                             if(!$candidato->delete()){
+                                $showMsgError = true;
                                 throw new \Exception("No se logró eliminar el registro");
                             }
                             $count_drop++;                            
@@ -331,7 +358,7 @@ class MemoriesController extends Controller
             $memory->refresh();
 
 
-            if($request->memory["id"] == 0){
+            if(!$isUpdate){
                 $output["msg"] = "Elemento creado";
             }else{
                 $output["msg"] = "Elemento actualizado";
@@ -341,8 +368,11 @@ class MemoriesController extends Controller
             $output["data"] = $memory;            
         }catch(\Throwable $ex){
             DB::rollback();
-            //$output["msg"] = "Error en la operación, consulte soporte técnico.";
-            $output['msg'] = "Error: " . $ex->getLine() . " - " . $ex->getMessage(); //for debugin            
+            if($showMsgError){
+                $output['msg'] = "Error: " . $ex->getLine() . " - " . $ex->getMessage(); //for debugin            
+            }else{
+                $output["msg"] = "Error en la operación, consulte soporte técnico.";
+            }
         }
 
         return $output;
@@ -399,7 +429,6 @@ class MemoriesController extends Controller
             $output["msg"] = "Error al eliminar biografia";
             //$output["msg"] = "Error al actualizar publicacion ".$ex->getMessage(); //for debug            
         }
-
 
         return $output;        
     }

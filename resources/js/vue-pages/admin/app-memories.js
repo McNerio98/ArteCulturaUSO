@@ -9,13 +9,13 @@
 Vue.component('memory-create',require('../../components/memories/MemoryCreateComponent').default);
 Vue.component('media-viewer', require('@/components/media/ViewMediaComponent.vue').default);
 Vue.component('control-trim', require('../../components/trim/TrimComponentv2.vue').default);
-
+Vue.component('spinner1',require('@/components/spinners/Spinner1Component.vue').default);
 
 import {formatter89,formatter87} from '@/formatters';
 import {getMemory,getAdminMemories} from '@/service';
 import Memory from '../../components/memories/MemoryShowComponent.vue';
 import MemorySummary from '@/components/memories/MemoryMiniViewComponent.vue';
-import NoDataRegister from '@/components/NoDataRegister.vue';
+import NoDataFound from '@/components/NoDataFound.vue';
 import {getABC} from '@/utils.js';
 import PaginationComponent from '@/components/pagination/PaginationComponent.vue';
 
@@ -24,13 +24,14 @@ if(document.getElementById("appMemories") != undefined){
     const appMemories = new Vue({
         components: {
             'memory-summary': MemorySummary,
-            'no-records' : NoDataRegister,
+            'no-records-found' : NoDataFound,
             'pagination' : PaginationComponent
         },
         el: "#appMemories",
         data: {
             acAppData: {},
             items: [],
+            isGettingResources: false,
             /**---------------------------------- */
             ABC: [],
             filterSelected: null,
@@ -51,6 +52,7 @@ if(document.getElementById("appMemories") != undefined){
         methods: {
             getData: function(){
                 if(this.filterSelected == null){return;}
+                this.isGettingResources = true;
                 this.showPagination = true;
                 this.routeDynamic = getAdminMemories(this.filterSelected);
                 this.componentPagKey += 1;
@@ -63,9 +65,12 @@ if(document.getElementById("appMemories") != undefined){
                 this.items = dataPag.map(e => {
                     e.media = [];
                     return formatter89(e,this.acAppData.storage_url);
-                });                
+                });               
+                //Despues de recuperar, remover el loading
+                this.isGettingResources = false;                                               
             },            
             onSelectFilter: function(selected){
+                if(this.isGettingResources){return;} //Si esta obteniendo esperar 
                 this.filterSelected = selected;
                 this.getData();
             }            
@@ -208,8 +213,9 @@ if(document.getElementById("appMemoryCreateUpdate") != undefined){
                 });                     
             },
             openTrimPrincipalPic: function(file){
-                this.$refs.acVmCompCropper.openTrim(file);
+                
                 this.trim_buffer.target = "MAIN_IMG_MEMOY";
+                this.$refs.acVmCompCropper.openTrim(file);
             },
             principalPicCropped: function(base64){
                 switch(this.trim_buffer.target){

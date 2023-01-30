@@ -24,6 +24,10 @@
                 @selected="onSelected"></postevent-card>
             </div>
         </div>
+
+        <div v-if="!isGettingItems && finalNearby.length == 0 && !isRequestActive">
+            No se encontraron elementos en esta seccion
+        </div>
         
     </div>
 </main>

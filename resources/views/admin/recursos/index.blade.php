@@ -6,11 +6,15 @@
 @section('PanelSubtitle', 'REGISTROS')
 
 @section('content')
-<main role="main" class="flex-shrink-0" id="appResourcesAdminIndex">
+<div class="container-fluid" id="appResourcesAdminIndex">
     <div class="container">
+
         @can('crear-recursos')
-        <a href="{{route('recursos.create.admin')}}">+Nuevo</a>
-        @endcan
+            <a class="btn  bg-gradient-success mb-3" href="{{route('recursos.create.admin')}}">
+                <i class="fas fa-plus"></i>
+                Crear nuevo recurso
+            </a>
+        @endcan        
 
         <div style="overflow-x: auto;padding: 5px;" class="mb-3">
             <div class="btn-group btn-group-toggle">
@@ -23,17 +27,22 @@
             </div>        
         </div>        
 
-        <div class="row mb-2">
-            <no-records v-if="items.length == 0" icon="box.svg" page="Recursos"></no-records>
-            <resouce-summary v-else v-for="(e) in items" :pdata="e" :key="e.id" @on-read="onReadResource"/>
+        <div class="row mb-2" v-if="!isGettingResources">
+            <no-records-found v-if="items.length == 0" icon="box.svg" product="Recursos"></no-records-found>
+            <resouce-summary v-else v-for="(e) in items" :pdata="e" :key="e.resource.id" @on-read="onReadResource"/>
         </div>
+        <div class="row" v-else>
+            <div class="col-12">
+                    <spinner1 label="Cargando recursos …"></spinner1>
+            </div>
+         </div>      
 
         <div class="pb-3 pt-3" v-if="showPagination">
             <pagination v-if="routeDynamic != null" :route="routeDynamic" @source-items="onLoadData" :key="componentPagKey"></pagination>
         </div>
 
     </div>
-</main>
+</div>
 @endsection
 
 @Push('customScript')

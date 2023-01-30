@@ -2,6 +2,10 @@
 @section('title', 'Contenido')
 @section('windowName', 'MI CONTENIDO')
 
+
+@section('PanelTitle', 'EVENTOS')
+@section('PanelSubtitle', 'MI CONTENIDO')
+
 @section('content')
 <div class="container-fluid" id="appContent">
     <div class="row">

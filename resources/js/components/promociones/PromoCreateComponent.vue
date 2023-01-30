@@ -1,6 +1,6 @@
 <template>
     <div class="card">
-        <form class="card-body">
+        <form class="card-body" ref="acFrmPromoItem">
             <div class="row">
                 <div class="col-12 col-md-6">
                     <div class="wrpp-img-presentation">
@@ -18,11 +18,17 @@
                 <div class="col-12 col-md-6">
                     <div class="form-group">
                         <label for="resourceType" class="form-label">Título</label>
-                        <input v-model="itemData.promo.title" type="text" class="form-control" placeholder="Titulo">
+                        <input v-model="itemData.promo.title" type="text" class="form-control" placeholder="Titulo" minlength="3" maxlength="100" required>
+                        <div class="invalid-feedback">
+                            Campo obligatorio, ingrese un valor válido 
+                        </div>                                                  
                     </div>                    
                     <div class="form-group">
                         <label for="resourceType" class="form-label">Descripción</label>
-                        <textarea v-model="itemData.promo.description" class="form-control" id="" cols="30" rows="5" placeholder="Descripción"></textarea>
+                        <textarea v-model="itemData.promo.description" class="form-control" id="" cols="30" rows="5" minlength="3" maxlength="500" required placeholder="Descripción"></textarea>
+                        <div class="invalid-feedback">
+                            Campo obligatorio, ingrese un valor válido 
+                        </div>                                                                          
                     </div>
                     <div class="form-group">
                         <label for="resourceType" class="form-label">Tipo vinculado</label>
@@ -39,15 +45,19 @@
                             <div class="input-group-prepend">
                                 <button type="button" class="btn btn-danger"><i class="fas fa-paste"></i></button>
                             </div>
-                            <input v-model="itemData.promo.item_id" type="text" class="form-control">
+                            <input v-model="itemData.promo.item_id" type="text" class="form-control" required>
                         </div>
                     </div>
 
                 </div>
             </div>
             <div class="text-right">
-                <button type="button" @click="onSave" class="btn bg-gradient-success btn-flat">Guardar</button>
-                <button type="button" @click="onCancel" class="btn bg-gradient-warning btn-flat">Cancelar</button>
+                <button type="button" @click="onSave" class="btn bg-gradient-success btn-flat" :disabled="isSaving">
+                    <span v-if="isSaving" class="spinner-border spinner-border-sm"  role="status" aria-hidden="true"></span>
+                    <i v-else class="fas fa-save"></i>                                    
+                    Guardar
+                </button>
+                <button type="button" @click="onCancel" class="btn bg-gradient-warning btn-flat" :disabled="isSaving">Cancelar</button>
             </div>
         </form>
 
@@ -99,6 +109,11 @@ export default {
 
         },
         onSave: function(){
+            if(!this.$refs.acFrmPromoItem.checkValidity()){
+                this.$refs.acFrmPromoItem.classList.add('was-validated');
+                StatusHandler.ValidationMsg("Ingrese todos los campos requeridos");
+                return;
+            }            
             this.upsert();
         },
         upsert: function(){

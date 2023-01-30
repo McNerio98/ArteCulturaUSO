@@ -31,9 +31,25 @@ class SearchController extends Controller
             ];
         }
 
+        $ac_option = "";
+        switch($request->label){
+            case "Promotores": {
+                $ac_option = "promotores";                
+                break;
+            }
+            case "Escuelas": {
+                $ac_option = "escuelas";
+                break;
+            }
+            default: {
+                $ac_option = "artistas";
+                break;
+            }
+        }
+
         $cats = Category::all();
 
-        return view("busquedas",['filter_search' => $params,'cats' => $cats]);
+        return view("busquedas",['filter_search' => $params,'cats' => $cats, 'ac_option' => $ac_option]);
     }
 
     public function execSearch(Request $request){

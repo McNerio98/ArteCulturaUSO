@@ -5,9 +5,10 @@ import ResouceShow from '@/components/recursos/ResourceShowComponent.vue';
 import {getModel91,formatter91,formatter87} from '@/formatters';
 import Trimmer from '@/components/trim/TrimComponentv2.vue';
 import { getAdminResources,getResource,getTiposRecursos } from '@/service';
-import NoDataRegister from '@/components/NoDataRegister.vue';
+import NoDataFound from '../../components/NoDataFound.vue';
 import PaginationComponent from '@/components/pagination/PaginationComponent.vue';
 Vue.component('media-viewer', require('@/components/media/ViewMediaComponent.vue').default);
+Vue.component('spinner1',require('@/components/spinners/Spinner1Component.vue').default);
 
 // index
 if(document.getElementById("appResourcesAdminIndex") != undefined){
@@ -15,7 +16,7 @@ if(document.getElementById("appResourcesAdminIndex") != undefined){
         el: "#appResourcesAdminIndex",
         components: {
             'resouce-summary' : ResouceSummary,
-            'no-records' : NoDataRegister,
+            'no-records-found' : NoDataFound,
             'pagination' : PaginationComponent
         },
         data: {
@@ -25,7 +26,8 @@ if(document.getElementById("appResourcesAdminIndex") != undefined){
             routeDynamic: null,
             componentPagKey: 100,
             showPagination: true,               
-            items: []
+            items: [],
+            isGettingResources: false
         },
         created: function(){
             this.getTiposRecursosData();
@@ -47,11 +49,13 @@ if(document.getElementById("appResourcesAdminIndex") != undefined){
                 })
             },     
             onSelectFilter: function(selected){
+                if(this.isGettingResources){return;} //Si esta obteniendo esperar 
                 this.filterSelected = selected;
                 this.getData();
             },  
             getData: function(){
                 if(this.filterSelected == null){return;}
+                this.isGettingResources = true;
                 this.showPagination = true;
                 this.routeDynamic = getAdminResources(this.filterSelected);
                 this.componentPagKey += 1;
@@ -61,7 +65,9 @@ if(document.getElementById("appResourcesAdminIndex") != undefined){
                 this.items = dataPag.map(e => {
                     e.media = []; //no lo trae por temas de carga y que no lo necesita en apartado de mostrar todos
                     return formatter91(e,this.acAppData.storage_url)
-                });                  
+                });             
+                //Despues de recuperar, remover el loading
+                this.isGettingResources = false;                              
             },
             onReadResource: function(id){
                 window.location.replace(this.acAppData.base_url + '/admin/recurso/show/' + id);

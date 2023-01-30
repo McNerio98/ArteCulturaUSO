@@ -37,10 +37,21 @@
                 <table-event v-for="(e,index) in events" :pdata="e" :key="e.post.id" @on-show="onSeeMore"></table-event>
                 <table-load-more v-if="isEnableMore" @onmore="onLoadMore"></table-load-more>
         </div>        
-
-        <div class="ac_tbl-container">
-        
-        </div>           
+        <hr/>
+        <div class="mt-3 mb-3">
+            <h4 class="text-center">Encuentra eventos cerca de ti, esta opción requerirá acceso a tu ubicación actual.</h4>
+            <div style="background-image: url('{{asset('images/bg-maps.jpg')}}');" class="ac_bgmaps-nearby">
+                <div class="ac_bgmaps-black">
+                    <div class="ac_bgmaps-content">
+                        <a href="{{route('nearby')}}">
+                            <img src="{{asset('images/icons/gps-svgrepo-com.svg')}}" alt="" class="ac_img_nearby">
+                            EVENTOS CERCANOS
+                        </a>                        
+                    </div>
+                </div>
+            </div>
+        </div>    
+        <hr/>       
 
 
             
