@@ -55,8 +55,14 @@ class User extends Authenticatable
         return $this->belongsTo("App\MediaProfile","img_profile_id","id");
     }
 
-    public function strRubros(){
-        
+    public function rubros(){
+        $tags = self::select(   self::raw("(GROUP_CONCAT(c.name SEPARATOR ',')) as `rubros`")    )
+        ->join("tags_on_profiles AS b","b.user_id","=","users.id")
+        ->join("tags AS c","c.id","=","b.tag_id")
+        ->where("users.id" , "=" , $this->id)
+        ->first();
+
+        return $tags->rubros;
     }
 
 
