@@ -22,7 +22,7 @@
                         </div>                          
                     </div>                    
                       
-                    <h5>Nombre completo</h5>                    
+                    <h5>Nombre artístico</h5>                    
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="nav-icon fas fa-star-half-alt"></i></span>

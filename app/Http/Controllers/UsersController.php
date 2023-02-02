@@ -509,9 +509,11 @@ class UsersController extends Controller
         ->join("model_has_roles","model_has_roles.model_id","=","users.id")
         ->join("roles","roles.id","=","model_has_roles.role_id")
         ->leftJoin('media_profiles','media_profiles.id','=','users.img_profile_id')
-        ->select("users.id","roles.name as role","users.name","users.img_profile_id","users.email",
+        ->select("users.id","users.artistic_name","roles.name as role","users.name","users.img_profile_id","users.email",
             "users.username","users.telephone","users.rubros","users.status","media_profiles.path_file AS img_profile")
         ->whereNotNull('email_verified_at'); //only verified users
+
+        //User::
 
         switch($filter){
             case "enabled": {
@@ -576,7 +578,7 @@ class UsersController extends Controller
             return $salida;
         }
         
-        $keys = ['user_email','user_phone','user_other_name','user_nickname'];
+        $keys = ['user_email','user_phone','user_owner_account','user_nickname'];
         if(! in_array($request->info_key,$keys)){
             $salida["msg"] = "Operacion no valida";
             return $salida;
@@ -597,7 +599,7 @@ class UsersController extends Controller
                 $user->telephone = trim($request->info_value);
                 break;
             }
-            case "user_other_name": { //nombre del titular de la cuenta 
+            case "user_owner_account": { //nombre del titular de la cuenta 
                 $user->name = trim($request->info_value);
                 break;
             }                                                        

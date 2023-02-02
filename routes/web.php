@@ -114,7 +114,7 @@ Route::get('/profile/information/{id}','ProfileController@information')->name('p
 
 /*------------------------------User------------------------------*/
 Route::get('/admin/users','DashboardController@users')->name('users');
-#Obtiene los usuarios dentro de la plataforma, con filtros para todos los usuarios, solicitudes, habilitados, no activos 
+# AJAX Request | Obtiene los usuarios dentro de la plataforma, con filtros para todos los usuarios, solicitudes, habilitados, no activos 
 Route::get('users','UsersController@index')->name('users.fetch')->middleware('auth','adroles');
 # Blade View | Apartado muestra la informacion del usuario con apartados de configuracion 
 Route::get('/admin/users/config/{id}','DashboardController@infoUser')->name('user.info');

@@ -1,5 +1,5 @@
-Vue.component('contact', require('../../components/users/Contacto.vue').default);
-Vue.component('pnl-pagination',require('../../components/users/ContainerPagination.vue').default);
+Vue.component('contact', require('@/components/users/Contacto.vue').default);
+Vue.component('pnl-pagination',require('@/components/users/ContainerPagination.vue').default);
 
 const appUsersAdminVue = new Vue({
     el: '#appUsersAdmin',
