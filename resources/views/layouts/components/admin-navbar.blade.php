@@ -23,7 +23,7 @@
                             <img src="{{asset('files/profiles/'.$e->profile_img->path_file)}}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
                             <div class="media-body">
                                 <h3 class="dropdown-item-title">
-                                    {{$e->name}}
+                                    {{$e->artistic_name}}
                                     <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
                                 </h3>
                                 <p class="text-sm">{{$e->email}}</p>

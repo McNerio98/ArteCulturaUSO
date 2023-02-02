@@ -57,7 +57,7 @@ export default {
             contact: {
                 id_user: this.user.id,
                 role: this.user.role,
-                nombre_artistico: this.user.name,
+                nombre_artistico: this.user.artistic_name,
                 rubros: JSON.parse(this.user.rubros),
                 propietario: this.user.name,
                 email: this.user.email,

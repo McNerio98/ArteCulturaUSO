@@ -136,8 +136,11 @@ class MemoriesController extends Controller
         $idm = $request->input('idm');
         $isUpdate = ($idm != null && intval($idm) > 0);
 
+        $memory = Memory::find($idm);
+        $user = Auth::user();
+
         if($isUpdate){
-            if( ! Auth::user()->can('editar-biografias') || Memory::find($idm) == null){ 
+            if( (! Auth::user()->can('editar-biografias') && $memory->creator_id != $user->id ) || $memory == null){ 
                 return redirect()->route('dashboard');
             };	
         }else{
