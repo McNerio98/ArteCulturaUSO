@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Tag;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use App\User;
 
 class TagsController extends Controller
 {
@@ -173,27 +174,57 @@ class TagsController extends Controller
      */
     public function destroy($id)
     {
-        $salida = [
+        $output = [
             "code" => 0,
             "data" => null,
-            "msg" => null
+            "msg" => null,
+            "extra" => ""
         ];
         if(! isset($id)){
-            $salida['msg'] = "Valores imcompletos";
-            return $salida;
+            $output['msg'] = "Valores imcompletos";
+            return $output;
         }
 
         $tag = Tag::find($id);
-        if(! $tag->delete()){
-            $salida["msg"] = "Error al eliminar la etiqueta";
-            return $salida;
+        $userIDs = [];
+        
+        DB::beginTransaction();
+        try{
+            //Obtener todos los usuarios aginados a ese tag para poder hacer una restructuracion 
+            $userList = User::select('users.id')->where('top.tag_id',$id)
+                ->join('tags_on_profiles AS top','top.user_id','users.id')
+                ->get();
+            
+            if(count($userList) > 100){
+                throw new \Exception("Operacion bloqueda, excede los 100 usuarios");
+            }
+
+
+            foreach($userList as $user){
+                array_push($userIDs,$user->id);
+            }
+
+            if(! $tag->delete()){
+                throw new \Exception("Error al eliminar la etiqueta");
+            }          
+            
+            $mod = User::find($userIDs);
+            foreach($mod as $e){
+                $e->preRefreshTags();
+                $e->saveOrFail();
+            }
+
+
+            $output["code"] = 1;
+            $output["msg"] = "Completed";
+            $output["data"] = $tag;
+            DB::commit();
+        }catch(\Exception $ex){
+            DB::rollback();
+            //$output['msg'] = "Error: " . $ex->getMessage();
+            $output["msg"] = "Error en la operación, consulte soporte técnico.";
         }
 
-        $salida = [
-            "code" => 1,
-            "data" => $tag,
-            "msg" => "Ok"
-        ];
-        return $salida;
+        return $output;
     }
 }

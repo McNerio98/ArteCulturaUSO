@@ -121,6 +121,8 @@ export function formatter88(item,storage_base_url){
         creator: {
             id: item.owner.id,
             nickname: item.owner.artistic_name,
+            rubros: item.owner.rubros,
+            is_admin: item.owner.is_admin == 1 ? true: false,
             name: item.owner.name,
             profile_img: storage_base_url + "/files/profiles/" + item.owner.profile_img.path_file,    
         },

@@ -136,18 +136,29 @@ class ProfileController extends Controller
             'msg' => null
         ];
 
+		$user = User::find($id_user);
+
 		if(Auth::user()->id != $id_user){
 			$salida["msg"] = "Permiso denegado";
 			return $salida;
 		}
 
-		$row = TagsOnProfile::where('user_id',$id_user)->where('tag_id',$id_tag)->first();
+		$row = TagsOnProfile::where('user_id',$user->id)->where('tag_id',$id_tag)->first();
 		if(!$row){
 			$salida["msg"] = "No existe la relacion";
 			return $salida;
 		}
 		
 		$row->delete();
+
+		$user->preRefreshTags();
+		if(!$user->save()){
+			$salida = "Problemas al guardar los datos";
+			return $salida;
+		}
+
+
+
 		$salida["code"] = 1;
 		$salida["msg"] = "Eliminado";
 		return $salida;
@@ -159,6 +170,8 @@ class ProfileController extends Controller
             'data' => null,
             'msg' => null
         ];
+
+		$user = User::find($id);
 	
 		if(Auth::user()->id != $id){
 			$salida["msg"] = "Permiso denegado";
@@ -172,10 +185,18 @@ class ProfileController extends Controller
 		}
 
 		$top = new TagsOnProfile();
-		$top->user_id = $id;
+		$top->user_id = $user->id;
 		$top->tag_id = $request->tag_id;
 
+
 		if(!$top->save()){
+			$salida = "Problemas al guardar los datos";
+			return $salida;
+		}
+
+		$user->preRefreshTags();
+
+		if(!$user->save()){
 			$salida = "Problemas al guardar los datos";
 			return $salida;
 		}
