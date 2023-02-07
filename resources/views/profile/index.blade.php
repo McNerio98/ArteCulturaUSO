@@ -88,9 +88,9 @@
                             <div class="tab-pane" id="abaout_extra">
                                 <div class="post">
                                     <div class='text-right mb-1'>
-                                        <button v-if="!data_config.description.edit_mode" v-on:click="data_config.description.edit_mode = true;data_config.description.bk = data_config.description.value" type="button" class="btn btn-outline-primary btn-flat"><i class="fas fa-pencil-alt"></i> Editar</button>                                
-                                        <button v-else class="btn btn-outline-success btn-flat" @click="saveDataConfig('description')"><i class="fas fa-save"></i> Guardar</button>                                
-                                        <button  v-if="data_config.description.edit_mode" @click="data_config.description.edit_mode = false;data_config.description.value = data_config.description.bk" class="btn btn-outline-secondary btn-flat"><i class="fas fa-ban"></i> Cancelar</button>    
+                                        <button v-if="showBtnEdit" v-on:click="onEditDescription" type="button" class="btn btn-outline-primary btn-flat"><i class="fas fa-pencil-alt"></i> Editar</button>                                
+                                        <button v-if="showBtnSave" class="btn btn-outline-success btn-flat" @click="saveDataConfig('description')"><i class="fas fa-save"></i> Guardar</button>                                
+                                        <button  v-if="showBtnCancel" @click="data_config.description.edit_mode = false;data_config.description.value = data_config.description.bk" class="btn btn-outline-secondary btn-flat"><i class="fas fa-ban"></i> Cancelar</button>    
                                     </div>
 
 
