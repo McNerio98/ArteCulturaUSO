@@ -176,7 +176,7 @@ Route::put('tags/{id}','TagsController@update')->name("tag.update")->middleware(
 # AJAX Request | Registra una nueva etiqueta
 Route::post('tags','TagsController@store')->name('tags.store')->middleware('auth','adroles');
 # AJAX Request | Elimina una etiqueta 
-Route::delete('tag/{id}','TagsController@destroy')->name('tag.destroy')->middleware('auth','adroles');
+Route::delete('/tag/{id}','TagsController@destroy')->name('tag.destroy')->middleware('auth','adroles');
 # AJAX Request | Obtiene todas las etiquetas mediante el paso de una categoria , solo es necesario que este logeado sea rol o podria ser un invitado 
 Route::get('tags/byCategory/{id}','TagsController@tagsByCategory')->name('tag.select')->middleware('auth');
 

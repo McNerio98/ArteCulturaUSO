@@ -413,6 +413,8 @@ class UsersController extends Controller
                     if(isset($request->status)){
                         $user->status = trim($request->status);
                     }
+
+                    $user->preRefreshTags();
                     $user->saveOrFail();
                     $user->refresh();
                     if($request->send_email == true){
@@ -720,6 +722,10 @@ class UsersController extends Controller
             $tag_profile->user_id = $new_user->id;
             $tag_profile->tag_id = $request->rubros;
             $tag_profile->save();
+
+            //Preparar las tags guardadar y guardar nuevamente
+            $new_user->preRefreshTags();         
+            $new_user->save();   
 
             $tmp_data = new \stdClass();
             $tmp_data->token = ((string) Str::uuid()).$new_user->artistic_name[0].$new_user->artistic_name[1];

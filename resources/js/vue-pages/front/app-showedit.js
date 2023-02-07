@@ -101,6 +101,18 @@ if(document.getElementById('appShowPostFront') != undefined){
 
                 this.$refs.mediaviewer.builderAndShow(items,'POST_EVENTS',items[0]);
             },
+            onProfile: function({id,is_admin}){
+                if(is_admin){
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Perfil administrativo',
+                        text: 'Este perfil pertenece a un administrador y por lo tanto no tiene un perfil público, ingresa a la sección de artistas',
+                        showCloseButton: true
+                    })    
+                }else{
+                    window.location.href = this.acAppData.base_url + `/perfil/${id}`;
+                }
+            },
             onPromo: function(id){
                 window.location.href = this.acAppData.base_url + `/admin/promociones/create?tarid=${id}&tartype=postevent`;
             }            

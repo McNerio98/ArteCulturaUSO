@@ -13,6 +13,7 @@
             @delete-item="onDeletePost" 
             @on-promo="onPromo"
             @source-files="onSources" 
+            @on-profile="onProfile"
             :key="'pes'+e.post.id"
             :pdata="e" >
         </postevent-show>  
