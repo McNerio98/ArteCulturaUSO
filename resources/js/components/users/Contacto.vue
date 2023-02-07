@@ -9,9 +9,7 @@
                     <div class="col-7">
                         <h2 class="lead"><b>{{contact.nombre_artistico}}</b></h2>
                         <p class="text-muted text-sm"><b>Rubro Artistico: </b>
-                            <template v-for="(e,index) in contact.rubros">
-                                <span v-bind:key="index">{{e}}</span> <template v-if="index < (contact.rubros.length - 1)"> / </template>
-                            </template>
+                                <span>{{contact.rubros}}</span>
                         </p>
                         <ul class="ml-4 mb-0 fa-ul text-muted">
                             <li class="small"><span class="fa-li"><i class="fas fa-user-shield"></i></span> Propietario: {{contact.propietario}}</li>
@@ -58,7 +56,7 @@ export default {
                 id_user: this.user.id,
                 role: this.user.role,
                 nombre_artistico: this.user.artistic_name,
-                rubros: JSON.parse(this.user.rubros),
+                rubros: this.user.rubros,
                 propietario: this.user.name,
                 email: this.user.email,
                 img_profile: this.user['img_profile'],

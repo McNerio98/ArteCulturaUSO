@@ -82,7 +82,6 @@
                     let response = result.data;
                     if(response.code == 0){
                         StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
-                        this.tag.name = prev_value;
                         return;
                     };
                     this.$emit('delete');

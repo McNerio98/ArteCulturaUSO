@@ -91,6 +91,19 @@ const appProfileVue = new Vue({
         this.current_user_id = $("#currentUserIdRequest").val();        
         this.acAppData = window.obj_ac_app;
     },
+    computed: {
+        showBtnEdit(){
+            return !this.data_config.description.edit_mode &&
+            this.current_user_id == this.acAppData.current_user.id;
+        },
+        showBtnSave(){
+            return this.data_config.description.edit_mode &&
+            this.current_user_id == this.acAppData.current_user.id;            
+        },
+        showBtnCancel(){
+            return this.data_config.description.edit_mode;
+        }
+    },
     methods: {
         onCreate: function(tipo){
             //Este flag viene de la version anterior
@@ -229,6 +242,10 @@ const appProfileVue = new Vue({
         },
         onPromo: function(id){
             window.location.href = this.acAppData.base_url + `/admin/promociones/create?tarid=${id}&tartype=profile`;
+        },
+        onEditDescription: function(){
+            this.data_config.description.edit_mode = true;
+            this.data_config.description.bk = this.data_config.description.value;
         },
         SendImgProfile: function(base64){
             let data = {

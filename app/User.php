@@ -55,12 +55,28 @@ class User extends Authenticatable
         return $this->belongsTo("App\MediaProfile","img_profile_id","id");
     }
 
+    public function preRefreshTags(){
+        $newRubro = "N/A";
+
+        if($this->is_admin == 1){
+            $newRubro = "Administrador";
+        }else{
+            $result = self::select(   self::raw("(GROUP_CONCAT(c.name SEPARATOR ', ')) as `rubros`")    )
+            ->join("tags_on_profiles AS b","b.user_id","=","users.id")
+            ->join("tags AS c","c.id","=","b.tag_id")
+            ->where("users.id" , "=" , $this->id)
+            ->first();
+
+            if($result != null){
+                $newRubro = $result->rubros;
+            }
+        }
+
+        $this->rubros = $newRubro;
+    }
+
     public function rubros(){
-        $tags = self::select(   self::raw("(GROUP_CONCAT(c.name SEPARATOR ',')) as `rubros`")    )
-        ->join("tags_on_profiles AS b","b.user_id","=","users.id")
-        ->join("tags AS c","c.id","=","b.tag_id")
-        ->where("users.id" , "=" , $this->id)
-        ->first();
+
 
         return $tags->rubros;
     }

@@ -4,7 +4,8 @@
             <div class="ac_event-card-header">
                 <div class="user-block">
                     <img class="img-circle" :src="itemData.creator.profile_img" alt="User Image">
-                    <span class="username"><a href="#">{{itemData.creator.nickname == null?itemData.creator.name:itemData.creator.nickname}}</a></span>
+                    <span class="username"><a href="javascript:void(0);" @click="onProfileName">{{itemData.creator.nickname == null?itemData.creator.name:itemData.creator.nickname}}</a></span>
+                    <span class="description">{{itemData.creator.rubros}}</span>
                 </div>
 
                 <!-- /.La condicion en el v-if Debe ser la misma que en los controles individuales -->                
@@ -293,6 +294,14 @@
                     this.itemData.post.status = last_state;  //rollback state
                 });
 
+            },
+            onProfileName(){
+                const emitData = {
+                    id: this.itemData.creator.id,
+                    is_admin: this.itemData.creator.is_admin
+                }
+
+                this.$emit('on-profile',emitData);
             },
             has_cap(e){
                 return window.has_cap == undefined ? false : window.has_cap(e);
