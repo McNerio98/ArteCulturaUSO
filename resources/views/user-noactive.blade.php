@@ -24,7 +24,7 @@
         <section class="pnl-info">
             <h1 style="font-size: 500%; color: #00cd6a;"><i class="fas fa-bell-slash"></i></h1>
             <h1>Tu cuenta está temporalmente desactivada.</h1>
-            <p class="lead">Si deseas reactivar tu cuenta, contacta con el administrador del sitio para realizar este proceso.
+            <p class="lead">Si deseas reactivar tu cuenta, contacta con el administrador del sitio para realizar este proceso. <a class="font-weight-bold" href="{{route('support')}}">Click aqui</a></p>
             <p class="lead">
                 <a href="{{route('inicio')}}" class="btn btn-lg btn-secondary">Ir a inicio</a>
             </p>

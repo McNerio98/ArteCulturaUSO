@@ -15,14 +15,14 @@
 
             <strong><i class="fas fa-phone-alt"></i> Numero Contacto</strong>
             <p v-if="data_config.phone.edit_mode == false" class="text-muted val-about">{{data_config.phone.value}} 
-                <i v-if="authId === targetId" @click="data_config.phone.edit_mode = true; data_config.phone.bk = data_config.phone.value;" class="fas fa-pen ac-edit-about"></i>
+                <i v-if="authId === targetId" @click="onEditMode('phone')" class="fas fa-pen ac-edit-about"></i>
             </p>
             <input class="form-control form-control-sm" type="text" v-model="data_config.phone.value" placeholder="#" v-if="data_config.phone.edit_mode == true">
             <div class="btn-group w-100" v-if="data_config.phone.edit_mode == true">
                 <button class="btn btn-success col btn-xs" @click="saveDataConfig('phone')">
                     <i class="fas fa-plus"></i> <span>Guardar</span>
                 </button>
-                <button class="btn btn-warning col btn-xs" @click="data_config.phone.edit_mode = false; data_config.phone.value = data_config.phone.bk;">
+                <button class="btn btn-warning col btn-xs" @click="onCancelEdit('phone')">
                     <i class="fas fa-times"></i> <span>Cancelar</span>
                 </button>
             </div>  
@@ -30,14 +30,14 @@
             <hr>                
             <strong><i class="far fa-address-book"></i> Propietario de cuenta</strong>
             <p v-if="data_config.owner_account.edit_mode == false" class="text-muted val-about">{{data_config.owner_account.value}} 
-                <i v-if="targetId === authId" @click="data_config.owner_account.edit_mode = true; data_config.owner_account.bk = data_config.owner_account.value;" class="fas fa-pen ac-edit-about"></i>
+                <i v-if="targetId === authId" @click="onEditMode('owner_account')" class="fas fa-pen ac-edit-about"></i>
             </p>
             <input class="form-control form-control-sm" type="text" v-model="data_config.owner_account.value" placeholder="#" v-if="data_config.owner_account.edit_mode == true">
             <div class="btn-group w-100" v-if="data_config.owner_account.edit_mode == true">
                 <button class="btn btn-success col btn-xs" @click="saveDataConfig('owner_account')">
                     <i class="fas fa-plus"></i> <span>Guardar</span>
                 </button>
-                <button class="btn btn-warning col btn-xs" @click="data_config.owner_account.edit_mode = false; data_config.owner_account.value = data_config.owner_account.bk">
+                <button class="btn btn-warning col btn-xs" @click="onCancelEdit('owner_account')">
                     <i class="fas fa-times"></i> <span>Cancelar</span>
                 </button>
             </div>  
@@ -46,14 +46,14 @@
             <!--Se podrian agregar mas-->
             <strong><i class="fas fa-map-marker-alt"></i> Dirección</strong>
             <p v-if="data_config.address.edit_mode == false" class="text-muted val-about">{{data_config.address.value == undefined || data_config.address.value.length == 0 ? 'No especificado' : data_config.address.value}} 
-                <i v-if="authId === targetId" @click="data_config.address.edit_mode = true" class="fas fa-pen ac-edit-about"></i>                        
+                <i v-if="authId === targetId" @click="onEditMode('address')" class="fas fa-pen ac-edit-about"></i>                        
             </p>
             <input class="form-control form-control-sm" type="text" v-model="data_config.address.value" placeholder="" v-if="data_config.address.edit_mode == true">
             <div class="btn-group w-100" v-if="data_config.address.edit_mode == true">
                 <button class="btn btn-success col btn-xs" @click="saveDataConfig('address')">
                     <i class="fas fa-plus"></i> <span>Guardar</span>
                 </button>
-                <button class="btn btn-warning col btn-xs" @click="data_config.address.edit_mode = false">
+                <button class="btn btn-warning col btn-xs" @click="onCancelEdit('address')">
                     <i class="fas fa-times"></i> <span>Cancelar</span>
                 </button>
             </div>  
@@ -61,14 +61,14 @@
             <hr>
             <strong><i class="far fa-file-alt mr-1"></i> Notas</strong>
             <p v-if="data_config.notes.edit_mode == false" class="text-muted val-about">{{data_config.notes.value == undefined || data_config.notes.value.length == 0 ? 'No especificado' : data_config.notes.value}} 
-                    <i v-if="authId === targetId" @click="data_config.notes.edit_mode = true" class="fas fa-pen ac-edit-about"></i>                        
+                    <i v-if="authId === targetId" @click="onEditMode('notes')" class="fas fa-pen ac-edit-about"></i>                        
             </p>
             <input class="form-control form-control-sm" type="text" v-model="data_config.notes.value" placeholder="" v-if="data_config.notes.edit_mode == true">
             <div class="btn-group w-100" v-if="data_config.notes.edit_mode == true">
                 <button class="btn btn-success col btn-xs" @click="saveDataConfig('notes')">
                     <i class="fas fa-plus"></i> <span>Guardar</span>
                 </button>
-                <button class="btn btn-warning col btn-xs" @click="data_config.notes.edit_mode = false">
+                <button class="btn btn-warning col btn-xs" @click="onCancelEdit('notes')">
                     <i class="fas fa-times"></i> <span>Cancelar</span>
                 </button>
             </div>             
@@ -132,6 +132,14 @@
                 this.data_config.owner_account.value= this.itemData.owner_account;
                 this.data_config.address.value= this.itemData.address;
                 this.data_config.notes.value= this.itemData.notes;
+            },
+            onEditMode: function(key){
+                this.data_config[key].edit_mode = true; 
+                this.data_config[key].bk = this.data_config[key].value
+            },
+            onCancelEdit: function(key){
+                this.data_config[key].edit_mode = false; 
+                this.data_config[key].value = this.data_config[key].bk
             },
             saveDataConfig: function(key){
                 const data_info = {

@@ -361,41 +361,53 @@ export default {
             /**Maps Places and Geodecoding */
             const municipio =this.$refs.itemMuniSelect.options[this.$refs.itemMuniSelect.options.selectedIndex].text;
             const depto = "Sonsonate";
-            var geoLat = 0;
-            var geoLng = 0;
-            var placeResponse = null;
-            var geoResponse = null;
 
-            try{
-                const direction = directionsTokens(`${this.itemData.dtl_event.address.details}, ${municipio} , ${depto}, El Salvador`);
-                placeResponse = await getPlaces(direction);
-                //axios status | controller api result status
-                if (placeResponse.status != 200 || placeResponse.data.data.status !== "OK") {
-                    geoResponse = await getGeo(direction);//Conmsultando API Geodecoding
+            if(this.get_param('NEARBY_ENABLE','D') == 'A'){
+                /**----------------- INICIA PROCESO DE LOCALIZACION -----------------*/
+                console.log("Se inicio el proceso de localización con Google Maps");
+                var geoLat = 0;
+                var geoLng = 0;
+                var placeResponse = null;
+                var geoResponse = null;
+
+                try{
+                    const direction = directionsTokens(`${this.itemData.dtl_event.address.details}, ${municipio} , ${depto}, El Salvador`);
+                    placeResponse = await getPlaces(direction);
+                    //axios status | controller api result status
+                    if (placeResponse.status != 200 || placeResponse.data.data.status !== "OK") {
+                        geoResponse = await getGeo(direction);//Conmsultando API Geodecoding
+                    }
+
+                    if (geoResponse != null) {
+                        //Si es diferente de null significa que ubo necesidad de consultar la api geo
+                        if (geoResponse.data.data.status === "OK") {
+                            geoLat = geoResponse.data.data.results[0].geometry.location.lat;
+                            geoLng = geoResponse.data.data.results[0].geometry.location.lng;
+                        }
+                    } else {
+                        //Si es null significa que no ubo necesidad de consultar la api geo
+                        //Ya no se valida ZERO_RESULT u otro error porque se consulto api feo para el caso
+                        geoLat = placeResponse.data.data.candidates[0].geometry.location.lat;
+                        geoLng = placeResponse.data.data.candidates[0].geometry.location.lng;
+                    }             
+                    this.itemData.dtl_event.is_geo = true;
+                }catch(ex){
+                    geoLat = 0;
+                    geoLng = 0;
+                    this.itemData.dtl_event.is_geo = false;
                 }
 
-                if (geoResponse != null) {
-                    //Si es diferente de null significa que ubo necesidad de consultar la api geo
-                    if (geoResponse.data.data.status === "OK") {
-                        geoLat = geoResponse.data.data.results[0].geometry.location.lat;
-                        geoLng = geoResponse.data.data.results[0].geometry.location.lng;
-                    }
-                } else {
-                    //Si es null significa que no ubo necesidad de consultar la api geo
-                    //Ya no se valida ZERO_RESULT u otro error porque se consulto api feo para el caso
-                    geoLat = placeResponse.data.data.candidates[0].geometry.location.lat;
-                    geoLng = placeResponse.data.data.candidates[0].geometry.location.lng;
-                }             
-                this.itemData.dtl_event.is_geo = true;
-            }catch(ex){
-                geoLat = 0;
-                geoLng = 0;
-                this.itemData.dtl_event.is_geo = false;
-            }
+                //mario.nerio: Si no se pudo resolver el places o el geodecoding se guardan coordenadas 0,0
+                this.itemData.dtl_event.geo.lat = geoLat;
+                this.itemData.dtl_event.geo.lng = geoLng;                
+                console.log(`Proceso de localización finalizado Coors(${geoLat},${geoLng})`);
 
-            //mario.nerio: Si no se pudo resolver el places o el geodecoding se guardan coordenadas 0,0
-            this.itemData.dtl_event.geo.lat = geoLat;
-            this.itemData.dtl_event.geo.lng = geoLng;
+            }else{
+                this.itemData.dtl_event.is_geo = false;
+                this.itemData.dtl_event.geo.lat = 0;
+                this.itemData.dtl_event.geo.lng = 0;       
+                console.log("Se omitio el proceso de localización");
+            }
 
             upsertPostEvent(this.itemData).then((result) => {
                 let response = result.data;
@@ -413,6 +425,9 @@ export default {
                     this.flags.upsertContent = false;
             })
         },
+        get_param(key_param,defvalue){
+            return window.get_param == undefined ? defvalue : window.get_param(key_param,defvalue);
+        }            
     },
 };
 </script>

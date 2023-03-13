@@ -55,7 +55,14 @@ class DashboardController extends Controller
 		return view("admin.rubros", ['ac_option' =>'rubros' , 'request_users' => $request_users]); 
 	}
 
-
+    public function parameters(){
+		
+		if( ! Auth::user()->hasRole('SuperAdmin')){ //poner esto en los de arriba 
+            return redirect()->route('dashboard');
+        };
+		$request_users = UsersHelper::usersRequest();		
+		return view('admin.config-options' , ['ac_option' =>'parameters' , 'request_users' => $request_users]);
+    }
 	
 	public function roles(){
 		if( ! Auth::user()->can('ver-roles')){ //poner esto en los de arriba 

@@ -151,8 +151,8 @@ class PostEventController extends Controller
             "msg" => null
         ];
         $from = date('Y-m-d h:i:s');
-        //$to = date('Y-m-d') ." 23:59:59";
-        $to = '2022-12-04 00:00:00'; //solo para pruebas 
+        $to = date('Y-m-d') ." 23:59:59";
+        //$to = '2022-12-04 00:00:00'; //solo para pruebas 
 		$result = PostEvent::whereBetween('dtl.event_date',[$from,$to])
             ->where('dtl.is_geo',true)
             ->join('dtl_events AS dtl','dtl.event_id','post_events.id')

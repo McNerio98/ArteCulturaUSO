@@ -1,10 +1,10 @@
-Vue.component('spinner1',require('../../components/spinners/Spinner1Component.vue').default);
-Vue.component('preview-media',require('../../components/media/PreviewMediaComponent.vue').default);
+Vue.component('spinner1',require('@/components/spinners/Spinner1Component.vue').default);
+Vue.component('preview-media',require('@/components/media/PreviewMediaComponent.vue').default);
 
-import {formatter88} from '../../formatters';
-import {getPostEvent} from '../../service';
-import PostEventCreate from '../../components/post/PostEventCreateComponent.vue';
-import PostEventShowComponent from '../../components/post/PostEventShowComponent.vue';
+import {formatter88} from '@/formatters';
+import {getPostEvent} from '@/service';
+import PostEventCreate from '@/components/post/PostEventCreateComponent.vue';
+import PostEventShowComponent from '@/components/post/PostEventShowComponent.vue';
 
 //Edit PostEvent Item 
 if(document.getElementById("appAdminUpdatePost") != undefined){

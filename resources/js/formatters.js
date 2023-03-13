@@ -190,7 +190,7 @@ export function getModel91(){
         id: 0,
         name: "",
         content: "",
-        tipo_id: 1, //Por defecto libro 
+        tipo_id: 0, //Por defecto libro 
         presentation_img: 0,
         presentation_model: {},
         media: []
@@ -217,7 +217,8 @@ export function formatter91(item,storage_base_url){
             description: item.content,
             tipo_id: item.tipo_id,
             creator_id: item.creator_id,
-            presentation_img: item.presentation_img
+            presentation_img: item.presentation_img,
+            tipo_valor: item.resource_type
         },
         presentation_model: item.presentation_model,
         media: item.media.map(e=>{

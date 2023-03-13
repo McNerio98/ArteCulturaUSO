@@ -290,6 +290,14 @@
                          return;
                     }
 
+                    const file_size = ((file.size / 1024) / 1024); //En Megas 
+                    const limit_config = parseInt(this.get_param('FILE_SIZE',20));
+                    console.log('Filze Size: ' + file_size);
+                    if(file_size > limit_config){
+                         StatusHandler.ValidationMsg(`Tamaño del archivo muy grande, límite configurado ${limit_config}`);
+                         return;                        
+                    }
+
                     var newFileMedia = {
                         id: 0,
                         type_file: e.target.result.substring(0, 10) == "data:image" ? "image" : "docfile",
@@ -305,7 +313,10 @@
                     }                       
 
                 }
-            }            
+            },
+            get_param(key_param,defvalue){
+                return window.get_param == undefined ? defvalue : window.get_param(key_param,defvalue);
+            }                             
         }
     }
 </script>
