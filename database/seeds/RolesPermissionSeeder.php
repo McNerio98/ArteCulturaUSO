@@ -59,7 +59,7 @@ class RolesPermissionSeeder extends Seeder
 		
 		$permission = Permission::create([
 			'name' => 'ver-recursos',
-			'description' => 'Capacidad de ver el apartado de recursos, documentos PDF y videos.'
+			'description' => 'Capacidad de ver el apartado de recursos, documentos PDF y videos. Desde la página publica siempre serán visibles todos recursos.'
 		]);
 		
 		$permission = Permission::create([

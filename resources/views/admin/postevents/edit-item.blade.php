@@ -2,6 +2,11 @@
 @section('title', 'Editar')
 @section('windowName', 'EDITAR ELEMENTO')
 
+
+@section('PanelTitle', 'EVENTOS')
+@section('PanelSubtitle', 'EDITAR')
+
+
 @section('content')
 <div class="container-fluid" id="appAdminUpdatePost">
     <input type="hidden" id="temp_iden_edit" value="{{$id_elem_edit}}">

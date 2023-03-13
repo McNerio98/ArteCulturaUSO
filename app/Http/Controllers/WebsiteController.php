@@ -9,6 +9,7 @@ use App\Category;
 use App\UserMeta;
 use App\Popular;
 use App\Promotion;
+use  App\Helper\AcHelper;
 
 class WebsiteController extends Controller
 {
@@ -21,6 +22,10 @@ class WebsiteController extends Controller
     }
 
     public function nearby(){
+		if( AcHelper::getOption('NEARBY_ENABLE','D') !== 'A'){
+            return redirect()->route('inicio');
+        };        
+        
         return view("nearby");
     }
 
@@ -42,6 +47,10 @@ class WebsiteController extends Controller
 
     public function events(){
         return view("events");
+    }
+
+    public function supportusers(){
+        return view('support-details');
     }
 
     public function accountRequest($user_name,$code){

@@ -10,8 +10,8 @@
                 <label class="btn btn-default text-center" @click="onSelectFilter('ALL')" :class="{'abc-active': (filterSelected == 'ALL')}">
                     <span class="text-xl">Todos</span>
                 </label>
-                <label class="btn btn-default text-center" v-for="(e,index) in ABC" @click="onSelectFilter(e)" :class="{'abc-active': (filterSelected == e)}">
-                    <span class="text-xl">@{{e}}</span>
+                <label class="btn btn-default text-center" translate="no" v-for="(e,index) in ABC" @click="onSelectFilter(e)" :class="{'abc-active': (filterSelected == e)}">
+                    <span translate="no" class="text-xl">@{{e}}</span>
                 </label>
             </div>        
         </div>

@@ -1,3 +1,4 @@
+import {configUser} from '@/service';
 
 const appConfigUser = new Vue({
     el: '#appConfigUser',
@@ -100,7 +101,7 @@ const appConfigUser = new Vue({
                 conf_value: this.user_description
             };
 
-            axios.put(`/user/updateConfig/${this.id_current_user}`,data).then(result=>{
+            configUser(this.id_current_user , data).then(result=>{
                 let response = result.data;
                 if(response.code == 0){
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
@@ -112,12 +113,19 @@ const appConfigUser = new Vue({
                 StatusHandler.Exception("Establecer la descripción del usuario",ex);
             });
         },
-        changeStatus: function(e,status){
+        changeStatus: async function(e,status){
             let params = {
                 operation: status.trim()
             };
+
+            const msgModal = status.trim() == 'enable-user' ? 
+            'Esto habilita al usuario a poder ingresar nuevamente a la plataforma':
+            'El usuario no podrá iniciar sesión hasta en una reactivación posterior';
+            const confirm  = await StatusHandler.confirm("¿Esta seguro?",msgModal);
+            if(!confirm){return;}            
+
             $(e.target).addClass("disabled");            
-            axios.put(`/user/updateConfig/${this.user.id}`,params).then((result)=>{
+            configUser(this.user.id,params).then((result)=>{
                 let response = result.data;
                 if(response.code == 0){
                     StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);

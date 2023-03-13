@@ -156,10 +156,20 @@ class MemoriesController extends Controller
 
 
 
-    public function showadmin(){
-		if( ! Auth::user()->can('ver-biografias')){ //poner esto en los de arriba 
+    public function showadmin($id){
+
+        $user = Auth::user();
+        $element = Memory::find($id);
+
+        if(! $element){
+            return redirect()->route('dashboard');
+        }
+
+
+		if( ! Auth::user()->can('ver-biografias') && $element->creator_id != $user->id){ //poner esto en los de arriba 
             return redirect()->route('dashboard');
         };	        
+        
 		$request_users = UsersHelper::usersRequest();
     	return view('admin.memories.show' , ['ac_option' =>'memories' , 'request_users' => $request_users]);
     }

@@ -1,5 +1,7 @@
 <?php
 namespace App\Helper;
+use App\ConfigOption;
+
 class AcHelper
 {
     public static function getDatetimeInterval($target_date){
@@ -34,4 +36,11 @@ class AcHelper
 
         return "Hace un momento";
     }
+
+    public static function getOption($param,$default){
+        $option = ConfigOption::getOption($param);
+        return is_null($option) ? $default : $option;
+    }
+
+
 }

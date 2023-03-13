@@ -8,7 +8,7 @@
         <br>
         <div class="text-center mt-2">
             <a  data-toggle="modal" data-target="#requestAccountModal" style="text-decoration:none; color:white" href="#" class="buttonSolicitud">
-                Llenar formulario
+              Regístrate aquí
             </a>
         </div>
     </div>

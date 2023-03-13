@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title') | Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="{{asset('images/icono.ico')}}">
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
     <link href="{{ mix('css/observatorio_styles.css') }}" rel="stylesheet">
     <!-- Google Font: Source Sans Pro -->
@@ -28,6 +29,10 @@
                         "id" => Auth::user()->profile_img->id,
                         "name" =>Auth::user()->profile_img->path_file
                     ]
+                ],
+                "params" => [
+                    "NEARBY_ENABLE" => AcHelper::getOption('NEARBY_ENABLE','D'),
+                    "FILE_SIZE" => AcHelper::getOption('FILE_SIZE','20'),
                 ]
             ]) !!};
         @endauth
@@ -49,7 +54,11 @@
                         "id" => null,
                         "name" => null
                     ]
-                ]
+                ],
+                "params" => [
+                    "NEARBY_ENABLE" => AcHelper::getOption('NEARBY_ENABLE','D'),
+                    "FILE_SIZE" => AcHelper::getOption('FILE_SIZE','20'),
+                ]                
             ]) !!};        
         @endguest
 
@@ -68,6 +77,17 @@
             }
             return status_cap;
         }
+
+        window.get_param = function(param_key , defvalue){
+            let param_value = null;
+            if(window.obj_ac_app.params == undefined){
+                return defvalue;
+            }    
+
+            return obj_ac_app.params[param_key] != undefined ? obj_ac_app.params[param_key] : defvalue;
+        }
+
+
     </script>     
     @stack('customStyles')
 </head>

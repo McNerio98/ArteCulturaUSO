@@ -8,7 +8,7 @@
                 </div>
                 <div class="col-8">
                     <div>
-                            <p>Tipo de recurso: {{getTipo}}</p>
+                            <p>Tipo de recurso: {{itemData.resource.tipo_valor}}</p>
                             <h3>{{itemData.resource.name}}</h3>
                             <p>Contiene: {{itemData.media.length}} archivos adjuntos</p>
                     </div>
@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import {getTiposRecursos,deleteResource} from '../../service';
+import {deleteResource} from '@/service';
 export default {
     props: {
         pdata: {type: Object,required:true}
@@ -91,10 +91,7 @@ export default {
             itemData: JSON.parse(JSON.stringify(this.pdata))            
         }
     },
-    created: function(){
-        getTiposRecursos().then(result =>{
-            this.tiposRecursos = result.data;
-        });        
+    created: function(){    
     },
     computed: {
         srcPresentationImg: function(){
@@ -102,13 +99,6 @@ export default {
                 return this.acAppData.base_url + "/images/default_book.jpg";
             }else{
                 return this.itemData.presentation_model.url;
-            }
-        },
-        getTipo: function(){
-            if(this.tiposRecursos.length > 0){
-                return this.tiposRecursos[this.itemData.resource.tipo_id - 1].option;
-            }else{
-                return "No Especificado";
             }
         },
         ListDocs: function(){

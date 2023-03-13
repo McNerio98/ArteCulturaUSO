@@ -36,7 +36,17 @@
                 <!--No quitar las etiquetas de cierren, si se usa <component/> tiene un comportamiento incongruente-->
                 <table-event v-for="(e,index) in events" :pdata="e" :key="e.post.id" @on-show="onSeeMore"></table-event>
                 <table-load-more v-if="isEnableMore" @onmore="onLoadMore"></table-load-more>
-        </div>        
+        </div>   
+
+        <div class="row" v-if="!isGettingData && events.length > 4">
+            <div class="col-12 col-lg-3"></div>
+            <div class="col-12 col-lg-3">
+                <img src="{{asset('images/icons/indicator-scroll.png')}}" alt="" style="width: 100%;">
+            </div>
+            <div class="col-12 col-lg-3"><span class="font-italic">Usa el <code>Scroll horizontal</code> para ver mas eventos</span> </div>
+            <div class="col-12 col-lg-3"></div>
+        </div>   
+
         <div class="row" v-if="!isGettingData && events.length == 0">
             <div class="col-12">
                 <nodata-custom 
@@ -46,6 +56,7 @@
                     icon="box.svg"></nodata-custom>
             </div>
         </div>
+        @if( ((new AcHelper)->getOption('NEARBY_ENABLE','D')) == 'A')
         <hr/>
         <div class="mt-3 mb-3">
             <h4 class="text-center">Encuentra eventos cerca de ti, esta opción requerirá acceso a tu ubicación actual.</h4>
@@ -60,7 +71,8 @@
                 </div>
             </div>
         </div>    
-        <hr/>       
+        @endif
+        <hr/>      
 
 
             

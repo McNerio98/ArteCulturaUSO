@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title') | Observatorio Cultural</title>
+    <link rel="icon" type="image/x-icon" href="{{asset('images/icono.ico')}}">
     <script>
         
         @auth //Usuario logeado
@@ -24,8 +25,12 @@
                     "presentation_img" => [
                         "id" => Auth::user()->profile_img->id,
                         "name" =>Auth::user()->profile_img->path_file
-                    ]
-                ]
+                    ]                  
+                ],
+                "params" => [
+                        "NEARBY_ENABLE" => AcHelper::getOption('NEARBY_ENABLE','D'),
+                        "FILE_SIZE" => AcHelper::getOption('FILE_SIZE','20'),
+                ]                  
             ]) !!};
         @endauth
 
@@ -45,8 +50,12 @@
                     "presentation_img" => [
                         "id" => null,
                         "name" => null
-                    ]
-                ]
+                    ]                     
+                ],
+                "params" => [
+                    "NEARBY_ENABLE" => AcHelper::getOption('NEARBY_ENABLE','D'),
+                    "FILE_SIZE" => AcHelper::getOption('FILE_SIZE','20'),
+                ]                   
             ]) !!};        
         @endguest
         
@@ -64,6 +73,16 @@
         }
         return status_cap;
     }
+
+        window.get_param = function(param_key , defvalue){
+            let param_value = null;
+            if(window.obj_ac_app.params == undefined){
+                return defvalue;
+            }    
+
+            return obj_ac_app.params[param_key] != undefined ? obj_ac_app.params[param_key] : defvalue;
+        }
+
     </script>    
     <link href="{{ asset(mix('css/app.css')) }}" rel="stylesheet">    
     <link href="{{ asset(mix('css/observatorio_styles.css')) }}" rel="stylesheet">

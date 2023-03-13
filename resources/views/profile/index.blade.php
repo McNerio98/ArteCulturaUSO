@@ -39,11 +39,12 @@
                             <li class="nav-item"><a class="nav-link rd-none" href="#abaout_extra" data-toggle="tab">Descripcion</a></li>
                         </ul>
                     </div>
-                    <div class="card-body" style="background-color: #ebeff3 !important;">
+                    <div class="card-body p-0" style="background-color: #ebeff3 !important;">
                         <div class="tab-content">
+                            <!--TAB de Contenido principal de usuario-->
                             <div class="active tab-pane" id="content">
                                 <!--START CONTENT, EVENTS AND POST-->
-                                <div id="event-cp" style="width: 100%;max-width: 600px;margin: auto;padding: 10px;">
+                                <div id="event-cp" style="width: 100%;max-width: 600px;margin: auto;" class="pt-2 pt-md-3">
                                     <!--SOLO SI EL USUARIO ESTA LOGEADO-->
                                 <div class="text-center _acNoCnt pb-1 pb-md-3" v-if="items_postevents.length == 0 && !isCreating">
                                     <img src="{{asset('images/no-task.svg')}}" alt="" style="width: 80%;max-width: 100px;">
@@ -84,7 +85,7 @@
                                 </div>
                                 <!--END START CONTENT, EVENTS AND POST-->
                             </div>
-                            <!-- /.tab-pane -->
+                            <!--TAB de Descripcion de perfil-->
                             <div class="tab-pane" id="abaout_extra">
                                 <div class="post">
                                     <div class='text-right mb-1'>

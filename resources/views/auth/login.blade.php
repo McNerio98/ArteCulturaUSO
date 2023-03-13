@@ -7,6 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Login</title>
         <!-- Fonts -->
+    <link rel="icon" type="image/x-icon" href="{{asset('images/icono.ico')}}">
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
@@ -31,6 +32,7 @@
       <div class="card">
         <div class="card-body login-card-body">
             <p class="login-box-msg">Iniciar sesión</p>      
+            <p>¿No tiene una cuenta? <a href="{{url('/').'?register=true'}}">Cree una</a></p>
             <form method="POST" action="{{ route('login') }}" @submit="onSubmit">
             @csrf
               <div class="input-group mb-3">
@@ -70,7 +72,7 @@
                       </a>                
                   </div>
                   <div class="col-12">
-                    <p class="mt-2 mt-md-3">¿No tiene una cuenta? <a href="{{url('/').'?register=true'}}">Cree una</a></p>
+                    <p class="mt-2 mt-md-3"><a href="{{url('/soporte')}}">Solicitar recuperación de contraseña</a></p>
                   </div>
               </div>
             </form>
