@@ -59,8 +59,8 @@
                             
                             <template v-if="e.option_type == 'FLAG'">
                                 <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
-                                    <input type="checkbox" class="custom-control-input" id="customSwitch3" v-model="e.option_value" @change="onSave(index)">
-                                    <label class="custom-control-label" for="customSwitch3">@{{e.option_value ? 'Activado' : 'Desactivado'}}</label>
+                                    <input type="checkbox" class="custom-control-input" :id="'customSwitchAC' + e.id" v-model="e.option_value" @change="onSave(index)">
+                                    <label class="custom-control-label" :for="'customSwitchAC' + e.id">@{{e.option_value ? 'Activado' : 'Desactivado'}}</label>
                                 </div>                                
                             </template>
                         </div>
