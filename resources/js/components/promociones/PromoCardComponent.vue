@@ -50,7 +50,7 @@ export default {
             this.$emit('on-read',this.itemData.promo.id);
         },
         goPreview: function(){
-            this.$emit('on-preview',this.itemData.promo.id);
+            this.$emit('on-preview',this.itemData.promo.item_id,this.itemData.promo.type_ads);
         }
     }    
 }

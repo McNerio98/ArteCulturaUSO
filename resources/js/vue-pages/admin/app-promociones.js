@@ -47,8 +47,35 @@ if(document.getElementById("appPromoIndex") != undefined){
             onRead: function(id){
                 window.location.replace(this.acAppData.base_url + "/admin/promociones/show/"+id);
             },
-            onPreview: function(){
+            onPreview: function(id,typeads){
+                const validTypes = [1,2,3,4];
+                var redirect = "";
+                if(!validTypes.includes(parseInt(typeads))){
+                    alert("Inconsistencia en los tipos de promociones");
+                    return;
+                }   
 
+                console.log("Antes de entrar al case" + typeads + " - " + id)    ;
+                switch(parseInt(typeads)){
+                    case 1: {//PostEvent 
+                        redirect = this.acAppData.base_url + `/admin/post/show/${id}`;
+                        break;
+                    }
+                    case 2: {//Homenajes/Biografias
+                        redirect = this.acAppData.base_url + `/admin/memories/show/${id}`;
+                        break;
+                    }
+                    case 3: {//Recurso
+                        redirect = this.acAppData.base_url + `/admin/recurso/show/${id}`;
+                        break;
+                    }
+                    case 4: {//Perfil
+                        redirect = this.acAppData.base_url + `/perfil/${id}`;
+                        break;
+                    }                                                
+                }
+
+                window.location.href = redirect;
             }
         }
     });

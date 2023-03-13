@@ -9,7 +9,39 @@
                         ref="frmRequestAccount"
                     >
                         <div class="form-row">
-                            <div class="form-group col-12">
+                            <!-- Entrada de texto para propietario de cuenta  -->
+                            <div class="form-group col-6">
+                                    <label for="raCompleteName">
+                                        Nombre propietario cuenta
+                                    </label>
+                                <div class="input-group mb-2">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            <i class="fas fa-address-book"></i>
+                                        </div>
+                                    </div>
+                                    <input
+                                        v-model="fullname"
+                                        type="text"
+                                        required
+                                        maxlength="200"
+                                        minlength="2"
+                                        class="form-control"
+                                        id="raCompleteName"
+                                        aria-describedby="emailHelp"
+                                    />
+                                    <div class="invalid-feedback">
+                                        Ingrese su nombre completo
+                                    </div>
+                                </div>
+                                <small
+                                    id="ownerHelp"
+                                    class="form-text text-muted"
+                                    >*Nombre del propietario encargado de administrar esta cuenta.
+                                </small>                                
+                            </div>
+                            <!-- Entrada de texto para Nombre Aritsitcio  -->
+                            <div class="form-group col-6">
                                 <label for="raNameArt">
                                     Nombre artístico / Entidad
                                 </label>
@@ -36,48 +68,49 @@
                                 <small
                                     id="emailHelp"
                                     class="form-text text-muted"
-                                    >*Escribe el nombre que te representa como
+                                    >*Nombre que te representa como
                                     artista/banda/entidad.</small
                                 >
                             </div>
 
+                            <!-- Entrada de texto para Rubro Aritsitcio  -->
                             <div class="form-group col-6">
-                                <label for="raEmail">Correo electrónico</label>
-                                <label class="sr-only" for="raEmail"
-                                    >Correo electrónico</label
+                                <label for="raRubro">Seleccionar rubro</label>
+                                <label class="sr-only" for="raRubro"
+                                    >Seleccionar rubro</label
                                 >
                                 <div class="input-group mb-2">
                                     <div class="input-group-prepend">
                                         <div class="input-group-text">
-                                            <i class="fas fa-at"></i>
+                                            <i class="fas fa-fingerprint"></i>
                                         </div>
                                     </div>
-                                    <input
-                                        v-model="correo"
-                                        @keyup="flags.email_exists = false"
-                                        type="email"
+                                    <select
                                         required
-                                        maxlength="255"
-                                        minlength="2"
-                                        class="form-control"
-                                        id="raEmail"
-                                        placeholder="Ej. example@email.com"
-                                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-                                        aria-describedby="emailHelp"
-                                    />
-                                    <div class="invalid-feedback">
-                                        Ingrese su correo electrónico
-                                    </div>
-                                    <div
-                                        v-if="flags.email_exists"
-                                        style="width: 100%;margin-top: 0.25rem;font-size: 80%;color: #dc3545;font-weight: bold;"
+                                        v-model="rubro"
+                                        class="custom-select"
+                                        id="raRubro"
                                     >
-                                        El correo electrónico ya ha sido
-                                        registrado
+                                        <option disabled value="">Elegir</option>
+                                        <optgroup v-for="(main, key) in listTags"
+                                            v-bind:key="key"
+                                            :label="key">
+                                            <option
+                                                v-for="(item, i) in main"
+                                                v-bind:key="i"
+                                                :value="item.id"
+                                            >
+                                                {{ item.tag }}
+                                            </option>
+                                        </optgroup>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Especifique su especialidad
                                     </div>
                                 </div>
-                            </div>
+                            </div>                      
 
+                            <!-- Entrada de texto para Numero de contacto  -->      
                             <div class="form-group col-6">
                                 <label for="raTelephone">
                                     Número telefónico
@@ -117,69 +150,52 @@
                                         registrado
                                     </div>
                                 </div>
-                            </div>
+                            </div>                            
+
 
                             <div class="form-group col-6">
-                                    <label for="raCompleteName">
-                                        Nombre propietario cuenta
-                                    </label>
-                                <div class="input-group mb-2">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text">
-                                            <i class="fas fa-address-book"></i>
-                                        </div>
-                                    </div>
-                                    <input
-                                        v-model="fullname"
-                                        type="text"
-                                        required
-                                        maxlength="200"
-                                        minlength="2"
-                                        class="form-control"
-                                        id="raCompleteName"
-                                        aria-describedby="emailHelp"
-                                    />
-                                    <div class="invalid-feedback">
-                                        Ingrese su nombre completo
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group col-6">
-                                <label for="raRubro">Seleccionar rubro</label>
-                                <label class="sr-only" for="raRubro"
-                                    >Seleccionar rubro</label
+                                <label for="raEmail">Correo electrónico</label>
+                                <label class="sr-only" for="raEmail"
+                                    >Correo electrónico</label
                                 >
                                 <div class="input-group mb-2">
                                     <div class="input-group-prepend">
                                         <div class="input-group-text">
-                                            <i class="fas fa-fingerprint"></i>
+                                            <i class="fas fa-at"></i>
                                         </div>
                                     </div>
-                                    <select
+                                    <input
+                                        v-model="correo"
+                                        @keyup="flags.email_exists = false"
+                                        type="email"
                                         required
-                                        v-model="rubro"
-                                        class="custom-select"
-                                        id="raRubro"
-                                    >
-                                        <option disabled value="">Elegir</option>
-                                        <optgroup v-for="(main, key) in listTags"
-                                            v-bind:key="key"
-                                            :label="key">
-                                            <option
-                                                v-for="(item, i) in main"
-                                                v-bind:key="i"
-                                                :value="item.id"
-                                            >
-                                                {{ item.tag }}
-                                            </option>
-                                        </optgroup>
-                                    </select>
+                                        maxlength="255"
+                                        minlength="2"
+                                        class="form-control"
+                                        id="raEmail"
+                                        placeholder="Ej. example@email.com"
+                                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                                        aria-describedby="emailHelp"
+                                    />
                                     <div class="invalid-feedback">
-                                        Especifique su especialidad
+                                        Ingrese su correo electrónico
+                                    </div>
+                                    <div
+                                        v-if="flags.email_exists"
+                                        style="width: 100%;margin-top: 0.25rem;font-size: 80%;color: #dc3545;font-weight: bold;"
+                                    >
+                                        El correo electrónico ya ha sido
+                                        registrado
                                     </div>
                                 </div>
                             </div>
+
+
+
+
+
+
+
                         </div>
                         <div class="modal-footer">
                             <button

@@ -5,12 +5,9 @@
                    <div class="col-12 col-md-7">
                         <div class="mb-3">
                             <label for="resourceType" class="form-label">Tipo de recurso</label>
-                            <select v-model="itemData.resource.tipo_id" class="form-control" aria-label="Default select example" id="resourceType">
-                                <option value="1" selected>Libro</option>
-                                <option value="2">Tesis</option>
-                                <option value="3">Informe</option>
-                                <option value="4">Obra</option>
-                                <option value="5">Otros</option>
+                            <select v-model="itemData.resource.tipo_id" class="form-control" aria-label="Default select example" id="resourceType" required>
+                                 <option value="0" selected disabled> - - SELECCCIONAR - - </option>
+                                <option v-for="option in resourceTypes" :value="option.id" :key="option.id">{{option.name}}</option>
                             </select>                    
                         </div>    
                         <div class="mb-3">
@@ -65,8 +62,7 @@
 <script>
 import { VueEditor } from "vue2-editor";
 import MediaComponent from './MediaResource.vue';
-
-import {upsertResource} from '../../service';
+import {upsertResource,getTiposRecursos} from '@/service';
 
 
 export default {
@@ -82,6 +78,7 @@ export default {
             isSaving: false,
             acAppData: window.obj_ac_app,
             itemData: JSON.parse(JSON.stringify(this.pdata)),
+            resourceTypes: [],
             editor_params: {
                 placeholder: "Ingrese contenido ...",
                 customToolbar: [
@@ -95,9 +92,10 @@ export default {
         }
     },
     mounted: function(){
+        this.getTiposRecursosData();
         
     },
-    computed: {
+    computed: {     
         srcPresentationImg: function(){
             //Buscar reciente 
             var img = this.itemData.media.filter(e => e.presentation == true && e.id == 0);
@@ -116,6 +114,21 @@ export default {
         }
     },
     methods: {
+        getTiposRecursosData: function(){
+            getTiposRecursos().then(result => {
+                const response = result.data;
+                if(response.code == 0){
+                    StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
+                    return;
+                }   
+
+                this.resourceTypes = response.data;
+
+            }).catch(ex => {
+                const target_process = "Recuperar tipos de recursos"; 
+                StatusHandler.Exception(target_process,ex);
+            });
+        },           
         setPrincipalPic: function(event){
             let file = null;
 

@@ -17,6 +17,10 @@ export function deleteCategory(id){
     return axios.delete(`/category/${id}`);
 }
 
+export function configUser(id,payload){
+    return axios.put(`/user/updateConfig/${id}`,payload);
+}
+
 
 export function getUserProfileInformation(id){
     return new Promise((resolve,reject)=>{
@@ -120,7 +124,9 @@ export function getMunicipios(){
  * @returns {Object} Response 
  */
 export function getTiposRecursos(){
-    return new Promise((resolve,reject) => {
+    return axios.get('/resources/tipos');
+
+    /*return new Promise((resolve,reject) => {
         resolve({
             code: 1,
             msg: "Datos recuperados",
@@ -132,7 +138,8 @@ export function getTiposRecursos(){
                 {id: 5, option: "Otros"},
             ]
         });
-    })
+    })*/
+
 }
 
 export function upsertResource(data){
@@ -203,6 +210,15 @@ export function proResetEventDates(payload){
 
 export function proTestEmail(payload){
     return axios.post('/procesoemail',payload);
+}
+
+
+export function getParameters(){
+    return axios.get(`/parameters`);
+}
+
+export function updateParameter(payload){
+    return axios.patch('/parameters',payload);
 }
 
 
