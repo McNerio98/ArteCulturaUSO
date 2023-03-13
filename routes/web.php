@@ -31,7 +31,7 @@ Route::get('/site/biografias/{id}','MemoriesController@show')->name("recursos.sh
 
 Route::get('/page6','WebsiteController@homenajes')->name("homenajes");
 Route::get('/page7','WebsiteController@acercade')->name("acercade");
-
+Route::get('/soporte','WebsiteController@supportusers')->name('support');
 Route::get('/request/status/{name}/{status}','WebsiteController@accountRequest')->name("request.status");
 #Muestra vista notificando se requiere verificacion de correo 
 Route::get('/email/status/{email}','WebsiteController@checkEmail')->name('email.status');
@@ -42,8 +42,8 @@ Route::get('/waiting','Auth\LoginController@waiting')->name('waiting');
 
 
 
-//McNerio Routes 
-Route::get('/login','Auth\LoginController@showLoginForm')->middleware('guest');
+
+Route::get('/login','Auth\LoginController@showLoginForm')->name('page.login')->middleware('guest');
 Route::post('/login','Auth\LoginController@login')->name('login');
 Route::post('/logout','Auth\LoginController@logout')->name('logout');
 
@@ -83,7 +83,8 @@ Route::get('/memories/find/{id}','MemoriesController@find')->name('memories.find
 #Recupera lista de homenajes/biografias para el apartado public 
 Route::get('/memories/all','MemoriesController@getAllPublic')->name('memories.all');
 #AJAX 1 Elimina un elemento de  con todos sus medios(files,video.image) asociados 
-Route::delete('/memories/{id}','MemoriesController@destroy')->name("memories.destroy");
+Route::delete('/memories/{id}','MemoriesController@destroy')->name("memories.destroy")->where('id', '[0-9]+')->middleware('auth','adroles');
+
 
 
 /*------------------------------Recursos------------------------------*/
@@ -99,8 +100,10 @@ Route::post('/resource','RecursosController@upsert')->name("resource.store")->mi
 Route::get('/resources','RecursosController@getAllPublic')->name('resources.all');
 # AJAX - get all items Recursos for ADMIN site 
 Route::get('/admin/resources','RecursosController@getAllAdmin')->name('resources.all.admin');
-# AJAX
-Route::get('/resource/{id}','RecursosController@find')->name('resources.find');
+# AJAX Recupera los datos para el recurso especificado
+Route::get('/resource/{id}','RecursosController@find')->where('id', '[0-9]+')->name('resources.find');
+#AJAX | Obtiene los Tipos de recursos (No requiere filtro de seguridad)
+Route::get('/resources/tipos','RecursosController@tipos')->name('resources.tipos');
 #AJAX 1 Elimina un elemento de  con todos sus medios(files,video.image) asociados 
 Route::delete('/resource/{id}','RecursosController@destroy')->name("resouce.destroy")->middleware('auth','adroles');
 
@@ -237,8 +240,10 @@ Route::get('/admin/procesos','ProcesosController@index')->middleware('auth')->na
 Route::post('/procesofechas','ProcesosController@resetdatesevent')->middleware('auth','adroles')->name('procesos.resetdates');
 Route::post('/procesoemail','ProcesosController@testemail')->middleware('auth','adroles')->name('procesos.testemail');
 
-
-
+/*------------------ Parametros del sistema ------------------*/
+Route::get('/admin/params','DashboardController@parameters')->middleware('auth','adroles')->name('params.index');
+Route::get('/parameters','ParamController@index')->middleware('auth','adroles')->name('params.all');
+Route::patch('/parameters','ParamController@update')->middleware('auth','adroles')->name('params.update');
 
 #Rutas para API Google
 Route::get('/post/placesquery','PostEventController@places')->middleware('auth');

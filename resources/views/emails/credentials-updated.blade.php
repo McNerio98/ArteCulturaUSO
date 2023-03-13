@@ -24,7 +24,7 @@
                     </tr>
                 </table>
             </div>
-            <a href="https://www.wordreference.com/" target="_blank"  style="display: block;margin: auto;margin-top: auto;margin-bottom: auto;width: 150px;margin-top: 20px;margin-bottom: 20px;padding: 20px 10px;border: 0px;background-color: #ffc500;color: black;border-radius: 15px;font-size: 110%;text-align: center;text-decoration: none;">Iniciar sesión</a>
+            <a href="{{ route('page.login') }}" target="_blank"  style="display: block;margin: auto;margin-top: auto;margin-bottom: auto;width: 150px;margin-top: 20px;margin-bottom: 20px;padding: 20px 10px;border: 0px;background-color: #ffc500;color: black;border-radius: 15px;font-size: 110%;text-align: center;text-decoration: none;">Iniciar sesión</a>
         </div>
     </div>
 </div>

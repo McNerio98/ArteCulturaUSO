@@ -7,7 +7,7 @@
                 </div>
                 <div class="col-12 col-md-8">
                     <div class="d-flex flex-column h-100 justify-content-center">
-                        <p>Tipo de recurso: {{getTipo}}</p>
+                        <p>Tipo de recurso: {{itemData.resource.tipo_valor}}</p>
                         <h3>{{itemData.resource.name}}</h3>
                         <div>
                             <a href="javascript:void;" @click.prevent="goRead"> Seguir leyendo</a>
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import {getTiposRecursos} from '../../service';
+
 
 export default {
     props: {
@@ -36,9 +36,7 @@ export default {
         }
     },
     created: function(){
-        getTiposRecursos().then(result =>{
-            this.tiposRecursos = result.data;
-        });
+
     },
     computed: {
         srcPresentationImg: function(){
@@ -47,14 +45,7 @@ export default {
             }else{
                 return this.itemData.presentation_model.url;
             }
-        },
-        getTipo: function(){
-            if(this.tiposRecursos.length > 0){
-                return this.tiposRecursos[this.itemData.resource.tipo_id - 1].option;
-            }else{
-                return "No Especificado";
-            }
-        }   
+        }
     },
     methods: {
         goRead: function(){

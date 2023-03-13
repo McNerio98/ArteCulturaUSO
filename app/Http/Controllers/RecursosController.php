@@ -9,6 +9,7 @@ use App\Recurso;
 use App\FilesOnResource;
 use Illuminate\Support\Facades\DB;
 use App\User;
+use App\ResourceType;
 use Storage;
 
 class RecursosController extends Controller
@@ -23,6 +24,19 @@ class RecursosController extends Controller
 
     public function show(){
     	return view('recursos.show');        
+    }
+
+    public function tipos(){
+        $output = [
+            "code" => 0,
+            "data" => null,
+            "msg" => ""
+        ];
+
+        $output["data"] = ResourceType::all();
+        $output["code"] = 1;
+
+        return $output;
     }
 
 
@@ -46,10 +60,19 @@ class RecursosController extends Controller
     	return view('admin.recursos.create' , ['ac_option' =>'recursos' , 'request_users' => $request_users]);        
     }
 
-    public function showadmin(){
-		if( ! Auth::user()->can('ver-recursos')){ 
+    public function showadmin($id){
+
+        $element = Recurso::find($id);
+        $user = Auth::user();
+
+        if(! $element){
+            return redirect()->route('dashboard');
+        }
+        
+		if( ! Auth::user()->can('ver-recursos') && $element->creator_id != $user->id){ 
             return redirect()->route('dashboard');
         };        
+        
 		$request_users = UsersHelper::usersRequest();
     	return view('admin.recursos.show' , ['ac_option' =>'recursos' , 'request_users' => $request_users]);        
     }
@@ -88,12 +111,12 @@ class RecursosController extends Controller
 
         $per_page = ($request->per_page === null || $request->per_page > 15) ? 15 : $request->per_page;
 
-        $builder = Recurso::with('presentation_model');
+        $builder = Recurso::with('presentation_model')->join('resource_types AS ret', 'ret.id', '=', 'recursos.tipo_id')->select('recursos.*','ret.name AS resource_type');
         if($request->filter != "ALL" && $request->filter != null){
             $builder->where('tipo_id'  , $request->filter);
         }
 
-        $builder->orderBy('id','desc');
+        $builder->orderBy('recursos.id','desc');
         $result = $builder->paginate($per_page);
 
         $output["data"] = $result->items();
@@ -118,7 +141,7 @@ class RecursosController extends Controller
             "msg" => "",
         ];
 
-        $recurso = Recurso::find($id);
+        $recurso = Recurso::find($id)->leftJoin('resource_types AS ret', 'ret.id', '=', 'recursos.tipo_id')->select('recursos.*','ret.name AS resource_type')->first();
         if(!$recurso){
             $output["code"] = 0;
             $output["msg"] = "No encontrado";
@@ -169,9 +192,9 @@ class RecursosController extends Controller
         $params = [
             "resource.id" => "required|numeric",
             "resource.name" => "required|max:250",
-            "resource.description" => "required",
+            "resource.description" => "required|min:5",
             "resource.tipo_id" => "required|numeric|min:1",
-            "resource.presentation_img" => "required|numeric"
+            //"resource.presentation_img" => "required|numeric"
         ];
 
         $validator = Validator::make($request->all(),$params);        

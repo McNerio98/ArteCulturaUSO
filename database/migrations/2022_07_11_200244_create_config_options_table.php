@@ -17,6 +17,8 @@ class CreateConfigOptionsTable extends Migration
             $table->id();
             $table->string('option_name',100)->unique();//create a index
             $table->mediumText('option_value');
+            $table->string('option_type',100);
+            $table->string('description');
             $table->timestamps();
         });
     }

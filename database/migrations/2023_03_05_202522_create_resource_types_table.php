@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBioTypesTable extends Migration
+class CreateResourceTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class CreateBioTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('bio_types', function (Blueprint $table) {
+        Schema::create('resource_types', function (Blueprint $table) {
             $table->id();
+            $table->string('name',200);
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ class CreateBioTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('bio_types');
+        Schema::dropIfExists('resource_types');
     }
 }

@@ -35,8 +35,7 @@ if(document.getElementById("appResourcesAdminIndex") != undefined){
         methods: {
             getTiposRecursosData: function(){
                 getTiposRecursos().then(result => {
-                    //const response = result.data;
-                    const response = result;
+                    const response = result.data;
                     if(response.code == 0){
                         StatusHandler.ShowStatus(response.msg,StatusHandler.OPERATION.DEFAULT,StatusHandler.STATUS.FAIL);
                         return;

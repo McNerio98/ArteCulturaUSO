@@ -10,7 +10,7 @@
 
             <h3 v-if="data_config.nickname.edit_mode == false" class="profile-username text-center">
                 <a :href="acAppData.base_url + '/perfil/' + targetId">{{data_config.nickname.value == undefined || data_config.nickname.value.trim().length ==0 ? '(No especificado)' : data_config.nickname.value}}</a>
-                    <i  v-if="authId === targetId" @click="data_config.nickname.edit_mode = true;data_config.nickname.bk = data_config.nickname.value;" class="fas fa-pen ac-edit-about"></i>
+                    <i  v-if="authId === targetId" @click="onEditMode('nickname')" class="fas fa-pen ac-edit-about"></i>
             </h3>
 
             <input class="form-control" type="text" v-model="data_config.nickname.value" placeholder="Nombre artístico o entidad" v-if="data_config.nickname.edit_mode">
@@ -18,7 +18,7 @@
                 <button class="btn btn-success col btn-xs" @click="saveDataConfig('nickname')">
                     <i class="fas fa-plus"></i> <span>Guardar</span>
                 </button>
-                <button class="btn btn-warning col btn-xs" @click="data_config.nickname.edit_mode = false;itemData.nickname = data_config.nickname.bk;">
+                <button class="btn btn-warning col btn-xs" @click="onCancelEdit('nickname')">
                     <i class="fas fa-times"></i> <span>Cancelar</span>
                 </button>
             </div>  
@@ -121,11 +121,19 @@
                 /**Estabele la imgane de pefil */
                 this.current_profile_media.url = url;
             },
+            onEditMode: function(key){
+                this.data_config[key].edit_mode = true; 
+                this.data_config[key].bk = this.data_config[key].value
+            },
+            onCancelEdit: function(key){
+                this.data_config[key].edit_mode = false; 
+                this.data_config[key].value = this.data_config[key].bk
+            },            
             saveDataConfig: function(key){
                 const data_info = {
                     user_id: this.authId,//id de usuario logeado 
                     info_key: key,
-                    info_value: this.itemData.nickname,
+                    info_value: this.data_config[key].value,
                 };             
 
                 var path_uri = "";

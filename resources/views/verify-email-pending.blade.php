@@ -26,6 +26,7 @@
             <h1>Verificación de correo... </h1>
             <p class="lead">Se ha enviado un correo a tu bandeja para que podamos verificar que eres el propietario de la cuenta. El corre fue enviado a:
                     <span class=" font-weight-bold">{{$user_email}}</span></p>
+                    <h4><code>Revisar en correo no deseado si no se muestra en la bandeja principal</code></h4>
             <p class="lead">
                 <a href="{{route('inicio')}}" class="btn btn-lg btn-secondary">Ir a inicio</a>
             </p>

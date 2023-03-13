@@ -57,6 +57,7 @@
                 </li>             
                 @endcan   
 
+
                 @can('ver-biografias')
                 <li class="nav-item">
                     <a href="{{route('memories.index.admin')}}" class="nav-link text-hpolis  {{ $ac_option == 'memories' ? 'active' : ''}} ">
@@ -114,6 +115,15 @@
                     </a>
                 </li>
                 @endcan
+
+                @hasrole('SuperAdmin')                
+                <li class="nav-item">
+                    <a href="{{route('params.index')}}" class="nav-link text-hpolis  {{ $ac_option == 'parameters' ? 'active' : ''}}">
+                        <i class="nav-icon fas fa-tools"></i>
+                        <p>Parametros</p>
+                    </a>
+                </li>
+                @endrole                
 
                
 
