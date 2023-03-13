@@ -38,7 +38,7 @@
                 <table-load-more v-if="isEnableMore" @onmore="onLoadMore"></table-load-more>
         </div>   
 
-        <div class="row" v-if="!isGettingData && events.length > 4">
+        <div class="row" v-if="!isGettingData && events.length >= 4">
             <div class="col-12 col-lg-3"></div>
             <div class="col-12 col-lg-3">
                 <img src="{{asset('images/icons/indicator-scroll.png')}}" alt="" style="width: 100%;">
