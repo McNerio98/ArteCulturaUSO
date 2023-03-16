@@ -11,7 +11,7 @@
                     <span class="text-xl">Todos</span>
                 </label>
                 <label class="btn btn-default text-center" v-for="(e,index) in recursoTypes" @click="onSelectFilter(e.id)" :class="{'abc-active': (filterSelected == e.id)}">
-                    <span class="text-xl">@{{e.option}}</span>
+                    <span class="text-xl">@{{e.name}}</span>
                 </label>
             </div>        
         </div>
