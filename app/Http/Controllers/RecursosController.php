@@ -141,7 +141,11 @@ class RecursosController extends Controller
             "msg" => "",
         ];
 
-        $recurso = Recurso::find($id)->leftJoin('resource_types AS ret', 'ret.id', '=', 'recursos.tipo_id')->select('recursos.*','ret.name AS resource_type')->first();
+        //$recurso = Recurso::find($id)->leftJoin('resource_types AS ret', 'ret.id', '=', 'recursos.tipo_id')->select('recursos.*','ret.name AS resource_type')->first();
+        $recurso = Recurso::leftJoin('resource_types AS ret', 'ret.id', '=', 'recursos.tipo_id')
+        ->where('recursos.id',$id)
+        ->select('recursos.*','ret.name AS resource_type')->first();
+
         if(!$recurso){
             $output["code"] = 0;
             $output["msg"] = "No encontrado";
