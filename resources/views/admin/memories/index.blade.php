@@ -20,8 +20,8 @@
                 <label class="btn btn-default text-center" @click="onSelectFilter('ALL')" :class="{'abc-active': (filterSelected == 'ALL')}">
                     <span class="text-xl">Todos</span>
                 </label>
-                <label translate="no" class="btn btn-default text-center" v-for="(e,index) in ABC" @click="onSelectFilter(e)" :class="{'abc-active': (filterSelected == e)}">
-                    <span translate="no" class="text-xl">@{{e}}</span>
+                <label translate="no" style="padding-top: 15px;" class="btn btn-default text-center" v-for="(e,index) in ABC" @click="onSelectFilter(e)" :class="{'abc-active': (filterSelected == e)}">
+                    <img style="width: 25px;" :src="'{{asset('images/ABC/Letter')}}' + e + '.png'" alt="">
                 </label>
             </div>        
         </div>

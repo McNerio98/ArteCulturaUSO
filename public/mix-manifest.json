@@ -1,13 +1,13 @@
 {
     "/js/admin/app-admin.js": "/js/admin/app-admin.js?id=09544763a27945b298f8",
     "/js/admin/app-config-user.js": "/js/admin/app-config-user.js?id=7182c2301d77c6d58827",
-    "/js/admin/app-content.js": "/js/admin/app-content.js?id=5fbe45804e6ee6da5ed5",
-    "/js/admin/app-item-update.js": "/js/admin/app-item-update.js?id=ac94366ad2a1fcf3c031",
-    "/js/admin/app-memories.js": "/js/admin/app-memories.js?id=0739b52fd339eec02979",
+    "/js/admin/app-content.js": "/js/admin/app-content.js?id=1686457b61d328894849",
+    "/js/admin/app-item-update.js": "/js/admin/app-item-update.js?id=26ccf867f7f471ed70f1",
+    "/js/admin/app-memories.js": "/js/admin/app-memories.js?id=5f44aa7b700d3bf5f87e",
     "/js/admin/app-params.js": "/js/admin/app-params.js?id=c0365d6b3883dce9db63",
     "/js/admin/app-procesos.js": "/js/admin/app-procesos.js?id=d23f4913b11ee77bee8b",
     "/js/admin/app-promociones.js": "/js/admin/app-promociones.js?id=d540c6637dab6b666865",
-    "/js/admin/app-resources.js": "/js/admin/app-resources.js?id=f56d87a0de07beceb436",
+    "/js/admin/app-resources.js": "/js/admin/app-resources.js?id=9053b8d5423247e99c09",
     "/js/admin/app-roles.js": "/js/admin/app-roles.js?id=15940a8b2be170d12fd9",
     "/js/admin/app-rubros.js": "/js/admin/app-rubros.js?id=acfaa57c3ada91468ead",
     "/js/admin/app-search.js": "/js/admin/app-search.js?id=f5522b3178d1ac03fef3",
@@ -22,8 +22,8 @@
     "/js/front/app-login.js": "/js/front/app-login.js?id=82e3a9488a8a3599db3c",
     "/js/front/app-memories.js": "/js/front/app-memories.js?id=2a85892e869af27154c9",
     "/js/front/app-nearby.js": "/js/front/app-nearby.js?id=3b31cfd81d09d6a9887e",
-    "/js/front/app-profile.js": "/js/front/app-profile.js?id=64f3aa3ae810468b21b7",
+    "/js/front/app-profile.js": "/js/front/app-profile.js?id=42c18b7a0e4af4d3ca05",
     "/js/front/app-resources.js": "/js/front/app-resources.js?id=cd4c6773e9d7c72efa63",
     "/js/front/app-search.js": "/js/front/app-search.js?id=f7e2c4a392f71cb94071",
-    "/js/front/app-showedit.js": "/js/front/app-showedit.js?id=a70703d54285e38d251c"
+    "/js/front/app-showedit.js": "/js/front/app-showedit.js?id=88913c1841013afccc39"
 }

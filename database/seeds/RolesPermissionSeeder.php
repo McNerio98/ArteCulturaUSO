@@ -221,7 +221,7 @@ class RolesPermissionSeeder extends Seeder
 		$admin = User::create([
 			'name' => 'Rene Lara',
 			'artistic_name' => 'Rene Lara',
-			'email' => 'rene.lara@usonsonate.edu.sv',
+			'email' => 'observatoriocultural@usonsonate.edu.sv',
 			'username' => 'social2020',
 			'email_verified_at' => '2020-05-31 17:26:21',
 			'password'	=> Hash::make('s4FFDEvYwbixn'),
