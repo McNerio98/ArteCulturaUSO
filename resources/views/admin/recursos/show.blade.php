@@ -2,6 +2,9 @@
 @section('title', 'Detalle del recurso')
 @section('windowName', 'Detalle del recurso')
 
+@section('PanelTitle', 'RECURSOS')
+@section('PanelSubtitle', 'MOSTRAR')
+
 @section('content')
 <main role="main" class="flex-shrink-0" id="appResourcesAdminShow">
     <input type="hidden" id="idresource" value="{{request('id')}}">
