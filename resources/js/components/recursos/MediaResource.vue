@@ -294,8 +294,9 @@
                     const limit_config = parseInt(this.get_param('FILE_SIZE',20));
                     console.log('Filze Size: ' + file_size);
                     if(file_size > limit_config){
-                         StatusHandler.ValidationMsg(`Tamaño del archivo muy grande, límite configurado ${limit_config}`);
-                         return;                        
+                        const msgStr = `El archivo que intentas subir excede los ${limit_config} MB disponibles, por archivo de carga`;
+                        StatusHandler.ValidationMsg(msgStr);                        
+                        return;                        
                     }
 
                     var newFileMedia = {
