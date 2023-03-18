@@ -66,10 +66,10 @@
     document.addEventListener("DOMContentLoaded", function(event) { 
         const textSupport = document.getElementById('textSupport');
         const emailParam = getPage_param('SOPORTE_EMAIL','');
-        const numParam = getPage_param('SOPORTE_NUM','');
+        const numParam = getPage_param('SOPORTE_NUM','0000-0000');
 
         var strContent = `Te invitamos a contactarnos mediante el correo <span class="font-weight-bold">${emailParam}</span>`;
-        if(numParam.trim().length > 0){
+        if(numParam.trim().length > 0 && numParam != '0000-0000'){
             strContent += ` o el número de teléfono <span class="font-weight-bold">${numParam}</span>`;
         }
         textSupport.innerHTML = strContent;

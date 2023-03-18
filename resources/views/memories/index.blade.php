@@ -10,8 +10,8 @@
                 <label class="btn btn-default text-center" @click="onSelectFilter('ALL')" :class="{'abc-active': (filterSelected == 'ALL')}">
                     <span class="text-xl">Todos</span>
                 </label>
-                <label class="btn btn-default text-center" translate="no" v-for="(e,index) in ABC" @click="onSelectFilter(e)" :class="{'abc-active': (filterSelected == e)}">
-                    <span translate="no" class="text-xl">@{{e}}</span>
+                <label class="btn btn-default text-center" style="padding-top: 15px;" v-for="(e,index) in ABC" @click="onSelectFilter(e)" :class="{'abc-active': (filterSelected == e)}">
+                    <img style="width: 25px;" :src="'{{asset('images/ABC/Letter')}}' + e + '.png'" alt="">
                 </label>
             </div>        
         </div>
@@ -25,7 +25,7 @@
             <div class="col-12">
                     <spinner1 label="Cargando Biografías/Homenajes …"></spinner1>
             </div>
-         </div>           
+         </div>        
         
         <div class="pb-3 pt-3" v-if="showPagination">
             <pagination v-if="routeDynamic != null" :route="routeDynamic" @source-items="onLoadData" :key="componentPagKey"></pagination>
